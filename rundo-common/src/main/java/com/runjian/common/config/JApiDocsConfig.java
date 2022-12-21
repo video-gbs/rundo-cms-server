@@ -35,7 +35,7 @@ public class JApiDocsConfig {
         // 声明该API的版本
         config.setApiVersion(docsVersion);
         // 生成API 文档所在目录
-        config.setDocsPath(docsPath +"\\" + applicationName + "\\" );
+        config.setDocsPath(docsPath + "\\" + applicationName + "\\");
         // 配置自动生成
         config.setAutoGenerate(Boolean.TRUE);
         // 执行生成文档

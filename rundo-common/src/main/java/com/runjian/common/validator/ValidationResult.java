@@ -16,7 +16,7 @@ public class ValidationResult {
 
     /**
      * 校验结果是否有错
-      */
+     */
     private boolean hasErrors = false;
 
     /**
@@ -24,7 +24,7 @@ public class ValidationResult {
      */
     private Map<String, String> errorMsgMap = new HashMap<>();
 
-    public String getErrMsg(){
+    public String getErrMsg() {
         return StringUtils.arrayToDelimitedString(errorMsgMap.values().toArray(), ",");
     }
 

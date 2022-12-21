@@ -25,6 +25,7 @@ public class ValidatorService implements InitializingBean {
 
     /**
      * 通用校验调用
+     *
      * @param request
      * @throws BusinessException
      */
@@ -34,19 +35,20 @@ public class ValidatorService implements InitializingBean {
 
     /**
      * 通用校验调用,带自定义校验参数
+     *
      * @param request
      * @throws BusinessException
      */
     public void validateRequestByMatchData(Object request, Object matchData) throws BusinessException {
-        if (Objects.isNull(request)){
+        if (Objects.isNull(request)) {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "待校验的对象为空对象");
         }
         // 判断是否是集合
-        if (request instanceof Collection){
+        if (request instanceof Collection) {
             validateRequestList((Collection<Object>) request);
         }
         ValidationResult validate = validate(request, matchData);
-        if (validate.isHasErrors()){
+        if (validate.isHasErrors()) {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, validate.getErrMsg());
         }
     }
@@ -54,6 +56,7 @@ public class ValidatorService implements InitializingBean {
 
     /**
      * 通用数组校验
+     *
      * @param requestList
      * @throws BusinessException
      */
@@ -63,18 +66,19 @@ public class ValidatorService implements InitializingBean {
 
     /**
      * 通用数组校验,带自定义校验参数
+     *
      * @param requestList
      * @throws BusinessException
      */
     public void validateRequestListByMatchData(Collection<Object> requestList, Object matchData) throws BusinessException {
         ValidationResult results = new ValidationResult();
-        for (Object bean : requestList){
+        for (Object bean : requestList) {
             ValidationResult beanResult = validate(bean, matchData);
-            if (beanResult.isHasErrors()){
+            if (beanResult.isHasErrors()) {
                 results.getErrorMsgMap().putAll(beanResult.getErrorMsgMap());
             }
         }
-        if (!results.getErrorMsgMap().isEmpty()){
+        if (!results.getErrorMsgMap().isEmpty()) {
             results.setHasErrors(true);
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, results.getErrMsg());
         }
@@ -86,7 +90,7 @@ public class ValidatorService implements InitializingBean {
         // 进行校验
         Set<ConstraintViolation<Object>> constraintViolationSet = validator.validate(bean);
         // 判断是否有错误
-        if (!constraintViolationSet.isEmpty()){
+        if (!constraintViolationSet.isEmpty()) {
             result.setHasErrors(true);
             // 遍历错误，将错误信息导入到校验信息类实例中
             constraintViolationSet.forEach(constraintViolation -> {
@@ -95,8 +99,8 @@ public class ValidatorService implements InitializingBean {
                 result.getErrorMsgMap().put(propertyName, errMsg);
             });
         }
-        if (bean instanceof ValidatorFunction){
-            ((ValidatorFunction)bean).validEvent(result, bean, matchData);
+        if (bean instanceof ValidatorFunction) {
+            ((ValidatorFunction) bean).validEvent(result, bean, matchData);
         }
         return result;
     }

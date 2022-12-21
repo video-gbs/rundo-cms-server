@@ -33,56 +33,59 @@ public class CommonResponse<T> {
 
     /**
      * 成功无数据返回
+     *
      * @param <T>
      * @return
      */
-    public static<T> CommonResponse<T> success(){
+    public static <T> CommonResponse<T> success() {
         return success(null);
     }
 
     /**
      * 成功有数据返回
+     *
      * @param data
      * @param <T>
      * @return
      */
-    public static<T> CommonResponse<T> success(T data){
+    public static <T> CommonResponse<T> success(T data) {
         return create(BusinessErrorEnums.SUCCESS.getErrCode(), BusinessErrorEnums.SUCCESS.getErrMsg(), data);
     }
 
     /**
      * 失败自定义异常,无数据返回
+     *
      * @param businessErrorEnums
      * @return
      */
-    public static<T> CommonResponse<T> failure(BusinessErrorEnums businessErrorEnums){
+    public static <T> CommonResponse<T> failure(BusinessErrorEnums businessErrorEnums) {
         return failure(businessErrorEnums, null);
     }
 
     /**
      * 失败自定义异常带数据
+     *
      * @param businessErrorEnums
      * @param data
      * @return
      */
-    public static<T> CommonResponse<T> failure(BusinessErrorEnums businessErrorEnums, T data){
+    public static <T> CommonResponse<T> failure(BusinessErrorEnums businessErrorEnums, T data) {
         return create(businessErrorEnums.getErrCode(), businessErrorEnums.getErrMsg(), data);
     }
 
 
-
     /**
      * 自创建异常
+     *
      * @param code 消息code
-     * @param msg 消息
+     * @param msg  消息
      * @param data 数据
      * @param <T>
      * @return
      */
-    public static<T> CommonResponse<T> create(Integer code, String msg, T data){
+    public static <T> CommonResponse<T> create(Integer code, String msg, T data) {
         return new CommonResponse<T>(code, msg, data);
     }
-
 
 
 }

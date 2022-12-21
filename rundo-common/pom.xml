@@ -33,6 +33,13 @@
             <groupId>io.github.yedaxia</groupId>
             <artifactId>japidocs</artifactId>
         </dependency>
+
+        <!-- MyBatis Plus -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 

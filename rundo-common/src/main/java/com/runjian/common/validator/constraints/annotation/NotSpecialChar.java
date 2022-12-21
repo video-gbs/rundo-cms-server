@@ -11,10 +11,11 @@ import java.lang.annotation.Target;
 
 /**
  * 过滤特殊字符
+ *
  * @author Miracle
  * @date 2022/6/6 9:33
  */
-@Target({ElementType.METHOD,ElementType.FIELD})
+@Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {NotSpecialCharValidator.class})
 public @interface NotSpecialChar {
@@ -23,7 +24,7 @@ public @interface NotSpecialChar {
 
     String message() default "This String have special char";
 
-    Class<?>[] groups() default { };
+    Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default { };
+    Class<? extends Payload>[] payload() default {};
 }

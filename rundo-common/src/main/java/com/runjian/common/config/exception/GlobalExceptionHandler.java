@@ -23,11 +23,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public CommonResponse doError(HttpServletResponse response, Exception ex) {
         if (ex instanceof BusinessException) {
-            BusinessException businessException = (BusinessException) ex ;
+            BusinessException businessException = (BusinessException) ex;
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "业务异常", businessException.getErrDetail(), businessException.getBusinessErrorEnums());
             response.setStatus(businessException.getState());
             return CommonResponse.failure(businessException.getBusinessErrorEnums(), businessException.getErrDetail());
-        }else if(ex instanceof HttpRequestMethodNotSupportedException){
+        } else if (ex instanceof HttpRequestMethodNotSupportedException) {
             HttpRequestMethodNotSupportedException noEx = (HttpRequestMethodNotSupportedException) ex;
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "404异常", noEx.getMethod() + "-" + noEx.getSupportedMethods(), noEx.getMessage());
             response.setStatus(BusinessErrorEnums.VALID_METHOD_NOT_SUPPORTED.getState());
@@ -37,15 +37,15 @@ public class GlobalExceptionHandler {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "404异常", noEx.getHttpMethod() + "-" + noEx.getRequestURL(), noEx.getMessage());
             response.setStatus(BusinessErrorEnums.VALID_NO_HANDLER_FOUND.getState());
             return CommonResponse.failure(BusinessErrorEnums.VALID_NO_HANDLER_FOUND);
-        } else if (ex instanceof ServletRequestBindingException){
-            ServletRequestBindingException srEx = (ServletRequestBindingException)ex;
+        } else if (ex instanceof ServletRequestBindingException) {
+            ServletRequestBindingException srEx = (ServletRequestBindingException) ex;
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "ServletRequestBindingException异常", null, srEx);
             response.setStatus(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR.getState());
             return CommonResponse.failure(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
         } else {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "未知异常", null, ex);
             response.setStatus(BusinessErrorEnums.UNKNOWN_ERROR.getState());
-            return CommonResponse.failure(BusinessErrorEnums.UNKNOWN_ERROR,ex.getMessage());
+            return CommonResponse.failure(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
         }
     }
 }

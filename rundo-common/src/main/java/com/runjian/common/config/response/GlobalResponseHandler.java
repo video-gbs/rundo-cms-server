@@ -19,15 +19,14 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
 
     private static String[] excludeUrls;
 
-    private GlobalResponseHandler(Environment environment){
+    private GlobalResponseHandler(Environment environment) {
         String excludeUrl = environment.getProperty("response.exclude-url");
-        if (StringUtils.hasText(excludeUrl)){
+        if (StringUtils.hasText(excludeUrl)) {
             excludeUrls = excludeUrl.split(",");
-        }else {
+        } else {
             excludeUrls = new String[0];
         }
     }
-
 
 
     @Override
@@ -44,7 +43,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
             }
         }
 
-        if (body instanceof CommonResponse){
+        if (body instanceof CommonResponse) {
             return body;
         }
 

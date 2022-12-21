@@ -28,15 +28,21 @@ public class BusinessException extends RuntimeException {
      */
     private final Object errDetail;
 
+    public BusinessException(Object errDetail) {
+        super();
+        this.state = 500;
+        this.businessErrorEnums = BusinessErrorEnums.UNKNOWN_ERROR;
+        this.errDetail = errDetail;
+    }
 
-    public BusinessException(BusinessErrorEnums businessErrorEnums){
+    public BusinessException(BusinessErrorEnums businessErrorEnums) {
         super();
         this.state = businessErrorEnums.getState();
         this.businessErrorEnums = businessErrorEnums;
         this.errDetail = null;
     }
 
-    public BusinessException(BusinessErrorEnums businessErrorEnums, String errDetail){
+    public BusinessException(BusinessErrorEnums businessErrorEnums, String errDetail) {
         super();
         this.state = businessErrorEnums.getState();
         this.errDetail = errDetail;
