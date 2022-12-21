@@ -1,0 +1,52 @@
+2022-12-13 10:54:18.992 [main] INFO  com.runjian.device.DeviceControlApplication:55 - Starting DeviceControlApplication using Java 11.0.16.1 on Miracle with PID 22692 (D:\Project\Work\Rundo-Video\DevCode\rundo-video\rundo-device-control\target\classes started by Miracle in D:\Project\Work\Rundo-Video\DevCode\rundo-video)
+2022-12-13 10:54:18.993 [main] INFO  com.runjian.device.DeviceControlApplication:645 - No active profile set, falling back to 1 default profile: "default"
+2022-12-13 10:54:19.355 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate:262 - Multiple Spring Data modules found, entering strict repository configuration mode
+2022-12-13 10:54:19.356 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate:132 - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2022-12-13 10:54:19.367 [main] INFO  o.s.d.r.config.RepositoryConfigurationDelegate:201 - Finished Spring Data repository scanning in 2 ms. Found 0 Redis repository interfaces.
+2022-12-13 10:54:19.435 [main] WARN  org.mybatis.spring.mapper.ClassPathMapperScanner:44 - No MyBatis mapper was found in '[com.runjian.device]' package. Please check your configuration.
+2022-12-13 10:54:19.473 [main] INFO  o.springframework.cloud.context.scope.GenericScope:283 - BeanFactory id=e2e2deec-f81f-37ee-81ea-e2d1f1bad76d
+2022-12-13 10:54:19.676 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer:108 - Tomcat initialized with port(s): 8081 (http)
+2022-12-13 10:54:19.681 [main] INFO  org.apache.coyote.http11.Http11NioProtocol:173 - Initializing ProtocolHandler ["http-nio-8081"]
+2022-12-13 10:54:19.682 [main] INFO  org.apache.catalina.core.StandardService:173 - Starting service [Tomcat]
+2022-12-13 10:54:19.682 [main] INFO  org.apache.catalina.core.StandardEngine:173 - Starting Servlet engine: [Apache Tomcat/9.0.65]
+2022-12-13 10:54:19.743 [main] INFO  o.a.c.core.ContainerBase.[Tomcat].[localhost].[/]:173 - Initializing Spring embedded WebApplicationContext
+2022-12-13 10:54:19.743 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext:290 - Root WebApplicationContext: initialization completed in 729 ms
+2022-12-13 10:54:20.133 [main] INFO  c.a.d.s.b.a.DruidDataSourceAutoConfigure:55 - Init DruidDataSource
+2022-12-13 10:54:20.403 [main] INFO  com.alibaba.druid.pool.DruidDataSource:972 - {dataSource-1} inited
+2022-12-13 10:54:21.115 [main] INFO  com.alibaba.nacos.common.remote.client:80 - [RpcClientFactory] create a new rpc client of 6819a3fa-800c-44eb-a6b4-c8bd3672f244
+2022-12-13 10:54:21.139 [main] INFO  org.reflections.Reflections:232 - Reflections took 14 ms to scan 1 urls, producing 3 keys and 6 values 
+2022-12-13 10:54:21.154 [main] INFO  org.reflections.Reflections:232 - Reflections took 7 ms to scan 1 urls, producing 4 keys and 9 values 
+2022-12-13 10:54:21.162 [main] INFO  org.reflections.Reflections:232 - Reflections took 5 ms to scan 1 urls, producing 3 keys and 10 values 
+2022-12-13 10:54:21.164 [main] WARN  org.reflections.Reflections:179 - given scan urls are empty. set urls in the configuration
+2022-12-13 10:54:21.169 [main] INFO  org.reflections.Reflections:232 - Reflections took 5 ms to scan 1 urls, producing 1 keys and 5 values 
+2022-12-13 10:54:21.174 [main] INFO  org.reflections.Reflections:232 - Reflections took 4 ms to scan 1 urls, producing 1 keys and 7 values 
+2022-12-13 10:54:21.180 [main] INFO  org.reflections.Reflections:232 - Reflections took 5 ms to scan 1 urls, producing 2 keys and 8 values 
+2022-12-13 10:54:21.181 [main] WARN  org.reflections.Reflections:179 - given scan urls are empty. set urls in the configuration
+2022-12-13 10:54:21.181 [main] INFO  com.alibaba.nacos.common.remote.client:60 - [6819a3fa-800c-44eb-a6b4-c8bd3672f244] RpcClient init label, labels = {module=naming, source=sdk}
+2022-12-13 10:54:21.183 [main] INFO  com.alibaba.nacos.common.remote.client:60 - [6819a3fa-800c-44eb-a6b4-c8bd3672f244] RpcClient init, ServerListFactory = com.alibaba.nacos.client.naming.core.ServerListManager
+2022-12-13 10:54:21.183 [main] INFO  com.alibaba.nacos.common.remote.client:60 - [6819a3fa-800c-44eb-a6b4-c8bd3672f244] Registry connection listener to current client:com.alibaba.nacos.client.naming.remote.gprc.redo.NamingGrpcRedoService
+2022-12-13 10:54:21.184 [main] INFO  com.alibaba.nacos.common.remote.client:60 - [6819a3fa-800c-44eb-a6b4-c8bd3672f244] Register server push request handler:com.alibaba.nacos.client.naming.remote.gprc.NamingPushRequestHandler
+2022-12-13 10:54:21.185 [main] INFO  com.alibaba.nacos.common.remote.client:60 - [6819a3fa-800c-44eb-a6b4-c8bd3672f244] Try to connect to server on start up, server: {serverIp = '127.0.0.1', server main port = 8848}
+2022-12-13 10:54:22.119 [main] INFO  com.alibaba.nacos.common.remote.client:60 - [6819a3fa-800c-44eb-a6b4-c8bd3672f244] Success to connect to server [127.0.0.1:8848] on start up, connectionId = 1670900061924_172.20.0.1_55892
+2022-12-13 10:54:22.120 [main] INFO  com.alibaba.nacos.common.remote.client:60 - [6819a3fa-800c-44eb-a6b4-c8bd3672f244] Register server push request handler:com.alibaba.nacos.common.remote.client.RpcClient$ConnectResetRequestHandler
+2022-12-13 10:54:22.119 [com.alibaba.nacos.client.remote.worker] INFO  com.alibaba.nacos.common.remote.client:60 - [6819a3fa-800c-44eb-a6b4-c8bd3672f244] Notify connected event to listeners.
+2022-12-13 10:54:22.120 [main] INFO  com.alibaba.nacos.common.remote.client:60 - [6819a3fa-800c-44eb-a6b4-c8bd3672f244] Register server push request handler:com.alibaba.nacos.common.remote.client.RpcClient$$Lambda$1085/0x0000000800754c40
+2022-12-13 10:54:22.152 [main] INFO  org.apache.coyote.http11.Http11NioProtocol:173 - Starting ProtocolHandler ["http-nio-8081"]
+2022-12-13 10:54:22.159 [main] INFO  o.s.boot.web.embedded.tomcat.TomcatWebServer:220 - Tomcat started on port(s): 8081 (http) with context path ''
+2022-12-13 10:54:22.189 [main] INFO  c.a.cloud.nacos.registry.NacosServiceRegistry:75 - nacos registry, DEFAULT_GROUP device-control 192.168.0.137:8081 register finished
+2022-12-13 10:54:22.383 [main] INFO  com.runjian.device.DeviceControlApplication:61 - Started DeviceControlApplication in 3.909 seconds (JVM running for 4.565)
+2022-12-13 10:54:22.732 [nacos-grpc-client-executor-9] INFO  com.alibaba.nacos.common.remote.client:60 - [6819a3fa-800c-44eb-a6b4-c8bd3672f244] Receive server push request, request = NotifySubscriberRequest, requestId = 5
+2022-12-13 10:54:22.733 [nacos-grpc-client-executor-9] INFO  com.alibaba.nacos.common.remote.client:60 - [6819a3fa-800c-44eb-a6b4-c8bd3672f244] Ack server push request, request = NotifySubscriberRequest, requestId = 5
+2022-12-13 11:01:56.442 [Thread-4] WARN  com.alibaba.nacos.common.notify.NotifyCenter:136 - [NotifyCenter] Start destroying Publisher
+2022-12-13 11:01:56.442 [Thread-7] WARN  com.alibaba.nacos.common.http.HttpClientBeanHolder:108 - [HttpClientBeanHolder] Start destroying common HttpClient
+2022-12-13 11:01:56.443 [Thread-4] WARN  com.alibaba.nacos.common.notify.NotifyCenter:153 - [NotifyCenter] Destruction of the end
+2022-12-13 11:01:56.454 [Thread-7] WARN  com.alibaba.nacos.common.http.HttpClientBeanHolder:114 - [HttpClientBeanHolder] Destruction of the end
+2022-12-13 11:01:56.695 [SpringApplicationShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource:2051 - {dataSource-1} closing ...
+2022-12-13 11:01:56.699 [SpringApplicationShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource:2124 - {dataSource-1} closed
+2022-12-13 11:01:56.699 [SpringApplicationShutdownHook] INFO  c.a.cloud.nacos.registry.NacosServiceRegistry:94 - De-registering from Nacos Server now...
+2022-12-13 11:01:56.704 [SpringApplicationShutdownHook] INFO  c.a.cloud.nacos.registry.NacosServiceRegistry:114 - De-registration finished.
+2022-12-13 11:01:57.052 [SpringApplicationShutdownHook] INFO  com.alibaba.nacos.common.remote.client:454 - Shutdown rpc client, set status to shutdown
+2022-12-13 11:01:57.052 [SpringApplicationShutdownHook] INFO  com.alibaba.nacos.common.remote.client:456 - Shutdown client event executor java.util.concurrent.ScheduledThreadPoolExecutor@5b7c73ca[Running, pool size = 2, active threads = 2, queued tasks = 0, completed tasks = 0]
+2022-12-13 11:01:57.052 [SpringApplicationShutdownHook] INFO  com.alibaba.nacos.common.remote.client:591 - Close current connection 1670900061924_172.20.0.1_55892
+2022-12-13 11:01:57.058 [nacos-grpc-client-executor-103] INFO  c.a.nacos.common.remote.client.grpc.GrpcClient:60 - [1670900061924_172.20.0.1_55892]Ignore complete event,isRunning:false,isAbandon=false
+2022-12-13 11:01:57.059 [SpringApplicationShutdownHook] INFO  c.a.nacos.common.remote.client.grpc.GrpcClient:85 - Shutdown grpc executor java.util.concurrent.ThreadPoolExecutor@691212e7[Running, pool size = 5, active threads = 0, queued tasks = 0, completed tasks = 104]

@@ -1,0 +1,1095 @@
+2022-12-13 09:54:44.328 [main] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20000} created
+2022-12-13 09:54:44.394 [main] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20000, rs-50000} query executed. 63.7359 millis. select 1
+2022-12-13 09:54:44.394 [main] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20000} closed
+2022-12-13 09:54:44.398 [main] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20001} created
+2022-12-13 09:54:44.398 [main] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20001, rs-50001} query executed. 0.3178 millis. select 1
+2022-12-13 09:54:44.398 [main] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20001} closed
+2022-12-13 09:54:44.401 [main] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20002} created
+2022-12-13 09:54:44.402 [main] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20002, rs-50002} query executed. 0.3103 millis. select 1
+2022-12-13 09:54:44.402 [main] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20002} closed
+2022-12-13 09:54:44.405 [main] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20003} created
+2022-12-13 09:54:44.405 [main] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20003, rs-50003} query executed. 0.2275 millis. select 1
+2022-12-13 09:54:44.405 [main] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20003} closed
+2022-12-13 09:54:44.408 [main] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20004} created
+2022-12-13 09:54:44.408 [main] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20004, rs-50004} query executed. 0.2087 millis. select 1
+2022-12-13 09:54:44.408 [main] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20004} closed
+2022-12-13 09:54:44.411 [main] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20005} created
+2022-12-13 09:54:44.411 [main] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20005, rs-50005} query executed. 0.2454 millis. select 1
+2022-12-13 09:54:44.411 [main] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20005} closed
+2022-12-13 09:54:44.414 [main] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20006} created
+2022-12-13 09:54:44.414 [main] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20006, rs-50006} query executed. 0.2481 millis. select 1
+2022-12-13 09:54:44.414 [main] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20006} closed
+2022-12-13 09:54:44.417 [main] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20007} created
+2022-12-13 09:54:44.418 [main] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20007, rs-50007} query executed. 0.2765 millis. select 1
+2022-12-13 09:54:44.418 [main] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20007} closed
+2022-12-13 09:54:44.420 [main] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20008} created
+2022-12-13 09:54:44.421 [main] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20008, rs-50008} query executed. 0.2382 millis. select 1
+2022-12-13 09:54:44.421 [main] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20008} closed
+2022-12-13 09:54:44.423 [main] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20009} created
+2022-12-13 09:54:44.423 [main] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20009, rs-50009} query executed. 0.2403 millis. select 1
+2022-12-13 09:54:44.424 [main] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20009} closed
+2022-12-13 09:58:33.904 [main] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20000} created
+2022-12-13 09:58:33.955 [main] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20000, rs-50000} query executed. 49.3127 millis. select 1
+2022-12-13 09:58:33.955 [main] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20000} closed
+2022-12-13 09:58:33.958 [main] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20001} created
+2022-12-13 09:58:33.958 [main] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20001, rs-50001} query executed. 0.328 millis. select 1
+2022-12-13 09:58:33.958 [main] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20001} closed
+2022-12-13 09:58:33.961 [main] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20002} created
+2022-12-13 09:58:33.962 [main] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20002, rs-50002} query executed. 0.4997 millis. select 1
+2022-12-13 09:58:33.962 [main] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20002} closed
+2022-12-13 09:58:33.965 [main] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20003} created
+2022-12-13 09:58:33.965 [main] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20003, rs-50003} query executed. 0.2673 millis. select 1
+2022-12-13 09:58:33.965 [main] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20003} closed
+2022-12-13 09:58:33.967 [main] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20004} created
+2022-12-13 09:58:33.967 [main] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20004, rs-50004} query executed. 0.2305 millis. select 1
+2022-12-13 09:58:33.967 [main] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20004} closed
+2022-12-13 09:58:33.969 [main] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20005} created
+2022-12-13 09:58:33.970 [main] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20005, rs-50005} query executed. 0.2521 millis. select 1
+2022-12-13 09:58:33.970 [main] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20005} closed
+2022-12-13 09:58:33.972 [main] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20006} created
+2022-12-13 09:58:33.973 [main] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20006, rs-50006} query executed. 0.2484 millis. select 1
+2022-12-13 09:58:33.973 [main] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20006} closed
+2022-12-13 09:58:33.975 [main] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20007} created
+2022-12-13 09:58:33.976 [main] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20007, rs-50007} query executed. 0.2836 millis. select 1
+2022-12-13 09:58:33.976 [main] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20007} closed
+2022-12-13 09:58:33.978 [main] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20008} created
+2022-12-13 09:58:33.979 [main] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20008, rs-50008} query executed. 0.3754 millis. select 1
+2022-12-13 09:58:33.979 [main] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20008} closed
+2022-12-13 09:58:33.981 [main] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20009} created
+2022-12-13 09:58:33.982 [main] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20009, rs-50009} query executed. 0.2272 millis. select 1
+2022-12-13 09:58:33.982 [main] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20009} closed
+2022-12-13 09:59:43.452 [main] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20000} created
+2022-12-13 09:59:43.503 [main] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20000, rs-50000} query executed. 48.8885 millis. select 1
+2022-12-13 09:59:43.503 [main] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20000} closed
+2022-12-13 09:59:43.506 [main] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20001} created
+2022-12-13 09:59:43.506 [main] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20001, rs-50001} query executed. 0.2998 millis. select 1
+2022-12-13 09:59:43.506 [main] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20001} closed
+2022-12-13 09:59:43.508 [main] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20002} created
+2022-12-13 09:59:43.509 [main] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20002, rs-50002} query executed. 0.3811 millis. select 1
+2022-12-13 09:59:43.509 [main] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20002} closed
+2022-12-13 09:59:43.511 [main] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20003} created
+2022-12-13 09:59:43.511 [main] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20003, rs-50003} query executed. 0.2371 millis. select 1
+2022-12-13 09:59:43.511 [main] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20003} closed
+2022-12-13 09:59:43.513 [main] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20004} created
+2022-12-13 09:59:43.513 [main] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20004, rs-50004} query executed. 0.226 millis. select 1
+2022-12-13 09:59:43.514 [main] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20004} closed
+2022-12-13 09:59:43.515 [main] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20005} created
+2022-12-13 09:59:43.516 [main] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20005, rs-50005} query executed. 0.2402 millis. select 1
+2022-12-13 09:59:43.516 [main] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20005} closed
+2022-12-13 09:59:43.518 [main] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20006} created
+2022-12-13 09:59:43.518 [main] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20006, rs-50006} query executed. 0.258 millis. select 1
+2022-12-13 09:59:43.518 [main] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20006} closed
+2022-12-13 09:59:43.520 [main] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20007} created
+2022-12-13 09:59:43.521 [main] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20007, rs-50007} query executed. 0.4263 millis. select 1
+2022-12-13 09:59:43.521 [main] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20007} closed
+2022-12-13 09:59:43.523 [main] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20008} created
+2022-12-13 09:59:43.523 [main] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20008, rs-50008} query executed. 0.2027 millis. select 1
+2022-12-13 09:59:43.523 [main] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20008} closed
+2022-12-13 09:59:43.525 [main] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20009} created
+2022-12-13 09:59:43.525 [main] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20009, rs-50009} query executed. 0.184 millis. select 1
+2022-12-13 09:59:43.525 [main] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20009} closed
+2022-12-13 10:01:43.544 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20010} created
+2022-12-13 10:01:43.548 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20010, rs-50010} query executed. 1.9103 millis. select 1
+2022-12-13 10:01:43.549 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20010} closed
+2022-12-13 10:01:43.549 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20011} created
+2022-12-13 10:01:43.551 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20011, rs-50011} query executed. 1.5143 millis. select 1
+2022-12-13 10:01:43.551 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20011} closed
+2022-12-13 10:01:43.552 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20012} created
+2022-12-13 10:01:43.553 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20012, rs-50012} query executed. 1.1585 millis. select 1
+2022-12-13 10:01:43.554 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20012} closed
+2022-12-13 10:01:43.554 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20013} created
+2022-12-13 10:01:43.555 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20013, rs-50013} query executed. 1.2238 millis. select 1
+2022-12-13 10:01:43.556 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20013} closed
+2022-12-13 10:01:43.556 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20014} created
+2022-12-13 10:01:43.557 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20014, rs-50014} query executed. 1.1699 millis. select 1
+2022-12-13 10:01:43.557 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20014} closed
+2022-12-13 10:01:43.559 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20015} created
+2022-12-13 10:01:43.562 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20015, rs-50015} query executed. 2.5883 millis. select 1
+2022-12-13 10:01:43.563 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20015} closed
+2022-12-13 10:01:43.563 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20016} created
+2022-12-13 10:01:43.564 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20016, rs-50016} query executed. 1.0265 millis. select 1
+2022-12-13 10:01:43.565 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20016} closed
+2022-12-13 10:01:43.566 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20017} created
+2022-12-13 10:01:43.567 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20017, rs-50017} query executed. 1.3843 millis. select 1
+2022-12-13 10:01:43.567 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20017} closed
+2022-12-13 10:01:43.568 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20018} created
+2022-12-13 10:01:43.569 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20018, rs-50018} query executed. 1.0207 millis. select 1
+2022-12-13 10:01:43.569 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20018} closed
+2022-12-13 10:01:43.570 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20019} created
+2022-12-13 10:01:43.571 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20019, rs-50019} query executed. 1.0416 millis. select 1
+2022-12-13 10:01:43.572 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20019} closed
+2022-12-13 10:02:43.581 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20020} created
+2022-12-13 10:02:43.582 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20020, rs-50020} query executed. 0.9319 millis. select 1
+2022-12-13 10:02:43.583 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20020} closed
+2022-12-13 10:02:43.583 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20021} created
+2022-12-13 10:02:43.584 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20021, rs-50021} query executed. 0.8071 millis. select 1
+2022-12-13 10:02:43.584 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20021} closed
+2022-12-13 10:02:43.584 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20022} created
+2022-12-13 10:02:43.585 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20022, rs-50022} query executed. 0.5853 millis. select 1
+2022-12-13 10:02:43.585 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20022} closed
+2022-12-13 10:02:43.585 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20023} created
+2022-12-13 10:02:43.588 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20023, rs-50023} query executed. 2.3302 millis. select 1
+2022-12-13 10:02:43.588 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20023} closed
+2022-12-13 10:02:43.588 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20024} created
+2022-12-13 10:02:43.589 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20024, rs-50024} query executed. 0.5976 millis. select 1
+2022-12-13 10:02:43.590 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20024} closed
+2022-12-13 10:02:43.590 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20025} created
+2022-12-13 10:02:43.591 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20025, rs-50025} query executed. 0.6145 millis. select 1
+2022-12-13 10:02:43.591 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20025} closed
+2022-12-13 10:02:43.591 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20026} created
+2022-12-13 10:02:43.593 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20026, rs-50026} query executed. 1.6557 millis. select 1
+2022-12-13 10:02:43.594 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20026} closed
+2022-12-13 10:02:43.594 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20027} created
+2022-12-13 10:02:43.595 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20027, rs-50027} query executed. 0.5859 millis. select 1
+2022-12-13 10:02:43.595 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20027} closed
+2022-12-13 10:02:43.596 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20028} created
+2022-12-13 10:02:43.596 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20028, rs-50028} query executed. 0.6673 millis. select 1
+2022-12-13 10:02:43.597 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20028} closed
+2022-12-13 10:02:43.597 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20029} created
+2022-12-13 10:02:43.597 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20029, rs-50029} query executed. 0.3584 millis. select 1
+2022-12-13 10:02:43.598 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20029} closed
+2022-12-13 10:03:43.601 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20030} created
+2022-12-13 10:03:43.602 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20030, rs-50030} query executed. 0.6026 millis. select 1
+2022-12-13 10:03:43.603 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20030} closed
+2022-12-13 10:03:43.603 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20031} created
+2022-12-13 10:03:43.603 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20031, rs-50031} query executed. 0.402 millis. select 1
+2022-12-13 10:03:43.603 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20031} closed
+2022-12-13 10:03:43.604 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20032} created
+2022-12-13 10:03:43.604 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20032, rs-50032} query executed. 0.391 millis. select 1
+2022-12-13 10:03:43.604 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20032} closed
+2022-12-13 10:03:43.604 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20033} created
+2022-12-13 10:03:43.605 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20033, rs-50033} query executed. 0.4375 millis. select 1
+2022-12-13 10:03:43.605 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20033} closed
+2022-12-13 10:03:43.605 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20034} created
+2022-12-13 10:03:43.606 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20034, rs-50034} query executed. 0.5338 millis. select 1
+2022-12-13 10:03:43.606 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20034} closed
+2022-12-13 10:03:43.606 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20035} created
+2022-12-13 10:03:43.607 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20035, rs-50035} query executed. 0.5028 millis. select 1
+2022-12-13 10:03:43.607 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20035} closed
+2022-12-13 10:03:43.607 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20036} created
+2022-12-13 10:03:43.607 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20036, rs-50036} query executed. 0.6323 millis. select 1
+2022-12-13 10:03:43.608 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20036} closed
+2022-12-13 10:03:43.608 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20037} created
+2022-12-13 10:03:43.609 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20037, rs-50037} query executed. 0.6096 millis. select 1
+2022-12-13 10:03:43.609 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20037} closed
+2022-12-13 10:03:43.609 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20038} created
+2022-12-13 10:03:43.610 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20038, rs-50038} query executed. 0.5603 millis. select 1
+2022-12-13 10:03:43.610 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20038} closed
+2022-12-13 10:03:43.610 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20039} created
+2022-12-13 10:03:43.611 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20039, rs-50039} query executed. 0.6311 millis. select 1
+2022-12-13 10:03:43.612 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20039} closed
+2022-12-13 10:04:43.635 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20040} created
+2022-12-13 10:04:43.636 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20040, rs-50040} query executed. 0.9796 millis. select 1
+2022-12-13 10:04:43.636 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20040} closed
+2022-12-13 10:04:43.637 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20041} created
+2022-12-13 10:04:43.638 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20041, rs-50041} query executed. 0.9021 millis. select 1
+2022-12-13 10:04:43.638 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20041} closed
+2022-12-13 10:04:43.638 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20042} created
+2022-12-13 10:04:43.639 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20042, rs-50042} query executed. 0.5884 millis. select 1
+2022-12-13 10:04:43.639 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20042} closed
+2022-12-13 10:04:43.639 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20043} created
+2022-12-13 10:04:43.640 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20043, rs-50043} query executed. 0.2935 millis. select 1
+2022-12-13 10:04:43.640 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20043} closed
+2022-12-13 10:04:43.640 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20044} created
+2022-12-13 10:04:43.640 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20044, rs-50044} query executed. 0.3438 millis. select 1
+2022-12-13 10:04:43.640 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20044} closed
+2022-12-13 10:05:43.650 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20045} created
+2022-12-13 10:05:43.652 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20045, rs-50045} query executed. 1.6277 millis. select 1
+2022-12-13 10:05:43.652 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20045} closed
+2022-12-13 10:05:43.653 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20046} created
+2022-12-13 10:05:43.655 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20046, rs-50046} query executed. 2.5699 millis. select 1
+2022-12-13 10:05:43.656 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20046} closed
+2022-12-13 10:05:43.656 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20047} created
+2022-12-13 10:05:43.657 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20047, rs-50047} query executed. 0.7424 millis. select 1
+2022-12-13 10:05:43.657 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20047} closed
+2022-12-13 10:05:43.657 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20048} created
+2022-12-13 10:05:43.659 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20048, rs-50048} query executed. 1.2321 millis. select 1
+2022-12-13 10:05:43.659 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20048} closed
+2022-12-13 10:05:43.659 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20049} created
+2022-12-13 10:05:43.660 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20049, rs-50049} query executed. 0.657 millis. select 1
+2022-12-13 10:05:43.660 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20049} closed
+2022-12-13 10:06:43.664 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20050} created
+2022-12-13 10:06:43.666 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20050, rs-50050} query executed. 2.2609 millis. select 1
+2022-12-13 10:06:43.667 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20050} closed
+2022-12-13 10:06:43.667 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20051} created
+2022-12-13 10:06:43.668 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20051, rs-50051} query executed. 1.1364 millis. select 1
+2022-12-13 10:06:43.668 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20051} closed
+2022-12-13 10:06:43.668 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20052} created
+2022-12-13 10:06:43.669 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20052, rs-50052} query executed. 0.6713 millis. select 1
+2022-12-13 10:06:43.669 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20052} closed
+2022-12-13 10:06:43.671 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20053} created
+2022-12-13 10:06:43.672 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20053, rs-50053} query executed. 0.9666 millis. select 1
+2022-12-13 10:06:43.672 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20053} closed
+2022-12-13 10:06:43.673 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20054} created
+2022-12-13 10:06:43.674 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20054, rs-50054} query executed. 1.0275 millis. select 1
+2022-12-13 10:06:43.674 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20054} closed
+2022-12-13 10:07:43.681 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20055} created
+2022-12-13 10:07:43.683 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20055, rs-50055} query executed. 1.1357 millis. select 1
+2022-12-13 10:07:43.683 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20055} closed
+2022-12-13 10:07:43.684 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20056} created
+2022-12-13 10:07:43.684 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20056, rs-50056} query executed. 0.5556 millis. select 1
+2022-12-13 10:07:43.685 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20056} closed
+2022-12-13 10:07:43.685 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20057} created
+2022-12-13 10:07:43.685 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20057, rs-50057} query executed. 0.355 millis. select 1
+2022-12-13 10:07:43.685 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20057} closed
+2022-12-13 10:07:43.685 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20058} created
+2022-12-13 10:07:43.687 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20058, rs-50058} query executed. 0.788 millis. select 1
+2022-12-13 10:07:43.688 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20058} closed
+2022-12-13 10:07:43.688 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20059} created
+2022-12-13 10:07:43.689 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20059, rs-50059} query executed. 0.7592 millis. select 1
+2022-12-13 10:07:43.690 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20059} closed
+2022-12-13 10:08:43.694 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20060} created
+2022-12-13 10:08:43.694 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20060, rs-50060} query executed. 0.5116 millis. select 1
+2022-12-13 10:08:43.695 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20060} closed
+2022-12-13 10:08:43.695 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20061} created
+2022-12-13 10:08:43.695 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20061, rs-50061} query executed. 0.3815 millis. select 1
+2022-12-13 10:08:43.695 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20061} closed
+2022-12-13 10:08:43.695 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20062} created
+2022-12-13 10:08:43.696 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20062, rs-50062} query executed. 0.3141 millis. select 1
+2022-12-13 10:08:43.696 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20062} closed
+2022-12-13 10:08:43.696 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20063} created
+2022-12-13 10:08:43.696 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20063, rs-50063} query executed. 0.3 millis. select 1
+2022-12-13 10:08:43.696 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20063} closed
+2022-12-13 10:08:43.696 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20064} created
+2022-12-13 10:08:43.697 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20064, rs-50064} query executed. 0.1887 millis. select 1
+2022-12-13 10:08:43.697 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20064} closed
+2022-12-13 10:09:43.706 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20065} created
+2022-12-13 10:09:43.710 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20065, rs-50065} query executed. 2.3028 millis. select 1
+2022-12-13 10:09:43.710 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20065} closed
+2022-12-13 10:09:43.710 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20066} created
+2022-12-13 10:09:43.712 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20066, rs-50066} query executed. 0.9258 millis. select 1
+2022-12-13 10:09:43.712 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20066} closed
+2022-12-13 10:09:43.713 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20067} created
+2022-12-13 10:09:43.714 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20067, rs-50067} query executed. 1.4271 millis. select 1
+2022-12-13 10:09:43.715 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20067} closed
+2022-12-13 10:09:43.715 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20068} created
+2022-12-13 10:09:43.716 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20068, rs-50068} query executed. 0.857 millis. select 1
+2022-12-13 10:09:43.717 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20068} closed
+2022-12-13 10:09:43.717 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20069} created
+2022-12-13 10:09:43.718 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20069, rs-50069} query executed. 0.6626 millis. select 1
+2022-12-13 10:09:43.718 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20069} closed
+2022-12-13 10:10:43.724 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20070} created
+2022-12-13 10:10:43.725 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20070, rs-50070} query executed. 0.921 millis. select 1
+2022-12-13 10:10:43.726 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20070} closed
+2022-12-13 10:10:43.726 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20071} created
+2022-12-13 10:10:43.727 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20071, rs-50071} query executed. 0.7457 millis. select 1
+2022-12-13 10:10:43.727 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20071} closed
+2022-12-13 10:10:43.727 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20072} created
+2022-12-13 10:10:43.728 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20072, rs-50072} query executed. 0.634 millis. select 1
+2022-12-13 10:10:43.728 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20072} closed
+2022-12-13 10:10:43.729 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20073} created
+2022-12-13 10:10:43.729 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20073, rs-50073} query executed. 0.6125 millis. select 1
+2022-12-13 10:10:43.730 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20073} closed
+2022-12-13 10:10:43.730 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20074} created
+2022-12-13 10:10:43.730 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20074, rs-50074} query executed. 0.4102 millis. select 1
+2022-12-13 10:10:43.730 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20074} closed
+2022-12-13 10:11:43.736 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20075} created
+2022-12-13 10:11:43.737 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20075, rs-50075} query executed. 0.7372 millis. select 1
+2022-12-13 10:11:43.738 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20075} closed
+2022-12-13 10:11:43.738 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20076} created
+2022-12-13 10:11:43.738 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20076, rs-50076} query executed. 0.6568 millis. select 1
+2022-12-13 10:11:43.739 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20076} closed
+2022-12-13 10:11:43.739 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20077} created
+2022-12-13 10:11:43.740 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20077, rs-50077} query executed. 1.3295 millis. select 1
+2022-12-13 10:11:43.740 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20077} closed
+2022-12-13 10:11:43.740 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20078} created
+2022-12-13 10:11:43.741 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20078, rs-50078} query executed. 0.6779 millis. select 1
+2022-12-13 10:11:43.742 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20078} closed
+2022-12-13 10:11:43.742 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20079} created
+2022-12-13 10:11:43.743 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20079, rs-50079} query executed. 0.6968 millis. select 1
+2022-12-13 10:11:43.743 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20079} closed
+2022-12-13 10:12:43.758 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20080} created
+2022-12-13 10:12:43.759 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20080, rs-50080} query executed. 0.7182 millis. select 1
+2022-12-13 10:12:43.759 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20080} closed
+2022-12-13 10:12:43.759 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20081} created
+2022-12-13 10:12:43.760 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20081, rs-50081} query executed. 0.348 millis. select 1
+2022-12-13 10:12:43.760 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20081} closed
+2022-12-13 10:12:43.760 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20082} created
+2022-12-13 10:12:43.761 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20082, rs-50082} query executed. 0.5474 millis. select 1
+2022-12-13 10:12:43.761 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20082} closed
+2022-12-13 10:12:43.761 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20083} created
+2022-12-13 10:12:43.762 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20083, rs-50083} query executed. 0.5129 millis. select 1
+2022-12-13 10:12:43.762 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20083} closed
+2022-12-13 10:12:43.762 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20084} created
+2022-12-13 10:12:43.763 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20084, rs-50084} query executed. 0.644 millis. select 1
+2022-12-13 10:12:43.763 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20084} closed
+2022-12-13 10:13:43.778 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20085} created
+2022-12-13 10:13:43.782 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20085, rs-50085} query executed. 2.5099 millis. select 1
+2022-12-13 10:13:43.782 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20085} closed
+2022-12-13 10:13:43.782 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20086} created
+2022-12-13 10:13:43.784 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20086, rs-50086} query executed. 1.0709 millis. select 1
+2022-12-13 10:13:43.784 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20086} closed
+2022-12-13 10:13:43.784 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20087} created
+2022-12-13 10:13:43.785 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20087, rs-50087} query executed. 0.8351 millis. select 1
+2022-12-13 10:13:43.786 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20087} closed
+2022-12-13 10:13:43.786 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20088} created
+2022-12-13 10:13:43.787 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20088, rs-50088} query executed. 0.781 millis. select 1
+2022-12-13 10:13:43.787 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20088} closed
+2022-12-13 10:13:43.787 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20089} created
+2022-12-13 10:13:43.788 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20089, rs-50089} query executed. 0.6388 millis. select 1
+2022-12-13 10:13:43.788 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20089} closed
+2022-12-13 10:14:09.654 [main] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20000} created
+2022-12-13 10:14:09.725 [main] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20000, rs-50000} query executed. 69.172 millis. select 1
+2022-12-13 10:14:09.726 [main] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20000} closed
+2022-12-13 10:14:09.728 [main] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20001} created
+2022-12-13 10:14:09.730 [main] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20001, rs-50001} query executed. 0.4347 millis. select 1
+2022-12-13 10:14:09.730 [main] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20001} closed
+2022-12-13 10:14:09.732 [main] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20002} created
+2022-12-13 10:14:09.732 [main] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20002, rs-50002} query executed. 0.3036 millis. select 1
+2022-12-13 10:14:09.733 [main] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20002} closed
+2022-12-13 10:14:09.735 [main] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20003} created
+2022-12-13 10:14:09.735 [main] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20003, rs-50003} query executed. 0.2778 millis. select 1
+2022-12-13 10:14:09.735 [main] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20003} closed
+2022-12-13 10:14:09.738 [main] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20004} created
+2022-12-13 10:14:09.739 [main] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20004, rs-50004} query executed. 0.2614 millis. select 1
+2022-12-13 10:14:09.739 [main] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20004} closed
+2022-12-13 10:14:09.741 [main] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20005} created
+2022-12-13 10:14:09.741 [main] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20005, rs-50005} query executed. 0.2582 millis. select 1
+2022-12-13 10:14:09.741 [main] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20005} closed
+2022-12-13 10:14:09.743 [main] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20006} created
+2022-12-13 10:14:09.743 [main] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20006, rs-50006} query executed. 0.2373 millis. select 1
+2022-12-13 10:14:09.743 [main] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20006} closed
+2022-12-13 10:14:09.746 [main] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20007} created
+2022-12-13 10:14:09.746 [main] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20007, rs-50007} query executed. 0.2677 millis. select 1
+2022-12-13 10:14:09.747 [main] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20007} closed
+2022-12-13 10:14:09.749 [main] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20008} created
+2022-12-13 10:14:09.749 [main] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20008, rs-50008} query executed. 0.2943 millis. select 1
+2022-12-13 10:14:09.749 [main] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20008} closed
+2022-12-13 10:14:09.751 [main] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20009} created
+2022-12-13 10:14:09.751 [main] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20009, rs-50009} query executed. 0.2118 millis. select 1
+2022-12-13 10:14:09.751 [main] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20009} closed
+2022-12-13 10:16:09.763 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20010} created
+2022-12-13 10:16:09.767 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20010, rs-50010} query executed. 1.5559 millis. select 1
+2022-12-13 10:16:09.767 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20010} closed
+2022-12-13 10:16:09.768 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20011} created
+2022-12-13 10:16:09.769 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20011, rs-50011} query executed. 1.0944 millis. select 1
+2022-12-13 10:16:09.770 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20011} closed
+2022-12-13 10:16:09.770 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20012} created
+2022-12-13 10:16:09.772 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20012, rs-50012} query executed. 1.4247 millis. select 1
+2022-12-13 10:16:09.772 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20012} closed
+2022-12-13 10:16:09.772 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20013} created
+2022-12-13 10:16:09.773 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20013, rs-50013} query executed. 0.8279 millis. select 1
+2022-12-13 10:16:09.774 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20013} closed
+2022-12-13 10:16:09.774 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20014} created
+2022-12-13 10:16:09.775 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20014, rs-50014} query executed. 0.8395 millis. select 1
+2022-12-13 10:16:09.775 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20014} closed
+2022-12-13 10:16:09.775 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20015} created
+2022-12-13 10:16:09.776 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20015, rs-50015} query executed. 0.6232 millis. select 1
+2022-12-13 10:16:09.776 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20015} closed
+2022-12-13 10:16:09.776 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20016} created
+2022-12-13 10:16:09.777 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20016, rs-50016} query executed. 0.9834 millis. select 1
+2022-12-13 10:16:09.778 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20016} closed
+2022-12-13 10:16:09.778 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20017} created
+2022-12-13 10:16:09.778 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20017, rs-50017} query executed. 0.4745 millis. select 1
+2022-12-13 10:16:09.778 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20017} closed
+2022-12-13 10:16:09.779 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20018} created
+2022-12-13 10:16:09.779 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20018, rs-50018} query executed. 0.48 millis. select 1
+2022-12-13 10:16:09.779 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20018} closed
+2022-12-13 10:16:09.779 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20019} created
+2022-12-13 10:16:09.780 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20019, rs-50019} query executed. 0.4184 millis. select 1
+2022-12-13 10:16:09.780 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20019} closed
+2022-12-13 10:17:09.789 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20020} created
+2022-12-13 10:17:09.790 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20020, rs-50020} query executed. 0.8946 millis. select 1
+2022-12-13 10:17:09.790 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20020} closed
+2022-12-13 10:17:09.791 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20021} created
+2022-12-13 10:17:09.793 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20021, rs-50021} query executed. 1.9341 millis. select 1
+2022-12-13 10:17:09.793 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20021} closed
+2022-12-13 10:17:09.793 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20022} created
+2022-12-13 10:17:09.794 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20022, rs-50022} query executed. 1.2007 millis. select 1
+2022-12-13 10:17:09.794 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20022} closed
+2022-12-13 10:17:09.794 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20023} created
+2022-12-13 10:17:09.796 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20023, rs-50023} query executed. 0.3937 millis. select 1
+2022-12-13 10:17:09.796 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20023} closed
+2022-12-13 10:17:09.796 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20024} created
+2022-12-13 10:17:09.796 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20024, rs-50024} query executed. 0.358 millis. select 1
+2022-12-13 10:17:09.797 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20024} closed
+2022-12-13 10:17:09.797 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20025} created
+2022-12-13 10:17:09.797 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20025, rs-50025} query executed. 0.3307 millis. select 1
+2022-12-13 10:17:09.797 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20025} closed
+2022-12-13 10:17:09.797 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20026} created
+2022-12-13 10:17:09.798 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20026, rs-50026} query executed. 0.3597 millis. select 1
+2022-12-13 10:17:09.798 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20026} closed
+2022-12-13 10:17:09.798 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20027} created
+2022-12-13 10:17:09.798 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20027, rs-50027} query executed. 0.3376 millis. select 1
+2022-12-13 10:17:09.799 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20027} closed
+2022-12-13 10:17:09.799 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20028} created
+2022-12-13 10:17:09.799 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20028, rs-50028} query executed. 0.3006 millis. select 1
+2022-12-13 10:17:09.799 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20028} closed
+2022-12-13 10:17:09.799 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20029} created
+2022-12-13 10:17:09.799 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20029, rs-50029} query executed. 0.2426 millis. select 1
+2022-12-13 10:17:09.800 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20029} closed
+2022-12-13 10:18:09.802 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20030} created
+2022-12-13 10:18:09.803 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20030, rs-50030} query executed. 0.5978 millis. select 1
+2022-12-13 10:18:09.803 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10010, stmt-20030} closed
+2022-12-13 10:18:09.803 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20031} created
+2022-12-13 10:18:09.804 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20031, rs-50031} query executed. 0.3442 millis. select 1
+2022-12-13 10:18:09.804 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10009, stmt-20031} closed
+2022-12-13 10:18:09.804 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20032} created
+2022-12-13 10:18:09.804 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20032, rs-50032} query executed. 0.3522 millis. select 1
+2022-12-13 10:18:09.804 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10008, stmt-20032} closed
+2022-12-13 10:18:09.804 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20033} created
+2022-12-13 10:18:09.805 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20033, rs-50033} query executed. 0.3253 millis. select 1
+2022-12-13 10:18:09.806 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10007, stmt-20033} closed
+2022-12-13 10:18:09.806 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20034} created
+2022-12-13 10:18:09.807 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20034, rs-50034} query executed. 0.7314 millis. select 1
+2022-12-13 10:18:09.807 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10006, stmt-20034} closed
+2022-12-13 10:18:09.807 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20035} created
+2022-12-13 10:18:09.808 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20035, rs-50035} query executed. 0.5361 millis. select 1
+2022-12-13 10:18:09.808 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20035} closed
+2022-12-13 10:18:09.808 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20036} created
+2022-12-13 10:18:09.809 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20036, rs-50036} query executed. 0.6312 millis. select 1
+2022-12-13 10:18:09.809 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20036} closed
+2022-12-13 10:18:09.809 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20037} created
+2022-12-13 10:18:09.810 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20037, rs-50037} query executed. 0.58 millis. select 1
+2022-12-13 10:18:09.810 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20037} closed
+2022-12-13 10:18:09.810 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20038} created
+2022-12-13 10:18:09.811 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20038, rs-50038} query executed. 0.511 millis. select 1
+2022-12-13 10:18:09.811 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20038} closed
+2022-12-13 10:18:09.811 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20039} created
+2022-12-13 10:18:09.812 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20039, rs-50039} query executed. 0.4334 millis. select 1
+2022-12-13 10:18:09.812 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20039} closed
+2022-12-13 10:19:09.841 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20040} created
+2022-12-13 10:19:09.842 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20040, rs-50040} query executed. 0.7079 millis. select 1
+2022-12-13 10:19:09.843 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20040} closed
+2022-12-13 10:19:09.843 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20041} created
+2022-12-13 10:19:09.844 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20041, rs-50041} query executed. 0.6001 millis. select 1
+2022-12-13 10:19:09.844 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20041} closed
+2022-12-13 10:19:09.844 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20042} created
+2022-12-13 10:19:09.845 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20042, rs-50042} query executed. 0.8018 millis. select 1
+2022-12-13 10:19:09.846 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20042} closed
+2022-12-13 10:19:09.846 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20043} created
+2022-12-13 10:19:09.847 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20043, rs-50043} query executed. 1.0251 millis. select 1
+2022-12-13 10:19:09.848 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20043} closed
+2022-12-13 10:19:09.848 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20044} created
+2022-12-13 10:19:09.849 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20044, rs-50044} query executed. 0.9544 millis. select 1
+2022-12-13 10:19:09.849 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20044} closed
+2022-12-13 10:20:09.859 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20045} created
+2022-12-13 10:20:09.861 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20045, rs-50045} query executed. 1.0721 millis. select 1
+2022-12-13 10:20:09.861 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20045} closed
+2022-12-13 10:20:09.861 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20046} created
+2022-12-13 10:20:09.862 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20046, rs-50046} query executed. 0.7382 millis. select 1
+2022-12-13 10:20:09.862 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20046} closed
+2022-12-13 10:20:09.862 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20047} created
+2022-12-13 10:20:09.863 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20047, rs-50047} query executed. 0.3326 millis. select 1
+2022-12-13 10:20:09.863 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20047} closed
+2022-12-13 10:20:09.863 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20048} created
+2022-12-13 10:20:09.864 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20048, rs-50048} query executed. 0.6499 millis. select 1
+2022-12-13 10:20:09.864 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20048} closed
+2022-12-13 10:20:09.864 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20049} created
+2022-12-13 10:20:09.865 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20049, rs-50049} query executed. 0.7737 millis. select 1
+2022-12-13 10:20:09.865 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20049} closed
+2022-12-13 10:21:09.866 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20050} created
+2022-12-13 10:21:09.869 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20050, rs-50050} query executed. 2.2262 millis. select 1
+2022-12-13 10:21:09.870 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20050} closed
+2022-12-13 10:21:09.871 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20051} created
+2022-12-13 10:21:09.872 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20051, rs-50051} query executed. 1.267299 millis. select 1
+2022-12-13 10:21:09.873 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20051} closed
+2022-12-13 10:21:09.873 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20052} created
+2022-12-13 10:21:09.874 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20052, rs-50052} query executed. 0.5267 millis. select 1
+2022-12-13 10:21:09.874 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20052} closed
+2022-12-13 10:21:09.874 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20053} created
+2022-12-13 10:21:09.876 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20053, rs-50053} query executed. 0.8554 millis. select 1
+2022-12-13 10:21:09.876 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20053} closed
+2022-12-13 10:21:09.876 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20054} created
+2022-12-13 10:21:09.877 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20054, rs-50054} query executed. 0.712901 millis. select 1
+2022-12-13 10:21:09.878 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20054} closed
+2022-12-13 10:22:09.881 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20055} created
+2022-12-13 10:22:09.883 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20055, rs-50055} query executed. 0.8738 millis. select 1
+2022-12-13 10:22:09.883 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20055} closed
+2022-12-13 10:22:09.883 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20056} created
+2022-12-13 10:22:09.884 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20056, rs-50056} query executed. 0.4938 millis. select 1
+2022-12-13 10:22:09.884 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20056} closed
+2022-12-13 10:22:09.884 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20057} created
+2022-12-13 10:22:09.884 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20057, rs-50057} query executed. 0.343001 millis. select 1
+2022-12-13 10:22:09.884 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20057} closed
+2022-12-13 10:22:09.884 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20058} created
+2022-12-13 10:22:09.886 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20058, rs-50058} query executed. 0.6295 millis. select 1
+2022-12-13 10:22:09.886 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20058} closed
+2022-12-13 10:22:09.886 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20059} created
+2022-12-13 10:22:09.887 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20059, rs-50059} query executed. 0.495599 millis. select 1
+2022-12-13 10:22:09.888 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20059} closed
+2022-12-13 10:23:09.888 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20060} created
+2022-12-13 10:23:09.889 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20060, rs-50060} query executed. 0.5136 millis. select 1
+2022-12-13 10:23:09.889 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20060} closed
+2022-12-13 10:23:09.889 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20061} created
+2022-12-13 10:23:09.890 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20061, rs-50061} query executed. 0.4787 millis. select 1
+2022-12-13 10:23:09.890 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20061} closed
+2022-12-13 10:23:09.890 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20062} created
+2022-12-13 10:23:09.891 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20062, rs-50062} query executed. 0.719499 millis. select 1
+2022-12-13 10:23:09.891 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20062} closed
+2022-12-13 10:23:09.892 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20063} created
+2022-12-13 10:23:09.894 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20063, rs-50063} query executed. 1.7547 millis. select 1
+2022-12-13 10:23:09.895 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20063} closed
+2022-12-13 10:23:09.895 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20064} created
+2022-12-13 10:23:09.896 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20064, rs-50064} query executed. 0.749899 millis. select 1
+2022-12-13 10:23:09.896 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20064} closed
+2022-12-13 10:24:09.896 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20065} created
+2022-12-13 10:24:09.898 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20065, rs-50065} query executed. 1.071601 millis. select 1
+2022-12-13 10:24:09.898 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20065} closed
+2022-12-13 10:24:09.898 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20066} created
+2022-12-13 10:24:09.898 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20066, rs-50066} query executed. 0.3575 millis. select 1
+2022-12-13 10:24:09.898 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20066} closed
+2022-12-13 10:24:09.899 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20067} created
+2022-12-13 10:24:09.900 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20067, rs-50067} query executed. 1.6477 millis. select 1
+2022-12-13 10:24:09.900 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20067} closed
+2022-12-13 10:24:09.901 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20068} created
+2022-12-13 10:24:09.901 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20068, rs-50068} query executed. 0.4135 millis. select 1
+2022-12-13 10:24:09.901 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20068} closed
+2022-12-13 10:24:09.901 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20069} created
+2022-12-13 10:24:09.902 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20069, rs-50069} query executed. 0.359499 millis. select 1
+2022-12-13 10:24:09.902 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20069} closed
+2022-12-13 10:25:09.912 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20070} created
+2022-12-13 10:25:09.912 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20070, rs-50070} query executed. 0.5635 millis. select 1
+2022-12-13 10:25:09.913 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20070} closed
+2022-12-13 10:25:09.913 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20071} created
+2022-12-13 10:25:09.913 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20071, rs-50071} query executed. 0.3106 millis. select 1
+2022-12-13 10:25:09.913 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20071} closed
+2022-12-13 10:25:09.913 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20072} created
+2022-12-13 10:25:09.913 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20072, rs-50072} query executed. 0.1996 millis. select 1
+2022-12-13 10:25:09.914 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20072} closed
+2022-12-13 10:25:09.914 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20073} created
+2022-12-13 10:25:09.914 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20073, rs-50073} query executed. 0.2167 millis. select 1
+2022-12-13 10:25:09.914 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20073} closed
+2022-12-13 10:25:09.914 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20074} created
+2022-12-13 10:25:09.914 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20074, rs-50074} query executed. 0.1966 millis. select 1
+2022-12-13 10:25:09.914 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20074} closed
+2022-12-13 10:26:09.917 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20075} created
+2022-12-13 10:26:09.918 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20075, rs-50075} query executed. 0.9155 millis. select 1
+2022-12-13 10:26:09.918 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20075} closed
+2022-12-13 10:26:09.918 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20076} created
+2022-12-13 10:26:09.919 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20076, rs-50076} query executed. 0.6426 millis. select 1
+2022-12-13 10:26:09.919 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20076} closed
+2022-12-13 10:26:09.919 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20077} created
+2022-12-13 10:26:09.920 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20077, rs-50077} query executed. 0.5874 millis. select 1
+2022-12-13 10:26:09.920 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20077} closed
+2022-12-13 10:26:09.920 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20078} created
+2022-12-13 10:26:09.921 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20078, rs-50078} query executed. 0.5871 millis. select 1
+2022-12-13 10:26:09.921 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20078} closed
+2022-12-13 10:26:09.921 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20079} created
+2022-12-13 10:26:09.922 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20079, rs-50079} query executed. 0.5704 millis. select 1
+2022-12-13 10:26:09.925 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20079} closed
+2022-12-13 10:27:09.933 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20080} created
+2022-12-13 10:27:09.935 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20080, rs-50080} query executed. 1.4929 millis. select 1
+2022-12-13 10:27:09.935 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20080} closed
+2022-12-13 10:27:09.936 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20081} created
+2022-12-13 10:27:09.936 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20081, rs-50081} query executed. 0.727 millis. select 1
+2022-12-13 10:27:09.937 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20081} closed
+2022-12-13 10:27:09.937 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20082} created
+2022-12-13 10:27:09.938 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20082, rs-50082} query executed. 0.835 millis. select 1
+2022-12-13 10:27:09.938 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20082} closed
+2022-12-13 10:27:09.938 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20083} created
+2022-12-13 10:27:09.939 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20083, rs-50083} query executed. 0.8201 millis. select 1
+2022-12-13 10:27:09.939 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20083} closed
+2022-12-13 10:27:09.940 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20084} created
+2022-12-13 10:27:09.941 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20084, rs-50084} query executed. 0.8361 millis. select 1
+2022-12-13 10:27:09.941 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20084} closed
+2022-12-13 10:28:09.953 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20085} created
+2022-12-13 10:28:09.954 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20085, rs-50085} query executed. 0.5378 millis. select 1
+2022-12-13 10:28:09.954 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20085} closed
+2022-12-13 10:28:09.954 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20086} created
+2022-12-13 10:28:09.954 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20086, rs-50086} query executed. 0.3372 millis. select 1
+2022-12-13 10:28:09.954 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20086} closed
+2022-12-13 10:28:09.954 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20087} created
+2022-12-13 10:28:09.955 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20087, rs-50087} query executed. 0.3477 millis. select 1
+2022-12-13 10:28:09.955 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20087} closed
+2022-12-13 10:28:09.955 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20088} created
+2022-12-13 10:28:09.955 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20088, rs-50088} query executed. 0.2362 millis. select 1
+2022-12-13 10:28:09.955 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20088} closed
+2022-12-13 10:28:09.955 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20089} created
+2022-12-13 10:28:09.956 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20089, rs-50089} query executed. 0.2151 millis. select 1
+2022-12-13 10:28:09.956 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20089} closed
+2022-12-13 10:29:09.958 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20090} created
+2022-12-13 10:29:09.958 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20090, rs-50090} query executed. 0.4638 millis. select 1
+2022-12-13 10:29:09.959 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20090} closed
+2022-12-13 10:29:09.959 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20091} created
+2022-12-13 10:29:09.959 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20091, rs-50091} query executed. 0.2522 millis. select 1
+2022-12-13 10:29:09.959 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20091} closed
+2022-12-13 10:29:09.959 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20092} created
+2022-12-13 10:29:09.959 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20092, rs-50092} query executed. 0.3202 millis. select 1
+2022-12-13 10:29:09.960 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20092} closed
+2022-12-13 10:29:09.960 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20093} created
+2022-12-13 10:29:09.960 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20093, rs-50093} query executed. 0.1974 millis. select 1
+2022-12-13 10:29:09.960 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20093} closed
+2022-12-13 10:29:09.960 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20094} created
+2022-12-13 10:29:09.960 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20094, rs-50094} query executed. 0.3266 millis. select 1
+2022-12-13 10:29:09.960 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20094} closed
+2022-12-13 10:30:09.963 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20095} created
+2022-12-13 10:30:09.964 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20095, rs-50095} query executed. 1.0466 millis. select 1
+2022-12-13 10:30:09.965 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20095} closed
+2022-12-13 10:30:09.965 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20096} created
+2022-12-13 10:30:09.965 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20096, rs-50096} query executed. 0.6466 millis. select 1
+2022-12-13 10:30:09.967 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20096} closed
+2022-12-13 10:30:09.967 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20097} created
+2022-12-13 10:30:09.967 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20097, rs-50097} query executed. 0.5428 millis. select 1
+2022-12-13 10:30:09.968 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20097} closed
+2022-12-13 10:30:09.968 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20098} created
+2022-12-13 10:30:09.968 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20098, rs-50098} query executed. 0.4785 millis. select 1
+2022-12-13 10:30:09.968 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20098} closed
+2022-12-13 10:30:09.968 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20099} created
+2022-12-13 10:30:09.969 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20099, rs-50099} query executed. 0.4519 millis. select 1
+2022-12-13 10:30:09.970 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20099} closed
+2022-12-13 10:31:09.984 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20100} created
+2022-12-13 10:31:09.985 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20100, rs-50100} query executed. 0.8325 millis. select 1
+2022-12-13 10:31:09.985 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20100} closed
+2022-12-13 10:31:09.985 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20101} created
+2022-12-13 10:31:09.986 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20101, rs-50101} query executed. 0.3267 millis. select 1
+2022-12-13 10:31:09.986 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20101} closed
+2022-12-13 10:31:09.986 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20102} created
+2022-12-13 10:31:09.986 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20102, rs-50102} query executed. 0.3602 millis. select 1
+2022-12-13 10:31:09.986 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20102} closed
+2022-12-13 10:31:09.986 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20103} created
+2022-12-13 10:31:09.987 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20103, rs-50103} query executed. 0.1847 millis. select 1
+2022-12-13 10:31:09.987 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20103} closed
+2022-12-13 10:31:09.987 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20104} created
+2022-12-13 10:31:09.987 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20104, rs-50104} query executed. 0.3053 millis. select 1
+2022-12-13 10:31:09.987 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20104} closed
+2022-12-13 10:32:10.000 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20105} created
+2022-12-13 10:32:10.001 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20105, rs-50105} query executed. 0.5629 millis. select 1
+2022-12-13 10:32:10.001 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20105} closed
+2022-12-13 10:32:10.001 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20106} created
+2022-12-13 10:32:10.002 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20106, rs-50106} query executed. 0.3419 millis. select 1
+2022-12-13 10:32:10.002 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20106} closed
+2022-12-13 10:32:10.002 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20107} created
+2022-12-13 10:32:10.002 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20107, rs-50107} query executed. 0.2511 millis. select 1
+2022-12-13 10:32:10.002 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20107} closed
+2022-12-13 10:32:10.002 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20108} created
+2022-12-13 10:32:10.002 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20108, rs-50108} query executed. 0.257 millis. select 1
+2022-12-13 10:32:10.003 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20108} closed
+2022-12-13 10:32:10.003 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20109} created
+2022-12-13 10:32:10.003 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20109, rs-50109} query executed. 0.2775 millis. select 1
+2022-12-13 10:32:10.003 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20109} closed
+2022-12-13 10:33:10.008 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20110} created
+2022-12-13 10:33:10.009 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20110, rs-50110} query executed. 0.4747 millis. select 1
+2022-12-13 10:33:10.009 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20110} closed
+2022-12-13 10:33:10.009 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20111} created
+2022-12-13 10:33:10.009 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20111, rs-50111} query executed. 0.2741 millis. select 1
+2022-12-13 10:33:10.009 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20111} closed
+2022-12-13 10:33:10.009 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20112} created
+2022-12-13 10:33:10.010 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20112, rs-50112} query executed. 0.2291 millis. select 1
+2022-12-13 10:33:10.010 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20112} closed
+2022-12-13 10:33:10.010 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20113} created
+2022-12-13 10:33:10.010 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20113, rs-50113} query executed. 0.2187 millis. select 1
+2022-12-13 10:33:10.010 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20113} closed
+2022-12-13 10:33:10.010 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20114} created
+2022-12-13 10:33:10.010 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20114, rs-50114} query executed. 0.1794 millis. select 1
+2022-12-13 10:33:10.010 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20114} closed
+2022-12-13 10:34:10.011 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20115} created
+2022-12-13 10:34:10.012 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20115, rs-50115} query executed. 0.71 millis. select 1
+2022-12-13 10:34:10.012 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20115} closed
+2022-12-13 10:34:10.012 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20116} created
+2022-12-13 10:34:10.013 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20116, rs-50116} query executed. 0.4032 millis. select 1
+2022-12-13 10:34:10.013 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20116} closed
+2022-12-13 10:34:10.013 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20117} created
+2022-12-13 10:34:10.014 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20117, rs-50117} query executed. 0.6184 millis. select 1
+2022-12-13 10:34:10.014 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20117} closed
+2022-12-13 10:34:10.014 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20118} created
+2022-12-13 10:34:10.014 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20118, rs-50118} query executed. 0.3975 millis. select 1
+2022-12-13 10:34:10.015 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20118} closed
+2022-12-13 10:34:10.015 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20119} created
+2022-12-13 10:34:10.015 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20119, rs-50119} query executed. 0.3699 millis. select 1
+2022-12-13 10:34:10.017 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20119} closed
+2022-12-13 10:35:10.025 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20120} created
+2022-12-13 10:35:10.026 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20120, rs-50120} query executed. 0.8166 millis. select 1
+2022-12-13 10:35:10.027 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20120} closed
+2022-12-13 10:35:10.027 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20121} created
+2022-12-13 10:35:10.027 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20121, rs-50121} query executed. 0.5512 millis. select 1
+2022-12-13 10:35:10.028 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20121} closed
+2022-12-13 10:35:10.028 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20122} created
+2022-12-13 10:35:10.028 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20122, rs-50122} query executed. 0.4738 millis. select 1
+2022-12-13 10:35:10.029 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20122} closed
+2022-12-13 10:35:10.029 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20123} created
+2022-12-13 10:35:10.029 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20123, rs-50123} query executed. 0.4015 millis. select 1
+2022-12-13 10:35:10.029 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20123} closed
+2022-12-13 10:35:10.029 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20124} created
+2022-12-13 10:35:10.030 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20124, rs-50124} query executed. 0.4228 millis. select 1
+2022-12-13 10:35:10.030 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20124} closed
+2022-12-13 10:36:10.032 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20125} created
+2022-12-13 10:36:10.033 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20125, rs-50125} query executed. 0.8155 millis. select 1
+2022-12-13 10:36:10.033 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20125} closed
+2022-12-13 10:36:10.034 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20126} created
+2022-12-13 10:36:10.034 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20126, rs-50126} query executed. 0.3199 millis. select 1
+2022-12-13 10:36:10.034 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20126} closed
+2022-12-13 10:36:10.034 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20127} created
+2022-12-13 10:36:10.035 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20127, rs-50127} query executed. 0.381 millis. select 1
+2022-12-13 10:36:10.035 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20127} closed
+2022-12-13 10:36:10.035 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20128} created
+2022-12-13 10:36:10.035 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20128, rs-50128} query executed. 0.3765 millis. select 1
+2022-12-13 10:36:10.035 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20128} closed
+2022-12-13 10:36:10.035 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20129} created
+2022-12-13 10:36:10.036 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20129, rs-50129} query executed. 0.391 millis. select 1
+2022-12-13 10:36:10.036 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20129} closed
+2022-12-13 10:37:10.036 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20130} created
+2022-12-13 10:37:10.038 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20130, rs-50130} query executed. 1.2722 millis. select 1
+2022-12-13 10:37:10.038 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20130} closed
+2022-12-13 10:37:10.038 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20131} created
+2022-12-13 10:37:10.039 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20131, rs-50131} query executed. 0.3295 millis. select 1
+2022-12-13 10:37:10.039 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20131} closed
+2022-12-13 10:37:10.039 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20132} created
+2022-12-13 10:37:10.039 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20132, rs-50132} query executed. 0.2747 millis. select 1
+2022-12-13 10:37:10.039 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20132} closed
+2022-12-13 10:37:10.039 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20133} created
+2022-12-13 10:37:10.039 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20133, rs-50133} query executed. 0.2483 millis. select 1
+2022-12-13 10:37:10.039 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20133} closed
+2022-12-13 10:37:10.039 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20134} created
+2022-12-13 10:37:10.040 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20134, rs-50134} query executed. 0.2907 millis. select 1
+2022-12-13 10:37:10.040 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20134} closed
+2022-12-13 10:38:10.054 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20135} created
+2022-12-13 10:38:10.054 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20135, rs-50135} query executed. 0.6449 millis. select 1
+2022-12-13 10:38:10.055 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20135} closed
+2022-12-13 10:38:10.055 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20136} created
+2022-12-13 10:38:10.055 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20136, rs-50136} query executed. 0.3365 millis. select 1
+2022-12-13 10:38:10.055 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20136} closed
+2022-12-13 10:38:10.055 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20137} created
+2022-12-13 10:38:10.056 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20137, rs-50137} query executed. 0.2724 millis. select 1
+2022-12-13 10:38:10.056 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20137} closed
+2022-12-13 10:38:10.056 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20138} created
+2022-12-13 10:38:10.056 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20138, rs-50138} query executed. 0.2578 millis. select 1
+2022-12-13 10:38:10.056 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20138} closed
+2022-12-13 10:38:10.056 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20139} created
+2022-12-13 10:38:10.056 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20139, rs-50139} query executed. 0.2416 millis. select 1
+2022-12-13 10:38:10.057 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20139} closed
+2022-12-13 10:39:10.068 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20140} created
+2022-12-13 10:39:10.069 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20140, rs-50140} query executed. 0.7061 millis. select 1
+2022-12-13 10:39:10.069 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20140} closed
+2022-12-13 10:39:10.069 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20141} created
+2022-12-13 10:39:10.070 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20141, rs-50141} query executed. 0.578 millis. select 1
+2022-12-13 10:39:10.070 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20141} closed
+2022-12-13 10:39:10.070 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20142} created
+2022-12-13 10:39:10.070 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20142, rs-50142} query executed. 0.393 millis. select 1
+2022-12-13 10:39:10.071 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20142} closed
+2022-12-13 10:39:10.071 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20143} created
+2022-12-13 10:39:10.071 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20143, rs-50143} query executed. 0.3378 millis. select 1
+2022-12-13 10:39:10.071 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20143} closed
+2022-12-13 10:39:10.071 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20144} created
+2022-12-13 10:39:10.072 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20144, rs-50144} query executed. 0.4092 millis. select 1
+2022-12-13 10:39:10.072 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20144} closed
+2022-12-13 10:40:10.079 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20145} created
+2022-12-13 10:40:10.080 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20145, rs-50145} query executed. 0.7424 millis. select 1
+2022-12-13 10:40:10.080 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20145} closed
+2022-12-13 10:40:10.080 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20146} created
+2022-12-13 10:40:10.080 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20146, rs-50146} query executed. 0.2506 millis. select 1
+2022-12-13 10:40:10.081 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20146} closed
+2022-12-13 10:40:10.081 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20147} created
+2022-12-13 10:40:10.081 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20147, rs-50147} query executed. 0.3175 millis. select 1
+2022-12-13 10:40:10.081 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20147} closed
+2022-12-13 10:40:10.081 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20148} created
+2022-12-13 10:40:10.081 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20148, rs-50148} query executed. 0.2499 millis. select 1
+2022-12-13 10:40:10.081 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20148} closed
+2022-12-13 10:40:10.081 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20149} created
+2022-12-13 10:40:10.082 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20149, rs-50149} query executed. 0.2104 millis. select 1
+2022-12-13 10:40:10.082 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20149} closed
+2022-12-13 10:41:10.095 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20150} created
+2022-12-13 10:41:10.096 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20150, rs-50150} query executed. 0.589 millis. select 1
+2022-12-13 10:41:10.096 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20150} closed
+2022-12-13 10:41:10.096 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20151} created
+2022-12-13 10:41:10.096 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20151, rs-50151} query executed. 0.2929 millis. select 1
+2022-12-13 10:41:10.097 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20151} closed
+2022-12-13 10:41:10.097 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20152} created
+2022-12-13 10:41:10.097 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20152, rs-50152} query executed. 0.3757 millis. select 1
+2022-12-13 10:41:10.097 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20152} closed
+2022-12-13 10:41:10.097 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20153} created
+2022-12-13 10:41:10.097 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20153, rs-50153} query executed. 0.2085 millis. select 1
+2022-12-13 10:41:10.098 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20153} closed
+2022-12-13 10:41:10.098 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20154} created
+2022-12-13 10:41:10.098 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20154, rs-50154} query executed. 0.1872 millis. select 1
+2022-12-13 10:41:10.098 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20154} closed
+2022-12-13 10:42:10.111 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20155} created
+2022-12-13 10:42:10.112 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20155, rs-50155} query executed. 0.9872 millis. select 1
+2022-12-13 10:42:10.112 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20155} closed
+2022-12-13 10:42:10.112 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20156} created
+2022-12-13 10:42:10.113 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20156, rs-50156} query executed. 0.4681 millis. select 1
+2022-12-13 10:42:10.113 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20156} closed
+2022-12-13 10:42:10.113 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20157} created
+2022-12-13 10:42:10.114 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20157, rs-50157} query executed. 0.5638 millis. select 1
+2022-12-13 10:42:10.114 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20157} closed
+2022-12-13 10:42:10.114 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20158} created
+2022-12-13 10:42:10.116 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20158, rs-50158} query executed. 0.446 millis. select 1
+2022-12-13 10:42:10.116 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20158} closed
+2022-12-13 10:42:10.116 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20159} created
+2022-12-13 10:42:10.117 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20159, rs-50159} query executed. 0.4925 millis. select 1
+2022-12-13 10:42:10.120 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20159} closed
+2022-12-13 10:43:10.127 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20160} created
+2022-12-13 10:43:10.130 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20160, rs-50160} query executed. 1.8257 millis. select 1
+2022-12-13 10:43:10.131 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20160} closed
+2022-12-13 10:43:10.132 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20161} created
+2022-12-13 10:43:10.132 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20161, rs-50161} query executed. 0.5609 millis. select 1
+2022-12-13 10:43:10.133 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20161} closed
+2022-12-13 10:43:10.133 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20162} created
+2022-12-13 10:43:10.133 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20162, rs-50162} query executed. 0.2868 millis. select 1
+2022-12-13 10:43:10.133 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20162} closed
+2022-12-13 10:43:10.133 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20163} created
+2022-12-13 10:43:10.134 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20163, rs-50163} query executed. 0.3907 millis. select 1
+2022-12-13 10:43:10.134 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20163} closed
+2022-12-13 10:43:10.134 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20164} created
+2022-12-13 10:43:10.134 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20164, rs-50164} query executed. 0.4406 millis. select 1
+2022-12-13 10:43:10.134 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20164} closed
+2022-12-13 10:44:10.146 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20165} created
+2022-12-13 10:44:10.149 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20165, rs-50165} query executed. 2.6806 millis. select 1
+2022-12-13 10:44:10.150 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20165} closed
+2022-12-13 10:44:10.150 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20166} created
+2022-12-13 10:44:10.152 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20166, rs-50166} query executed. 1.0615 millis. select 1
+2022-12-13 10:44:10.152 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20166} closed
+2022-12-13 10:44:10.152 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20167} created
+2022-12-13 10:44:10.153 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20167, rs-50167} query executed. 0.6307 millis. select 1
+2022-12-13 10:44:10.153 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20167} closed
+2022-12-13 10:44:10.153 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20168} created
+2022-12-13 10:44:10.154 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20168, rs-50168} query executed. 0.6352 millis. select 1
+2022-12-13 10:44:10.154 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20168} closed
+2022-12-13 10:44:10.154 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20169} created
+2022-12-13 10:44:10.155 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20169, rs-50169} query executed. 0.6745 millis. select 1
+2022-12-13 10:44:10.155 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20169} closed
+2022-12-13 10:45:10.160 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20170} created
+2022-12-13 10:45:10.160 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20170, rs-50170} query executed. 0.5587 millis. select 1
+2022-12-13 10:45:10.160 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20170} closed
+2022-12-13 10:45:10.160 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20171} created
+2022-12-13 10:45:10.160 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20171, rs-50171} query executed. 0.3222 millis. select 1
+2022-12-13 10:45:10.161 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20171} closed
+2022-12-13 10:45:10.161 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20172} created
+2022-12-13 10:45:10.161 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20172, rs-50172} query executed. 0.2821 millis. select 1
+2022-12-13 10:45:10.161 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20172} closed
+2022-12-13 10:45:10.161 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20173} created
+2022-12-13 10:45:10.161 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20173, rs-50173} query executed. 0.2492 millis. select 1
+2022-12-13 10:45:10.161 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20173} closed
+2022-12-13 10:45:10.161 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20174} created
+2022-12-13 10:45:10.163 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20174, rs-50174} query executed. 0.2769 millis. select 1
+2022-12-13 10:45:10.163 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20174} closed
+2022-12-13 10:46:10.171 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20175} created
+2022-12-13 10:46:10.172 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20175, rs-50175} query executed. 0.9377 millis. select 1
+2022-12-13 10:46:10.172 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20175} closed
+2022-12-13 10:46:10.172 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20176} created
+2022-12-13 10:46:10.173 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20176, rs-50176} query executed. 0.2682 millis. select 1
+2022-12-13 10:46:10.173 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20176} closed
+2022-12-13 10:46:10.173 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20177} created
+2022-12-13 10:46:10.173 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20177, rs-50177} query executed. 0.1882 millis. select 1
+2022-12-13 10:46:10.173 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20177} closed
+2022-12-13 10:46:10.173 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20178} created
+2022-12-13 10:46:10.173 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20178, rs-50178} query executed. 0.1718 millis. select 1
+2022-12-13 10:46:10.173 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20178} closed
+2022-12-13 10:46:10.174 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20179} created
+2022-12-13 10:46:10.174 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20179, rs-50179} query executed. 0.2596 millis. select 1
+2022-12-13 10:46:10.175 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20179} closed
+2022-12-13 10:47:10.178 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20180} created
+2022-12-13 10:47:10.179 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20180, rs-50180} query executed. 0.7494 millis. select 1
+2022-12-13 10:47:10.179 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20180} closed
+2022-12-13 10:47:10.179 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20181} created
+2022-12-13 10:47:10.179 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20181, rs-50181} query executed. 0.3924 millis. select 1
+2022-12-13 10:47:10.180 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20181} closed
+2022-12-13 10:47:10.180 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20182} created
+2022-12-13 10:47:10.180 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20182, rs-50182} query executed. 0.4109 millis. select 1
+2022-12-13 10:47:10.180 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20182} closed
+2022-12-13 10:47:10.180 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20183} created
+2022-12-13 10:47:10.180 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20183, rs-50183} query executed. 0.2131 millis. select 1
+2022-12-13 10:47:10.181 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20183} closed
+2022-12-13 10:47:10.181 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20184} created
+2022-12-13 10:47:10.181 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20184, rs-50184} query executed. 0.1748 millis. select 1
+2022-12-13 10:47:10.181 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20184} closed
+2022-12-13 10:48:10.193 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20185} created
+2022-12-13 10:48:10.193 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20185, rs-50185} query executed. 0.5682 millis. select 1
+2022-12-13 10:48:10.193 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20185} closed
+2022-12-13 10:48:10.193 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20186} created
+2022-12-13 10:48:10.194 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20186, rs-50186} query executed. 0.3465 millis. select 1
+2022-12-13 10:48:10.194 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20186} closed
+2022-12-13 10:48:10.194 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20187} created
+2022-12-13 10:48:10.194 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20187, rs-50187} query executed. 0.2659 millis. select 1
+2022-12-13 10:48:10.194 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20187} closed
+2022-12-13 10:48:10.194 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20188} created
+2022-12-13 10:48:10.195 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20188, rs-50188} query executed. 0.2924 millis. select 1
+2022-12-13 10:48:10.195 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20188} closed
+2022-12-13 10:48:10.195 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20189} created
+2022-12-13 10:48:10.195 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20189, rs-50189} query executed. 0.2716 millis. select 1
+2022-12-13 10:48:10.195 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20189} closed
+2022-12-13 10:49:10.196 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20190} created
+2022-12-13 10:49:10.196 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20190, rs-50190} query executed. 0.7903 millis. select 1
+2022-12-13 10:49:10.196 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20190} closed
+2022-12-13 10:49:10.196 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20191} created
+2022-12-13 10:49:10.197 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20191, rs-50191} query executed. 0.3108 millis. select 1
+2022-12-13 10:49:10.197 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20191} closed
+2022-12-13 10:49:10.197 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20192} created
+2022-12-13 10:49:10.197 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20192, rs-50192} query executed. 0.2791 millis. select 1
+2022-12-13 10:49:10.197 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20192} closed
+2022-12-13 10:49:10.197 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20193} created
+2022-12-13 10:49:10.198 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20193, rs-50193} query executed. 0.264 millis. select 1
+2022-12-13 10:49:10.198 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20193} closed
+2022-12-13 10:49:10.198 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20194} created
+2022-12-13 10:49:10.198 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20194, rs-50194} query executed. 0.1736 millis. select 1
+2022-12-13 10:49:10.198 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20194} closed
+2022-12-13 10:50:10.208 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20195} created
+2022-12-13 10:50:10.209 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20195, rs-50195} query executed. 0.6577 millis. select 1
+2022-12-13 10:50:10.209 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20195} closed
+2022-12-13 10:50:10.209 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20196} created
+2022-12-13 10:50:10.210 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20196, rs-50196} query executed. 0.6898 millis. select 1
+2022-12-13 10:50:10.210 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20196} closed
+2022-12-13 10:50:10.210 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20197} created
+2022-12-13 10:50:10.210 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20197, rs-50197} query executed. 0.3421 millis. select 1
+2022-12-13 10:50:10.210 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20197} closed
+2022-12-13 10:50:10.210 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20198} created
+2022-12-13 10:50:10.211 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20198, rs-50198} query executed. 0.404 millis. select 1
+2022-12-13 10:50:10.211 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20198} closed
+2022-12-13 10:50:10.211 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20199} created
+2022-12-13 10:50:10.212 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20199, rs-50199} query executed. 0.3586 millis. select 1
+2022-12-13 10:50:10.213 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20199} closed
+2022-12-13 10:51:10.217 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20200} created
+2022-12-13 10:51:10.217 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20200, rs-50200} query executed. 0.4983 millis. select 1
+2022-12-13 10:51:10.217 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20200} closed
+2022-12-13 10:51:10.217 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20201} created
+2022-12-13 10:51:10.218 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20201, rs-50201} query executed. 0.2832 millis. select 1
+2022-12-13 10:51:10.218 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20201} closed
+2022-12-13 10:51:10.218 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20202} created
+2022-12-13 10:51:10.218 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20202, rs-50202} query executed. 0.2297 millis. select 1
+2022-12-13 10:51:10.218 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20202} closed
+2022-12-13 10:51:10.218 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20203} created
+2022-12-13 10:51:10.218 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20203, rs-50203} query executed. 0.2516 millis. select 1
+2022-12-13 10:51:10.219 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20203} closed
+2022-12-13 10:51:10.219 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20204} created
+2022-12-13 10:51:10.219 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20204, rs-50204} query executed. 0.2221 millis. select 1
+2022-12-13 10:51:10.219 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20204} closed
+2022-12-13 10:52:10.223 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20205} created
+2022-12-13 10:52:10.224 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20205, rs-50205} query executed. 0.6232 millis. select 1
+2022-12-13 10:52:10.224 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20205} closed
+2022-12-13 10:52:10.224 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20206} created
+2022-12-13 10:52:10.224 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20206, rs-50206} query executed. 0.293 millis. select 1
+2022-12-13 10:52:10.224 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20206} closed
+2022-12-13 10:52:10.224 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20207} created
+2022-12-13 10:52:10.225 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20207, rs-50207} query executed. 0.218 millis. select 1
+2022-12-13 10:52:10.225 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20207} closed
+2022-12-13 10:52:10.225 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20208} created
+2022-12-13 10:52:10.225 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20208, rs-50208} query executed. 0.2094 millis. select 1
+2022-12-13 10:52:10.225 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20208} closed
+2022-12-13 10:52:10.225 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20209} created
+2022-12-13 10:52:10.226 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20209, rs-50209} query executed. 0.847 millis. select 1
+2022-12-13 10:52:10.226 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20209} closed
+2022-12-13 10:53:10.227 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20210} created
+2022-12-13 10:53:10.228 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20210, rs-50210} query executed. 0.76 millis. select 1
+2022-12-13 10:53:10.228 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20210} closed
+2022-12-13 10:53:10.228 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20211} created
+2022-12-13 10:53:10.229 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20211, rs-50211} query executed. 0.492 millis. select 1
+2022-12-13 10:53:10.229 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20211} closed
+2022-12-13 10:53:10.229 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20212} created
+2022-12-13 10:53:10.230 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20212, rs-50212} query executed. 0.3781 millis. select 1
+2022-12-13 10:53:10.230 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20212} closed
+2022-12-13 10:53:10.230 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20213} created
+2022-12-13 10:53:10.231 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20213, rs-50213} query executed. 0.4317 millis. select 1
+2022-12-13 10:53:10.231 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20213} closed
+2022-12-13 10:53:10.231 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20214} created
+2022-12-13 10:53:10.231 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20214, rs-50214} query executed. 0.3939 millis. select 1
+2022-12-13 10:53:10.231 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20214} closed
+2022-12-13 10:54:10.232 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20215} created
+2022-12-13 10:54:10.233 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20215, rs-50215} query executed. 0.6724 millis. select 1
+2022-12-13 10:54:10.233 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20215} closed
+2022-12-13 10:54:10.233 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20216} created
+2022-12-13 10:54:10.233 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20216, rs-50216} query executed. 0.3428 millis. select 1
+2022-12-13 10:54:10.233 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20216} closed
+2022-12-13 10:54:10.233 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20217} created
+2022-12-13 10:54:10.234 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20217, rs-50217} query executed. 0.238 millis. select 1
+2022-12-13 10:54:10.234 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20217} closed
+2022-12-13 10:54:10.234 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20218} created
+2022-12-13 10:54:10.234 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20218, rs-50218} query executed. 0.2741 millis. select 1
+2022-12-13 10:54:10.234 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20218} closed
+2022-12-13 10:54:10.234 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20219} created
+2022-12-13 10:54:10.234 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20219, rs-50219} query executed. 0.1677 millis. select 1
+2022-12-13 10:54:10.235 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20219} closed
+2022-12-13 10:55:10.245 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20220} created
+2022-12-13 10:55:10.245 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20220, rs-50220} query executed. 0.4167 millis. select 1
+2022-12-13 10:55:10.245 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20220} closed
+2022-12-13 10:55:10.246 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20221} created
+2022-12-13 10:55:10.246 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20221, rs-50221} query executed. 0.2587 millis. select 1
+2022-12-13 10:55:10.246 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20221} closed
+2022-12-13 10:55:10.246 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20222} created
+2022-12-13 10:55:10.246 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20222, rs-50222} query executed. 0.2155 millis. select 1
+2022-12-13 10:55:10.246 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20222} closed
+2022-12-13 10:55:10.246 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20223} created
+2022-12-13 10:55:10.247 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20223, rs-50223} query executed. 0.1751 millis. select 1
+2022-12-13 10:55:10.247 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20223} closed
+2022-12-13 10:55:10.247 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20224} created
+2022-12-13 10:55:10.247 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20224, rs-50224} query executed. 0.2238 millis. select 1
+2022-12-13 10:55:10.247 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20224} closed
+2022-12-13 10:56:10.253 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20225} created
+2022-12-13 10:56:10.253 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20225, rs-50225} query executed. 0.6155 millis. select 1
+2022-12-13 10:56:10.253 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20225} closed
+2022-12-13 10:56:10.253 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20226} created
+2022-12-13 10:56:10.254 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20226, rs-50226} query executed. 0.2906 millis. select 1
+2022-12-13 10:56:10.254 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20226} closed
+2022-12-13 10:56:10.254 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20227} created
+2022-12-13 10:56:10.254 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20227, rs-50227} query executed. 0.2418 millis. select 1
+2022-12-13 10:56:10.254 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20227} closed
+2022-12-13 10:56:10.254 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20228} created
+2022-12-13 10:56:10.255 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20228, rs-50228} query executed. 0.2138 millis. select 1
+2022-12-13 10:56:10.255 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20228} closed
+2022-12-13 10:56:10.255 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20229} created
+2022-12-13 10:56:10.255 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20229, rs-50229} query executed. 0.1772 millis. select 1
+2022-12-13 10:56:10.255 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20229} closed
+2022-12-13 10:57:10.260 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20230} created
+2022-12-13 10:57:10.260 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20230, rs-50230} query executed. 0.4495 millis. select 1
+2022-12-13 10:57:10.261 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20230} closed
+2022-12-13 10:57:10.261 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20231} created
+2022-12-13 10:57:10.262 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20231, rs-50231} query executed. 0.6909 millis. select 1
+2022-12-13 10:57:10.262 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20231} closed
+2022-12-13 10:57:10.262 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20232} created
+2022-12-13 10:57:10.262 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20232, rs-50232} query executed. 0.2344 millis. select 1
+2022-12-13 10:57:10.262 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20232} closed
+2022-12-13 10:57:10.262 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20233} created
+2022-12-13 10:57:10.262 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20233, rs-50233} query executed. 0.2449 millis. select 1
+2022-12-13 10:57:10.263 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20233} closed
+2022-12-13 10:57:10.263 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20234} created
+2022-12-13 10:57:10.263 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20234, rs-50234} query executed. 0.1682 millis. select 1
+2022-12-13 10:57:10.263 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20234} closed
+2022-12-13 10:58:10.266 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20235} created
+2022-12-13 10:58:10.266 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20235, rs-50235} query executed. 0.4266 millis. select 1
+2022-12-13 10:58:10.266 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20235} closed
+2022-12-13 10:58:10.266 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20236} created
+2022-12-13 10:58:10.267 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20236, rs-50236} query executed. 0.3173 millis. select 1
+2022-12-13 10:58:10.267 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20236} closed
+2022-12-13 10:58:10.267 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20237} created
+2022-12-13 10:58:10.267 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20237, rs-50237} query executed. 0.4298 millis. select 1
+2022-12-13 10:58:10.268 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20237} closed
+2022-12-13 10:58:10.268 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20238} created
+2022-12-13 10:58:10.268 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20238, rs-50238} query executed. 0.3226 millis. select 1
+2022-12-13 10:58:10.268 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20238} closed
+2022-12-13 10:58:10.268 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20239} created
+2022-12-13 10:58:10.268 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20239, rs-50239} query executed. 0.2017 millis. select 1
+2022-12-13 10:58:10.269 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20239} closed
+2022-12-13 10:59:10.282 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20240} created
+2022-12-13 10:59:10.283 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20240, rs-50240} query executed. 0.5108 millis. select 1
+2022-12-13 10:59:10.283 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20240} closed
+2022-12-13 10:59:10.283 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20241} created
+2022-12-13 10:59:10.284 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20241, rs-50241} query executed. 1.0828 millis. select 1
+2022-12-13 10:59:10.284 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20241} closed
+2022-12-13 10:59:10.284 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20242} created
+2022-12-13 10:59:10.285 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20242, rs-50242} query executed. 0.2426 millis. select 1
+2022-12-13 10:59:10.285 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20242} closed
+2022-12-13 10:59:10.285 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20243} created
+2022-12-13 10:59:10.285 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20243, rs-50243} query executed. 0.2239 millis. select 1
+2022-12-13 10:59:10.285 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20243} closed
+2022-12-13 10:59:10.285 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20244} created
+2022-12-13 10:59:10.285 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20244, rs-50244} query executed. 0.2179 millis. select 1
+2022-12-13 10:59:10.286 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20244} closed
+2022-12-13 11:00:10.290 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20245} created
+2022-12-13 11:00:10.291 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20245, rs-50245} query executed. 0.7665 millis. select 1
+2022-12-13 11:00:10.292 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20245} closed
+2022-12-13 11:00:10.292 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20246} created
+2022-12-13 11:00:10.292 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20246, rs-50246} query executed. 0.7652 millis. select 1
+2022-12-13 11:00:10.293 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20246} closed
+2022-12-13 11:00:10.293 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20247} created
+2022-12-13 11:00:10.293 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20247, rs-50247} query executed. 0.5229 millis. select 1
+2022-12-13 11:00:10.293 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20247} closed
+2022-12-13 11:00:10.294 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20248} created
+2022-12-13 11:00:10.294 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20248, rs-50248} query executed. 0.4501 millis. select 1
+2022-12-13 11:00:10.294 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20248} closed
+2022-12-13 11:00:10.294 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20249} created
+2022-12-13 11:00:10.295 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20249, rs-50249} query executed. 0.4257 millis. select 1
+2022-12-13 11:00:10.295 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20249} closed
+2022-12-13 11:01:10.298 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20250} created
+2022-12-13 11:01:10.298 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20250, rs-50250} query executed. 0.5018 millis. select 1
+2022-12-13 11:01:10.299 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10001, stmt-20250} closed
+2022-12-13 11:01:10.299 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20251} created
+2022-12-13 11:01:10.299 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20251, rs-50251} query executed. 0.3041 millis. select 1
+2022-12-13 11:01:10.299 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10002, stmt-20251} closed
+2022-12-13 11:01:10.299 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20252} created
+2022-12-13 11:01:10.299 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20252, rs-50252} query executed. 0.2294 millis. select 1
+2022-12-13 11:01:10.300 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10003, stmt-20252} closed
+2022-12-13 11:01:10.300 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20253} created
+2022-12-13 11:01:10.300 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20253, rs-50253} query executed. 0.326 millis. select 1
+2022-12-13 11:01:10.300 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10004, stmt-20253} closed
+2022-12-13 11:01:10.300 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20254} created
+2022-12-13 11:01:10.301 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20254, rs-50254} query executed. 0.3488 millis. select 1
+2022-12-13 11:01:10.301 [Druid-ConnectionPool-Destroy-1679741732] DEBUG druid.sql.Statement:133 - {conn-10005, stmt-20254} closed

@@ -1,0 +1,29 @@
+2022-12-13 11:00:39.319 [main] WARN  org.mybatis.spring.mapper.ClassPathMapperScanner:44 - No MyBatis mapper was found in '[com.runjian.stream]' package. Please check your configuration.
+2022-12-13 11:00:41.002 [main] WARN  org.reflections.Reflections:179 - given scan urls are empty. set urls in the configuration
+2022-12-13 11:00:41.023 [main] WARN  org.reflections.Reflections:179 - given scan urls are empty. set urls in the configuration
+2022-12-13 11:00:41.960 [main] WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext:591 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'; nested exception is org.springframework.boot.web.server.PortInUseException: Port 8080 is already in use
+2022-12-13 11:00:42.890 [main] ERROR o.s.b.diagnostics.LoggingFailureAnalysisReporter:40 - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8080 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
+
+2022-12-13 11:00:42.983 [Thread-7] WARN  com.alibaba.nacos.common.http.HttpClientBeanHolder:108 - [HttpClientBeanHolder] Start destroying common HttpClient
+2022-12-13 11:00:42.983 [Thread-4] WARN  com.alibaba.nacos.common.notify.NotifyCenter:136 - [NotifyCenter] Start destroying Publisher
+2022-12-13 11:00:42.984 [Thread-4] WARN  com.alibaba.nacos.common.notify.NotifyCenter:153 - [NotifyCenter] Destruction of the end
+2022-12-13 11:00:42.984 [Thread-7] WARN  com.alibaba.nacos.common.http.HttpClientBeanHolder:114 - [HttpClientBeanHolder] Destruction of the end
+2022-12-13 11:00:53.073 [main] WARN  org.mybatis.spring.mapper.ClassPathMapperScanner:44 - No MyBatis mapper was found in '[com.runjian.stream]' package. Please check your configuration.
+2022-12-13 11:00:54.795 [main] WARN  org.reflections.Reflections:179 - given scan urls are empty. set urls in the configuration
+2022-12-13 11:00:54.813 [main] WARN  org.reflections.Reflections:179 - given scan urls are empty. set urls in the configuration
+2022-12-13 11:01:56.469 [Thread-4] WARN  com.alibaba.nacos.common.notify.NotifyCenter:136 - [NotifyCenter] Start destroying Publisher
+2022-12-13 11:01:56.469 [Thread-7] WARN  com.alibaba.nacos.common.http.HttpClientBeanHolder:108 - [HttpClientBeanHolder] Start destroying common HttpClient
+2022-12-13 11:01:56.469 [Thread-4] WARN  com.alibaba.nacos.common.notify.NotifyCenter:153 - [NotifyCenter] Destruction of the end
+2022-12-13 11:01:56.469 [Thread-7] WARN  com.alibaba.nacos.common.http.HttpClientBeanHolder:114 - [HttpClientBeanHolder] Destruction of the end

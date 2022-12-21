@@ -1,0 +1,7 @@
+2022-12-13 10:54:19.435 [main] WARN  org.mybatis.spring.mapper.ClassPathMapperScanner:44 - No MyBatis mapper was found in '[com.runjian.device]' package. Please check your configuration.
+2022-12-13 10:54:21.164 [main] WARN  org.reflections.Reflections:179 - given scan urls are empty. set urls in the configuration
+2022-12-13 10:54:21.181 [main] WARN  org.reflections.Reflections:179 - given scan urls are empty. set urls in the configuration
+2022-12-13 11:01:56.442 [Thread-4] WARN  com.alibaba.nacos.common.notify.NotifyCenter:136 - [NotifyCenter] Start destroying Publisher
+2022-12-13 11:01:56.442 [Thread-7] WARN  com.alibaba.nacos.common.http.HttpClientBeanHolder:108 - [HttpClientBeanHolder] Start destroying common HttpClient
+2022-12-13 11:01:56.443 [Thread-4] WARN  com.alibaba.nacos.common.notify.NotifyCenter:153 - [NotifyCenter] Destruction of the end
+2022-12-13 11:01:56.454 [Thread-7] WARN  com.alibaba.nacos.common.http.HttpClientBeanHolder:114 - [HttpClientBeanHolder] Destruction of the end
