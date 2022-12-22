@@ -1,9 +1,9 @@
 package com.runjian.parsing.mq.config;
 
+import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.LogTemplate;
-import com.runjian.common.utils.ConstantUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -40,8 +40,8 @@ public class RabbitMqSender {
         RabbitMqProperties.ExchangeData exchangeData = rabbitMqProperties.getExchangeData(queueData.getExchangeId());
         if (convertStrJson){
             try {
-                rabbitTemplate.convertAndSend(exchangeData.getName(), queueData.getRoutingKey(), ConstantUtils.OBJECT_MAPPER.writeValueAsString(msg), correlationData);
-            } catch (JsonProcessingException e) {
+                rabbitTemplate.convertAndSend(exchangeData.getName(), queueData.getRoutingKey(), JSON.toJSONString(msg), correlationData);
+            } catch (Exception e) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ发送消息服务", "消息发送失败，消息格式化异常", msg, e);
             }
         }else {
@@ -55,8 +55,8 @@ public class RabbitMqSender {
         RabbitMqProperties.ExchangeData exchangeData = rabbitMqProperties.getExchangeData(exchangeId);
         if (convertStrJson){
             try {
-                rabbitTemplate.convertAndSend(exchangeData.getName(), routingKey, ConstantUtils.OBJECT_MAPPER.writeValueAsString(msg), correlationData);
-            } catch (JsonProcessingException e) {
+                rabbitTemplate.convertAndSend(exchangeData.getName(), routingKey, JSON.toJSONString(msg), correlationData);
+            } catch (Exception e) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ发送消息服务", "消息发送失败，消息格式化异常", msg, e);
             }
         }else {

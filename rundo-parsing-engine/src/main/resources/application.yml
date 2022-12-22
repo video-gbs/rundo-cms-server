@@ -100,6 +100,6 @@ mq:
       type: topic
 
 gateway:
-  sign-in:
-    queue-id-get: SIGNIN-SG
-    queue-id-set: SIGNIN-GS
+  public:
+    queue-id-get: PUBLIC-SG
+    queue-id-set: PUBLIC-GS

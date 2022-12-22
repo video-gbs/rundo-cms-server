@@ -26,14 +26,20 @@ public class MqListenerConfig {
     @Autowired
     private RabbitMqProperties rabbitMqProperties;
 
-    @Value("${gateway.sign-in.queue-id-get}")
-    private String alarmCallbackQueue;
+    @Value("${gateway.public.queue-id-get}")
+    private String publicGetQueue;
 
+    /**
+     * 配置公共消息监听器
+     * @param connectionFactory
+     * @return
+     * @throws BusinessException
+     */
     @Bean
-    public SimpleMessageListenerContainer publicSuccessListenerContainer(ConnectionFactory connectionFactory) throws BusinessException {
+    public SimpleMessageListenerContainer publicMsgListenerContainer(ConnectionFactory connectionFactory) throws BusinessException {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(rabbitMqProperties.getQueueData(alarmCallbackQueue).getQueueName());
+        container.setQueueNames(rabbitMqProperties.getQueueData(publicGetQueue).getQueueName());
         container.setMessageListener(publicMsgListener);
         container.setConcurrentConsumers(1);
         container.setMaxConcurrentConsumers(1);
@@ -41,11 +47,16 @@ public class MqListenerConfig {
         return container;
     }
 
+    /**
+     * 配置私有消息监听器
+     * @param connectionFactory
+     * @return
+     * @throws BusinessException
+     */
     @Bean
-    public SimpleMessageListenerContainer msgListenerContainer(ConnectionFactory connectionFactory) throws BusinessException {
+    public SimpleMessageListenerContainer dispatchMsgListenerContainer(ConnectionFactory connectionFactory) throws BusinessException {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(rabbitMqProperties.getQueueData(alarmCallbackQueue).getQueueName());
         container.setMessageListener(dispatchMsgListener);
         container.setConcurrentConsumers(1);
         container.setMaxConcurrentConsumers(1);

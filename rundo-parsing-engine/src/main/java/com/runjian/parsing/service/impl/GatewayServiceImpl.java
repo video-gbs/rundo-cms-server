@@ -6,7 +6,6 @@ import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.feign.DeviceControlApi;
 import com.runjian.parsing.feign.request.PostGatewaySignInReq;
 import com.runjian.parsing.service.GatewayService;
-import com.runjian.parsing.vo.request.GatewaySignInReq;
 import com.runjian.parsing.vo.response.GatewaySignInRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

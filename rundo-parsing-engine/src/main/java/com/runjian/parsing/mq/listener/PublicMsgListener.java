@@ -61,13 +61,12 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
     public void onMessage(Message message, Channel channel) throws Exception {
         try {
             log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册信息监听器", "接收到网关注册信息，执行注册流程", message);
-            CommonResponse<GatewayMqDto> response = JSON.parseObject(new String(message.getBody()), CommonResponse.class);
-            GatewayMqDto gatewayMqDto = response.getData();
+            GatewayMqDto<GatewaySignInReq> mqRequest = JSON.parseObject(new String(message.getBody()), GatewayMqDto.class);
             // 判断是否是注册信息
-            if (gatewayMqDto.getMsgType().equals(MsgType.SIGN_IN.getMsg())){
-                GatewaySignInReq req = (GatewaySignInReq)gatewayMqDto.getData();
+            if (mqRequest.getMsgType().equals(MsgType.SIGN_IN.getMsg())){
+                GatewaySignInReq req = mqRequest.getData();
                 // 进行网关信息存储并发送信息到上层平台
-                GatewaySignInRsp gatewaySignInRsp = gatewayService.signIn(gatewayMqDto.getSerialNum(), SignType.MQ.getCode(), GatewayType.getCodeByMsg(req.getGatewayType()), req.getProtocol(), req.getIp(), req.getPort());
+                GatewaySignInRsp gatewaySignInRsp = gatewayService.signIn(mqRequest.getSerialNum(), SignType.MQ.getCode(), GatewayType.getCodeByMsg(req.getGatewayType()), req.getProtocol(), req.getIp(), req.getPort());
                 String key1 = MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + gatewaySignInRsp.getGatewayId();
                 String key2 = MqConstant.GATEWAY_PREFIX + MqConstant.SET_GET_PREFIX + gatewaySignInRsp.getGatewayId();
 
@@ -82,9 +81,10 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                     gatewaySignInRsp.setMqGetQueue(key1);
                     gatewaySignInRsp.setMqSetQueue(key2);
                 }
-                gatewayMqDto.setData(gatewaySignInRsp);
+                GatewayMqDto<GatewaySignInRsp> mqResponse = (GatewayMqDto)CommonResponse.success(gatewaySignInRsp);
+                mqResponse.copyRequest(mqRequest);
                 // 发送消息到公共频道
-                rabbitMqSender.sendMsgByRoutingKey(queueData.getExchangeId(), queueData.getRoutingKey(), UUID.randomUUID().toString().replace("-", ""), CommonResponse.success(gatewayMqDto), true);
+                rabbitMqSender.sendMsgByRoutingKey(queueData.getExchangeId(), queueData.getRoutingKey(), UUID.randomUUID().toString().replace("-", ""), mqResponse, true);
             }
         }catch (Exception ex){
             // todo 补偿机制

@@ -1,5 +1,6 @@
 package com.runjian.parsing.vo.response;
 
+
 import lombok.Data;
 
 @Data
@@ -34,4 +35,6 @@ public class GatewaySignInRsp {
      * 监听消息
      */
     private String mqGetQueue;
+
+
 }
