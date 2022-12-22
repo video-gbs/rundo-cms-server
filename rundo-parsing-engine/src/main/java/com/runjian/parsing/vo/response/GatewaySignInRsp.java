@@ -1,6 +1,7 @@
 package com.runjian.parsing.vo.response;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 @Data
@@ -14,6 +15,7 @@ public class GatewaySignInRsp {
     /**
      * 网关id
      */
+    @JsonIgnore
     private Long gatewayId;
 
     /**

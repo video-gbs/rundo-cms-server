@@ -1,12 +1,13 @@
 package com.runjian.parsing.service;
 
+import org.springframework.amqp.core.Message;
+
 public interface MessageService {
 
     /**
      * 消息分配
-     * @param msgType
-     * @param msg
+     * @param message
      */
-    void msgDispatch(String msgType, Object msg);
+    void msgDispatch(Message message);
 
 }

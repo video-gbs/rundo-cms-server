@@ -3,6 +3,8 @@ package com.runjian.parsing.vo;
 import com.runjian.common.config.response.CommonResponse;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * 网关传输消息体
  */
@@ -26,6 +28,11 @@ public class GatewayMqDto<T> extends CommonResponse<T> {
     private String msgId;
 
     /**
+     * time
+     */
+    private LocalDateTime time;
+
+    /**
      * 复制请求体信息做返回
      * @param gatewayMqDto
      */
@@ -33,6 +40,7 @@ public class GatewayMqDto<T> extends CommonResponse<T> {
         this.serialNum = gatewayMqDto.getSerialNum();
         this.msgType = gatewayMqDto.getMsgType();
         this.msgId = gatewayMqDto.getMsgId();
+        this.time = LocalDateTime.now();
     }
 
 }

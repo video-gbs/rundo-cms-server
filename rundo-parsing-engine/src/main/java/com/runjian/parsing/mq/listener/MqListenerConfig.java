@@ -53,7 +53,7 @@ public class MqListenerConfig {
      * @return
      * @throws BusinessException
      */
-    @Bean
+    @Bean("dispatchMsgListenerContainer")
     public SimpleMessageListenerContainer dispatchMsgListenerContainer(ConnectionFactory connectionFactory) throws BusinessException {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);

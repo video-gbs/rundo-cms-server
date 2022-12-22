@@ -44,6 +44,6 @@ public class GatewayInfo {
 
     private LocalDateTime updateTime;
 
-    private LocalDateTime createTimel;
+    private LocalDateTime createTime;
 
 }

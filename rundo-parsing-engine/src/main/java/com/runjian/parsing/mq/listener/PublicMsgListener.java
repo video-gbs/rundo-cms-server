@@ -20,6 +20,7 @@ import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.util.UUID;
@@ -46,9 +47,10 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
     private RabbitMqSender rabbitMqSender;
 
     @Autowired
-    private SimpleMessageListenerContainer msgListenerContainer;
+    @Qualifier("dispatchMsgListenerContainer")
+    private SimpleMessageListenerContainer dispatchMsgListenerContainer;
 
-    @Value("gateway.sign-in.queue-id-set")
+    @Value("gateway.public.queue-id-set")
     private String signInQueueId;
 
     /**
@@ -77,7 +79,7 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                     addQueue(key1, queueData.getExchangeId());
                     Queue queue = addQueue(key2, queueData.getExchangeId());
                     // 添加监听队列
-                    msgListenerContainer.addQueues(queue);
+                    dispatchMsgListenerContainer.addQueues(queue);
                     gatewaySignInRsp.setMqGetQueue(key1);
                     gatewaySignInRsp.setMqSetQueue(key2);
                 }

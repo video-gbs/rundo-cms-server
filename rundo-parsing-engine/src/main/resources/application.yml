@@ -86,13 +86,13 @@ logging:
 mq:
   enabled: true
   queue-data-list:
-    - id: SIGNIN-GS
-      routing-key: rundo.gateway.sign-in-gs
-      queue-name: rundo.gateway.sign-in-gs
+    - id: PUBLIC-GS
+      routing-key: rundo.gateway.public-gs
+      queue-name: rundo.gateway.public-gs
       exchange-id: GATEWAY
-    - id: SIGNIN-SG
-      routing-key: rundo.gateway.sign-in-sg
-      queue-name: rundo.gateway.sign-in-sg
+    - id: PUBLIC-SG
+      routing-key: rundo.gateway.public-sg
+      queue-name: rundo.gateway.public-sg
       exchange-id: GATEWAY
   exchange-data-list:
     - id: GATEWAY
@@ -100,6 +100,8 @@ mq:
       type: topic
 
 gateway:
+  default:
+    exchange-id: GATEWAY
   public:
     queue-id-get: PUBLIC-SG
     queue-id-set: PUBLIC-GS
