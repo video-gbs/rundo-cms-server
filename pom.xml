@@ -37,6 +37,7 @@
         <spring-boot.version>2.6.11</spring-boot.version>
         <spring-cloud.version>2021.0.4</spring-cloud.version>
         <spring-cloud-alibaba.version>2021.0.4.0</spring-cloud-alibaba.version>
+        <nacos.client.version>2.2.0</nacos.client.version>
         <!--ORM框架 MybatisPlus-->
         <mybatis.version>3.0.1</mybatis.version>
         <pagehelper.version>1.4.6</pagehelper.version>
