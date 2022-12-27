@@ -7,15 +7,15 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>rundo-auth-gateway</artifactId>
+    <artifactId>rundo-auth-server</artifactId>
     <packaging>jar</packaging>
 
-    <name>rundo-auth-gateway</name>
+    <name>rundo-auth-server</name>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-authorization-server</artifactId>
         </dependency>
 
         <!--注册中心客户端-->
@@ -29,5 +29,4 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
     </dependencies>
-
 </project>
