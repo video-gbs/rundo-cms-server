@@ -20,7 +20,9 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.OAuth2TokenFormat;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -36,6 +38,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.time.Duration;
 import java.util.UUID;
 
 
@@ -91,9 +94,7 @@ public class AuthorizationServerConfiguration extends OAuth2AuthorizationServerC
                         exceptions -> exceptions.authenticationEntryPoint(
                                 new LoginUrlAuthenticationEntryPoint("/login")
                         )
-                )
-        ;
-
+                );
         return httpSecurity.build();
     }
 
@@ -156,19 +157,28 @@ public class AuthorizationServerConfiguration extends OAuth2AuthorizationServerC
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                 .authorizationGrantType(AuthorizationGrantType.PASSWORD)
                 // 回调地址名单，不在此列将被拒绝 而且只能使用IP或者域名  不能使用 localhost
-                .redirectUri("http://127.0.0.1:8801/login/oauth2/code/felord-oidc")
-                .redirectUri("http://127.0.0.1:8801/authorized")
-                .redirectUri("http://127.0.0.1:8801/foo/bar")
-                .redirectUri("https://www.baidu.com")
+                .redirectUri("http://127.0.0.1:8801/login/oauth2/code/client-oidc")
                 // OIDC支持
                 .scope(OidcScopes.OPENID)
                 // 其他scope
                 .scope("read")
                 .scope("write")
-                // JWT的配置项 包括TTL  是否复用refreshToken等等
-                .tokenSettings(TokenSettings.builder().build())
                 // 配置客户端相关的配置项，包括验证密钥或者 是否需要授权页面
-                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                .clientSettings(ClientSettings.builder()
+                        .requireAuthorizationConsent(false)
+                        .requireProofKey(false)
+                        .build())
+                // JWT的配置项 包括TTL  是否复用refreshToken等等
+                .tokenSettings(TokenSettings.builder()
+                        .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+                        .idTokenSignatureAlgorithm(SignatureAlgorithm.RS256)
+                        .accessTokenTimeToLive(Duration.ofSeconds(30 * 60))
+                        .refreshTokenTimeToLive(Duration.ofSeconds(60 * 60))
+                        .reuseRefreshTokens(true)
+                        .setting("accessTokenLimitTimeSeconds", 5 * 60)
+                        .setting("accessTokenLimitRate", 3)
+                        .build())
+
                 .build();
 
         return new InMemoryRegisteredClientRepository(registeredClient);
@@ -206,15 +216,14 @@ public class AuthorizationServerConfiguration extends OAuth2AuthorizationServerC
         }
     }
 
-    // /**
-    //  * JWT解码器
-    //  *
-    //  * @return
-    //  */
-    // @Bean
-    // public static JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-    //     return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
-    // }
-
+    /**
+     * 通过 ProviderSettings配置 Spring Authorization Server实例
+     *
+     * @return
+     */
+    @Bean
+    public ProviderSettings providerSettings() {
+        return ProviderSettings.builder().build();
+    }
 
 }

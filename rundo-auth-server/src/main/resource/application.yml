@@ -6,6 +6,8 @@ server:
 spring:
   application:
     name: rundo-auth-server
+  main:
+    allow-bean-definition-overriding: true
   profiles:
     active: dev
 
@@ -26,3 +28,17 @@ spring:
         namespace: dev
         # group:
         prefix:
+  redis:
+    host: rundo-redis
+    port: 6379
+    database: 0
+    password: 123456
+    timeout: 1800
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: 60
+        max-idle: 5
+        min-idle: 0
+      shutdown-timeout: 100
+
