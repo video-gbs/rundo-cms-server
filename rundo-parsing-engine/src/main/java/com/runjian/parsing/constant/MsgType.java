@@ -12,6 +12,10 @@ public enum MsgType {
 
     HEARTBEAT("HEARTBEAT"),
 
+    PLAY("PLAY"),
+    PLAYBACKE("PLAYBACK"),
+    STOP_PLAY("STOP_PLAY"),
+
     ERROR("ERROR"),
     OTHER("OTHER"),
     ;
