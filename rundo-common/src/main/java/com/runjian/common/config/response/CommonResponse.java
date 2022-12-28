@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * @author Miracle
  * @date 2020/3/3 22:45
@@ -13,7 +15,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonResponse<T> {
+public class CommonResponse<T> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 消息码
