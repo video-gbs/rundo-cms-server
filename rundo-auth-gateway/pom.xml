@@ -40,6 +40,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!---->
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-client</artifactId>
+            <version>${nacos.client.version}</version>
+        </dependency>
         <!-- 注意事项：
             1. spring-cloud-starter-alibaba-nacos-config 模块移除了 spring-cloud-starter-bootstrap 依赖；如果你想以旧版的方式使用，你需要手动加上该依赖；
             2. 在SpringBoot2.4之后，推荐使用 spring.config.import 方式引入配置
@@ -48,11 +54,15 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-client</artifactId>
-            <version>${nacos.client.version}</version>
-        </dependency>
+
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
