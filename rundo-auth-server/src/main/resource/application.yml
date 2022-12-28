@@ -1,5 +1,7 @@
 server:
   port: 8801
+  servlet:
+    context-path: /oauth2/
 
 spring:
   application:
