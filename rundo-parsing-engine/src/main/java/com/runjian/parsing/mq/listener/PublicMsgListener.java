@@ -46,9 +46,9 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
     @Autowired
     private RabbitMqSender rabbitMqSender;
 
-    @Autowired
-    @Qualifier("dispatchMsgListenerContainer")
-    private SimpleMessageListenerContainer dispatchMsgListenerContainer;
+//    @Autowired
+//    @Qualifier("dispatchMsgListenerContainer")
+//    private SimpleMessageListenerContainer dispatchMsgListenerContainer;
 
     @Value("gateway.public.queue-id-set")
     private String signInQueueId;
@@ -79,7 +79,7 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                     addQueue(key1, queueData.getExchangeId());
                     Queue queue = addQueue(key2, queueData.getExchangeId());
                     // 添加监听队列
-                    dispatchMsgListenerContainer.addQueues(queue);
+//                    dispatchMsgListenerContainer.addQueues(queue);
                     gatewaySignInRsp.setMqGetQueue(key1);
                     gatewaySignInRsp.setMqSetQueue(key2);
                 }
