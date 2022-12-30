@@ -5,8 +5,8 @@ spring:
     nacos:
       discovery:
         username: nacos
-        password: Rjgf@2022.
-        server-addr: http://szxc-vip.runjian.com:8848
+        password: nacos
+        server-addr: http://192.168.2.5:8848
         namespace: public
   web:
     resources:
