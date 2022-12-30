@@ -1,4 +1,4 @@
-package com.rundo.auth.gateway.config;
+package com.runjian.auth.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

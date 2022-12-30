@@ -1,4 +1,4 @@
-package com.rundo.generator;
+package com.runjian.generator;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -25,7 +25,7 @@ public class MyBatisPlusGenerate {
     /**
      * 作者
      */
-    private static final String AUTHOR = "Jiang4Yu";
+    private static final String AUTHOR = "Jiang4Yu@126.com";
 
     /**
      * 工作目录
@@ -33,14 +33,13 @@ public class MyBatisPlusGenerate {
     private static final String USER_DIR = System.getProperty("user.dir");
 
     /**
-     * JDBC 连接地址
-     */
-    private static final String JDBC_URL = "jdbc:mysql://192.168.91.100:3306/rundo?serverTimezone=Asia/Shanghai&useLegacyDatetimeCode=false&nullNamePatternMatchesAll=true&zeroDateTimeBehavior=CONVERT_TO_NULL&tinyInt1isBit=false&autoReconnect=true&useSSL=false&pinGlobalTxToPhysicalConnection=true";
-
-    /**
      * JDBC 驱动程序
      */
     private static final String JDBC_DRIVER_NAME = "com.mysql.cj.jdbc.Driver";
+    /**
+     * JDBC 连接地址
+     */
+    private static final String JDBC_URL = "jdbc:mysql://rundo-mysql:3306/rundo_rbac?serverTimezone=Asia/Shanghai&useLegacyDatetimeCode=false&nullNamePatternMatchesAll=true&zeroDateTimeBehavior=CONVERT_TO_NULL&tinyInt1isBit=false&autoReconnect=true&useSSL=false&pinGlobalTxToPhysicalConnection=true";
 
     /**
      * 数据库账号
@@ -55,7 +54,7 @@ public class MyBatisPlusGenerate {
     /**
      * 包配置 - 父级目录
      */
-    private static final String PACKAGE_PARENT = "com.runjian.rundo";
+    private static final String PACKAGE_PARENT = "com.runjian.auth.server";
 
     /**
      * 包配置 - 模块目录 <br>
@@ -66,7 +65,7 @@ public class MyBatisPlusGenerate {
     /**
      * 包配置 - 实体类目录
      */
-    private static final String PACKAGE_ENTITY = "domain";
+    private static final String PACKAGE_ENTITY = "entity";
 
     /**
      * 包配置 - 数据访问接口目录
@@ -89,9 +88,29 @@ public class MyBatisPlusGenerate {
     private static final String PACKAGE_CONTROLLER = "controller";
 
     /**
-     * 要生成的表，用 `,` 分割
+     * 父类配置 - entity
      */
-    private static final String TABLES = "core_post";
+    private static final String SUPER_ENTITY = "com.runjian.common.base.BaseDomain";
+
+    /**
+     * 父类配置 - service
+     */
+    private static final String SUPER_SERVICE = "com.runjian.common.base.IBaseService";
+
+    /**
+     * 父类配置 - serviceImpl
+     */
+    private static final String SUPER_SERVICEIMPL = "com.runjian.common.base.BaseServiceImpl";
+
+    /**
+     * 父类配置 - controller
+     */
+    private static final String SUPER_CONTROLLER = "com.runjian.common.base.BaseController";
+
+    /**
+     * 要生成的表，用 `,` 分割，all 代表生成所有表
+     */
+    private static final String TABLES = "all";
 
     /**
      * 数据源配置
@@ -178,7 +197,7 @@ public class MyBatisPlusGenerate {
                 // 设置需要生成的数据表名
                 .addInclude(getTables(TABLES))
                 // 设置过滤表前缀
-                .addTablePrefix(packageConfig().getModuleName() + "_")
+                .addTablePrefix(packageConfig().getModuleName() + "_", "tb_")
                 // 实体类策略配置
                 .entityBuilder()
                 // 开启 Lombok
@@ -195,14 +214,14 @@ public class MyBatisPlusGenerate {
                 .addSuperEntityColumns("id", "create_time", "update_time")
                 //添加表字段填充，"create_time"字段自动填充为插入时间，"update_time"字段自动填充为插入修改时间
                 .addTableFills(
-                        new Column("is_deleted", FieldFill.INSERT),
+                        new Column("delete_flag", FieldFill.INSERT),
                         new Column("create_time", FieldFill.INSERT),
                         new Column("update_time", FieldFill.INSERT_UPDATE)
                 )
                 // 开启生成实体时生成字段注解
                 .enableTableFieldAnnotation()
 
-                .superClass("com.runjian.rundo.commons.base.BaseDomain")
+                .superClass(SUPER_ENTITY)
 
                 // Mapper策略配置
                 .mapperBuilder()
@@ -217,18 +236,21 @@ public class MyBatisPlusGenerate {
 
                 // Service 策略配置
                 .serviceBuilder()
+                // 父类配置
+                .superServiceClass(SUPER_SERVICE)
                 // 格式化 service 接口文件名称，%s进行匹配表名，如 UserService
                 .formatServiceFileName("%sService")
+                // 父类配置
+                .superServiceImplClass(SUPER_SERVICEIMPL)
                 // 格式化 service 实现类文件名称，%s进行匹配表名，如 UserServiceImpl
                 .formatServiceImplFileName("%sServiceImpl")
-                .superServiceClass("com.runjian.rundo.commons.base.IBaseService")
-                .superServiceImplClass("com.runjian.rundo.commons.base.BaseServiceImpl")
 
                 // Controller 策略配置
                 .controllerBuilder()
+                // 父类配置
+                .superClass(SUPER_CONTROLLER)
                 // 格式化 Controller 类文件名称，%s进行匹配表名，如 UserController
                 .formatFileName("%sController")
-                .superClass("com.runjian.rundo.commons.base.BaseController")
                 // 开启生成 @RestController 控制器
                 .enableRestStyle()
                 .build();
@@ -266,29 +288,6 @@ public class MyBatisPlusGenerate {
      */
     private static InjectionConfig injectionConfig() {
 
-
-        // InjectionConfig config = new InjectionConfig() {
-        //     @Override
-        //     public void initMap() {
-        //         // to do nothing
-        //     }
-        // };
-        //
-        // // 自定义输出 mapper.xml 到 resources 目录下
-        // String mapperPath = "/templates/mapper.xml.ftl";
-        // List<FileOutConfig> focList = new ArrayList<>();
-        //
-        // // 自定义配置会被优先输出
-        // focList.add(new FileOutConfig(mapperPath) {
-        //     @Override
-        //     public String outputFile(TableInfo tableInfo) {
-        //         // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-        //         return USER_DIR + "/src/main/resources/mapper/" + tableInfo.getEntityName() + "Mapper"
-        //                 + StringPool.DOT_XML;
-        //     }
-        // });
-        //
-        // config.setFileOutConfigList(focList);
         return new InjectionConfig.Builder()
                 .beforeOutputFile(((tableInfo, stringObjectMap) -> {
 

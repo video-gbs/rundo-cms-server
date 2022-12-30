@@ -1,4 +1,4 @@
-package com.rundo.auth.server.controller;
+package com.runjian.auth.server.controller;
 
 import com.runjian.common.config.response.CommonResponse;
 import org.springframework.web.bind.annotation.GetMapping;
