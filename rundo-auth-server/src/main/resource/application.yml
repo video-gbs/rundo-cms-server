@@ -25,20 +25,44 @@ spring:
   profiles:
     active: dev
   datasource:
-    type: com.zaxxer.hikari.HikariDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    # type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${base.config.db.hostname}:${base.config.db.port}/${base.config.db.database}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: ${base.config.db.username}
     password: ${base.config.db.password}
-    hikari:
-      pool-name: MyHikariCP
-      minimum-idle: 5
-      idle-timeout: 600000
-      maximum-pool-size: 10
-      auto-commit: true
-      max-lifetime: 1800000
-      connection-timeout: 30000
-      connection-test-query: SELECT 1
+    druid:
+      # 连接池初始化时创建的连接数量
+      initial-size: 10
+      # 连接的最⼩空闲数量
+      min-idle: 4
+      # 最⼤活跃的连接数量
+      max-active: 10
+      max-wait: 30000
+      min-evictable-idle-time-millis: 30000
+      time-between-eviction-runs-millis: 30000
+      validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 5
+      filters: stat,wall
+      use-global-data-source-stat: true
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-username: admin
+        login-password: 111111
+        web-stat-filter:
+          enabled: true
+          url-pattern: /*
+          exclusions: /druid/*, *.js, *.jpeg, *.jpg, *.png, *.gif, *.css
+      filter:
+        stat:
+          merge-sql: true
+          slow-sql-millis: 3000
+          log-slow-sql: true
 
   cloud:
     nacos:
@@ -74,7 +98,6 @@ mybatis-plus:
   global-config:
     banner: off
   mapper-locations: classpath*:/mapper/**/*.xml
-  type-aliases-package:
   configuration:
     map-underscore-to-camel-case: true
 
