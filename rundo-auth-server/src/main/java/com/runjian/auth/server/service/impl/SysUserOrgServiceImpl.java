@@ -3,7 +3,7 @@ package com.runjian.auth.server.service.impl;
 import com.runjian.auth.server.entity.SysUserOrg;
 import com.runjian.auth.server.mapper.SysUserOrgMapper;
 import com.runjian.auth.server.service.SysUserOrgService;
-import com.runjian.common.base.BaseServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author Jiang4Yu@126.com
- * @since 2022-12-30 10:43:05
+ * @since 2023-01-03 11:45:53
  */
 @Service
-public class SysUserOrgServiceImpl extends BaseServiceImpl<SysUserOrgMapper, SysUserOrg> implements SysUserOrgService {
+public class SysUserOrgServiceImpl extends ServiceImpl<SysUserOrgMapper, SysUserOrg> implements SysUserOrgService {
 
 }

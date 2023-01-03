@@ -1,7 +1,7 @@
 package com.runjian.auth.server.service;
 
 import com.runjian.auth.server.entity.SysUserInfo;
-import com.runjian.common.base.IBaseService;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
@@ -9,8 +9,8 @@ import com.runjian.common.base.IBaseService;
  * </p>
  *
  * @author Jiang4Yu@126.com
- * @since 2022-12-30 10:43:05
+ * @since 2023-01-03 11:45:53
  */
-public interface SysUserInfoService extends IBaseService<SysUserInfo> {
+public interface SysUserInfoService extends IService<SysUserInfo> {
 
 }

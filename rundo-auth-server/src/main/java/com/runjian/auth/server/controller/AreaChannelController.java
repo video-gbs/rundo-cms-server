@@ -1,9 +1,9 @@
 package com.runjian.auth.server.controller;
 
+import com.runjian.common.config.response.CommonResponse;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
-import com.runjian.common.base.BaseController;
 
 /**
  * <p>
@@ -11,10 +11,14 @@ import com.runjian.common.base.BaseController;
  * </p>
  *
  * @author Jiang4Yu@126.com
- * @since 2022-12-30 10:39:49
+ * @since 2023-01-03 11:53:37
  */
 @RestController
-@RequestMapping("/areaChannel")
-public class AreaChannelController extends BaseController {
+@RequestMapping("/authServer/areaChannel")
+public class AreaChannelController {
 
+    @RequestMapping
+    public CommonResponse<String> SayHello(String name){
+        return CommonResponse.success(name + ",hello world");
+    }
 }

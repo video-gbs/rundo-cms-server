@@ -3,7 +3,6 @@ package com.runjian.auth.server.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
-import com.runjian.common.base.BaseController;
 
 /**
  * <p>
@@ -11,10 +10,9 @@ import com.runjian.common.base.BaseController;
  * </p>
  *
  * @author Jiang4Yu@126.com
- * @since 2022-12-30 10:39:49
+ * @since 2023-01-03 11:53:37
  */
 @RestController
-@RequestMapping("/videoWaringPlan")
-public class VideoWaringPlanController extends BaseController {
-
+@RequestMapping("/authServer/videoWaringPlan")
+public class VideoWaringPlanController {
 }

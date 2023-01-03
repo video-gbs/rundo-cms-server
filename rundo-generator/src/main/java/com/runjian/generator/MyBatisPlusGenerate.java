@@ -60,7 +60,7 @@ public class MyBatisPlusGenerate {
      * 包配置 - 模块目录 <br>
      * 注意：如果表前缀与模块命相同，生成时会删除前缀，比如：core_admin 最终构建为 Admin, AdminController ...
      */
-    private static final String PACKAGE_MODULE_NAME = "";
+    private static final String PACKAGE_MODULE_NAME = "authServer";
 
     /**
      * 包配置 - 实体类目录
@@ -211,7 +211,7 @@ public class MyBatisPlusGenerate {
                 // 数据库表字段映射到实体的命名策略：下划线转驼峰命
                 .columnNaming(NamingStrategy.underline_to_camel)
                 // 定义在基础BaseDomain中的通用字段
-                .addSuperEntityColumns("id", "create_time", "update_time")
+                // .addSuperEntityColumns("id", "create_time", "update_time")
                 //添加表字段填充，"create_time"字段自动填充为插入时间，"update_time"字段自动填充为插入修改时间
                 .addTableFills(
                         new Column("delete_flag", FieldFill.INSERT),
@@ -221,7 +221,7 @@ public class MyBatisPlusGenerate {
                 // 开启生成实体时生成字段注解
                 .enableTableFieldAnnotation()
 
-                .superClass(SUPER_ENTITY)
+                // .superClass(SUPER_ENTITY)
 
                 // Mapper策略配置
                 .mapperBuilder()
@@ -237,18 +237,18 @@ public class MyBatisPlusGenerate {
                 // Service 策略配置
                 .serviceBuilder()
                 // 父类配置
-                .superServiceClass(SUPER_SERVICE)
+                // .superServiceClass(SUPER_SERVICE)
                 // 格式化 service 接口文件名称，%s进行匹配表名，如 UserService
                 .formatServiceFileName("%sService")
                 // 父类配置
-                .superServiceImplClass(SUPER_SERVICEIMPL)
+                // .superServiceImplClass(SUPER_SERVICEIMPL)
                 // 格式化 service 实现类文件名称，%s进行匹配表名，如 UserServiceImpl
                 .formatServiceImplFileName("%sServiceImpl")
 
                 // Controller 策略配置
                 .controllerBuilder()
                 // 父类配置
-                .superClass(SUPER_CONTROLLER)
+                // .superClass(SUPER_CONTROLLER)
                 // 格式化 Controller 类文件名称，%s进行匹配表名，如 UserController
                 .formatFileName("%sController")
                 // 开启生成 @RestController 控制器

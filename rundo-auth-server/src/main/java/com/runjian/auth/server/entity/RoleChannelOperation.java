@@ -2,8 +2,8 @@ package com.runjian.auth.server.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.runjian.common.base.BaseDomain;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Getter;
@@ -15,14 +15,20 @@ import lombok.Setter;
  * </p>
  *
  * @author Jiang4Yu@126.com
- * @since 2022-12-30 10:39:49
+ * @since 2023-01-03 11:45:53
  */
 @Getter
 @Setter
 @TableName("tb_role_channel_operation")
-public class RoleChannelOperation extends BaseDomain {
+public class RoleChannelOperation implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键ID
+     */
+    @TableId("id")
+    private Long id;
 
     /**
      * 角色ID

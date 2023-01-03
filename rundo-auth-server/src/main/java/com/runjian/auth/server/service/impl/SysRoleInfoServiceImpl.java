@@ -3,7 +3,7 @@ package com.runjian.auth.server.service.impl;
 import com.runjian.auth.server.entity.SysRoleInfo;
 import com.runjian.auth.server.mapper.SysRoleInfoMapper;
 import com.runjian.auth.server.service.SysRoleInfoService;
-import com.runjian.common.base.BaseServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author Jiang4Yu@126.com
- * @since 2022-12-30 10:43:05
+ * @since 2023-01-03 11:45:53
  */
 @Service
-public class SysRoleInfoServiceImpl extends BaseServiceImpl<SysRoleInfoMapper, SysRoleInfo> implements SysRoleInfoService {
+public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRoleInfo> implements SysRoleInfoService {
 
 }

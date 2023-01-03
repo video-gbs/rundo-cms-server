@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * </p>
  *
  * @author Jiang4Yu@126.com
- * @since 2022-12-30 10:39:49
+ * @since 2023-01-03 11:45:53
  */
 @Mapper
 public interface SysRoleApiMapper extends BaseMapper<SysRoleApi> {

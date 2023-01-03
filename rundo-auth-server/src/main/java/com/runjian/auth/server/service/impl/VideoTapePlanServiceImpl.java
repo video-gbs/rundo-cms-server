@@ -3,7 +3,7 @@ package com.runjian.auth.server.service.impl;
 import com.runjian.auth.server.entity.VideoTapePlan;
 import com.runjian.auth.server.mapper.VideoTapePlanMapper;
 import com.runjian.auth.server.service.VideoTapePlanService;
-import com.runjian.common.base.BaseServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author Jiang4Yu@126.com
- * @since 2022-12-30 10:43:05
+ * @since 2023-01-03 11:45:53
  */
 @Service
-public class VideoTapePlanServiceImpl extends BaseServiceImpl<VideoTapePlanMapper, VideoTapePlan> implements VideoTapePlanService {
+public class VideoTapePlanServiceImpl extends ServiceImpl<VideoTapePlanMapper, VideoTapePlan> implements VideoTapePlanService {
 
 }

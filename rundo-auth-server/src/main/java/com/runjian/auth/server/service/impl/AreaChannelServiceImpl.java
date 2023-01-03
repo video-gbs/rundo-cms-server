@@ -3,7 +3,7 @@ package com.runjian.auth.server.service.impl;
 import com.runjian.auth.server.entity.AreaChannel;
 import com.runjian.auth.server.mapper.AreaChannelMapper;
 import com.runjian.auth.server.service.AreaChannelService;
-import com.runjian.common.base.BaseServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author Jiang4Yu@126.com
- * @since 2022-12-30 10:43:04
+ * @since 2023-01-03 11:45:53
  */
 @Service
-public class AreaChannelServiceImpl extends BaseServiceImpl<AreaChannelMapper, AreaChannel> implements AreaChannelService {
+public class AreaChannelServiceImpl extends ServiceImpl<AreaChannelMapper, AreaChannel> implements AreaChannelService {
 
 }
