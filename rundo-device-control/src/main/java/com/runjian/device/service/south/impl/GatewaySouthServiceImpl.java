@@ -6,6 +6,8 @@ import com.runjian.device.service.south.GatewaySouthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class GatewaySouthServiceImpl implements GatewaySouthService {
 
@@ -14,7 +16,11 @@ public class GatewaySouthServiceImpl implements GatewaySouthService {
 
     @Override
     public void signIn(GatewayInfo gatewayInfo) {
-        gatewayMapper.save(gatewayInfo);
+        Optional<GatewayInfo> gatewayInfoOp = gatewayMapper.selectById(gatewayInfo.getId());
+        if (gatewayInfoOp.isEmpty()){
+            gatewayMapper.save(gatewayInfo);
+        }
+
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.runjian.common.constant.CommonEnum;
 import com.runjian.device.entity.GatewayInfo;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -36,14 +37,14 @@ public class PostGatewaySignInReq {
      * 注册类型 1-MQ  2-RETFUL
      */
     @NotNull(message = "注册类型不能为空")
-    @Size(min = 1, max = 2, message = "非法注册类型")
+    @Range(min = 1, max = 2, message = "非法注册类型")
     private Integer signType;
 
     /**
      * 网关类型
      */
     @NotNull(message = "网关类型不能为空")
-    @Size(min = 1, max = 2, message = "非法网关类型")
+    @Range(min = 1, max = 2, message = "非法网关类型")
     private Integer gatewayType;
 
     /**
@@ -74,6 +75,7 @@ public class PostGatewaySignInReq {
     public GatewayInfo toGatewayInfo() {
         GatewayInfo gatewayInfo = new GatewayInfo();
         LocalDateTime nowTime = LocalDateTime.now();
+        BeanUtils.copyProperties(this, gatewayInfo);
         gatewayInfo.setOnline(CommonEnum.ENABLE.getCode());
         gatewayInfo.setCreateTime(nowTime);
         gatewayInfo.setUpdateTime(nowTime);

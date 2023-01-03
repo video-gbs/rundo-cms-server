@@ -2,6 +2,8 @@ package com.runjian.parsing.mq.listener;
 
 import com.alibaba.fastjson2.JSON;
 import com.rabbitmq.client.Channel;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.parsing.mq.config.RabbitMqConfig;
@@ -23,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -46,11 +50,7 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
     @Autowired
     private RabbitMqSender rabbitMqSender;
 
-//    @Autowired
-//    @Qualifier("dispatchMsgListenerContainer")
-//    private SimpleMessageListenerContainer dispatchMsgListenerContainer;
-
-    @Value("gateway.public.queue-id-set")
+    @Value("${gateway.public.queue-id-set}")
     private String signInQueueId;
 
     /**
@@ -63,10 +63,11 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
     public void onMessage(Message message, Channel channel) throws Exception {
         try {
             log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册信息监听器", "接收到网关注册信息，执行注册流程", message);
-            GatewayMqDto<GatewaySignInReq> mqRequest = JSON.parseObject(new String(message.getBody()), GatewayMqDto.class);
+            GatewayMqDto mqRequest = JSON.parseObject(new String(message.getBody()), GatewayMqDto.class);
             // 判断是否是注册信息
             if (mqRequest.getMsgType().equals(MsgType.SIGN_IN.getMsg())){
-                GatewaySignInReq req = mqRequest.getData();
+                System.out.println(mqRequest.getData().toString());
+                GatewaySignInReq req = JSON.parseObject(mqRequest.getData().toString(), GatewaySignInReq.class);
                 // 进行网关信息存储并发送信息到上层平台
                 GatewaySignInRsp gatewaySignInRsp = gatewayService.signIn(mqRequest.getSerialNum(), SignType.MQ.getCode(), GatewayType.getCodeByMsg(req.getGatewayType()), req.getProtocol(), req.getIp(), req.getPort());
                 String key1 = MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + gatewaySignInRsp.getGatewayId();
@@ -79,11 +80,15 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                     addQueue(key1, queueData.getExchangeId());
                     Queue queue = addQueue(key2, queueData.getExchangeId());
                     // 添加监听队列
-//                    dispatchMsgListenerContainer.addQueues(queue);
+                    SimpleMessageListenerContainer dispatch = MqListenerConfig.containerMap.get("DISPATCH");
+                    if (Objects.isNull(dispatch)){
+                        throw new BusinessException(BusinessErrorEnums.MQ_CONTAINER_NOT_FOUND);
+                    }
+                    dispatch.addQueues(queue);
                     gatewaySignInRsp.setMqGetQueue(key1);
                     gatewaySignInRsp.setMqSetQueue(key2);
                 }
-                GatewayMqDto<GatewaySignInRsp> mqResponse = (GatewayMqDto)CommonResponse.success(gatewaySignInRsp);
+                GatewayMqDto mqResponse = GatewayMqDto.createByCommonResponse(CommonResponse.success(gatewaySignInRsp));
                 mqResponse.copyRequest(mqRequest);
                 // 发送消息到公共频道
                 rabbitMqSender.sendMsgByRoutingKey(queueData.getExchangeId(), queueData.getRoutingKey(), UUID.randomUUID().toString().replace("-", ""), mqResponse, true);
@@ -91,6 +96,7 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
         }catch (Exception ex){
             // todo 补偿机制
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关注册信息监听器", "网关注册信息，处理失败", message, ex.getMessage());
+            ex.printStackTrace();
         }finally {
             // todo 入库操作记录
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), true);

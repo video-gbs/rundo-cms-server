@@ -2,6 +2,7 @@ package com.runjian.parsing.vo;
 
 import com.runjian.common.config.response.CommonResponse;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +31,7 @@ public class GatewayMqDto<T> extends CommonResponse<T> {
     /**
      * time
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime time;
 
     /**
@@ -41,6 +43,14 @@ public class GatewayMqDto<T> extends CommonResponse<T> {
         this.msgType = gatewayMqDto.getMsgType();
         this.msgId = gatewayMqDto.getMsgId();
         this.time = LocalDateTime.now();
+    }
+
+    public  static <T> GatewayMqDto<T> createByCommonResponse(CommonResponse<T> commonResponse){
+        GatewayMqDto<T> gatewayMqDto = new GatewayMqDto<>();
+        gatewayMqDto.setCode(commonResponse.getCode());
+        gatewayMqDto.setMsg(commonResponse.getMsg());
+        gatewayMqDto.setData(commonResponse.getData());
+        return gatewayMqDto;
     }
 
 }

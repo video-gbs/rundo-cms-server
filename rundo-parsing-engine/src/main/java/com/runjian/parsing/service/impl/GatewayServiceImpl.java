@@ -32,11 +32,14 @@ public class GatewayServiceImpl implements GatewayService {
     public GatewaySignInRsp signIn(String serialNum, Integer signType, Integer gatewayType, String protocol, String ip, String port) {
         Optional<GatewayInfo> gatewayInfoOp = gatewayMapper.selectBySerialNum(serialNum);
         GatewaySignInRsp gatewaySignInRsp = new GatewaySignInRsp();
+        GatewayInfo gatewayInfo;
         if (gatewayInfoOp.isEmpty()){
             LocalDateTime nowTime = LocalDateTime.now();
-            GatewayInfo gatewayInfo = new GatewayInfo();
+            gatewayInfo = new GatewayInfo();
             gatewayInfo.setSerialNum(serialNum);
             gatewayInfo.setSignType(signType);
+            gatewayInfo.setGatewayType(gatewayType);
+            gatewayInfo.setProtocol(protocol);
             gatewayInfo.setIp(ip);
             gatewayInfo.setPort(port);
             gatewayInfo.setCreateTime(nowTime);
@@ -44,15 +47,17 @@ public class GatewayServiceImpl implements GatewayService {
             gatewayMapper.save(gatewayInfo);
             gatewaySignInRsp.setIsFirstSignIn(true);
             gatewaySignInRsp.setGatewayId(gatewayInfo.getId());
-            PostGatewaySignInReq req = new PostGatewaySignInReq(gatewayInfo);
-            // todo 对请求失败做处理
-            CommonResponse response = deviceControlApi.gatewaySignIn(req);
-            if (response.getCode() == 0){
-                log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册服务", "网关注册成功", gatewayInfo.getId());
-            }
         }else {
+            gatewayInfo = gatewayInfoOp.get();
             gatewaySignInRsp.setIsFirstSignIn(false);
             gatewaySignInRsp.setGatewayId(gatewayInfoOp.get().getId());
+        }
+        // todo 对请求失败做处理
+        System.out.println(gatewayInfo);
+        PostGatewaySignInReq req = new PostGatewaySignInReq(gatewayInfo);
+        CommonResponse response = deviceControlApi.gatewaySignIn(req);
+        if (response.getCode() == 0){
+            log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册服务", "网关注册成功", gatewayInfo.getId());
         }
         gatewaySignInRsp.setSignType(SignType.MQ.getMsg());
         return gatewaySignInRsp;

@@ -85,6 +85,8 @@ public enum BusinessErrorEnums {
 
     MQ_EXCHANGE_IS_NOT_FOUND(500, 22003, "找不到该exchange"),
 
+    MQ_CONTAINER_NOT_FOUND(500, 60007, "找不到对应的container"),
+
 
 
     /**************************** 业务类型异常,PREFIX:模块名 CODE:3xxxx ****************************/
@@ -155,9 +157,9 @@ public enum BusinessErrorEnums {
     /**
      * 接口负载过高
      */
-    INTERFACE_EXCEED_LOAD(500,60006, "接口负载过高"),
-    /****************************  接口错误：60001-69999 End ****************************/
+    INTERFACE_EXCEED_LOAD(500,60006, "接口负载过高")
     ;
+
 
 
     /**

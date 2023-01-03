@@ -24,7 +24,7 @@ public interface GatewayMapper {
 
 
     @Insert(" INSERT INTO " + GATEWAY_TABLE_NAME +
-            " (serialNum, signType, gatewayType, protocol, ip, port, update_time, create_time) " +
+            " (serial_num, sign_type, gateway_type, protocol, ip, port, update_time, create_time) " +
             " VALUES " +
             " (#{serialNum}, #{signType}, #{gatewayType}, #{protocol}, #{ip}, #{port}, #{updateTime}, #{createTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
