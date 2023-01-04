@@ -33,20 +33,20 @@ spring:
     password: ${base.config.db.password}
     druid:
       # 连接池初始化时创建的连接数量
-      initial-size: 10
+      initial-size: 5
       # 连接的最⼩空闲数量
-      min-idle: 4
+      min-idle: 5
       # 最⼤活跃的连接数量
-      max-active: 10
-      max-wait: 30000
-      min-evictable-idle-time-millis: 30000
-      time-between-eviction-runs-millis: 30000
+      max-active: 20
+      max-wait: 60000
+      min-evictable-idle-time-millis: 60000
+      time-between-eviction-runs-millis: 300000
       validation-query: SELECT 1 FROM DUAL
       test-while-idle: true
       test-on-borrow: false
       test-on-return: false
       pool-prepared-statements: true
-      max-pool-prepared-statement-per-connection-size: 5
+      max-pool-prepared-statement-per-connection-size: 20
       filters: stat,wall
       use-global-data-source-stat: true
       stat-view-servlet:
@@ -109,3 +109,23 @@ logging:
     org.springframework.security.web.FilterChainProxy: trace
     # 异常处理
     org.springframework.security.web.access.ExceptionTranslationFilter: trace
+
+
+knife4j:
+  enable: true
+  openapi:
+    title: 视频平台接口文档
+    description: "权限"
+    email: 105194@runjian.com
+    concat: jiangyu
+#    url: https://docs.xiaominfo.com
+    version: v1.0.0
+#    license: Apache 2.0
+#    license-url: https://stackoverflow.com/
+#    terms-of-service-url: https://stackoverflow.com/
+    group:
+      test1:
+        group-name: 权限模块
+        api-rule: package
+        api-rule-resources:
+          - com.runjian.auth.server.controller

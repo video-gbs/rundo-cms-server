@@ -144,7 +144,7 @@ public class MyBatisPlusGenerate {
                 // 覆盖之前的文件
                 .fileOverride()
                 // 开启 swagger 模式
-                // .enableSwagger()
+                .enableSwagger()
                 // 禁止打开输出目录，默认打开
                 .disableOpenDir()
                 .build();

@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.util.Date;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,84 +17,61 @@ import lombok.Setter;
  * </p>
  *
  * @author Jiang4Yu@126.com
- * @since 2023-01-03 11:45:53
+ * @since 2023-01-04 15:16:33
  */
 @Getter
 @Setter
 @TableName("tb_sys_dict")
+@ApiModel(value = "SysDict对象", description = "数据字典表")
 public class SysDict implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 主键ID
-     */
+    @ApiModelProperty("主键ID")
     @TableId("id")
     private Long id;
 
-    /**
-     * 分组名称
-     */
+    @ApiModelProperty("分组名称")
     @TableField("group_name")
     private String groupName;
 
-    /**
-     * 分组编码
-     */
+    @ApiModelProperty("分组编码")
     @TableField("group_code")
     private String groupCode;
 
-    /**
-     * 字典项名称
-     */
+    @ApiModelProperty("字典项名称")
     @TableField("item_name")
     private String itemName;
 
-    /**
-     * 字典值
-     */
+    @ApiModelProperty("字典值")
     @TableField("item_value")
     private String itemValue;
 
-    /**
-     * 字典描述
-     */
+    @ApiModelProperty("字典描述")
     @TableField("item_desc")
     private String itemDesc;
 
-    /**
-     * 租户号
-     */
+    @ApiModelProperty("租户号")
     @TableField("tenant_id")
     private Long tenantId;
 
-    /**
-     * 逻辑删除
-     */
+    @ApiModelProperty("逻辑删除")
     @TableField(value = "delete_flag", fill = FieldFill.INSERT)
     private String deleteFlag;
 
-    /**
-     * 创建人
-     */
+    @ApiModelProperty("创建人")
     @TableField("created_by")
     private Long createdBy;
 
-    /**
-     * 更新人
-     */
+    @ApiModelProperty("更新人")
     @TableField("updated_by")
     private Long updatedBy;
 
-    /**
-     * 创建时间
-     */
+    @ApiModelProperty("创建时间")
     @TableField("created_time")
     private Date createdTime;
 
-    /**
-     * 更新时间
-     */
+    @ApiModelProperty("更新时间")
     @TableField("updated_time")
     private Date updatedTime;
 
