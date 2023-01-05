@@ -5,17 +5,17 @@ base:
       port: 3306
       database: rundo_rbac
       username: root
-      password: JiangYu)1234
+      password: rundomysql
     redis:
       hostname: rundo-redis
       port: 6379
       database: 0
-      password: root_6379
+      password:
 
 server:
   port: 7821
   servlet:
-    context-path: /rundo-auth-server
+    context-path: /rundoAuthServer
 
 spring:
   application:

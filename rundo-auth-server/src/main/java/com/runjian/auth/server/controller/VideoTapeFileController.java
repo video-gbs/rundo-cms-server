@@ -13,6 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2023-01-03 11:53:37
  */
 @RestController
-@RequestMapping("/authServer/videoTapeFile")
+@RequestMapping("/videoTapeFile")
 public class VideoTapeFileController {
 }

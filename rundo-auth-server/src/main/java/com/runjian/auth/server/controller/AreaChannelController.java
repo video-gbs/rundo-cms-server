@@ -20,7 +20,7 @@ import java.util.List;
  * @since 2023-01-03 11:53:37
  */
 @RestController
-@RequestMapping("/authServer/areaChannel")
+@RequestMapping("/areaChannel")
 public class AreaChannelController {
 
     @Autowired
