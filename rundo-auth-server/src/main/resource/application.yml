@@ -13,9 +13,9 @@ base:
       password: root_6379
 
 server:
-  port: 8801
-#  servlet:
-#    context-path: /oauth2
+  port: 7821
+  servlet:
+    context-path: /rundo-auth-server
 
 spring:
   application:
