@@ -26,3 +26,13 @@ spring:
         namespace: public
         group: DEFAULT_GROUP
         prefix:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: service_complaint_router
+          uri: lb://rundo-auth-server
+          predicates:
+            - Path=/rundoAuthServer/**
+
