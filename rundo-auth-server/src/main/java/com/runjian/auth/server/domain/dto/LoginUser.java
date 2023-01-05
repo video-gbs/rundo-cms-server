@@ -1,5 +1,6 @@
-package com.runjian.auth.server.domain;
+package com.runjian.auth.server.domain.dto;
 
+import cn.hutool.core.date.DateUtil;
 import com.runjian.auth.server.entity.SysUserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,12 +52,15 @@ public class LoginUser implements UserDetails {
 
     /**
      * 用户是否没有过期
-     * 暂时未用到，直接返回true，表示账户未过期
      *
      * @return
      */
     @Override
     public boolean isAccountNonExpired() {
+        if (null != sysUserInfo.getExpiryDateEnd()) {
+            int flag = DateUtil.compare(sysUserInfo.getExpiryDateEnd(), DateUtil.date());
+            return flag > 0;
+        }
         return true;
     }
 

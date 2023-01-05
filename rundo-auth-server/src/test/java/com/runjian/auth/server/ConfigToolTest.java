@@ -1,6 +1,7 @@
 package com.runjian.auth.server;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static com.alibaba.druid.filter.config.ConfigTools.encrypt;
 import static com.alibaba.druid.filter.config.ConfigTools.genKeyPair;
@@ -20,5 +21,13 @@ public class ConfigToolTest {
         System.out.println("privateKey:" + arr[0]);
         System.out.println("publicKey:" + arr[1]);
         System.out.println("password:" + encrypt(arr[0], password));
+    }
+
+    @Test
+    public void testBCryptPasswordEncoder() {
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String password = passwordEncoder.encode("123456");
+        System.out.println(password);
     }
 }
