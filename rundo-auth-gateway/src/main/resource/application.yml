@@ -35,4 +35,7 @@ spring:
           uri: lb://rundo-auth-server
           predicates:
             - Path=/rundoAuthServer/**
+  config:
+    import:
+      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
 

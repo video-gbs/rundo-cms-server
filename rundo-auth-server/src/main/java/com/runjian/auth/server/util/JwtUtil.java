@@ -82,14 +82,6 @@ public class JwtUtil {
         return builder.compact();
     }
 
-    // public static void main(String[] args) throws Exception {
-    //     String jwt = createJWT("2123");
-    //     System.out.println(jwt);
-    //     Claims claims = parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJhMzQwMGY0NTI3MTY0ZTFlODY4Mzg1YTkwNDBiNjgyMyIsInN1YiI6IjIxMjMiLCJpc3MiOiJzZyIsImlhdCI6MTY3MjgxODc1OCwiZXhwIjoxNjcyODIyMzU4fQ.wi_srOz9ZOAp5A90YbGt1uPD48sbdFrgNGCPYKPs0Hc");
-    //     String subject = claims.getSubject();
-    //     System.out.println(subject);
-    //     System.out.println(claims);
-    // }
 
     /**
      * 生成加密后的秘钥 secretKey

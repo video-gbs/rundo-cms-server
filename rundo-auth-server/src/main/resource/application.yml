@@ -10,7 +10,7 @@ base:
       hostname: rundo-redis
       port: 6379
       database: 0
-      password:
+      password: rundoredis
 
 server:
   port: 7821
@@ -73,12 +73,15 @@ spring:
         namespace: public
         # 分组
         # group:
-
       config:
         file-extension: yaml
         namespace: public
         group: DEFAULT_GROUP
         prefix:
+  config:
+    import:
+      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+
   redis:
     host: ${base.config.redis.hostname}
     port: ${base.config.redis.port}
@@ -116,11 +119,11 @@ knife4j:
     description: "权限"
     email: 105194@runjian.com
     concat: jiangyu
-#    url: https://docs.xiaominfo.com
+    #    url: https://docs.xiaominfo.com
     version: v1.0.0
-#    license: Apache 2.0
-#    license-url: https://stackoverflow.com/
-#    terms-of-service-url: https://stackoverflow.com/
+    #    license: Apache 2.0
+    #    license-url: https://stackoverflow.com/
+    #    terms-of-service-url: https://stackoverflow.com/
     group:
       test1:
         group-name: 权限模块

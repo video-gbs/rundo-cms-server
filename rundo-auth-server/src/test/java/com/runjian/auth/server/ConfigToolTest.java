@@ -1,5 +1,7 @@
 package com.runjian.auth.server;
 
+import com.runjian.auth.server.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -29,5 +31,14 @@ public class ConfigToolTest {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String password = passwordEncoder.encode("123456");
         System.out.println(password);
+    }
+
+    @Test
+    public void testJWT() throws Exception {
+        String jwt = JwtUtil.createJWT("2123");
+        System.out.println(jwt);
+        Claims claims = JwtUtil.parseJWT("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJhZDZlZDYwMDQyNjY0ZTc3YjUxNGEwYTJiZDJlOGIxYiIsInN1YiI6IjEiLCJpc3MiOiJzZyIsImlhdCI6MTY3Mjk2ODU1NywiZXhwIjoxNjcyOTcyMTU3fQ.OJr_CH9I9Vxhg8kJzc666X53vZk_GffjjKTX1ZSTfGE");
+        String subject = claims.getSubject();
+        System.out.println(subject);
     }
 }
