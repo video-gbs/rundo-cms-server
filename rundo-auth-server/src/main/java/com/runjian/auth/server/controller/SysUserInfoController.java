@@ -27,9 +27,22 @@ public class SysUserInfoController {
     private SysUserInfoService sysUserService;
 
 
-    @PostMapping
+    @PostMapping("add")
     public CommonResponse addUser(SysUserInfo sysUserInfo){
         sysUserService.save(sysUserInfo);
+        return CommonResponse.success();
+    }
+
+    @PostMapping("update")
+    public CommonResponse updateUser(SysUserInfo sysUserInfo){
+        sysUserService.updateById(sysUserInfo);
+        return CommonResponse.success();
+    }
+
+    @GetMapping("get")
+    public CommonResponse getUser(SysUserInfo sysUserInfo){
+        sysUserService.getById(sysUserInfo.getId());
+
         return CommonResponse.success();
     }
 
@@ -37,6 +50,12 @@ public class SysUserInfoController {
     @GetMapping
     public CommonResponse deleteUser(SysUserInfo sysUserInfo){
         sysUserService.removeById(sysUserInfo);
+        return CommonResponse.success();
+    }
+
+    @PostMapping("batchDelete")
+    public CommonResponse batchDelete(List<SysUserInfo> sysUserInfos){
+        sysUserService.removeBatchByIds(sysUserInfos);
         return CommonResponse.success();
     }
 
