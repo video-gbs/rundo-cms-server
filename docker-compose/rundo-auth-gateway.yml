@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+  rundo-auth-server:
+    image: registry.cn-hangzhou.aliyuncs.com/hyy-rundo-gms/rundo-auth-gateway:latest
+    container_name: rundo-auth-gateway
+    ports:
+      - 7720:7720
+    volumes:
+      - /tmp:/tmp
