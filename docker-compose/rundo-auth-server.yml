@@ -7,3 +7,7 @@ services:
       - 7821:7821
     volumes:
       - /tmp:/tmp
+    extra_hosts:
+      - "rundo-mysql:124.71.21.11"
+      - "rundo-redis:124.71.21.11"
+      - "rundo-nacos:124.71.21.11"
