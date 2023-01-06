@@ -4,6 +4,7 @@ import com.runjian.auth.server.domain.dto.LoginUser;
 import com.runjian.auth.server.util.JwtUtil;
 import com.runjian.auth.server.util.RedisCache;
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +26,7 @@ import java.util.Objects;
  * @Description JWT过滤器
  * @date 2023-01-06 周五 8:59
  */
+@Slf4j
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 

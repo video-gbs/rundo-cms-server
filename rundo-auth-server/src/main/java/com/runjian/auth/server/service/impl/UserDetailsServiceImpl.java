@@ -1,6 +1,5 @@
 package com.runjian.auth.server.service.impl;
 
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.runjian.auth.server.domain.dto.LoginUser;
 import com.runjian.auth.server.entity.SysUserInfo;
@@ -56,12 +55,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("登录的用户账号为{}", username);
         // 查询用户信息
         LambdaQueryWrapper<SysUserInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysUserInfo::getUserAccount, username);
         SysUserInfo sysUserInfo = sysUserInfoMapper.selectOne(queryWrapper);
-        log.info("查询到的用户{}", JSONUtil.toJsonPrettyStr(sysUserInfo));
         // 如果没有查询到用户就抛出异常
         if (sysUserInfo == null) {
             throw new UsernameNotFoundException("用户名或者密码错误");
