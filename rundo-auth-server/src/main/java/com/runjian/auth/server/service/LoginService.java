@@ -12,4 +12,6 @@ import com.runjian.common.config.response.CommonResponse;
  */
 public interface LoginService {
     CommonResponse login(UserInfoDTO dto);
+
+    CommonResponse logout();
 }

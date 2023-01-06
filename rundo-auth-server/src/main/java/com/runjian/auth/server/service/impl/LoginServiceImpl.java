@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -39,13 +40,13 @@ public class LoginServiceImpl implements LoginService {
         // 调用AuthenticationManager authenticate进行用户认证
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword());
-        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
         // 认证失败，给出对应的提示
-        if (Objects.isNull(authenticate)) {
+        if (Objects.isNull(authentication)) {
             throw new UsernameNotFoundException("用户名或者密码错误");
         }
         //如果认证通过了，使用userid生成一个JWT令牌 并将JWT存入CommonResponse返回
-        LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         String userid = loginUser.getSysUserInfo().getId().toString();
         String jwt = JwtUtil.createJWT(userid);
         Map<String, String> map = new HashMap<>();
@@ -55,5 +56,17 @@ public class LoginServiceImpl implements LoginService {
 
         return CommonResponse.success(map);
     }
+
+    @Override
+    public CommonResponse logout() {
+        // 获取SecurityContextHolder中的用户ID
+        UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        Long userid = loginUser.getSysUserInfo().getId();
+        // 删除redis中的UserID
+        redisCache.deleteObject("login:" + userid);
+        return CommonResponse.success("注销成功");
+    }
+
 }
 

@@ -4,10 +4,12 @@ import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.domain.dto.UserInfoDTO;
 import com.runjian.auth.server.service.LoginService;
 import com.runjian.common.config.response.CommonResponse;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -24,10 +26,18 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
+
+    @ApiOperation(value = "用户登录接口")
     @PostMapping("/login")
     public CommonResponse login(@RequestBody UserInfoDTO userInfoDTO) {
         log.info(JSONUtil.toJsonStr(userInfoDTO));
         return loginService.login(userInfoDTO);
+    }
+
+    @ApiOperation(value = "用户登出接口")
+    @RequestMapping("/logout")
+    public CommonResponse logout() {
+        return loginService.logout();
     }
 
 }

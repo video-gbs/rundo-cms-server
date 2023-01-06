@@ -1,14 +1,17 @@
 package com.runjian.auth.server.domain.dto;
 
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.runjian.auth.server.entity.SysUserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Jiang4Yu
@@ -24,8 +27,16 @@ public class LoginUser implements UserDetails {
 
     private SysUserInfo sysUserInfo;
 
+    @JSONField(serialize = false)
+    private List<SimpleGrantedAuthority> authorities;
+
+    public LoginUser(SysUserInfo sysUserInfo) {
+        this.sysUserInfo = sysUserInfo;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        // authorities.stream().map()
         return null;
     }
 

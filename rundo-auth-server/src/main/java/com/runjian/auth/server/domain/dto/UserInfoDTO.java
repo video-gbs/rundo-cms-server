@@ -1,5 +1,6 @@
 package com.runjian.auth.server.domain.dto;
 
+import io.swagger.annotations.ApiParam;
 import lombok.Data;
 
 /**
@@ -12,7 +13,9 @@ import lombok.Data;
 @Data
 public class UserInfoDTO {
 
+    @ApiParam("用户名")
     private String username;
 
+    @ApiParam("密码")
     private String password;
 }
