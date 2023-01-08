@@ -3,11 +3,10 @@ package com.runjian.auth.server.controller;
 import com.runjian.auth.server.entity.SysUserInfo;
 import com.runjian.auth.server.service.SysUserInfoService;
 import com.runjian.common.config.response.CommonResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,6 +18,7 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:53:37
  */
+@Api(tags = "用户管理接口")
 @RestController
 @RequestMapping("/sysUserInfo")
 public class SysUserInfoController {
@@ -28,40 +28,44 @@ public class SysUserInfoController {
 
 
     @PostMapping("add")
-    public CommonResponse addUser(SysUserInfo sysUserInfo){
+    @ApiOperation("添加用户")
+    public CommonResponse addUser(@RequestBody SysUserInfo sysUserInfo) {
         sysUserService.save(sysUserInfo);
         return CommonResponse.success();
     }
 
-    @PostMapping("update")
-    public CommonResponse updateUser(SysUserInfo sysUserInfo){
+    @PostMapping("/update")
+    public CommonResponse updateUser(@RequestBody SysUserInfo sysUserInfo) {
         sysUserService.updateById(sysUserInfo);
         return CommonResponse.success();
     }
 
-    @GetMapping("get")
-    public CommonResponse getUser(SysUserInfo sysUserInfo){
+    @GetMapping("/get")
+    public CommonResponse getUser(@RequestBody SysUserInfo sysUserInfo) {
         sysUserService.getById(sysUserInfo.getId());
 
         return CommonResponse.success();
     }
 
 
+    @ApiOperation("删除用户")
+    @PostMapping("/delete")
     @GetMapping
-    public CommonResponse deleteUser(SysUserInfo sysUserInfo){
+    public CommonResponse deleteUser(@RequestBody SysUserInfo sysUserInfo) {
         sysUserService.removeById(sysUserInfo);
         return CommonResponse.success();
     }
 
-    @PostMapping("batchDelete")
-    public CommonResponse batchDelete(List<SysUserInfo> sysUserInfos){
+    @ApiOperation("批量删除用户")
+    @PostMapping("/batchDelete")
+    public CommonResponse batchDelete(@RequestBody List<SysUserInfo> sysUserInfos) {
         sysUserService.removeBatchByIds(sysUserInfos);
         return CommonResponse.success();
     }
 
+    @ApiOperation("查询所有用户")
     @GetMapping("/list")
     public CommonResponse getList() {
-        List<SysUserInfo> list = sysUserService.list();
-        return CommonResponse.success(list);
+        return CommonResponse.success(sysUserService.list());
     }
 }

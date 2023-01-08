@@ -27,11 +27,6 @@ public class AreaChannelController {
     private AreaChannelService areaChannelService;
 
 
-    @RequestMapping
-    public CommonResponse<String> SayHello(String name){
-        return CommonResponse.success(name + ",hello world");
-    }
-
     @GetMapping("/list")
     public CommonResponse<List<AreaChannel>> getAreaChannelList(){
         return CommonResponse.success(areaChannelService.list());
