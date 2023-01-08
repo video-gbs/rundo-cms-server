@@ -1,6 +1,5 @@
 package com.runjian.auth.server.controller;
 
-import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.domain.dto.UserInfoDTO;
 import com.runjian.auth.server.service.LoginService;
 import com.runjian.common.config.response.CommonResponse;
@@ -27,10 +26,9 @@ public class LoginController {
     private LoginService loginService;
 
 
-    @ApiOperation(value = "用户登录接口")
+    @ApiOperation(value = "用户登录接口", notes="请求登录验证用户接口，登录成功后返回token")
     @PostMapping("/login")
     public CommonResponse login(@RequestBody UserInfoDTO userInfoDTO) {
-        log.info(JSONUtil.toJsonStr(userInfoDTO));
         return loginService.login(userInfoDTO);
     }
 

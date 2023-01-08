@@ -4,7 +4,6 @@ import com.runjian.auth.server.domain.dto.LoginUser;
 import com.runjian.auth.server.util.JwtUtil;
 import com.runjian.auth.server.util.RedisCache;
 import io.jsonwebtoken.Claims;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +25,6 @@ import java.util.Objects;
  * @Description JWT过滤器
  * @date 2023-01-06 周五 8:59
  */
-@Slf4j
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
@@ -35,14 +33,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //获取token
+        // 1.获取token
         String token = request.getHeader("token");
         if (!StringUtils.hasText(token)) {
-            //放行
+            //放行，让后面的过滤器执行
             filterChain.doFilter(request, response);
             return;
         }
-        //解析token
+        // 2.解析token
         String userid;
         try {
             Claims claims = JwtUtil.parseJWT(token);
@@ -51,17 +49,17 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             e.printStackTrace();
             throw new RuntimeException("token非法");
         }
-        //从redis中获取用户信息
-        String redisKey = "login:" + userid;
-        LoginUser loginUser = redisCache.getCacheObject(redisKey);
+        // 3.获取userId,从redis中获取用户信息
+        LoginUser loginUser = redisCache.getCacheObject("login:" + userid);
         if (Objects.isNull(loginUser)) {
             throw new RuntimeException("用户未登录");
         }
-        //存入SecurityContextHolder
-        //TODO 获取权限信息封装到Authentication中
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
+        // 4.封装Authentication
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, null);
+
+        // 5.存入SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        //放行
+        // 6.放行，让后面的过滤器执行
         filterChain.doFilter(request, response);
 
     }

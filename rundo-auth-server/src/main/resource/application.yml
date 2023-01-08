@@ -1,17 +1,3 @@
-base:
-  config:
-    db:
-      hostname: rundo-mysql
-      port: 3306
-      database: rundo_rbac
-      username: root
-      password: rundomysql
-    redis:
-      hostname: rundo-redis
-      port: 6379
-      database: 0
-      password: rundoredis
-
 server:
   port: 7821
   servlet:
@@ -24,13 +10,17 @@ spring:
     allow-bean-definition-overriding: true
   profiles:
     active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     # type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${base.config.db.hostname}:${base.config.db.port}/${base.config.db.database}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
-    username: ${base.config.db.username}
-    password: ${base.config.db.password}
+    url: jdbc:mysql://rundo-mysql:3306/rundo_rbac?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: rundomysql
     druid:
       # 连接池初始化时创建的连接数量
       initial-size: 5
@@ -63,7 +53,6 @@ spring:
           merge-sql: true
           slow-sql-millis: 3000
           log-slow-sql: true
-
   cloud:
     nacos:
       # nacos服务注册中心地址
@@ -81,12 +70,11 @@ spring:
   config:
     import:
       - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
-
   redis:
-    host: ${base.config.redis.hostname}
-    port: ${base.config.redis.port}
-    database: ${base.config.redis.database}
-    password: ${base.config.redis.password}
+    host: rundo-redis
+    port: 6379
+    database: 0
+    password: rundoredis
     timeout: 1800
     lettuce:
       pool:
@@ -111,9 +99,24 @@ logging:
     # 异常处理
     org.springframework.security.web.access.ExceptionTranslationFilter: trace
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-config:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.runjian.auth.server.controller
+
 
 knife4j:
   enable: true
+  setting:
+    language: zh_cn
+    swagger-model-name:
   openapi:
     title: 视频平台接口文档
     description: "权限"
