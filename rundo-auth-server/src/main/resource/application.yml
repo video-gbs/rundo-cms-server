@@ -108,8 +108,8 @@ knife4j:
     language: zh-CN
     swagger-model-name:
   openapi:
-    title: 视频平台接口文档
-    description: 润建视频平台接口文档
+    title: 润建视频平台接口文档
+    description:  请先配置token后,在调试接口 !
     email: 105194@runjian.com
     concat: jiangyu
     url: https://docs.runjian.com

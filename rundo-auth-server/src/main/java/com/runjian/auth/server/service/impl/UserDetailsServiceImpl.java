@@ -55,16 +55,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // 查询用户信息
+        // 根据用户账户查询用户信息
         LambdaQueryWrapper<SysUserInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysUserInfo::getUserAccount, username);
         SysUserInfo sysUserInfo = sysUserInfoMapper.selectOne(queryWrapper);
-        // 如果没有查询到用户就抛出异常
+        // 如果查询不到数据就通过抛出异常来给出提示
         if (sysUserInfo == null) {
             throw new UsernameNotFoundException("用户名或者密码错误");
         }
-
-        // TODO 查询对应的权限信息
+        // TODO 根据用户查询权限信息 添加到LoginUser中
+        // 获取当前用户角色信息
+        // List<String> list = roleUserMapper.selectRoleByUserId(sysUserInfo.getId());
+        // log.info("用户的角色为：{}", list);
 
         // 把数据封装为 UserDetails 返回
         return new LoginUser(sysUserInfo);

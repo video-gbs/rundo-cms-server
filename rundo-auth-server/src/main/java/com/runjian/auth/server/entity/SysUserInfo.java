@@ -6,8 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,8 +21,9 @@ import java.util.Date;
  * @author Jiang4Yu@126.com
  * @since 2023-01-04 15:16:33
  */
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("tb_sys_user_info")
 @ApiModel(value = "SysUserInfo对象", description = "用户信息表")
 public class SysUserInfo implements Serializable {

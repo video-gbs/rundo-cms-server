@@ -27,8 +27,21 @@ public class LoginUser implements UserDetails {
 
     private SysUserInfo sysUserInfo;
 
+    /**
+     * 权限信息
+     */
+    private List<String> permissions;
+
+    /**
+     * 存储SpringSecurity需要的权限信息集合
+     */
     @JSONField(serialize = false)
     private List<SimpleGrantedAuthority> authorities;
+
+    public LoginUser(SysUserInfo sysUserInfo, List<String> permissions) {
+        this.sysUserInfo = sysUserInfo;
+        this.permissions = permissions;
+    }
 
     public LoginUser(SysUserInfo sysUserInfo) {
         this.sysUserInfo = sysUserInfo;
@@ -36,7 +49,13 @@ public class LoginUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // authorities.stream().map()
+        // // jwt 鉴权过中,如果已经存在则会直接反,这里是一个优化，一个线程中你只登录的第一次需要
+        // if (Objects.nonNull(authorities)) {
+        //     return authorities;
+        // }
+        // // 将permissions中的权限信息转换为GrantedAuthority对象
+        // authorities = permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        // return authorities;
         return null;
     }
 
