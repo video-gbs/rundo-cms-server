@@ -6,6 +6,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+/**
+ * 设备播放服务
+ * @author Miracle
+ * @date 2023/01/06 16:56
+ */
 @Service
 public class PlayVideoNorthServiceImpl implements PlayVideoNorthService {
     @Override

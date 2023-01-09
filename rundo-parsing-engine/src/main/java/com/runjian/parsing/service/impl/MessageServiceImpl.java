@@ -37,13 +37,13 @@ public class MessageServiceImpl implements MessageService {
     private String signInQueueId;
 
     @Override
-    public void msgDispatch(Message message) {
-        GatewayMqDto mqRequest = JSON.parseObject(new String(message.getBody()), GatewayMqDto.class);
+    public void msgDispatch(GatewayMqDto request) {
 
-        if (mqRequest.getMsgType().equals(MsgType.HEARTBEAT.getMsg())){
-            Long gatewayId = gatewayService.heartbeat(mqRequest.getSerialNum(), mqRequest.getTime());
+
+        if (request.getMsgType().equals(MsgType.HEARTBEAT.getMsg())){
+            Long gatewayId = gatewayService.heartbeat(request.getSerialNum(), request.getTime());
             GatewayMqDto mqResponse = (GatewayMqDto)GatewayMqDto.success();
-            mqResponse.copyRequest(mqRequest);
+            mqResponse.copyRequest(request);
             // 判断设备信息是否存在
             if (Objects.nonNull(gatewayId)){
                 // 响应成功
@@ -53,6 +53,10 @@ public class MessageServiceImpl implements MessageService {
                 RabbitMqProperties.QueueData queueData = rabbitMqProperties.getQueueData(signInQueueId);
                 rabbitMqSender.sendMsgByRoutingKey(queueData.getExchangeId(), queueData.getRoutingKey(), UUID.randomUUID().toString().replace("-", ""),  mqResponse, true);
             }
+        }else if (request.getMsgType().equals(MsgType.DEVICE_SIGN_IN.getMsg())){
+
+
         }
+
     }
 }

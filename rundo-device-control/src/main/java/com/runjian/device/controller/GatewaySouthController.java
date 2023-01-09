@@ -7,6 +7,11 @@ import com.runjian.device.vo.request.PostGatewaySignInReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 网关南向控制器
+ * @author Miracle
+ * @date 2023/01/06 16:56
+ */
 @RestController
 @RequestMapping("/gateway/south")
 public class GatewaySouthController {

@@ -1,13 +1,14 @@
 package com.runjian.parsing.service;
 
+import com.runjian.parsing.vo.GatewayMqDto;
 import org.springframework.amqp.core.Message;
 
 public interface MessageService {
 
     /**
      * 消息分配
-     * @param message
+     * @param request
      */
-    void msgDispatch(Message message);
+    void msgDispatch(GatewayMqDto request);
 
 }

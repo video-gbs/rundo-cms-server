@@ -9,6 +9,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * @author Miracle
+ * @date 2023/01/06 16:56
+ */
 @Mapper
 @Repository
 public interface GatewayMapper {

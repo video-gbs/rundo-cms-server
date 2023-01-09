@@ -10,6 +10,8 @@ public enum MsgType {
     SIGN_IN("SIGN_IN"),
     RE_SIGN_IN("RE_SIGN_IN"),
 
+    DEVICE_SIGN_IN("SIGN_IN"),
+
     HEARTBEAT("HEARTBEAT"),
 
     PLAY("PLAY"),

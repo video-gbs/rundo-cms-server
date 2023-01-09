@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * 网关南向服务
+ * @author Miracle
+ * @date 2023/01/06 16:56
+ */
 @Service
 public class GatewaySouthServiceImpl implements GatewaySouthService {
 

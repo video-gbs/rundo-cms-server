@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 /**
  * 网关信息
+ * @author Miracle
+ * @date 2023/01/06 16:56
  */
 @Data
 public class GatewayInfo {

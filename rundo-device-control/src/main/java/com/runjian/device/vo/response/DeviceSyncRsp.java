@@ -1,16 +1,9 @@
-package com.runjian.device.entity;
+package com.runjian.device.vo.response;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
-/**
- * 设备或者通道的详细信息
- * @author Miracle
- * @date 2023/01/06 16:56
- */
 @Data
-public class DetailInfo {
+public class DeviceSyncRsp {
 
     /**
      * 主键id
@@ -18,9 +11,14 @@ public class DetailInfo {
     private Long id;
 
     /**
-     * 设备通道id
+     * 设备类型 1-设备 2-NVR 3-DVR 4-CVR
      */
-    private Long dcId;
+    private Integer deviceType;
+
+    /**
+     * 在线状态 0-离线 1-在线
+     */
+    private Integer onlineState;
 
     /**
      * 类型 1-通道 2-设备
@@ -62,17 +60,4 @@ public class DetailInfo {
      */
     private Integer ptzType;
 
-    /**
-     * 用户名
-     */
-    private String username;
-
-    /**
-     * 密码
-     */
-    private String password;
-
-    private LocalDateTime updateTime;
-
-    private LocalDateTime createTime;
 }

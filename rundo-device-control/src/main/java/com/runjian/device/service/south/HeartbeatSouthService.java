@@ -1,5 +1,10 @@
 package com.runjian.device.service.south;
 
+/**
+ * 心跳南向服务
+ * @author Miracle
+ * @date 2023/01/06 16:56
+ */
 public interface HeartbeatSouthService {
 
     /**
