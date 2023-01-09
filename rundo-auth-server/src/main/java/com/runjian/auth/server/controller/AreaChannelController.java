@@ -1,7 +1,7 @@
 package com.runjian.auth.server.controller;
 
 import com.runjian.auth.server.entity.AreaChannel;
-import com.runjian.auth.server.service.AreaChannelService;
+import com.runjian.auth.server.service.area.AreaChannelService;
 import com.runjian.common.config.response.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

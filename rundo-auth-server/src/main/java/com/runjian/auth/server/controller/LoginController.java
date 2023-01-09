@@ -1,7 +1,7 @@
 package com.runjian.auth.server.controller;
 
 import com.runjian.auth.server.domain.dto.UserInfoDTO;
-import com.runjian.auth.server.service.LoginService;
+import com.runjian.auth.server.service.login.LoginService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

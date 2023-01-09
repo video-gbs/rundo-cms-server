@@ -1,7 +1,7 @@
 package com.runjian.auth.server.controller;
 
 import com.runjian.auth.server.entity.SysUserInfo;
-import com.runjian.auth.server.service.SysUserInfoService;
+import com.runjian.auth.server.service.system.SysUserInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
