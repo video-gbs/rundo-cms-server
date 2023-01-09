@@ -12,11 +12,13 @@ public interface DeviceNorthService {
     /**
      * 设备添加注册
      */
-    void deviceAdd(String deviceId, Long gatewayId, Integer online, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType);
+    void deviceAdd(String deviceId, Long gatewayId, Integer deviceType,
+                   String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType);
 
     /**
-     * 设备
+     * 设备注册状态修改
      */
+    void deviceSignSuccess(Long id);
 
     /**
      * 设备同步

@@ -1,12 +1,15 @@
 package com.runjian.device.feign;
 
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.device.vo.feign.PostDeviceAddReq;
+import com.runjian.device.vo.feign.PutPtzControlReq;
 import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 /**
  * 解析引擎远程调用
@@ -27,12 +30,11 @@ public interface ParsingEngineApi {
 
     /**
      * 设备添加
-     * @param deviceId 设备原始id
-     * @param gatewayId 网关id
+     * @param req 设备添加请求体
      * @return 设备id
      */
-    @PostMapping("/device/sign-in")
-    CommonResponse<Long> deviceAdd(String deviceId, Long gatewayId);
+    @PostMapping("/device/add")
+    CommonResponse<Long> deviceAdd(PostDeviceAddReq req);
 
     /**
      * 设备删除
@@ -47,6 +49,14 @@ public interface ParsingEngineApi {
      * @param deviceId 通道id
      * @return 通道同步结果返回体
      */
-    @PostMapping("/channel/sync")
+    @GetMapping("/channel/sync")
     CommonResponse<ChannelSyncRsp> channelSync(Long deviceId);
+
+    /**
+     * 云台控制服务
+     * @param req 云台控制请求体
+     * @return
+     */
+    @PutMapping("/ptz/control")
+    CommonResponse<Boolean> ptzControl(PutPtzControlReq req);
 }

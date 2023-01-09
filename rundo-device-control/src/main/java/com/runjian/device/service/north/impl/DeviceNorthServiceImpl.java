@@ -5,17 +5,21 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
+import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
-import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.service.DetailBaseService;
+import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.north.DeviceNorthService;
+import com.runjian.device.vo.feign.PostDeviceAddReq;
+import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,11 +49,13 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Autowired
     private DetailBaseService detailBaseService;
 
+    @Autowired
+    private ChannelNorthService channelNorthService;
+
     /**
      * 设备主动添加
      * @param deviceId 设备原始ID
      * @param gatewayId 网关ID
-     * @param online 在线与离线状态
      * @param deviceType 设备类型
      * @param ip ip地址
      * @param port 端口
@@ -61,7 +67,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deviceAdd(String deviceId, Long gatewayId, Integer online, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType) {
+    public void deviceAdd(String deviceId, Long gatewayId, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType) {
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByOriginIdAndGatewayId(deviceId, gatewayId);
         LocalDateTime nowTime = LocalDateTime.now();
         // 判断数据是否存在
@@ -69,7 +75,10 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             throw new BusinessException(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, String.format("设备%s在网关%s已存在", deviceId, gatewayId));
         }
         // 发送注册请求，返回数据ID
-        CommonResponse<Long> response = parsingEngineApi.deviceAdd(deviceId, gatewayId);
+        PostDeviceAddReq req = new PostDeviceAddReq();
+        req.setDeviceId(deviceId);
+        req.setGatewayId(gatewayId);
+        CommonResponse<Long> response = parsingEngineApi.deviceAdd(req);
         if (response.getCode() != 0){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备注册失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
@@ -80,7 +89,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         deviceInfo.setId(id);
         deviceInfo.setGatewayId(gatewayId);
         deviceInfo.setDeviceType(deviceType);
-        deviceInfo.setOnlineState(online);
+        deviceInfo.setOnlineState(CommonEnum.DISABLE.getCode());
         deviceInfo.setCreateTime(nowTime);
         deviceInfo.setUpdateTime(nowTime);
         // 设置状态为待注册
@@ -90,6 +99,20 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         detailBaseService.saveOrUpdateDetail(id, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime);
     }
 
+    /**
+     * 设备注册成功状态
+     * @param id 设备id
+     */
+    @Override
+    public void deviceSignSuccess(Long id) {
+        DeviceInfo deviceInfo = getDeviceInfo(id);
+        deviceInfo.setSignState(SignState.SUCCESS.getCode());
+        deviceInfo.setUpdateTime(LocalDateTime.now());
+        // 修改设备注册状态
+        deviceMapper.updateSignState(deviceInfo);
+        // 异步触发通道同步
+        Constant.poolExecutor.execute(() -> channelNorthService.channelSync(id));
+    }
 
 
     /**
@@ -98,13 +121,9 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public DeviceSyncRsp deviceSync(Long id) {
-        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
-        // 判断是否存在的数据
-        if (deviceInfoOp.isEmpty()){
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "设备id:" + id);
-        }
-        DeviceInfo deviceInfo = deviceInfoOp.get();
+        DeviceInfo deviceInfo = getDeviceInfo(id);
         // 判断是否设备在线
         if (deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("设备%s处于离线状态", id));
@@ -125,16 +144,30 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         return data;
     }
 
+
+    /**
+     * 获取设备信息
+     * @param id 设备id
+     * @return
+     */
+    private DeviceInfo getDeviceInfo(Long id) {
+        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
+        // 判断是否存在的数据
+        if (deviceInfoOp.isEmpty()){
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "设备id:" + id);
+        }
+        DeviceInfo deviceInfo = deviceInfoOp.get();
+
+        return deviceInfo;
+    }
+
     /**
      * 删除设备
      * @param id 设备id
      */
     @Override
     public void delDevice(Long id) {
-        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
-        if (deviceInfoOp.isEmpty()){
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "设备id:" + id);
-        }
+        DeviceInfo deviceInfo = getDeviceInfo(id);
         // 触发删除流程，返回boolean
         CommonResponse<Boolean> response = parsingEngineApi.deviceDelete(id);
         if (response.getCode() != 0){
@@ -142,7 +175,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
         Boolean isDeleted = response.getData();
-        DeviceInfo deviceInfo = deviceInfoOp.get();
+
         // 判断网关是否删除成功
         if (isDeleted){
             // 若删除成功，删除所有数据

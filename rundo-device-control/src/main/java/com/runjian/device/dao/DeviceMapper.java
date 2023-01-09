@@ -22,4 +22,6 @@ public interface DeviceMapper {
     Optional<DeviceInfo> selectByOriginIdAndGatewayId(String deviceId, Long gatewayId);
 
     void deleteById(Long id);
+
+    void updateSignState(DeviceInfo deviceInfo);
 }
