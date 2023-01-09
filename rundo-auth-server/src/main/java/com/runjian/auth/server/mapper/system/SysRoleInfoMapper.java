@@ -1,4 +1,4 @@
-package com.runjian.auth.server.mapper;
+package com.runjian.auth.server.mapper.system;
 
 import com.runjian.auth.server.entity.SysRoleInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

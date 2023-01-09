@@ -1,7 +1,7 @@
 package com.runjian.auth.server.service.impl;
 
 import com.runjian.auth.server.entity.SysRoleInfo;
-import com.runjian.auth.server.mapper.SysRoleInfoMapper;
+import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.service.SysRoleInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

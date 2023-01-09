@@ -1,7 +1,7 @@
 package com.runjian.auth.server.service.impl;
 
 import com.runjian.auth.server.entity.SysDict;
-import com.runjian.auth.server.mapper.SysDictMapper;
+import com.runjian.auth.server.mapper.system.SysDictMapper;
 import com.runjian.auth.server.service.SysDictService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

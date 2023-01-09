@@ -1,7 +1,7 @@
-package com.runjian.auth.server.service.impl;
+package com.runjian.auth.server.service.impl.area;
 
 import com.runjian.auth.server.entity.AreaChannel;
-import com.runjian.auth.server.mapper.AreaChannelMapper;
+import com.runjian.auth.server.mapper.area.AreaChannelMapper;
 import com.runjian.auth.server.service.AreaChannelService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.runjian.auth.server.service.impl;
 
 import com.runjian.auth.server.entity.SysOrg;
-import com.runjian.auth.server.mapper.SysOrgMapper;
+import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.service.SysOrgService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

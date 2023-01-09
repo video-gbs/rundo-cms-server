@@ -1,5 +1,6 @@
 package com.runjian.auth.server.config;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @Description
  * @date 2023-01-04 周三 15:58
  */
+@Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
     @Override

@@ -1,4 +1,4 @@
-package com.runjian.auth.server.mapper;
+package com.runjian.auth.server.mapper.area;
 
 import com.runjian.auth.server.entity.ChannelOperation;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

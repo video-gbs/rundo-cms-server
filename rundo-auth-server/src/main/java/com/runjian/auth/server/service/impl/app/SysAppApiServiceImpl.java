@@ -1,4 +1,4 @@
-package com.runjian.auth.server.service.impl;
+package com.runjian.auth.server.service.impl.app;
 
 import com.runjian.auth.server.entity.SysAppApi;
 import com.runjian.auth.server.mapper.app.SysAppApiMapper;

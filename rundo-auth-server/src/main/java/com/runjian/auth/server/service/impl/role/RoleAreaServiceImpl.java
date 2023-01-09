@@ -1,4 +1,4 @@
-package com.runjian.auth.server.service.impl;
+package com.runjian.auth.server.service.impl.role;
 
 import com.runjian.auth.server.entity.RoleArea;
 import com.runjian.auth.server.mapper.role.RoleAreaMapper;
