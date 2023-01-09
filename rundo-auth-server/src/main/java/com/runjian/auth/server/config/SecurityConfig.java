@@ -1,6 +1,5 @@
 package com.runjian.auth.server.config;
 
-import com.runjian.auth.server.filter.AuthenticationEntryPointImpl;
 import com.runjian.auth.server.filter.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,9 +29,6 @@ public class SecurityConfig {
 
     @Autowired
     private JwtTokenFilter jwtTokenFilter;
-
-    @Autowired
-    private AuthenticationEntryPointImpl authenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

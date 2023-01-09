@@ -106,7 +106,13 @@ knife4j:
   enable: true
   setting:
     language: zh-CN
-    swagger-model-name:
+    enable-document-manage: true
+    enable-reload-cache-parameter: true
+    enable-request-cache: true
+    enable-filter-multipart-apis: true
+    enable-debug: true
+    enable-open-api: true
+    enable-group: true
   openapi:
     title: 润建视频平台接口文档
     description:  请先配置token后,在调试接口 !
