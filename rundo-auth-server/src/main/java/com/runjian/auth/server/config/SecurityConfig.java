@@ -87,8 +87,6 @@ public class SecurityConfig {
         // 把token校验过滤器添加到过滤链中
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // // 配置登入认证失败、权限认证失败异常处理器
-        // http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler);
         // 配置登入认证失败、权限认证失败异常处理器
         http.exceptionHandling().authenticationEntryPoint(
                 (request, response, ex) -> {
