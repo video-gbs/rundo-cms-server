@@ -1,8 +1,8 @@
 package com.runjian.auth.server.config;
 
 import com.runjian.auth.server.filter.JwtTokenFilter;
-import com.runjian.auth.server.handler.AccessDeniedHandlerImpl;
-import com.runjian.auth.server.handler.AuthenticationEntryPointImpl;
+// import com.runjian.auth.server.handler.AccessDeniedHandlerImpl;
+// import com.runjian.auth.server.handler.AuthenticationEntryPointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Jiang4Yu
@@ -41,10 +43,10 @@ public class SecurityConfig {
     }
 
 
-    @Autowired
-    AuthenticationEntryPointImpl authenticationEntryPoint;
-    @Autowired
-    AccessDeniedHandlerImpl accessDeniedHandler;
+    // @Autowired
+    // AuthenticationEntryPointImpl authenticationEntryPoint;
+    // @Autowired
+    // AccessDeniedHandlerImpl accessDeniedHandler;
 
     /**
      * 过滤器链
@@ -86,7 +88,13 @@ public class SecurityConfig {
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         // // 配置登入认证失败、权限认证失败异常处理器
-        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler);
+        // http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler);
+        // 配置登入认证失败、权限认证失败异常处理器
+        http.exceptionHandling().authenticationEntryPoint(
+                (request, response, ex) -> {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+                }
+        );
 
         // 允许跨域
         http.cors();
