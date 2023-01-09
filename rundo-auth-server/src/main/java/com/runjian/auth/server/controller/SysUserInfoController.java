@@ -6,6 +6,7 @@ import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class SysUserInfoController {
 
     @PostMapping("add")
     @ApiOperation("添加用户")
+    @PreAuthorize("hasAuthority('addUser')")
     public CommonResponse addUser(@RequestBody SysUserInfo sysUserInfo) {
         sysUserService.save(sysUserInfo);
         return CommonResponse.success();
@@ -50,7 +52,7 @@ public class SysUserInfoController {
 
     @ApiOperation("删除用户")
     @PostMapping("/delete")
-    @GetMapping
+    @PreAuthorize("hasAuthority('deleteUser')")
     public CommonResponse deleteUser(@RequestBody SysUserInfo sysUserInfo) {
         sysUserService.removeById(sysUserInfo);
         return CommonResponse.success();

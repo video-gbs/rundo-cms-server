@@ -1,7 +1,7 @@
 package com.runjian.auth.server.service.impl;
 
 import com.runjian.auth.server.entity.VideoTapePlan;
-import com.runjian.auth.server.mapper.VideoTapePlanMapper;
+import com.runjian.auth.server.mapper.tapeplan.VideoTapePlanMapper;
 import com.runjian.auth.server.service.VideoTapePlanService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

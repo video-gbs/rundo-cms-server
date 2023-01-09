@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Jiang4Yu
@@ -49,14 +51,13 @@ public class LoginUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // // jwt 鉴权过中,如果已经存在则会直接反,这里是一个优化，一个线程中你只登录的第一次需要
-        // if (Objects.nonNull(authorities)) {
-        //     return authorities;
-        // }
-        // // 将permissions中的权限信息转换为GrantedAuthority对象
-        // authorities = permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-        // return authorities;
-        return null;
+        // jwt 鉴权过中,如果已经存在则会直接反,这里是一个优化，一个线程中你只登录的第一次需要
+        if (Objects.nonNull(authorities)) {
+            return authorities;
+        }
+        // 将permissions中的权限信息转换为GrantedAuthority对象
+        authorities = permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        return authorities;
     }
 
 

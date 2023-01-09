@@ -3,7 +3,7 @@ package com.runjian.auth.server.service.impl;
 import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.domain.dto.LoginUser;
 import com.runjian.auth.server.domain.dto.UserInfoDTO;
-import com.runjian.auth.server.mapper.SysRoleUserMapper;
+import com.runjian.auth.server.mapper.role.SysRoleUserMapper;
 import com.runjian.auth.server.service.LoginService;
 import com.runjian.auth.server.util.JwtUtil;
 import com.runjian.auth.server.util.RedisCache;

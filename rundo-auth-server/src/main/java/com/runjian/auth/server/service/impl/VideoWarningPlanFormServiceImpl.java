@@ -1,7 +1,7 @@
 package com.runjian.auth.server.service.impl;
 
 import com.runjian.auth.server.entity.VideoWarningPlanForm;
-import com.runjian.auth.server.mapper.VideoWarningPlanFormMapper;
+import com.runjian.auth.server.mapper.waringplan.VideoWarningPlanFormMapper;
 import com.runjian.auth.server.service.VideoWarningPlanFormService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;

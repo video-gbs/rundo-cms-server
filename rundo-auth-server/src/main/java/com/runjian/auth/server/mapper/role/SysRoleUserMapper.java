@@ -1,4 +1,4 @@
-package com.runjian.auth.server.mapper;
+package com.runjian.auth.server.mapper.role;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.runjian.auth.server.entity.SysRoleUser;
@@ -19,16 +19,11 @@ import java.util.List;
 public interface SysRoleUserMapper extends BaseMapper<SysRoleUser> {
 
     /**
-     * 获取用户的角色
+     * 根据userID查询用户角色
      *
      * @param userId
      * @return
      */
     List<String> selectRoleByUserId(@Param("userId") Long userId);
 
-    /**
-     * 查询所有角色对应的路径
-     *
-     */
-    // List<RoleUrlDto> selectRoleUrl();
 }

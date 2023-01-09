@@ -1,8 +1,11 @@
-package com.runjian.auth.server.mapper;
+package com.runjian.auth.server.mapper.role;
 
 import com.runjian.auth.server.entity.SysRoleMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +17,13 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SysRoleMenuMapper extends BaseMapper<SysRoleMenu> {
+
+
+    /**
+     * 根据用户角色查询用户Menu菜单权限列表
+     *
+     * @return
+     */
+    List<String> selectMenuAuthByroleCodes(@Param("roleCodes") List<String> roleCodes);
 
 }

@@ -1,4 +1,4 @@
-package com.runjian.auth.server.mapper;
+package com.runjian.auth.server.mapper.waringplan;
 
 import com.runjian.auth.server.entity.VideoWarningPlanForm;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

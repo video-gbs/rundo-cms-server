@@ -1,4 +1,4 @@
-package com.runjian.auth.server.mapper;
+package com.runjian.auth.server.mapper.tapeplan;
 
 import com.runjian.auth.server.entity.VideoTapePlan;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

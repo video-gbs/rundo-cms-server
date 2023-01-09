@@ -1,8 +1,11 @@
-package com.runjian.auth.server.mapper;
+package com.runjian.auth.server.mapper.role;
 
 import com.runjian.auth.server.entity.RoleArea;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +17,10 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface RoleAreaMapper extends BaseMapper<RoleArea> {
-
+    /**
+     * 根据用户角色查询用户安全区划权限
+     *
+     * @return
+     */
+    List<String> selectAreaAuthByroleCodes(@Param("roleCodes") List<String> roleCodes);
 }

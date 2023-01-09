@@ -1,4 +1,4 @@
-package com.runjian.auth.server.mapper;
+package com.runjian.auth.server.mapper.app;
 
 import com.runjian.auth.server.entity.SysAppMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

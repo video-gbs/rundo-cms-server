@@ -1,8 +1,11 @@
-package com.runjian.auth.server.mapper;
+package com.runjian.auth.server.mapper.role;
 
 import com.runjian.auth.server.entity.SysRoleApp;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +17,10 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SysRoleAppMapper extends BaseMapper<SysRoleApp> {
-
+    /**
+     * 根据用户角色查询用户APP应用权限列表
+     *
+     * @return
+     */
+    List<String> selectAppAuthByroleCodes(@Param("roleCodes") List<String> roleCodes);
 }

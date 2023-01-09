@@ -1,7 +1,7 @@
 package com.runjian.auth.server.service.impl;
 
 import com.runjian.auth.server.entity.RoleChannelOperation;
-import com.runjian.auth.server.mapper.RoleChannelOperationMapper;
+import com.runjian.auth.server.mapper.role.RoleChannelOperationMapper;
 import com.runjian.auth.server.service.RoleChannelOperationService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
