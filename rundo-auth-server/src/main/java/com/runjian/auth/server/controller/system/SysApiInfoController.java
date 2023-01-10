@@ -30,6 +30,6 @@ public class SysApiInfoController {
     @PostMapping("/addSysApi")
     @ApiOperation("添加接口")
     public CommonResponse addSysApi(@RequestBody SysApiInfoDTO dto) {
-        return CommonResponse.success(sysApiInfoService.addSysApi(dto));
+        return sysApiInfoService.addSysApi(dto);
     }
 }
