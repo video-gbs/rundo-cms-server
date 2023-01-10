@@ -27,7 +27,7 @@ public class SysUserInfoController {
     private SysUserInfoService sysUserService;
 
 
-    @PostMapping("add")
+    @PostMapping("/addUser")
     @ApiOperation("添加用户")
     public CommonResponse addUser(@RequestBody SysUserInfoDTO dto) {
         return sysUserService.addUser(dto);
@@ -39,8 +39,9 @@ public class SysUserInfoController {
     }
 
     @GetMapping("/getUser")
-    public CommonResponse getUser() {
-        return sysUserService.getUser();
+    @ApiOperation("获取用户详情")
+    public CommonResponse getUser(Long id) {
+        return sysUserService.getUser(id);
     }
 
 

@@ -3,10 +3,13 @@ package com.runjian.auth.server.service.system.impl;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
+import com.runjian.auth.server.domain.vo.UserInfoVo;
 import com.runjian.auth.server.entity.SysRoleUser;
 import com.runjian.auth.server.entity.SysUserInfo;
+import com.runjian.auth.server.entity.SysUserOrg;
 import com.runjian.auth.server.mapper.role.SysRoleUserMapper;
 import com.runjian.auth.server.mapper.system.SysUserInfoMapper;
+import com.runjian.auth.server.mapper.user.SysUserOrgMapper;
 import com.runjian.auth.server.service.system.SysUserInfoService;
 import com.runjian.auth.server.util.PasswordUtil;
 import com.runjian.auth.server.util.SnowflakeUtil;
@@ -36,6 +39,11 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     private PasswordUtil passwordUtil;
     @Autowired
     private SysUserInfoMapper sysUserInfoMapper;
+
+    @Autowired
+    private SysUserOrgMapper sysUserOrgMapper;
+
+    @Autowired
     private SysRoleUserMapper sysRoleUserMapper;
 
     @Override
@@ -62,7 +70,14 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         // sysUserInfo.setCreatedTime();
         // sysUserInfo.setUpdatedTime();
         sysUserInfoMapper.insert(sysUserInfo);
-        // 2.处理角色信息
+        // 2.处理用户部门信息
+        SysUserOrg sysUserOrg = new SysUserOrg();
+        sysUserOrg.setId(idUtil.nextId());
+        sysUserOrg.setOrgId(dto.getOrgId());
+        sysUserOrg.setUserId(userId);
+        sysUserOrgMapper.insert(sysUserOrg);
+
+        // 3.处理角色信息
         List<Long> roleIds = dto.getRoleIds();
         if (Objects.nonNull(roleIds)) {
             for (Long roleId : roleIds) {
@@ -70,10 +85,26 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
                 sysRoleUser.setId(idUtil.nextId());
                 sysRoleUser.setUserId(userId);
                 sysRoleUser.setRoleId(roleId);
+                log.info("添加用户角色映射关系{}", JSONUtil.toJsonPrettyStr(sysRoleUser));
                 sysRoleUserMapper.insert(sysRoleUser);
             }
         }
         return CommonResponse.success("操作成功");
+    }
+
+    @Override
+    public CommonResponse<UserInfoVo> getUser(Long userId) {
+        // 1 获取用户基本信息
+
+        // 2 获取用户部门信息
+
+        // 3 获取用户角色信息
+
+        //
+
+
+        UserInfoVo userInfoVo = new UserInfoVo();
+        return CommonResponse.success(userInfoVo);
     }
 
     @Override
@@ -91,10 +122,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         return null;
     }
 
-    @Override
-    public CommonResponse getUser() {
-        return null;
-    }
+
 
     @Override
     public CommonResponse getUserList() {

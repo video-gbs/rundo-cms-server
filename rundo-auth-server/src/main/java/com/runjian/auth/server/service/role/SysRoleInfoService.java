@@ -1,7 +1,9 @@
 package com.runjian.auth.server.service.role;
 
+import com.runjian.auth.server.domain.dto.SysRoleInfoDTO;
 import com.runjian.auth.server.entity.SysRoleInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.runjian.common.config.response.CommonResponse;
 
 /**
  * <p>
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysRoleInfoService extends IService<SysRoleInfo> {
 
+    CommonResponse addRole(SysRoleInfoDTO dto);
 }

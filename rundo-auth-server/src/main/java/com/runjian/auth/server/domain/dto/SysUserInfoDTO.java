@@ -4,6 +4,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -20,12 +24,14 @@ public class SysUserInfoDTO {
 
     // 基本信息
     @ApiModelProperty(value = "用户账户",required = true)
+    @NotBlank
     private String userAccount;
 
     @ApiModelProperty("用户姓名")
     private String userName;
 
     @ApiModelProperty(value = "用户密码",required = true)
+    @NotNull
     private String password;
 
     @ApiModelProperty("确认密码")
@@ -35,9 +41,11 @@ public class SysUserInfoDTO {
     private Date expiryDateStart;
 
     @ApiModelProperty(value = "有效期终",required = true)
+    @Future
     private Date expiryDateEnd;
 
     @ApiModelProperty(value = "所属部门",required = true)
+    @NotNull
     private Long orgId;
 
     // 详细信息
@@ -48,6 +56,7 @@ public class SysUserInfoDTO {
     private String phone;
 
     @ApiModelProperty("邮箱")
+    @Email
     private String email;
     @ApiModelProperty("地址")
     private String address;

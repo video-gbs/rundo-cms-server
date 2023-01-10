@@ -2,6 +2,7 @@ package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
+import com.runjian.auth.server.domain.vo.UserInfoVo;
 import com.runjian.auth.server.entity.SysUserInfo;
 import com.runjian.common.config.response.CommonResponse;
 
@@ -50,7 +51,7 @@ public interface SysUserInfoService extends IService<SysUserInfo> {
      *
      * @return
      */
-    CommonResponse getUser();
+    CommonResponse<UserInfoVo> getUser(Long userId);
 
     /**
      * 用户列表
