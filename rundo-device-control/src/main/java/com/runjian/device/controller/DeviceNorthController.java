@@ -4,6 +4,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.DeviceNorthService;
 import com.runjian.device.vo.request.PostDeviceAddReq;
+import com.runjian.device.vo.request.PutDeviceSignSuccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,12 +36,13 @@ public class DeviceNorthController {
 
     /**
      * 设备注册成功状态转变
-     * @param deviceId 设备id
+     * @param request 设备注册状态转为成功请求体
      * @return
      */
-    @GetMapping("/sign/success")
-    public CommonResponse deviceSignSuccess(Long deviceId){
-        deviceNorthService.deviceSignSuccess(deviceId);
+    @PutMapping("/sign/success")
+    public CommonResponse deviceSignSuccess(@RequestBody PutDeviceSignSuccess request){
+        validatorService.validateRequest(request);
+        deviceNorthService.deviceSignSuccess(request.getDeviceId());
         return CommonResponse.success();
     }
 

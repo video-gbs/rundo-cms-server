@@ -10,7 +10,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-
+/**
+ * 设备注册请求体
+ * @author Miracle
+ * @date 2023/01/06 16:56
+ */
 @Data
 public class PostGatewaySignInReq {
 
@@ -67,6 +71,12 @@ public class PostGatewaySignInReq {
     @NotBlank(message = "端口不能为空")
     @Size(max = 10, message = "非法端口")
     private String port;
+
+    /**
+     * 心跳过期时间不能为空
+     */
+    @NotNull(message = "过期时间不能为空")
+    private LocalDateTime outTime;
 
     /**
      * 转化为gateway对象

@@ -106,6 +106,9 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Override
     public void deviceSignSuccess(Long id) {
         DeviceInfo deviceInfo = getDeviceInfo(id);
+        if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "该设备注册状态已是成功状态");
+        }
         deviceInfo.setSignState(SignState.SUCCESS.getCode());
         deviceInfo.setUpdateTime(LocalDateTime.now());
         // 修改设备注册状态

@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -42,4 +43,8 @@ public interface GatewayMapper {
             " WHERE id = #{id} " +
             " </script>"})
     Optional<GatewayInfo> selectById(Long id);
+
+    void batchUpdateOnlineState(Set<Long> gatewayIds, Integer code);
+
+    void updateOnlineState(Long gatewayId, Integer code);
 }

@@ -2,6 +2,8 @@ package com.runjian.device.service.south;
 
 import com.runjian.device.entity.GatewayInfo;
 
+import java.time.LocalDateTime;
+
 /**
  * 网关南向服务
  * @author Miracle
@@ -10,18 +12,29 @@ import com.runjian.device.entity.GatewayInfo;
 public interface GatewaySouthService {
 
     /**
-     * 网关注册
+     * 网关心跳处理
+     * @Param gatewayId 网关Id
+     * @Param outTime 过期时间
      */
-    void signIn(GatewayInfo gatewayInfo);
+    void heartbeat();
+
+    /**
+     * 网关注册
+     * @param gatewayInfo 网关信息
+     */
+    void signIn(GatewayInfo gatewayInfo, LocalDateTime outTime);
 
     /**
      * 网关同步
+     * @param gatewayInfo 网关信息
      */
     void update(GatewayInfo gatewayInfo);
 
-    /**
-     * 网关配置
-     */
 
+
+    /**
+     * 更新心跳信息
+     */
+    void updateHeartbeat(Long gatewayId, LocalDateTime outTime);
 
 }

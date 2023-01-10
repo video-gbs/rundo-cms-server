@@ -2,6 +2,11 @@ package com.runjian.device.vo.response;
 
 import lombok.Data;
 
+/**
+ * 设备同步返回体
+ * @author Miracle
+ * @date 2023/1/9 9:55
+ */
 @Data
 public class DeviceSyncRsp {
 

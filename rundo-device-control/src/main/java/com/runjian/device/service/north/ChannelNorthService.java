@@ -14,4 +14,10 @@ public interface ChannelNorthService {
      * @return
      */
     ChannelSyncRsp channelSync(Long deviceId);
+
+
+    /**
+     * 通道注册状态转为成功
+     */
+    void channelSignSuccess(Long channelId);
 }

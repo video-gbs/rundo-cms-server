@@ -127,4 +127,21 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         }
         return channelSyncRsp;
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void channelSignSuccess(Long channelId) {
+        Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(channelId);
+        if (channelInfoOp.isEmpty()){
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("通道%s不存在", channelId));
+        }
+        ChannelInfo channelInfo = channelInfoOp.get();
+        if(channelInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "该通道的注册状态已是成功状态");
+        }
+        channelInfo.setSignState(SignState.SUCCESS.getCode());
+        channelInfo.setUpdateTime(LocalDateTime.now());
+        channelMapper.updateSignState(channelInfo);
+
+    }
 }

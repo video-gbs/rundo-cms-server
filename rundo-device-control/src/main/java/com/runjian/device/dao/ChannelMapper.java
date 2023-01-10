@@ -16,4 +16,6 @@ public interface ChannelMapper {
     void batchSave(List<ChannelInfo> saveList);
 
     Optional<ChannelInfo> selectById(Long channelId);
+
+    void updateSignState(ChannelInfo channelInfo);
 }
