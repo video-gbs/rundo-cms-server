@@ -37,10 +37,10 @@ public class UserInfoVo {
     private String orgName;
 
     @ApiModelProperty("间接所属部门")
-    private Long orgPId;
+    private String orgPIds;
 
     @ApiModelProperty("间接所属部门")
-    private String orgNameStr;
+    private List<String> orgNameStr;
 
     // 详细信息
     @ApiModelProperty("用户工号")
@@ -61,6 +61,6 @@ public class UserInfoVo {
     private List<Long> roleIds;
 
     @ApiModelProperty("所有角色名称")
-    private List<String> roleName;
+    private List<String> roleNames;
 
 }

@@ -1,13 +1,14 @@
 package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
 import com.runjian.auth.server.domain.vo.UserInfoVo;
-import com.runjian.auth.server.entity.SysRoleUser;
-import com.runjian.auth.server.entity.SysUserInfo;
-import com.runjian.auth.server.entity.SysUserOrg;
+import com.runjian.auth.server.entity.*;
 import com.runjian.auth.server.mapper.role.SysRoleUserMapper;
+import com.runjian.auth.server.mapper.system.SysOrgMapper;
+import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.mapper.system.SysUserInfoMapper;
 import com.runjian.auth.server.mapper.user.SysUserOrgMapper;
 import com.runjian.auth.server.service.system.SysUserInfoService;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,6 +47,12 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
 
     @Autowired
     private SysRoleUserMapper sysRoleUserMapper;
+
+    @Autowired
+    private SysOrgMapper sysOrgMapper;
+
+    @Autowired
+    private SysRoleInfoMapper sysRoleInfoMapper;
 
     @Override
     public CommonResponse addUser(SysUserInfoDTO dto) {
@@ -95,16 +103,80 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     @Override
     public CommonResponse<UserInfoVo> getUser(Long userId) {
         // 1 获取用户基本信息
-
-        // 2 获取用户部门信息
-
+        SysUserInfo sysUserInfo = sysUserInfoMapper.selectById(userId);
+        // 2 获取 用户--部门 映射关系
+        SysUserOrg sysUserOrg = getSysUserOrg(userId);
+        // 2.1 获取部门详细信息
+        SysOrg sysOrg = sysOrgMapper.selectById(sysUserOrg.getOrgId());
         // 3 获取用户角色信息
-
-        //
-
-
+        List<SysRoleUser> sysRoleUserList = getSysRoleUser(userId);
+        // 组合所有信息
         UserInfoVo userInfoVo = new UserInfoVo();
+        userInfoVo.setUserAccount(sysUserInfo.getUserAccount());
+        userInfoVo.setUserName(sysUserInfo.getUserName());
+        userInfoVo.setExpiryDateStart(sysUserInfo.getExpiryDateStart());
+        userInfoVo.setExpiryDateEnd(sysUserInfo.getExpiryDateEnd());
+        userInfoVo.setOrgId(sysUserOrg.getOrgId());
+        userInfoVo.setOrgName(sysOrg.getOrgName());
+
+        userInfoVo.setOrgPIds(sysOrg.getOrgIds());
+        // TODO 待处理 上级部门的名称并组合成字符串
+        userInfoVo.setOrgNameStr(null);
+
+        userInfoVo.setJobNo(sysUserInfo.getJobNo());
+        userInfoVo.setPhone(sysUserInfo.getPhone());
+        userInfoVo.setEmail(sysUserInfo.getEmail());
+        userInfoVo.setAddress(sysUserInfo.getAddress());
+        userInfoVo.setDescription(sysUserInfo.getDescription());
+
+        List<Long> roleIds = new ArrayList<>();
+        List<String> roleIdNames = new ArrayList<>();
+        for (SysRoleUser sysRoleUser : sysRoleUserList) {
+            SysRoleInfo sysRole = sysRoleInfoMapper.selectById(sysRoleUser.getRoleId());
+            roleIds.add(sysRole.getId());
+            roleIdNames.add(sysRole.getRoleName());
+        }
+        userInfoVo.setRoleIds(roleIds);
+        userInfoVo.setRoleNames(roleIdNames);
+
         return CommonResponse.success(userInfoVo);
+    }
+
+    /**
+     * 通过部门ID 获取所的上级部门的名称并组合成字符串
+     *
+     * @param orgId
+     * @return
+     */
+    private String getOrgNameStr(Long orgId) {
+        SysOrg sysOrg = sysOrgMapper.selectById(orgId);
+
+
+        return null;
+    }
+
+    /**
+     * 根据userId用户获取 用户-组织 映射关系
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    private SysUserOrg getSysUserOrg(Long userId) {
+        LambdaQueryWrapper<SysUserOrg> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUserOrg::getUserId, userId);
+        return sysUserOrgMapper.selectOne(queryWrapper);
+    }
+
+    /**
+     * 根据userId用户获取 用户-角色 映射关系
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    private List<SysRoleUser> getSysRoleUser(Long userId) {
+        LambdaQueryWrapper<SysRoleUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysRoleUser::getUserId, userId);
+        return sysRoleUserMapper.selectList(queryWrapper);
     }
 
     @Override
@@ -121,7 +193,6 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     public CommonResponse batchDeleteUsers() {
         return null;
     }
-
 
 
     @Override

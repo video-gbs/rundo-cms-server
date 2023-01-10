@@ -70,6 +70,10 @@ public class SysUserInfo implements Serializable {
     @TableField("expiry_date_end")
     private Date expiryDateEnd;
 
+    @ApiModelProperty("描述信息")
+    @TableField("description")
+    private String description;
+
     @ApiModelProperty("租户号")
     @TableField("tenant_id")
     private Long tenantId;
