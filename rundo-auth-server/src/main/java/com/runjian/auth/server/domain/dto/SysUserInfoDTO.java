@@ -47,6 +47,8 @@ public class SysUserInfoDTO {
     @ApiModelProperty("电话")
     private String phone;
 
+    @ApiModelProperty("邮箱")
+    private String email;
     @ApiModelProperty("地址")
     private String address;
 

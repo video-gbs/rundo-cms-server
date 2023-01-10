@@ -81,5 +81,12 @@ public class LoginServiceImpl implements LoginService {
         return CommonResponse.success("注销成功");
     }
 
+    @Override
+    public CommonResponse refreshToken(String oldToken) {
+        if (!oldToken.equals("")) {
+}
+        return null;
+    }
+
 }
 

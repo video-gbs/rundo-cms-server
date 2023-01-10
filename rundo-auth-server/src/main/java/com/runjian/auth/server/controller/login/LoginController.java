@@ -41,4 +41,10 @@ public class LoginController {
         return loginService.logout();
     }
 
+    @ApiOperation(value = "刷新token")
+    @PostMapping("/refeshToken")
+    public CommonResponse refreshToken(String token) {
+        return loginService.refreshToken(token);
+    }
+
 }

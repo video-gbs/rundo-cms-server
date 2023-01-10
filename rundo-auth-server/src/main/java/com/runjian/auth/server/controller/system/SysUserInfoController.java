@@ -30,43 +30,42 @@ public class SysUserInfoController {
     @PostMapping("add")
     @ApiOperation("添加用户")
     public CommonResponse addUser(@RequestBody SysUserInfoDTO dto) {
-        return CommonResponse.success(sysUserService.addUser(dto));
+        return sysUserService.addUser(dto);
     }
 
     @PostMapping("/updateUser")
     public CommonResponse updateUser(@RequestBody SysUserInfo sysUserInfo) {
-        return CommonResponse.success(sysUserService.updateUser());
+        return sysUserService.updateUser();
     }
 
     @GetMapping("/getUser")
     public CommonResponse getUser() {
-        return CommonResponse.success( sysUserService.getUser());
+        return sysUserService.getUser();
     }
 
 
     @ApiOperation("删除用户")
     @PreAuthorize("hasAuthority('deleteUser')")
     public CommonResponse deleteUser() {
-        sysUserService.deleteUser();
-        return CommonResponse.success();
+
+        return sysUserService.deleteUser();
     }
 
     @ApiOperation("批量删除用户")
     @PostMapping("/batchDelete")
     public CommonResponse batchDeleteUsers() {
-        sysUserService.batchDeleteUsers();
-        return CommonResponse.success();
+        return sysUserService.batchDeleteUsers();
     }
 
     @ApiOperation("查询所有用户")
     @GetMapping("/getUserList")
     public CommonResponse getUserList() {
-        return CommonResponse.success(sysUserService.getUserList());
+        return sysUserService.getUserList();
     }
 
     @ApiOperation("分页查询所有用户")
     @GetMapping("/getUserListByPage")
     public CommonResponse getUserListByPage() {
-        return CommonResponse.success(sysUserService.getUserListByPage());
+        return sysUserService.getUserListByPage();
     }
 }

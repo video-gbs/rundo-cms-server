@@ -25,5 +25,4 @@ public interface SysRoleUserMapper extends BaseMapper<SysRoleUser> {
      * @return
      */
     List<String> selectRoleByUserId(@Param("userId") Long userId);
-
 }

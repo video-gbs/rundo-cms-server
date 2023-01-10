@@ -14,4 +14,6 @@ public interface LoginService {
     CommonResponse login(UserInfoDTO dto);
 
     CommonResponse logout();
+
+    CommonResponse refreshToken(String token);
 }
