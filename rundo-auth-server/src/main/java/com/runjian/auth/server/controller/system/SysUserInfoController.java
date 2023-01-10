@@ -1,5 +1,6 @@
 package com.runjian.auth.server.controller.system;
 
+import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
 import com.runjian.auth.server.entity.SysUserInfo;
 import com.runjian.auth.server.service.system.SysUserInfoService;
 import com.runjian.common.config.response.CommonResponse;
@@ -8,8 +9,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * <p>
@@ -30,44 +29,44 @@ public class SysUserInfoController {
 
     @PostMapping("add")
     @ApiOperation("添加用户")
-    @PreAuthorize("hasAuthority('addUser')")
-    public CommonResponse addUser(@RequestBody SysUserInfo sysUserInfo) {
-        sysUserService.save(sysUserInfo);
-        return CommonResponse.success();
+    public CommonResponse addUser(@RequestBody SysUserInfoDTO dto) {
+        return CommonResponse.success(sysUserService.addUser(dto));
     }
 
-    @PostMapping("/update")
+    @PostMapping("/updateUser")
     public CommonResponse updateUser(@RequestBody SysUserInfo sysUserInfo) {
-        sysUserService.updateById(sysUserInfo);
-        return CommonResponse.success();
+        return CommonResponse.success(sysUserService.updateUser());
     }
 
-    @GetMapping("/get")
-    public CommonResponse getUser(@RequestBody SysUserInfo sysUserInfo) {
-        sysUserService.getById(sysUserInfo.getId());
-
-        return CommonResponse.success();
+    @GetMapping("/getUser")
+    public CommonResponse getUser() {
+        return CommonResponse.success( sysUserService.getUser());
     }
 
 
     @ApiOperation("删除用户")
-    @PostMapping("/delete")
     @PreAuthorize("hasAuthority('deleteUser')")
-    public CommonResponse deleteUser(@RequestBody SysUserInfo sysUserInfo) {
-        sysUserService.removeById(sysUserInfo);
+    public CommonResponse deleteUser() {
+        sysUserService.deleteUser();
         return CommonResponse.success();
     }
 
     @ApiOperation("批量删除用户")
     @PostMapping("/batchDelete")
-    public CommonResponse batchDelete(@RequestBody List<SysUserInfo> sysUserInfos) {
-        sysUserService.removeBatchByIds(sysUserInfos);
+    public CommonResponse batchDeleteUsers() {
+        sysUserService.batchDeleteUsers();
         return CommonResponse.success();
     }
 
     @ApiOperation("查询所有用户")
-    @GetMapping("/list")
-    public CommonResponse getList() {
-        return CommonResponse.success(sysUserService.list());
+    @GetMapping("/getUserList")
+    public CommonResponse getUserList() {
+        return CommonResponse.success(sysUserService.getUserList());
+    }
+
+    @ApiOperation("分页查询所有用户")
+    @GetMapping("/getUserListByPage")
+    public CommonResponse getUserListByPage() {
+        return CommonResponse.success(sysUserService.getUserListByPage());
     }
 }

@@ -1,7 +1,9 @@
 package com.runjian.auth.server.service.system;
 
-import com.runjian.auth.server.entity.SysUserInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
+import com.runjian.auth.server.entity.SysUserInfo;
+import com.runjian.common.config.response.CommonResponse;
 
 /**
  * <p>
@@ -13,4 +15,49 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysUserInfoService extends IService<SysUserInfo> {
 
+    /**
+     * 新建用户
+     *
+     * @param dto
+     * @return
+     */
+    CommonResponse addUser(SysUserInfoDTO dto);
+
+
+    /**
+     * 编辑用户
+     *
+     * @return
+     */
+    CommonResponse updateUser();
+
+    /**
+     * 删除用户
+     *
+     * @return
+     */
+    CommonResponse deleteUser();
+
+    /**
+     * 批量删除用户
+     *
+     * @return
+     */
+    CommonResponse batchDeleteUsers();
+
+    /**
+     * 查询用户信息
+     *
+     * @return
+     */
+    CommonResponse getUser();
+
+    /**
+     * 用户列表
+     *
+     * @return
+     */
+    CommonResponse getUserList();
+
+    CommonResponse getUserListByPage();
 }
