@@ -6,7 +6,9 @@ import com.runjian.auth.server.domain.vo.SysOrgVO;
 import com.runjian.auth.server.entity.SysOrg;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.service.system.SysOrgService;
+import com.runjian.auth.server.util.SnowflakeUtil;
 import com.runjian.common.config.response.CommonResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,10 +21,35 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> implements SysOrgService {
+    @Autowired
+    private SnowflakeUtil idUtis;
+
+    @Autowired
+    private SysOrgMapper sysOrgMapper;
+
 
     @Override
     public CommonResponse addSysOrg(SysOrgDTO dto) {
-        return null;
+        SysOrg sysOrg = new SysOrg();
+        sysOrg.setId(idUtis.nextId());
+        sysOrg.setOrgPid(dto.getOrgPid());
+        // sysOrg.setOrgIds();
+        sysOrg.setOrgName(dto.getOrgName());
+        // sysOrg.setOrgCode();
+        // sysOrg.setOrgSort();
+        sysOrg.setAdders(dto.getAdders());
+        sysOrg.setEmail(dto.getEmail());
+        sysOrg.setPhone(dto.getPhone());
+        // sysOrg.setLevel();
+        // sysOrg.setLeaf();
+        // sysOrg.setTenantId();
+        // sysOrg.setDeleteFlag();
+        // sysOrg.setCreatedBy();
+        // sysOrg.setUpdatedBy();
+        // sysOrg.setCreatedTime();
+        // sysOrg.setUpdatedTime();
+
+        return CommonResponse.success(sysOrgMapper.insert(sysOrg));
     }
 
     @Override

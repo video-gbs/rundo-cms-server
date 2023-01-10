@@ -28,7 +28,7 @@ public class SysOrgController {
     @PostMapping("add")
     @ApiOperation("新建部门")
     public CommonResponse addSysOrg(@RequestBody SysOrgDTO dto) {
-        return CommonResponse.success(sysOrgService.addSysOrg(dto));
+        return sysOrgService.addSysOrg(dto);
     }
 
 

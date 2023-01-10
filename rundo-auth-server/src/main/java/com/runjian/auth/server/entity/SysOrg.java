@@ -4,12 +4,13 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -52,8 +53,8 @@ public class SysOrg implements Serializable {
     private String orgSort;
 
     @ApiModelProperty("地址")
-    @TableField("adderss")
-    private String adderss;
+    @TableField("adders")
+    private String adders;
 
     @ApiModelProperty("邮箱")
     @TableField("email")
@@ -70,6 +71,10 @@ public class SysOrg implements Serializable {
     @ApiModelProperty("是否叶子节点")
     @TableField("leaf")
     private String leaf;
+
+    @ApiModelProperty("描述信息")
+    @TableField("description")
+    private String description;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")

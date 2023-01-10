@@ -27,6 +27,12 @@ public class SysOrgDTO {
     @ApiModelProperty(value = "手机号码")
     private String phone;
 
+    @ApiModelProperty(value = "手机号码")
+    private String email;
+
+    @ApiModelProperty(value = "手机号码")
+    private String adders;
+
     @ApiModelProperty(value = "描述信息")
     private String description;
 }
