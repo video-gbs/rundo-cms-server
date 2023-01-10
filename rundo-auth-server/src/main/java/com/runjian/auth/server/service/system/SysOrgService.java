@@ -2,6 +2,7 @@ package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.SysOrgDTO;
+import com.runjian.auth.server.domain.vo.SysOrgVO;
 import com.runjian.auth.server.entity.SysOrg;
 import com.runjian.common.config.response.CommonResponse;
 
@@ -24,20 +25,21 @@ public interface SysOrgService extends IService<SysOrg> {
     CommonResponse addSysOrg(SysOrgDTO dto);
 
     /**
+     * 查看部门详情
+     *
+     * @param dto
+     * @param id
+     * @return
+     */
+    SysOrgVO getSysOrgById(Long id);
+
+    /**
      * 删除部门
      *
      * @param dto
      * @return
      */
     CommonResponse deleteSysOrg();
-
-    /**
-     * 查看部门详情
-     *
-     * @param dto
-     * @return
-     */
-    CommonResponse getSysOrg();
 
     /**
      * 移动部门

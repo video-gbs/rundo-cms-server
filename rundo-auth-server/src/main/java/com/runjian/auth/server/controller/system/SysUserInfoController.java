@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:53:37
  */
-@Api(tags = "用户管理接口")
+@Api(tags = "用户管理")
 @RestController
 @RequestMapping("/sysUserInfo")
 public class SysUserInfoController {

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description 登录登出
  * @date 2023-01-05 周四 17:09
  */
-@Api(tags = "登录登出接口")
+@Api(tags = "登录注销")
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -29,13 +29,13 @@ public class LoginController {
     private LoginService loginService;
 
 
-    @ApiOperation(value = "用户登录接口")
+    @ApiOperation(value = "登录接口")
     @PostMapping("/login")
     public CommonResponse login(@RequestBody UserInfoDTO userInfoDTO) {
         return loginService.login(userInfoDTO);
     }
 
-    @ApiOperation(value = "用户登出接口")
+    @ApiOperation(value = "登出接口")
     @PostMapping("//logout")
     public CommonResponse logout() {
         return loginService.logout();

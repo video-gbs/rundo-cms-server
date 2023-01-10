@@ -1,7 +1,9 @@
 package com.runjian.auth.server.service.system;
 
+import com.runjian.auth.server.domain.dto.SysMenuInfoDTO;
 import com.runjian.auth.server.entity.SysMenuInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.runjian.common.config.response.CommonResponse;
 
 /**
  * <p>
@@ -13,4 +15,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysMenuInfoService extends IService<SysMenuInfo> {
 
+    CommonResponse addSysMenu(SysMenuInfoDTO dto);
 }

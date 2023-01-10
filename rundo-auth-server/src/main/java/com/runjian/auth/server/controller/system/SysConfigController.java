@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:53:37
  */
-@Api(tags = "系统管理-系统全局参数配置信息")
+@Api(tags = "系统参数配置")
 @RestController
 @RequestMapping("/sysConfig")
 public class SysConfigController {

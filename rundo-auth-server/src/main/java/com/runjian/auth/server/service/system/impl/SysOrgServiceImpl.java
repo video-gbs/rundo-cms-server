@@ -1,10 +1,11 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.SysOrgDTO;
+import com.runjian.auth.server.domain.vo.SysOrgVO;
 import com.runjian.auth.server.entity.SysOrg;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.service.system.SysOrgService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.common.config.response.CommonResponse;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     }
 
     @Override
-    public CommonResponse getSysOrg() {
+    public SysOrgVO getSysOrgById(Long id) {
         return null;
     }
 

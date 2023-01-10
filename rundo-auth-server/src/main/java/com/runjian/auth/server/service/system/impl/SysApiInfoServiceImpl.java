@@ -1,9 +1,11 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.runjian.auth.server.domain.dto.SysApiInfoDTO;
 import com.runjian.auth.server.entity.SysApiInfo;
 import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
 import com.runjian.auth.server.service.system.SysApiInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.common.config.response.CommonResponse;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,4 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiInfo> implements SysApiInfoService {
 
+    @Override
+    public CommonResponse addSysApi(SysApiInfoDTO dto) {
+        return null;
+    }
 }

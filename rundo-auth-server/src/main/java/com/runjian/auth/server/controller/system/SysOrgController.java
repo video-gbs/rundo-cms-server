@@ -1,15 +1,13 @@
 package com.runjian.auth.server.controller.system;
 
 import com.runjian.auth.server.domain.dto.SysOrgDTO;
+import com.runjian.auth.server.domain.vo.SysOrgVO;
 import com.runjian.auth.server.service.system.SysOrgService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -19,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:53:37
  */
-@Api(tags = "组织机管理接口")
+@Api(tags = "部门管理")
 @RestController
 @RequestMapping("/sysOrg")
 public class SysOrgController {
@@ -34,16 +32,17 @@ public class SysOrgController {
     }
 
 
-    public CommonResponse deleteSysOrg() {
-        return CommonResponse.success();
-    }
-
-    public CommonResponse<SysOrgDTO> getSysOrg() {
-        return CommonResponse.success();
+    @GetMapping("getSysOrgById")
+    @ApiOperation("查询部门")
+    public CommonResponse<SysOrgVO> getSysOrgById(Long id) {
+        return CommonResponse.success(sysOrgService.getSysOrgById(id));
     }
 
     public CommonResponse moveSysOrg() {
         return CommonResponse.success();
     }
 
+    public CommonResponse deleteSysOrg() {
+        return CommonResponse.success();
+    }
 }

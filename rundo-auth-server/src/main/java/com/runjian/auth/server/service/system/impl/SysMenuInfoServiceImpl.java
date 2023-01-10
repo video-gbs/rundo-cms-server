@@ -1,9 +1,11 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.runjian.auth.server.domain.dto.SysMenuInfoDTO;
 import com.runjian.auth.server.entity.SysMenuInfo;
 import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.common.config.response.CommonResponse;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,4 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMenuInfo> implements SysMenuInfoService {
 
+    @Override
+    public CommonResponse addSysMenu(SysMenuInfoDTO dto) {
+        return null;
+    }
 }
