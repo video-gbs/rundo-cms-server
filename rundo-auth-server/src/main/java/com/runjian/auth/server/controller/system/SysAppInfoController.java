@@ -28,7 +28,7 @@ public class SysAppInfoController {
     @PostMapping("/addSysAppInfo")
     @ApiOperation("添加应用")
     public CommonResponse addSysAppInfo(SysAppInfoDTO dto) {
-        return CommonResponse.success(sysAppInfoService.addSysAppInfo(dto));
+        return sysAppInfoService.addSysAppInfo(dto);
     }
 
 

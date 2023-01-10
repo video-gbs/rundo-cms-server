@@ -30,6 +30,6 @@ public class SysMenuInfoController {
     @PostMapping("/addSysMenu")
     @ApiOperation("添加接口")
     public CommonResponse addSysMenu(@RequestBody SysMenuInfoDTO dto) {
-        return CommonResponse.success(sysMenuInfoService.addSysMenu(dto));
+        return sysMenuInfoService.addSysMenu(dto);
     }
 }

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Jiang4Yu
  * @version V1.0.0
@@ -19,32 +21,36 @@ import lombok.NoArgsConstructor;
 public class SysMenuInfoDTO {
 
     @ApiModelProperty("所属应用ID")
+    @NotNull
     private Long appId;
 
     @ApiModelProperty("上级菜单ID")
+    @NotNull
     private Long menuPid;
 
     @ApiModelProperty("菜单间接父ID")
     private String menuPids;
 
     @ApiModelProperty("菜单名称")
+    @NotNull
     private String menuName;
 
     @ApiModelProperty("菜单图标")
-    private String menuIcon;
+    private String icon;
 
     @ApiModelProperty("接口排序")
+    @NotNull
     private String menuSort;
 
     @ApiModelProperty("跳转链接")
     private String url;
 
     @ApiModelProperty(value = "前端组件Import路径")
-    private String ImportPath;
+    private String viewImport;
 
     @ApiModelProperty(value = "禁用状态",notes = "0正常，1禁用")
     private Integer status;
 
     @ApiModelProperty(value = "隐藏状态",notes = "0正常，1禁用")
-    private Integer hideStatus;
+    private Integer hidden;
 }

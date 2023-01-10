@@ -4,12 +4,13 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -66,6 +67,10 @@ public class SysMenuInfo implements Serializable {
     @ApiModelProperty("前端组件import路径")
     @TableField("view_import")
     private String viewImport;
+
+    @ApiModelProperty("禁用状态")
+    @TableField("status")
+    private Integer status;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")
