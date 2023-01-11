@@ -4,6 +4,8 @@ import com.runjian.auth.server.entity.system.SysMenuInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * <p>
  * 菜单信息表 Mapper 接口
@@ -15,4 +17,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface SysMenuInfoMapper extends BaseMapper<SysMenuInfo> {
 
+    List<Long> selectByRoleId(Long roleId);
 }

@@ -4,6 +4,8 @@ import com.runjian.auth.server.entity.ChannelOperation;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * <p>
  * 通道操作 Mapper 接口
@@ -15,4 +17,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface ChannelOperationMapper extends BaseMapper<ChannelOperation> {
 
+    List<Long> selectByRoleId(Long roleId);
 }

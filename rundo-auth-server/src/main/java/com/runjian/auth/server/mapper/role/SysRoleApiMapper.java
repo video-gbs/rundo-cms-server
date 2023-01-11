@@ -17,10 +17,6 @@ import java.util.List;
  */
 @Mapper
 public interface SysRoleApiMapper extends BaseMapper<SysRoleApi> {
-    /**
-     * 根据用户角色查询用户API接口权限列表
-     *
-     * @return
-     */
-    List<String> selectApiAuthByroleCodes(@Param("roleCodes") List<String> roleCodes);
+
+    List<Long> selectApiByRoleId(@Param("roleId")Long roleId);
 }

@@ -3,13 +3,14 @@ package com.runjian.auth.server.service.login.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.runjian.auth.server.domain.dto.LoginUser;
 import com.runjian.auth.server.entity.system.SysUserInfo;
+import com.runjian.auth.server.mapper.area.ChannelOperationMapper;
+import com.runjian.auth.server.mapper.area.VideoAraeMapper;
+import com.runjian.auth.server.mapper.area.VideoChannelMapper;
 import com.runjian.auth.server.mapper.role.SysRoleUserMapper;
-import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
-import com.runjian.auth.server.mapper.system.SysAppInfoMapper;
-import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
-import com.runjian.auth.server.mapper.system.SysUserInfoMapper;
+import com.runjian.auth.server.mapper.system.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Jiang4Yu
@@ -37,17 +39,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private SysUserInfoMapper sysUserInfoMapper;
 
     /**
+     * 角色
+     */
+    @Autowired
+    private SysRoleInfoMapper roleInfoMapper;
+    @Autowired
+    private SysRoleUserMapper roleUserMapper;
+
+    /**
      * 应用
      */
     @Autowired
     private SysAppInfoMapper appInfoMapper;
-
     /**
      * 菜单
      */
     @Autowired
     private SysMenuInfoMapper menuInfoMapper;
-
     /**
      * 接口
      */
@@ -55,15 +63,27 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private SysApiInfoMapper apiInfoMapper;
 
     /**
-     * 角色
+     * 安全区划
      */
     @Autowired
-    private SysRoleUserMapper roleUserMapper;
+    private VideoAraeMapper videoAraeMapper;
+
+    /**
+     * 安全通道
+     */
+    @Autowired
+    private VideoChannelMapper videoChannelMapper;
+
+    /**
+     * 通道操作
+     */
+    @Autowired
+    private ChannelOperationMapper channelOperationMapper;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // 1.根据用户账户查询用户信息
+        // 1.加载用户信息
         LambdaQueryWrapper<SysUserInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysUserInfo::getUserAccount, username);
         SysUserInfo sysUserInfo = sysUserInfoMapper.selectOne(queryWrapper);
@@ -71,37 +91,47 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (Objects.isNull(sysUserInfo)) {
             throw new UsernameNotFoundException("用户名或者密码错误");
         }
-        // TODO 根据用户查询权限信息 添加到LoginUser中
-        List<String> list = new ArrayList<>();
+        // TODO 根据用户ID查询权限信息 添加到LoginUser中
+        // 2.根据用户ID，加载用户所拥有的全部角色Id roleIds
+        List<Long> roleIds = roleUserMapper.selectRoleByUserId(sysUserInfo.getId());
+        // 3. 根据角色Id列表 roleIds，加载权限
+        List<String> authorities = new ArrayList<>();
+        // 3.根据角色Id列表 roleIds ，查取用户所拥有的全部资源权限
+        // （应用权限，菜单权限，接口权限，安全区划权限，通道权限，通道操作权限）
+        for (Long roleId : roleIds) {
+            // 3.1 应用权限
+            // List<Long> appIds = appInfoMapper.selectByRoleId(roleId);
+            // 3.2 菜单权限
+            // List<Long> menuIds = menuInfoMapper.selectByRoleId(roleId);
+            // 3.3 接口权限
+            List<String> apiList = apiInfoMapper.selectByRoleId(roleId);
+            // 3.4 安全区划权限
+            // List<Long> araeIds = videoAraeMapper.selectByRoleId(roleId);
+            // 3.5 通道权限
+            // List<Long> channelIds = videoChannelMapper.selectByRoleId(roleId);
+            // 3.6 通道操作权限
+            // List<Long> operationIds = channelOperationMapper.selectByRoleId(roleId);
+            authorities.addAll(apiList);
 
-        // // 获取当前用户角色信息
-        // List<String> roleCodes = roleUserMapper.selectRoleByUserId(sysUserInfo.getId());
-        // // 为角色标识加上ROLE_前缀（Spring Security规范）
-        // roleCodes = roleCodes.stream().map(rc -> "ROLE_" + rc).collect(Collectors.toList());
-        // log.info("当前用户已有角色{}", JSONUtil.toJsonStr(roleCodes));
-        //
-        // List<String> authorities = new ArrayList<>();
-        // // 通过角色获取用户的 应用权限列表
-        // List<String> appAuth = new ArrayList<>();
-        // // 通过角色获取用户的 菜单权限列表
-        // List<String> menuAuth = new ArrayList<>();
-        // // 通过角色获取用户的 接口权限列表
-        // List<String> apiAuth = new ArrayList<>();
-        // // 通过角色获取用户的 安全区划权限
-        // List<String> areaAuth = new ArrayList<>();
-        // // 通过角色获取用户的 通道权限
-        // List<String> channelAuth = new ArrayList<>();
-        // // 通过角色获取用户的 通道操作权限
-        // List<String> channelOperationAuth = new ArrayList<>();
-        //
-        // // 所有权限进行合并
-        // authorities.addAll(appAuth);
-        // authorities.addAll(menuAuth);
-        // authorities.addAll(apiAuth);
-        // authorities.addAll(channelAuth);
-        // authorities.addAll(channelOperationAuth);
+        }
+
+        List<String> roleIdsList = new ArrayList<>();
+        roleIdsList = roleIds.stream().map(roleId -> "ROLE_" + roleId).collect(Collectors.toList());
+
+
+        authorities.addAll(roleIdsList);
+
+        LoginUser loginUser = new LoginUser();
+        loginUser.setSysUserInfo(sysUserInfo);
+        loginUser.setAuthorities(
+                AuthorityUtils.commaSeparatedStringToAuthorityList(
+                        String.join(",", authorities)
+                )
+        );
 
         // 把数据封装为 UserDetails 返回
-        return new LoginUser(sysUserInfo, null);
+        return loginUser;
     }
+
+
 }

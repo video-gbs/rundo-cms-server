@@ -1,17 +1,11 @@
 package com.runjian.auth.server.domain.dto;
 
 import cn.hutool.core.date.DateUtil;
-import com.alibaba.fastjson.annotation.JSONField;
 import com.runjian.auth.server.entity.system.SysUserInfo;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Jiang4Yu
@@ -20,43 +14,15 @@ import java.util.List;
  * @Description 登录
  * @date 2023-01-04 周三 16:17
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class LoginUser implements UserDetails {
 
     private SysUserInfo sysUserInfo;
 
-    /**
-     * 权限信息
-     */
-    private List<String> permissions;
-
-    /**
-     * 存储SpringSecurity需要的权限信息集合
-     */
-    @JSONField(serialize = false)
-    private List<SimpleGrantedAuthority> authorities;
-
-    public LoginUser(SysUserInfo sysUserInfo, List<String> permissions) {
-        this.sysUserInfo = sysUserInfo;
-        this.permissions = permissions;
-    }
-
-    public LoginUser(SysUserInfo sysUserInfo) {
-        this.sysUserInfo = sysUserInfo;
-    }
+    Collection<? extends GrantedAuthority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // jwt 鉴权过中,如果已经存在则会直接反,这里是一个优化，一个线程中你只登录的第一次需要
-        // if (Objects.nonNull(authorities)) {
-        //     return authorities;
-        // }
-        // // 将permissions中的权限信息转换为GrantedAuthority对象
-        // authorities = permissions.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-        // return authorities;
-        return null;
+        return authorities;
     }
 
 
@@ -125,5 +91,17 @@ public class LoginUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public SysUserInfo getSysUserInfo() {
+        return sysUserInfo;
+    }
+
+    public void setSysUserInfo(SysUserInfo sysUserInfo) {
+        this.sysUserInfo = sysUserInfo;
+    }
+
+    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        this.authorities = authorities;
     }
 }

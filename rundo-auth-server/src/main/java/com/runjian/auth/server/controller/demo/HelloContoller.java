@@ -17,7 +17,7 @@ public class HelloContoller {
 
 
     @RequestMapping("/hello")
-    @PreAuthorize("@ex.hasAuthority('system:dept:list')")
+    @PreAuthorize("@ex.hasAuthority('dev:demo:hello')")
     public ResponseResult hello() {
         String str = "hello，world";
         return new ResponseResult<>(200, "操作成功", str);

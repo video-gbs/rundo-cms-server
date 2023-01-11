@@ -4,6 +4,8 @@ import com.runjian.auth.server.entity.VideoArae;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * <p>
  * 安保区域 Mapper 接口
@@ -15,4 +17,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface VideoAraeMapper extends BaseMapper<VideoArae> {
 
+    List<Long> selectByRoleId(Long roleId);
 }

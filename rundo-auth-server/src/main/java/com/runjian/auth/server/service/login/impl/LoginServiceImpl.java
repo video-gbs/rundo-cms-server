@@ -3,7 +3,6 @@ package com.runjian.auth.server.service.login.impl;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.LoginUser;
 import com.runjian.auth.server.domain.dto.UserInfoDTO;
-import com.runjian.auth.server.mapper.role.SysRoleUserMapper;
 import com.runjian.auth.server.service.login.LoginService;
 import com.runjian.auth.server.util.JwtUtil;
 import com.runjian.auth.server.util.RedisCache;
@@ -32,10 +31,6 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private SysRoleUserMapper roleUserMapper;
-
 
     @Autowired
     private RedisCache redisCache;
