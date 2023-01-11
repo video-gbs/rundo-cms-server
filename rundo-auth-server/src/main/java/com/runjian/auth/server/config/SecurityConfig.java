@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * @date 2022-12-26 周一 22:06
  */
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+// @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
 
@@ -84,13 +83,14 @@ public class SecurityConfig {
                 .antMatchers("/**/*.css").permitAll()
                 .antMatchers("/**/*.png").permitAll()
                 .antMatchers("/**/*.ico").permitAll()
+                .anyRequest().authenticated()
 
         ;
         // 除上面外的所有请求全部需要鉴权认证
         // 配置RBAC权限控制级别的接口权限校验
-        http.authorizeRequests().anyRequest()
-                .access("@rundoRbacService.hasPermission(request,authentication)");
-                // .anyRequest().authenticated();
+        // http.authorizeRequests().anyRequest()
+        //         .access("@rundoRbacService.hasPermission(request,authentication)");
+        // .anyRequest().authenticated();
 
         // 把token校验过滤器添加到过滤链中
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
@@ -100,7 +100,6 @@ public class SecurityConfig {
                 .authenticationEntryPoint(authenticationEntryPoint)
                 // 权限不足处理器
                 .accessDeniedHandler(accessDeniedHandler);
-
 
 
         // 允许跨域
