@@ -1,7 +1,7 @@
 package com.runjian.auth.server.service.login.impl;
 
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.dto.LoginUser;
+import com.runjian.auth.server.domain.login.LoginUser;
 import com.runjian.auth.server.domain.dto.UserInfoDTO;
 import com.runjian.auth.server.service.login.LoginService;
 import com.runjian.auth.server.util.JwtUtil;

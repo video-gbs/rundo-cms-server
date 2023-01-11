@@ -1,4 +1,4 @@
-package com.runjian.auth.server.controller.area;
+package com.runjian.auth.server.controller.video;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 视频通道 前端控制器
+ * 录像文件信息表 前端控制器
  * </p>
  *
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:53:37
  */
 @RestController
-@RequestMapping("/videoChannel")
-public class VideoChannelController {
+@RequestMapping("/videoTapeFile")
+public class VideoTapeFileController {
 }

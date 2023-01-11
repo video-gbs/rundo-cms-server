@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.dto;
+package com.runjian.auth.server.domain.login;
 
 import cn.hutool.core.date.DateUtil;
 import com.runjian.auth.server.entity.system.SysUserInfo;
