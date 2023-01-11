@@ -90,7 +90,10 @@ public class SecurityConfig {
         // 把token校验过滤器添加到过滤链中
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
         // 配置异常处理器
-        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
+        http.exceptionHandling()
+                // 认证失败处理器
+                .authenticationEntryPoint(authenticationEntryPoint)
+                // 权限不足处理器
                 .accessDeniedHandler(accessDeniedHandler);
 
         // 允许跨域
