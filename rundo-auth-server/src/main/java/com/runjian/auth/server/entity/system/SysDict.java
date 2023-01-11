@@ -1,4 +1,4 @@
-package com.runjian.auth.server.entity;
+package com.runjian.auth.server.entity.system;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -14,7 +14,7 @@ import java.util.Date;
 
 /**
  * <p>
- * 菜单信息表
+ * 数据字典表
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -22,9 +22,9 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@TableName("tb_sys_menu_info")
-@ApiModel(value = "SysMenuInfo对象", description = "菜单信息表")
-public class SysMenuInfo implements Serializable {
+@TableName("tb_sys_dict")
+@ApiModel(value = "SysDict对象", description = "数据字典表")
+public class SysDict implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,45 +32,25 @@ public class SysMenuInfo implements Serializable {
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("直接父级菜单ID")
-    @TableField("menu_pid")
-    private Long menuPid;
+    @ApiModelProperty("分组名称")
+    @TableField("group_name")
+    private String groupName;
 
-    @ApiModelProperty("所有间接父级菜单ID")
-    @TableField("menu_pids")
-    private String menuPids;
+    @ApiModelProperty("分组编码")
+    @TableField("group_code")
+    private String groupCode;
 
-    @ApiModelProperty("菜单名称")
-    @TableField("menu_name")
-    private String menuName;
+    @ApiModelProperty("字典项名称")
+    @TableField("item_name")
+    private String itemName;
 
-    @ApiModelProperty("菜单顺序")
-    @TableField("menu_sort")
-    private String menuSort;
+    @ApiModelProperty("字典值")
+    @TableField("item_value")
+    private String itemValue;
 
-    @ApiModelProperty("是否子节点")
-    @TableField("leaf")
-    private String leaf;
-
-    @ApiModelProperty("跳转URL")
-    @TableField("url")
-    private String url;
-
-    @ApiModelProperty("图标")
-    @TableField("icon")
-    private String icon;
-
-    @ApiModelProperty("是否隐藏")
-    @TableField("hidden")
-    private String hidden;
-
-    @ApiModelProperty("前端组件import路径")
-    @TableField("view_import")
-    private String viewImport;
-
-    @ApiModelProperty("禁用状态")
-    @TableField("status")
-    private Integer status;
+    @ApiModelProperty("字典描述")
+    @TableField("item_desc")
+    private String itemDesc;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")

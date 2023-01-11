@@ -85,12 +85,13 @@ public class SecurityConfig {
                 .antMatchers("/**/*.ico").permitAll()
 
                 // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().fullyAuthenticated();
+                .anyRequest().authenticated();
 
         // 把token校验过滤器添加到过滤链中
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
         // 配置异常处理器
-        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler);
+        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler);
 
         // 允许跨域
         http.cors();

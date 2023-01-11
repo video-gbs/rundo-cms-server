@@ -1,6 +1,6 @@
 package com.runjian.auth.server.domain.dto;
 
-import com.runjian.auth.server.entity.SysOrg;
+import com.runjian.auth.server.entity.system.SysOrg;
 import com.runjian.auth.server.util.DataTree;
 
 import java.util.List;

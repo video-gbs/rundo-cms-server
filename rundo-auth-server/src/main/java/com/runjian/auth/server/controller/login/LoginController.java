@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = "登录注销")
 @Slf4j
 @RestController
-@RequestMapping("/user")
 public class LoginController {
 
     @Autowired
@@ -30,13 +28,13 @@ public class LoginController {
 
 
     @ApiOperation(value = "登录接口")
-    @PostMapping("/login")
+    @PostMapping("/user/login")
     public ResponseResult login(@RequestBody UserInfoDTO userInfoDTO) {
         return loginService.login(userInfoDTO);
     }
 
     @ApiOperation(value = "登出接口")
-    @PostMapping("/logout")
+    @PostMapping("/user/logout")
     public ResponseResult logout() {
         return loginService.logout();
     }

@@ -1,19 +1,20 @@
-package com.runjian.auth.server.entity;
+package com.runjian.auth.server.entity.system;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * <p>
- * 系统全局参数配置
+ * 接口信息表
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -21,9 +22,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("tb_sys_config")
-@ApiModel(value = "SysConfig对象", description = "系统全局参数配置")
-public class SysConfig implements Serializable {
+@TableName("tb_sys_api_info")
+@ApiModel(value = "SysApiInfo对象", description = "接口信息表")
+public class SysApiInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,21 +32,37 @@ public class SysConfig implements Serializable {
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("参数名称")
-    @TableField("param_name")
-    private String paramName;
+    @ApiModelProperty("接口直接父ID")
+    @TableField("api_pid")
+    private Long apiPid;
 
-    @ApiModelProperty("参数编码")
-    @TableField("param_code")
-    private String paramCode;
+    @ApiModelProperty("接口间接父ID")
+    @TableField("api_pids")
+    private String apiPids;
 
-    @ApiModelProperty("参数值")
-    @TableField("param_value")
-    private String paramValue;
+    @ApiModelProperty("接口名称")
+    @TableField("api_name")
+    private String apiName;
 
-    @ApiModelProperty("参数描述")
-    @TableField("param_desc")
-    private String paramDesc;
+    @ApiModelProperty("接口排序")
+    @TableField("api_sort")
+    private String apiSort;
+
+    @ApiModelProperty("接口层级")
+    @TableField("api_level")
+    private String apiLevel;
+
+    @ApiModelProperty("跳转链接")
+    @TableField("url")
+    private String url;
+
+    @ApiModelProperty("是否叶子节点")
+    @TableField("leaf")
+    private String leaf;
+
+    @ApiModelProperty("禁用状态")
+    @TableField("status")
+    private Integer status;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")

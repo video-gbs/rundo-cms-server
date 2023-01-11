@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
 import com.runjian.auth.server.domain.vo.UserInfoVo;
-import com.runjian.auth.server.entity.SysUserInfo;
+import com.runjian.auth.server.entity.system.SysUserInfo;
 
 /**
  * <p>

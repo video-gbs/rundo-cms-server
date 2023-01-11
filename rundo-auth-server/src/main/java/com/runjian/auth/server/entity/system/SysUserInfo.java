@@ -1,4 +1,4 @@
-package com.runjian.auth.server.entity;
+package com.runjian.auth.server.entity.system;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;

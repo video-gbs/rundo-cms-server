@@ -3,7 +3,7 @@ package com.runjian.auth.server.service.role;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysRoleInfoDTO;
-import com.runjian.auth.server.entity.SysRoleInfo;
+import com.runjian.auth.server.entity.system.SysRoleInfo;
 
 /**
  * <p>

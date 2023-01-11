@@ -1,19 +1,20 @@
-package com.runjian.auth.server.entity;
+package com.runjian.auth.server.entity.system;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * <p>
- * 角色信息表
+ * 系统全局参数配置
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -21,9 +22,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("tb_sys_role_info")
-@ApiModel(value = "SysRoleInfo对象", description = "角色信息表")
-public class SysRoleInfo implements Serializable {
+@TableName("tb_sys_config")
+@ApiModel(value = "SysConfig对象", description = "系统全局参数配置")
+public class SysConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,29 +32,21 @@ public class SysRoleInfo implements Serializable {
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("角色名称")
-    @TableField("role_name")
-    private String roleName;
+    @ApiModelProperty("参数名称")
+    @TableField("param_name")
+    private String paramName;
 
-    @ApiModelProperty("角色编码")
-    @TableField("role_code")
-    private String roleCode;
+    @ApiModelProperty("参数编码")
+    @TableField("param_code")
+    private String paramCode;
 
-    @ApiModelProperty("角色顺序")
-    @TableField("role_sort")
-    private String roleSort;
+    @ApiModelProperty("参数值")
+    @TableField("param_value")
+    private String paramValue;
 
-    @ApiModelProperty("角色描述")
-    @TableField("role_desc")
-    private String roleDesc;
-
-    @ApiModelProperty("上级角色ID")
-    @TableField("parent_role_id")
-    private Long parentRoleId;
-
-    @ApiModelProperty("所有间接上级角色")
-    @TableField("parent_role_ids")
-    private String parentRoleIds;
+    @ApiModelProperty("参数描述")
+    @TableField("param_desc")
+    private String paramDesc;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")

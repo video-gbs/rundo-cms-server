@@ -3,7 +3,7 @@ package com.runjian.auth.server.service.system.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysDictDTO;
-import com.runjian.auth.server.entity.SysDict;
+import com.runjian.auth.server.entity.system.SysDict;
 import com.runjian.auth.server.mapper.system.SysDictMapper;
 import com.runjian.auth.server.service.system.SysDictService;
 import org.springframework.stereotype.Service;

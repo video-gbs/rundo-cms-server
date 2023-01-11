@@ -5,7 +5,7 @@ import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysRoleInfoDTO;
 import com.runjian.auth.server.entity.SysRoleApi;
 import com.runjian.auth.server.entity.SysRoleApp;
-import com.runjian.auth.server.entity.SysRoleInfo;
+import com.runjian.auth.server.entity.system.SysRoleInfo;
 import com.runjian.auth.server.entity.SysRoleMenu;
 import com.runjian.auth.server.mapper.role.*;
 import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;

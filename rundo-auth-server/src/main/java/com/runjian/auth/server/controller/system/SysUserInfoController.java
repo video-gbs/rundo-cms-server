@@ -2,7 +2,7 @@ package com.runjian.auth.server.controller.system;
 
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
-import com.runjian.auth.server.entity.SysUserInfo;
+import com.runjian.auth.server.entity.system.SysUserInfo;
 import com.runjian.auth.server.service.system.SysUserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

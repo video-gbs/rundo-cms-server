@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysOrgDTO;
 import com.runjian.auth.server.domain.vo.SysOrgVO;
-import com.runjian.auth.server.entity.SysOrg;
+import com.runjian.auth.server.entity.system.SysOrg;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.service.system.SysOrgService;
 import com.runjian.auth.server.util.SnowflakeUtil;

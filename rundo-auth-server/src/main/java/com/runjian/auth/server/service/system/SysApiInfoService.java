@@ -3,7 +3,7 @@ package com.runjian.auth.server.service.system;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysApiInfoDTO;
-import com.runjian.auth.server.entity.SysApiInfo;
+import com.runjian.auth.server.entity.system.SysApiInfo;
 
 /**
  * <p>

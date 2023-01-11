@@ -1,6 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
-import com.runjian.auth.server.entity.SysConfig;
+import com.runjian.auth.server.entity.system.SysConfig;
 import com.runjian.auth.server.mapper.system.SysConfigMapper;
 import com.runjian.auth.server.service.system.SysConfigService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

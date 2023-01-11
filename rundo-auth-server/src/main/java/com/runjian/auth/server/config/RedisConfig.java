@@ -1,5 +1,6 @@
-package com.runjian.auth.server.common;
+package com.runjian.auth.server.config;
 
+import com.runjian.auth.server.common.FastJsonRedisSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;

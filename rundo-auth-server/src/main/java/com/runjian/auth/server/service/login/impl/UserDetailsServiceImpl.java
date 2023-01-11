@@ -1,12 +1,11 @@
-package com.runjian.auth.server.service.login;
+package com.runjian.auth.server.service.login.impl;
 
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.runjian.auth.server.domain.dto.LoginUser;
-import com.runjian.auth.server.entity.SysUserInfo;
+import com.runjian.auth.server.entity.system.SysUserInfo;
+import com.runjian.auth.server.mapper.role.SysRoleUserMapper;
 import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
 import com.runjian.auth.server.mapper.system.SysAppInfoMapper;
-import com.runjian.auth.server.mapper.role.SysRoleUserMapper;
 import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
 import com.runjian.auth.server.mapper.system.SysUserInfoMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author Jiang4Yu
@@ -74,34 +72,36 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("用户名或者密码错误");
         }
         // TODO 根据用户查询权限信息 添加到LoginUser中
-        // 获取当前用户角色信息
-        List<String> roleCodes = roleUserMapper.selectRoleByUserId(sysUserInfo.getId());
-        // 为角色标识加上ROLE_前缀（Spring Security规范）
-        roleCodes = roleCodes.stream().map(rc -> "ROLE_" + rc).collect(Collectors.toList());
-        log.info("当前用户已有角色{}", JSONUtil.toJsonStr(roleCodes));
+        List<String> list = new ArrayList<>();
 
-        List<String> authorities = new ArrayList<>();
-        // 通过角色获取用户的 应用权限列表
-        List<String> appAuth = new ArrayList<>();
-        // 通过角色获取用户的 菜单权限列表
-        List<String> menuAuth = new ArrayList<>();
-        // 通过角色获取用户的 接口权限列表
-        List<String> apiAuth = new ArrayList<>();
-        // 通过角色获取用户的 安全区划权限
-        List<String> areaAuth = new ArrayList<>();
-        // 通过角色获取用户的 通道权限
-        List<String> channelAuth = new ArrayList<>();
-        // 通过角色获取用户的 通道操作权限
-        List<String> channelOperationAuth = new ArrayList<>();
-
-        // 所有权限进行合并
-        authorities.addAll(appAuth);
-        authorities.addAll(menuAuth);
-        authorities.addAll(apiAuth);
-        authorities.addAll(channelAuth);
-        authorities.addAll(channelOperationAuth);
+        // // 获取当前用户角色信息
+        // List<String> roleCodes = roleUserMapper.selectRoleByUserId(sysUserInfo.getId());
+        // // 为角色标识加上ROLE_前缀（Spring Security规范）
+        // roleCodes = roleCodes.stream().map(rc -> "ROLE_" + rc).collect(Collectors.toList());
+        // log.info("当前用户已有角色{}", JSONUtil.toJsonStr(roleCodes));
+        //
+        // List<String> authorities = new ArrayList<>();
+        // // 通过角色获取用户的 应用权限列表
+        // List<String> appAuth = new ArrayList<>();
+        // // 通过角色获取用户的 菜单权限列表
+        // List<String> menuAuth = new ArrayList<>();
+        // // 通过角色获取用户的 接口权限列表
+        // List<String> apiAuth = new ArrayList<>();
+        // // 通过角色获取用户的 安全区划权限
+        // List<String> areaAuth = new ArrayList<>();
+        // // 通过角色获取用户的 通道权限
+        // List<String> channelAuth = new ArrayList<>();
+        // // 通过角色获取用户的 通道操作权限
+        // List<String> channelOperationAuth = new ArrayList<>();
+        //
+        // // 所有权限进行合并
+        // authorities.addAll(appAuth);
+        // authorities.addAll(menuAuth);
+        // authorities.addAll(apiAuth);
+        // authorities.addAll(channelAuth);
+        // authorities.addAll(channelOperationAuth);
 
         // 把数据封装为 UserDetails 返回
-        return new LoginUser(sysUserInfo, authorities);
+        return new LoginUser(sysUserInfo, null);
     }
 }

@@ -1,4 +1,4 @@
-package com.runjian.auth.server.entity;
+package com.runjian.auth.server.entity.system;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -14,7 +14,7 @@ import java.util.Date;
 
 /**
  * <p>
- * 接口信息表
+ * 角色信息表
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -22,9 +22,9 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@TableName("tb_sys_api_info")
-@ApiModel(value = "SysApiInfo对象", description = "接口信息表")
-public class SysApiInfo implements Serializable {
+@TableName("tb_sys_role_info")
+@ApiModel(value = "SysRoleInfo对象", description = "角色信息表")
+public class SysRoleInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,37 +32,29 @@ public class SysApiInfo implements Serializable {
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("接口直接父ID")
-    @TableField("api_pid")
-    private Long apiPid;
+    @ApiModelProperty("角色名称")
+    @TableField("role_name")
+    private String roleName;
 
-    @ApiModelProperty("接口间接父ID")
-    @TableField("api_pids")
-    private String apiPids;
+    @ApiModelProperty("角色编码")
+    @TableField("role_code")
+    private String roleCode;
 
-    @ApiModelProperty("接口名称")
-    @TableField("api_name")
-    private String apiName;
+    @ApiModelProperty("角色顺序")
+    @TableField("role_sort")
+    private String roleSort;
 
-    @ApiModelProperty("接口排序")
-    @TableField("api_sort")
-    private String apiSort;
+    @ApiModelProperty("角色描述")
+    @TableField("role_desc")
+    private String roleDesc;
 
-    @ApiModelProperty("接口层级")
-    @TableField("api_level")
-    private String apiLevel;
+    @ApiModelProperty("上级角色ID")
+    @TableField("parent_role_id")
+    private Long parentRoleId;
 
-    @ApiModelProperty("跳转链接")
-    @TableField("url")
-    private String url;
-
-    @ApiModelProperty("是否叶子节点")
-    @TableField("leaf")
-    private String leaf;
-
-    @ApiModelProperty("禁用状态")
-    @TableField("status")
-    private Integer status;
+    @ApiModelProperty("所有间接上级角色")
+    @TableField("parent_role_ids")
+    private String parentRoleIds;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")
