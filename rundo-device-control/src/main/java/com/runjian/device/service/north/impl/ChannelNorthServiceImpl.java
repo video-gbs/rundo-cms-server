@@ -50,7 +50,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     /**
      * 通道同步
      * @param deviceId 设备ID
-     * @return
+     * @return 通道同步信息
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -128,6 +128,10 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         return channelSyncRsp;
     }
 
+    /**
+     * 通道注册状态转为成功
+     * @param channelId 通道Id
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void channelSignSuccess(Long channelId) {

@@ -22,6 +22,11 @@ public class PtzNorthController {
     @Autowired
     private PtzNorthService ptzNorthService;
 
+    /**
+     * 云台控制
+     * @param req 云台控制请求体
+     * @return
+     */
     @PutMapping("/control")
     public CommonResponse ptzControl(@RequestBody PutPtzControlReq req){
         validatorService.validateRequest(req);

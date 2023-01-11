@@ -86,7 +86,7 @@ public class PostGatewaySignInReq {
         GatewayInfo gatewayInfo = new GatewayInfo();
         LocalDateTime nowTime = LocalDateTime.now();
         BeanUtils.copyProperties(this, gatewayInfo);
-        gatewayInfo.setOnline(CommonEnum.ENABLE.getCode());
+        gatewayInfo.setOnlineState(CommonEnum.ENABLE.getCode());
         gatewayInfo.setCreateTime(nowTime);
         gatewayInfo.setUpdateTime(nowTime);
         return gatewayInfo;

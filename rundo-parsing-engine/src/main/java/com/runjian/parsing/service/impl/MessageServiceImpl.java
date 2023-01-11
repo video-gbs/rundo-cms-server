@@ -1,6 +1,5 @@
 package com.runjian.parsing.service.impl;
 
-import com.alibaba.fastjson2.JSON;
 import com.runjian.parsing.constant.MqConstant;
 import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.mq.config.RabbitMqProperties;
@@ -8,13 +7,10 @@ import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.service.GatewayService;
 import com.runjian.parsing.service.MessageService;
 import com.runjian.parsing.vo.GatewayMqDto;
-import com.runjian.parsing.vo.request.GatewaySignInReq;
-import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -40,7 +36,7 @@ public class MessageServiceImpl implements MessageService {
     public void msgDispatch(GatewayMqDto request) {
 
 
-        if (request.getMsgType().equals(MsgType.HEARTBEAT.getMsg())){
+        if (request.getMsgType().equals(MsgType.GATEWAY_HEARTBEAT.getMsg())){
             Long gatewayId = gatewayService.heartbeat(request.getSerialNum(), request.getTime());
             GatewayMqDto mqResponse = (GatewayMqDto)GatewayMqDto.success();
             mqResponse.copyRequest(request);

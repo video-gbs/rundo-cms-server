@@ -23,7 +23,7 @@ public class DetailInfo {
     private Long dcId;
 
     /**
-     * 类型 1-通道 2-设备
+     * 类型 1-通道 2-设备 {@link com.runjian.device.constant.DetailType}
      */
     private Integer type;
 

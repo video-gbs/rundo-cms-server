@@ -18,6 +18,7 @@ public interface ChannelNorthService {
 
     /**
      * 通道注册状态转为成功
+     * @param channelId 通道Id
      */
     void channelSignSuccess(Long channelId);
 }

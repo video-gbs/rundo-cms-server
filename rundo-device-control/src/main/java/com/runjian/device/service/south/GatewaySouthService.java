@@ -13,8 +13,6 @@ public interface GatewaySouthService {
 
     /**
      * 网关心跳处理
-     * @Param gatewayId 网关Id
-     * @Param outTime 过期时间
      */
     void heartbeat();
 
@@ -30,10 +28,10 @@ public interface GatewaySouthService {
      */
     void update(GatewayInfo gatewayInfo);
 
-
-
     /**
      * 更新心跳信息
+     * @param gatewayId 网关ID
+     * @param outTime 过期时间
      */
     void updateHeartbeat(Long gatewayId, LocalDateTime outTime);
 

@@ -1,7 +1,10 @@
 package com.runjian.device.service.north.impl;
 
+import com.runjian.device.feign.ParsingEngineApi;
+import com.runjian.device.feign.StreamManageApi;
 import com.runjian.device.service.north.PlayVideoNorthService;
 import com.runjian.device.vo.response.VideoPlayRsp;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,6 +16,14 @@ import java.time.LocalDateTime;
  */
 @Service
 public class PlayVideoNorthServiceImpl implements PlayVideoNorthService {
+
+    @Autowired
+    private ParsingEngineApi parsingEngineApi;
+
+    @Autowired
+    private StreamManageApi streamManageApi;
+
+
     @Override
     public VideoPlayRsp play(Long chId) {
         // todo 将chId通过feign

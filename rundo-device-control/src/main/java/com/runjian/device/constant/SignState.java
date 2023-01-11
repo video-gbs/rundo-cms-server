@@ -3,8 +3,14 @@ package com.runjian.device.constant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import javax.tools.Diagnostic;
 
+/**
+ * 注册类型
+ * @see com.runjian.device.entity.DeviceInfo#deviceType
+ * @see com.runjian.device.entity.ChannelInfo#channelType
+ * @author Miracle
+ * @date 2023/1/9 18:04
+ */
 @Getter
 @AllArgsConstructor
 public enum SignState {

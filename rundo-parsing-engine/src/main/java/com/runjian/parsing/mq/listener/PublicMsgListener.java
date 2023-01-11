@@ -22,7 +22,6 @@ import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +64,7 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
             log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册信息监听器", "接收到网关注册信息，执行注册流程", message);
             GatewayMqDto mqRequest = JSON.parseObject(new String(message.getBody()), GatewayMqDto.class);
             // 判断是否是注册信息
-            if (mqRequest.getMsgType().equals(MsgType.SIGN_IN.getMsg())){
+            if (mqRequest.getMsgType().equals(MsgType.GATEWAY_SIGN_IN.getMsg())){
                 System.out.println(mqRequest.getData().toString());
                 GatewaySignInReq req = JSON.parseObject(mqRequest.getData().toString(), GatewaySignInReq.class);
                 // 进行网关信息存储并发送信息到上层平台

@@ -33,9 +33,9 @@ public class GatewayInfo {
     private Integer signType;
 
     /**
-     * 在线状态 0-离线 1-在线
+     * 在线状态 0-离线 1-在线 {@link com.runjian.common.constant.CommonEnum}
      */
-    private Integer online;
+    private Integer onlineState;
 
     /**
      * 网关类型

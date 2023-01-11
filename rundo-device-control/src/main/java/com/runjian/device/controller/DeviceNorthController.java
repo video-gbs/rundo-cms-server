@@ -4,7 +4,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.DeviceNorthService;
 import com.runjian.device.vo.request.PostDeviceAddReq;
-import com.runjian.device.vo.request.PutDeviceSignSuccess;
+import com.runjian.device.vo.request.PutDeviceSignSuccessReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +40,7 @@ public class DeviceNorthController {
      * @return
      */
     @PutMapping("/sign/success")
-    public CommonResponse deviceSignSuccess(@RequestBody PutDeviceSignSuccess request){
+    public CommonResponse deviceSignSuccess(@RequestBody PutDeviceSignSuccessReq request){
         validatorService.validateRequest(request);
         deviceNorthService.deviceSignSuccess(request.getDeviceId());
         return CommonResponse.success();

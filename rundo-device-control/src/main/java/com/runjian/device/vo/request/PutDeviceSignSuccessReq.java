@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
  * @date 2023/1/10 10:09
  */
 @Data
-public class PutDeviceSignSuccess {
+public class PutDeviceSignSuccessReq {
 
     @NotNull(message = "设备ID不能为空")
     @Range(min = 1, message = "非法设备ID")

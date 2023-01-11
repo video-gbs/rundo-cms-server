@@ -11,7 +11,13 @@ public interface DeviceSouthService {
 
     /**
      * 设备添加注册
+     * @param id 设备id
+     * @param gatewayId 网关id
+     * @param onlineState 在线状态
+     * @param deviceType 设备类型
+     * @param ip ip地址
+     * @param port 端口
      */
-    void signIn(Long id, Long gatewayId, Integer online, Integer deviceType, String ip, String port);
+    void signIn(Long id, Long gatewayId, Integer onlineState, Integer deviceType, String ip, String port);
 
 }

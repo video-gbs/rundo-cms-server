@@ -21,12 +21,12 @@ public class ChannelInfo {
     private Long deviceId;
 
     /**
-     * 注册状态 0-已注册 1-待注册 2-待添加
+     * 注册状态 0-已注册 1-待注册 2-待添加 {@link com.runjian.device.constant.SignState}
      */
     private Integer signState;
 
     /**
-     * 在线状态 0-离线 1-在线
+     * 在线状态 0-离线 1-在线 {@link com.runjian.common.constant.CommonEnum}
      */
     private Integer onlineState;
 

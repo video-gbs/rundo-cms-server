@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 静态数据
  * @author Miracle
  * @date 2023/1/9 18:04
  */

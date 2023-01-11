@@ -26,8 +26,18 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
 
     @Autowired
     private DetailMapper detailMapper;
+
+    /**
+     * 设备添加注册
+     * @param id 设备id
+     * @param gatewayId 网关id
+     * @param onlineState 在线状态
+     * @param deviceType 设备类型
+     * @param ip ip地址
+     * @param port 端口
+     */
     @Override
-    public void signIn(Long id, Long gatewayId, Integer online, Integer deviceType, String ip, String port) {
+    public void signIn(Long id, Long gatewayId, Integer onlineState, Integer deviceType, String ip, String port) {
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
         LocalDateTime nowTime = LocalDateTime.now();
         if (deviceInfoOp.isEmpty()){
@@ -35,14 +45,14 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             deviceInfo.setId(id);
             deviceInfo.setGatewayId(gatewayId);
             deviceInfo.setDeviceType(deviceType);
-            deviceInfo.setOnlineState(online);
+            deviceInfo.setOnlineState(onlineState);
             deviceInfo.setCreateTime(nowTime);
             deviceInfo.setUpdateTime(nowTime);
             deviceInfo.setSignState(SignState.TO_BE_ADD.getCode());
             deviceMapper.save(deviceInfo);
         }else {
             DeviceInfo deviceInfo = deviceInfoOp.get();
-            deviceInfo.setOnlineState(online);
+            deviceInfo.setOnlineState(onlineState);
             deviceInfo.setUpdateTime(nowTime);
             deviceMapper.update(deviceInfo);
         }

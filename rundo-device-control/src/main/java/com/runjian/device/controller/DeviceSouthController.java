@@ -29,7 +29,7 @@ public class DeviceSouthController {
 
     /**
      * 设备主动注册
-     * @param req
+     * @param req 设备注册请求体
      * @return
      */
     @PostMapping("sign-in")

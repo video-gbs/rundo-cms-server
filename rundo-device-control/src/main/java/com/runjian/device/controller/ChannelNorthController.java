@@ -3,7 +3,7 @@ package com.runjian.device.controller;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.ChannelNorthService;
-import com.runjian.device.vo.request.PutChannelSignSuccess;
+import com.runjian.device.vo.request.PutChannelSignSuccessReq;
 import com.runjian.device.vo.response.ChannelSyncRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +38,7 @@ public class ChannelNorthController {
      * @param request 通道注册状态转为成功请求体
      */
     @PutMapping("/sign/success")
-    public CommonResponse channelSignSuccess(@RequestBody PutChannelSignSuccess request){
+    public CommonResponse channelSignSuccess(@RequestBody PutChannelSignSuccessReq request){
         validatorService.validateRequest(request);
         channelNorthService.channelSignSuccess(request.getChannelId());
         return CommonResponse.success();

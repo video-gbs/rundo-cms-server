@@ -68,12 +68,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deviceAdd(String deviceId, Long gatewayId, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType) {
-        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByOriginIdAndGatewayId(deviceId, gatewayId);
         LocalDateTime nowTime = LocalDateTime.now();
-        // 判断数据是否存在
-        if (deviceInfoOp.isPresent()){
-            throw new BusinessException(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, String.format("设备%s在网关%s已存在", deviceId, gatewayId));
-        }
         // 发送注册请求，返回数据ID
         PostDeviceAddReq req = new PostDeviceAddReq();
         req.setDeviceId(deviceId);
