@@ -25,10 +25,16 @@ public class SysOrgController {
     @Autowired
     private SysOrgService sysOrgService;
 
-    @PostMapping("add")
+    @PostMapping("/addSysOrg")
     @ApiOperation("新建部门")
     public ResponseResult addSysOrg(@RequestBody SysOrgDTO dto) {
         return sysOrgService.addSysOrg(dto);
+    }
+
+    @PostMapping("/updateSysOrg")
+    @ApiOperation("新建部门")
+    public ResponseResult updateSysOrg(@RequestBody SysOrgDTO dto) {
+        return sysOrgService.updateSysOrg(dto);
     }
 
 

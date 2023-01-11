@@ -28,8 +28,14 @@ public class SysMenuInfoController {
     private SysMenuInfoService sysMenuInfoService;
 
     @PostMapping("/addSysMenu")
-    @ApiOperation("添加接口")
+    @ApiOperation("添加菜单")
     public ResponseResult addSysMenu(@RequestBody SysMenuInfoDTO dto) {
         return sysMenuInfoService.addSysMenu(dto);
+    }
+
+    @PostMapping("/addSysMenu")
+    @ApiOperation("编辑菜单")
+    public ResponseResult updateSysMenu(@RequestBody SysMenuInfoDTO dto) {
+        return sysMenuInfoService.updateSysMenu(dto);
     }
 }

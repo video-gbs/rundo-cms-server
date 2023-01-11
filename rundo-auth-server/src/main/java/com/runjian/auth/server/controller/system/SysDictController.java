@@ -28,8 +28,14 @@ public class SysDictController {
     private SysDictService sysDictService;
 
     @PostMapping("/addSysDict")
-    @ApiOperation("添加接口")
+    @ApiOperation("添加数据字典")
     public ResponseResult addSysDict(@RequestBody SysDictDTO dto) {
         return sysDictService.addSysDict(dto);
+    }
+
+    @PostMapping("/updateSysDict")
+    @ApiOperation("修改数据字典")
+    public ResponseResult updateSysDict(@RequestBody SysDictDTO dto) {
+        return sysDictService.updateSysDict(dto);
     }
 }

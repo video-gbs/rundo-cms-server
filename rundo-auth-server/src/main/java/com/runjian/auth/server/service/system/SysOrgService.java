@@ -16,37 +16,13 @@ import com.runjian.auth.server.entity.system.SysOrg;
  */
 public interface SysOrgService extends IService<SysOrg> {
 
-    /**
-     * 新建部门
-     *
-     * @param dto
-     * @return
-     */
     ResponseResult addSysOrg(SysOrgDTO dto);
 
-    /**
-     * 查看部门详情
-     *
-     * @param dto
-     * @param id
-     * @return
-     */
     SysOrgVO getSysOrgById(Long id);
 
-    /**
-     * 删除部门
-     *
-     * @param dto
-     * @return
-     */
     ResponseResult deleteSysOrg();
 
-    /**
-     * 移动部门
-     *
-     * @param dto
-     * @return
-     */
     ResponseResult moveSysOrg();
 
+    ResponseResult updateSysOrg(SysOrgDTO dto);
 }

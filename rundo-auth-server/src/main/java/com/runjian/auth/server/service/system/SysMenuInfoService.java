@@ -16,4 +16,6 @@ import com.runjian.auth.server.entity.system.SysMenuInfo;
 public interface SysMenuInfoService extends IService<SysMenuInfo> {
 
     ResponseResult addSysMenu(SysMenuInfoDTO dto);
+
+    ResponseResult updateSysMenu(SysMenuInfoDTO dto);
 }

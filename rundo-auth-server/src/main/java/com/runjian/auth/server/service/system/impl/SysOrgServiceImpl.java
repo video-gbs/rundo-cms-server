@@ -49,4 +49,9 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     public ResponseResult moveSysOrg() {
         return null;
     }
+
+    @Override
+    public ResponseResult updateSysOrg(SysOrgDTO dto) {
+        return null;
+    }
 }

@@ -51,4 +51,9 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
 
         return new ResponseResult(200,"操作成功");
     }
+
+    @Override
+    public ResponseResult updateSysApi(SysApiInfoDTO dto) {
+        return null;
+    }
 }

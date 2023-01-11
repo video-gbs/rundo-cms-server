@@ -16,4 +16,6 @@ import com.runjian.auth.server.entity.system.SysDict;
 public interface SysDictService extends IService<SysDict> {
 
     ResponseResult addSysDict(SysDictDTO dto);
+
+    ResponseResult updateSysDict(SysDictDTO dto);
 }

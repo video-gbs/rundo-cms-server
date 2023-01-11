@@ -32,5 +32,11 @@ public class SysAppInfoController {
         return sysAppInfoService.addSysAppInfo(dto);
     }
 
+    @PostMapping("/updateSysAppInfo")
+    @ApiOperation("编辑应用")
+    public ResponseResult updateSysAppInfo(@RequestBody SysAppInfoDTO dto) {
+        return sysAppInfoService.updateSysAppInfo(dto);
+    }
+
 
 }

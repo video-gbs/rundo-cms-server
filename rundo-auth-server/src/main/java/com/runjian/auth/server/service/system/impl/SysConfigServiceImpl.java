@@ -1,9 +1,10 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.entity.system.SysConfig;
 import com.runjian.auth.server.mapper.system.SysConfigMapper;
 import com.runjian.auth.server.service.system.SysConfigService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,4 +18,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
 
+    @Override
+    public ResponseResult addSysConfig(SysConfig dto) {
+        return null;
+    }
+
+    @Override
+    public ResponseResult updateSysConfig(SysConfig dto) {
+        return null;
+    }
 }

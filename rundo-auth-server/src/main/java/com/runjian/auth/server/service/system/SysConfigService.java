@@ -1,7 +1,8 @@
 package com.runjian.auth.server.service.system;
 
-import com.runjian.auth.server.entity.system.SysConfig;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.runjian.auth.server.common.ResponseResult;
+import com.runjian.auth.server.entity.system.SysConfig;
 
 /**
  * <p>
@@ -13,4 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysConfigService extends IService<SysConfig> {
 
+    ResponseResult addSysConfig(SysConfig dto);
+
+    ResponseResult updateSysConfig(SysConfig dto);
 }

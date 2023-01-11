@@ -23,4 +23,9 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
     public ResponseResult addSysDict(SysDictDTO dto) {
         return null;
     }
+
+    @Override
+    public ResponseResult updateSysDict(SysDictDTO dto) {
+        return null;
+    }
 }

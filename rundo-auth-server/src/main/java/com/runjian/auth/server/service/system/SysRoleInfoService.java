@@ -16,4 +16,6 @@ import com.runjian.auth.server.entity.system.SysRoleInfo;
 public interface SysRoleInfoService extends IService<SysRoleInfo> {
 
     ResponseResult addRole(SysRoleInfoDTO dto);
+
+    ResponseResult updateRole(SysRoleInfoDTO dto);
 }

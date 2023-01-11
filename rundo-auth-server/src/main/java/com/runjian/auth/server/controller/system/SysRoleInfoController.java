@@ -32,4 +32,10 @@ public class SysRoleInfoController {
     public ResponseResult addRole(@RequestBody SysRoleInfoDTO dto) {
         return sysRoleInfoService.addRole(dto);
     }
+
+    @PostMapping("/updateRole")
+    @ApiOperation("添加角色")
+    public ResponseResult updateRole(@RequestBody SysRoleInfoDTO dto) {
+        return sysRoleInfoService.updateRole(dto);
+    }
 }

@@ -16,4 +16,6 @@ import com.runjian.auth.server.entity.system.SysApiInfo;
 public interface SysApiInfoService extends IService<SysApiInfo> {
 
     ResponseResult addSysApi(SysApiInfoDTO dto);
+
+    ResponseResult updateSysApi(SysApiInfoDTO dto);
 }

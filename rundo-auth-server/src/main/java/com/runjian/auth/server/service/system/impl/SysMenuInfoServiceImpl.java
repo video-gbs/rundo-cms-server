@@ -50,4 +50,9 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
 
         return new ResponseResult(200, "操作成功", sysMenuInfoMapper.insert(sysMenuInfo));
     }
+
+    @Override
+    public ResponseResult updateSysMenu(SysMenuInfoDTO dto) {
+        return null;
+    }
 }
