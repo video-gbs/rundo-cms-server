@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysApiInfoDTO;
 import com.runjian.auth.server.entity.system.SysApiInfo;
-import com.runjian.auth.server.entity.SysAppApi;
-import com.runjian.auth.server.mapper.app.SysAppApiMapper;
 import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
 import com.runjian.auth.server.service.system.SysApiInfoService;
 import com.runjian.auth.server.util.SnowflakeUtil;
@@ -27,9 +25,6 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
 
     @Autowired
     private SysApiInfoMapper sysApiInfoMapper;
-
-    @Autowired
-    private SysAppApiMapper sysAppApiMapper;
 
     @Override
     public ResponseResult addSysApi(SysApiInfoDTO dto) {
@@ -53,10 +48,6 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
         // sysApiInfo.setUpdatedTime();
         sysApiInfoMapper.insert(sysApiInfo);
         // 添加应用接口映射关系
-        SysAppApi sysAppApi = new SysAppApi();
-        sysAppApi.setApiId(apiId);
-        sysAppApi.setAppId(dto.getAppId());
-        sysAppApiMapper.insert(sysAppApi);
 
         return new ResponseResult(200,"操作成功");
     }

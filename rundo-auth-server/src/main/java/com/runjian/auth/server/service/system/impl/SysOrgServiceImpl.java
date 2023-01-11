@@ -31,23 +31,6 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     @Override
     public ResponseResult addSysOrg(SysOrgDTO dto) {
         SysOrg sysOrg = new SysOrg();
-        sysOrg.setId(idUtis.nextId());
-        sysOrg.setOrgPid(dto.getOrgPid());
-        // sysOrg.setOrgIds();
-        sysOrg.setOrgName(dto.getOrgName());
-        // sysOrg.setOrgCode();
-        // sysOrg.setOrgSort();
-        sysOrg.setAdders(dto.getAdders());
-        sysOrg.setEmail(dto.getEmail());
-        sysOrg.setPhone(dto.getPhone());
-        // sysOrg.setLevel();
-        // sysOrg.setLeaf();
-        // sysOrg.setTenantId();
-        // sysOrg.setDeleteFlag();
-        // sysOrg.setCreatedBy();
-        // sysOrg.setUpdatedBy();
-        // sysOrg.setCreatedTime();
-        // sysOrg.setUpdatedTime();
 
         return new ResponseResult(200, "操作成功", sysOrgMapper.insert(sysOrg));
     }

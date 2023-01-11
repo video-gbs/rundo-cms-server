@@ -3,13 +3,9 @@ package com.runjian.auth.server.service.system.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysRoleInfoDTO;
-import com.runjian.auth.server.entity.SysRoleApi;
-import com.runjian.auth.server.entity.SysRoleApp;
 import com.runjian.auth.server.entity.system.SysRoleInfo;
-import com.runjian.auth.server.entity.SysRoleMenu;
-import com.runjian.auth.server.mapper.role.*;
 import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
-import com.runjian.auth.server.service.role.SysRoleInfoService;
+import com.runjian.auth.server.service.system.SysRoleInfoService;
 import com.runjian.auth.server.util.SnowflakeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,22 +28,6 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
     @Autowired
     private SysRoleInfoMapper roleInfoMapper;
 
-    @Autowired
-    private SysRoleAppMapper roleAppMapper;
-
-    @Autowired
-    private SysRoleMenuMapper roleMenuMapper;
-
-    @Autowired
-    private SysRoleApiMapper roleApiMapper;
-
-    @Autowired
-    private RoleAreaMapper roleAreaMapper;
-
-    @Autowired
-    private RoleChannelMapper roleChannelMapper;
-
-
     @Override
     public ResponseResult addRole(SysRoleInfoDTO dto) {
         SysRoleInfo sysRoleInfo = new SysRoleInfo();
@@ -69,31 +49,10 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
 
         // 添加角色应用映射关系
         List<Long> appIds = dto.getAppIds();
-        for (Long appId : appIds) {
-            SysRoleApp sysRoleApp = new SysRoleApp();
-            sysRoleApp.setId(idUtil.nextId());
-            sysRoleApp.setRoleId(roleId);
-            sysRoleApp.setAppId(appId);
-            roleAppMapper.insert(sysRoleApp);
-        }
         // 添加角色菜单映射关系
         List<Long> menuIds = dto.getMenuIds();
-        for (Long menuId : menuIds) {
-            SysRoleMenu sysRoleMenu = new SysRoleMenu();
-            sysRoleMenu.setId(idUtil.nextId());
-            sysRoleMenu.setRoleId(roleId);
-            sysRoleMenu.setMenuId(menuId);
-            roleMenuMapper.insert(sysRoleMenu);
-        }
         // 添加角色接口映射关系
         List<Long> apiIds = dto.getApiIds();
-        for (Long apiId : apiIds) {
-            SysRoleApi sysRoleApi = new SysRoleApi();
-            sysRoleApi.setId(idUtil.nextId());
-            sysRoleApi.setRoleId(roleId);
-            sysRoleApi.setApiId(apiId);
-            roleApiMapper.insert(sysRoleApi);
-        }
         // 添加角色部门映射关系
         List<Long> orgIds = dto.getOrgIds();
         for (Long orgId : orgIds) {

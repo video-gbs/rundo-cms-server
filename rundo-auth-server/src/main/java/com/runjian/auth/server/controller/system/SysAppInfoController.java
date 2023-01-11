@@ -33,10 +33,4 @@ public class SysAppInfoController {
     }
 
 
-    //
-    // @PostMapping("/addSysAppInfo")
-    // @ApiOperation("编辑应用")
-    // public CommonResponse updateSysAppInfo(SysAppInfo sysAppInfo) {
-    //     return CommonResponse.success(sysAppInfoService.updateById(sysAppInfo));
-    // }
 }

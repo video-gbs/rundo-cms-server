@@ -1,6 +1,6 @@
 package com.runjian.auth.server.service.tapeplan;
 
-import com.runjian.auth.server.entity.VideoTapePlan;
+import com.runjian.auth.server.entity.video.VideoTapePlan;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

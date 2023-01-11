@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysAppInfoDTO;
 import com.runjian.auth.server.entity.system.SysAppInfo;
-import com.runjian.auth.server.mapper.app.SysAppApiMapper;
 import com.runjian.auth.server.mapper.system.SysAppInfoMapper;
 import com.runjian.auth.server.service.system.SysAppInfoService;
 import com.runjian.auth.server.util.SnowflakeUtil;
@@ -27,9 +26,6 @@ public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppI
 
     @Autowired
     private SysAppInfoMapper sysAppInfoMapper;
-
-    @Autowired
-    private SysAppApiMapper sysAppApiMapper;
 
     @Override
     public ResponseResult addSysAppInfo(SysAppInfoDTO dto) {

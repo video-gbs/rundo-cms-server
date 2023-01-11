@@ -1,6 +1,6 @@
 package com.runjian.auth.server.service.area;
 
-import com.runjian.auth.server.entity.VideoArae;
+import com.runjian.auth.server.entity.video.VideoArae;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

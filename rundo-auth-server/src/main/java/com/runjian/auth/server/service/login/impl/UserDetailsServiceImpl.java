@@ -3,10 +3,9 @@ package com.runjian.auth.server.service.login.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.runjian.auth.server.domain.dto.LoginUser;
 import com.runjian.auth.server.entity.system.SysUserInfo;
-import com.runjian.auth.server.mapper.area.ChannelOperationMapper;
-import com.runjian.auth.server.mapper.area.VideoAraeMapper;
-import com.runjian.auth.server.mapper.area.VideoChannelMapper;
-import com.runjian.auth.server.mapper.role.SysRoleUserMapper;
+import com.runjian.auth.server.mapper.video.ChannelOperationMapper;
+import com.runjian.auth.server.mapper.video.VideoAraeMapper;
+import com.runjian.auth.server.mapper.video.VideoChannelMapper;
 import com.runjian.auth.server.mapper.system.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +42,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Autowired
     private SysRoleInfoMapper roleInfoMapper;
-    @Autowired
-    private SysRoleUserMapper roleUserMapper;
 
     /**
      * 应用
@@ -93,7 +90,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         // TODO 根据用户ID查询权限信息 添加到LoginUser中
         // 2.根据用户ID，加载用户所拥有的全部角色Id roleIds
-        List<Long> roleIds = roleUserMapper.selectRoleByUserId(sysUserInfo.getId());
+        List<Long> roleIds = roleInfoMapper.selectRoleByUserId(sysUserInfo.getId());
         // 3. 根据角色Id列表 roleIds，加载权限
         List<String> authorities = new ArrayList<>();
         // 3.根据角色Id列表 roleIds ，查取用户所拥有的全部资源权限
