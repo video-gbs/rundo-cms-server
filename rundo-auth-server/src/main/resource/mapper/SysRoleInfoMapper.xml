@@ -4,12 +4,12 @@
 
     <select id="selectRoleByUserId" resultType="java.lang.Long">
         SELECT
-        role_code
+            role.id
         FROM
-        tb_sys_role_info roleInfo
-        LEFT JOIN tb_sys_role_user userRole ON roleInfo.id = userRole.role_id
-        LEFT JOIN tb_sys_user_info userInfo ON userInfo.id = userRole.user_id
+            tb_sys_role_info role
+            LEFT JOIN tb_sys_role_user ru ON ru.role_id = role.id
+            LEFT JOIN tb_sys_user_info userInfo ON userInfo.id = ru.user_id
         WHERE
-        userInfo.id = #{userId,jdbcType=BIGINT}
+            userInfo.id = #{userId,jdbcType=BIGINT}
     </select>
 </mapper>

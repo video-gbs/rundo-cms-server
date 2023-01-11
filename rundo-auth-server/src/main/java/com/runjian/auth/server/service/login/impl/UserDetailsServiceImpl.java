@@ -1,12 +1,13 @@
 package com.runjian.auth.server.service.login.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.runjian.auth.server.domain.login.LoginUser;
 import com.runjian.auth.server.entity.system.SysUserInfo;
+import com.runjian.auth.server.mapper.system.*;
 import com.runjian.auth.server.mapper.video.ChannelOperationMapper;
 import com.runjian.auth.server.mapper.video.VideoAraeMapper;
 import com.runjian.auth.server.mapper.video.VideoChannelMapper;
-import com.runjian.auth.server.mapper.system.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -88,9 +89,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (Objects.isNull(sysUserInfo)) {
             throw new UsernameNotFoundException("用户名或者密码错误");
         }
+        log.info("用户{}", JSONUtil.toJsonStr(sysUserInfo));
         // TODO 根据用户ID查询权限信息 添加到LoginUser中
         // 2.根据用户ID，加载用户所拥有的全部角色Id roleIds
         List<Long> roleIds = roleInfoMapper.selectRoleByUserId(sysUserInfo.getId());
+        log.info("所拥有的全部角色Id{}",  JSONUtil.toJsonStr(roleIds));
         // 3. 根据角色Id列表 roleIds，加载权限
         List<String> authorities = new ArrayList<>();
         // 3.根据角色Id列表 roleIds ，查取用户所拥有的全部资源权限

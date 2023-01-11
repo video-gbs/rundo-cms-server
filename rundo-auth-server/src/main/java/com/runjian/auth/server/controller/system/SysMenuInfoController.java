@@ -33,7 +33,7 @@ public class SysMenuInfoController {
         return sysMenuInfoService.addSysMenu(dto);
     }
 
-    @PostMapping("/add")
+    @PostMapping("/update")
     @ApiOperation("编辑菜单")
     public ResponseResult updateSysMenu(@RequestBody SysMenuInfoDTO dto) {
         return sysMenuInfoService.updateSysMenu(dto);
