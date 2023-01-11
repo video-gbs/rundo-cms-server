@@ -6,7 +6,7 @@ import com.runjian.auth.server.domain.dto.SysMenuInfoDTO;
 import com.runjian.auth.server.entity.system.SysMenuInfo;
 import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
-import com.runjian.auth.server.util.SnowflakeUtil;
+import com.runjian.auth.server.util.RundoIdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMenuInfo> implements SysMenuInfoService {
 
     @Autowired
-    private SnowflakeUtil idUtil;
+    private RundoIdUtil idUtil;
 
     @Autowired
     private SysMenuInfoMapper sysMenuInfoMapper;

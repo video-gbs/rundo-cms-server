@@ -6,7 +6,7 @@ import com.runjian.auth.server.domain.dto.SysAppInfoDTO;
 import com.runjian.auth.server.entity.system.SysAppInfo;
 import com.runjian.auth.server.mapper.system.SysAppInfoMapper;
 import com.runjian.auth.server.service.system.SysAppInfoService;
-import com.runjian.auth.server.util.SnowflakeUtil;
+import com.runjian.auth.server.util.RundoIdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppInfo> implements SysAppInfoService {
 
     @Autowired
-    private SnowflakeUtil idUtil;
+    private RundoIdUtil idUtil;
 
     @Autowired
     private SysAppInfoMapper sysAppInfoMapper;

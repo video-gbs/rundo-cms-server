@@ -1,7 +1,6 @@
 package com.runjian.auth.server.controller.demo;
 
 import com.runjian.auth.server.common.ResponseResult;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +16,6 @@ public class HelloContoller {
 
 
     @RequestMapping("/hello")
-    @PreAuthorize("@ex.hasAuthority('dev:demo:hello')")
     public ResponseResult hello() {
         String str = "hello，world";
         return new ResponseResult<>(200, "操作成功", str);

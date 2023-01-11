@@ -6,7 +6,7 @@ import com.runjian.auth.server.domain.dto.SysApiInfoDTO;
 import com.runjian.auth.server.entity.system.SysApiInfo;
 import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
 import com.runjian.auth.server.service.system.SysApiInfoService;
-import com.runjian.auth.server.util.SnowflakeUtil;
+import com.runjian.auth.server.util.RundoIdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiInfo> implements SysApiInfoService {
     @Autowired
-    private SnowflakeUtil idUtil;
+    private RundoIdUtil idUtil;
 
     @Autowired
     private SysApiInfoMapper sysApiInfoMapper;
@@ -49,7 +49,7 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
         sysApiInfoMapper.insert(sysApiInfo);
         // 添加应用接口映射关系
 
-        return new ResponseResult(200,"操作成功");
+        return new ResponseResult(200, "操作成功");
     }
 
     @Override

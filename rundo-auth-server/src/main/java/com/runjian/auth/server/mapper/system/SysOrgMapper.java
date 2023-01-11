@@ -3,6 +3,7 @@ package com.runjian.auth.server.mapper.system;
 import com.runjian.auth.server.entity.system.SysOrg;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -15,4 +16,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface SysOrgMapper extends BaseMapper<SysOrg> {
 
+    int saveUserOrg(@Param("userId")Long userId, @Param("orgId")Long orgId);
 }

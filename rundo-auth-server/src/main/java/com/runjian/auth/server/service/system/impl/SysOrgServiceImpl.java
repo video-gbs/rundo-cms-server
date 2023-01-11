@@ -7,7 +7,7 @@ import com.runjian.auth.server.domain.vo.SysOrgVO;
 import com.runjian.auth.server.entity.system.SysOrg;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.service.system.SysOrgService;
-import com.runjian.auth.server.util.SnowflakeUtil;
+import com.runjian.auth.server.util.RundoIdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> implements SysOrgService {
     @Autowired
-    private SnowflakeUtil idUtis;
+    private RundoIdUtil idUtis;
 
     @Autowired
     private SysOrgMapper sysOrgMapper;

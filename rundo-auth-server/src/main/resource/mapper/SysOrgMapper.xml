@@ -2,4 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.runjian.auth.server.mapper.system.SysOrgMapper">
 
+    <select id="saveUserOrg" resultType="int">
+        INSERT INTO tb_sys_user_org (user_id, org_id)
+        VALUES (user_id=#{userId,jdbcType=BIGINT}, org_id= #{orgId,jdbcType=BIGINT})
+    </select>
 </mapper>

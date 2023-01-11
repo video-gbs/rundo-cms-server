@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @date 2023-01-10 周二 11:30
  */
 @Component
-public class SnowflakeUtil {
+public class RundoIdUtil {
     Snowflake snowflake = IdUtil.getSnowflake(1, 1);
     public Long nextId() {
         return snowflake.nextId();

@@ -6,7 +6,7 @@ import com.runjian.auth.server.domain.dto.SysRoleInfoDTO;
 import com.runjian.auth.server.entity.system.SysRoleInfo;
 import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
-import com.runjian.auth.server.util.SnowflakeUtil;
+import com.runjian.auth.server.util.RundoIdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRoleInfo> implements SysRoleInfoService {
 
     @Autowired
-    private SnowflakeUtil idUtil;
+    private RundoIdUtil idUtil;
     @Autowired
     private SysRoleInfoMapper roleInfoMapper;
 
