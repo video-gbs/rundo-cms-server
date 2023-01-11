@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +28,7 @@ public class SysAppInfoController {
 
     @PostMapping("/addSysAppInfo")
     @ApiOperation("添加应用")
-    public ResponseResult addSysAppInfo(SysAppInfoDTO dto) {
+    public ResponseResult addSysAppInfo(@RequestBody SysAppInfoDTO dto) {
         return sysAppInfoService.addSysAppInfo(dto);
     }
 
