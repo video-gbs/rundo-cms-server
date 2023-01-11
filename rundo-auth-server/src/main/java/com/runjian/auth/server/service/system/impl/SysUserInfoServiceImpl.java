@@ -3,6 +3,7 @@ package com.runjian.auth.server.service.system.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
+import com.runjian.auth.server.domain.vo.SysUserInfoVO;
 import com.runjian.auth.server.entity.system.SysUserInfo;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
@@ -14,7 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -80,6 +84,48 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     @Override
     public ResponseResult updateUser(SysUserInfoDTO dto) {
         return null;
+    }
+
+    @Override
+    public ResponseResult<SysUserInfoVO> getUser(Long id) {
+        SysUserInfo sysUserInfo = sysUserInfoMapper.selectById(id);
+        SysUserInfoVO sysUserInfoVO = getSysUserInfoVO(sysUserInfo);
+        return new ResponseResult<>(200, "操作成功", sysUserInfoVO);
+    }
+
+    @Override
+    public ResponseResult<List<SysUserInfoVO>> getUserList() {
+        List<SysUserInfo> sysUserInfos = sysUserInfoMapper.selectList(null);
+        List<SysUserInfoVO> sysUserVOList = new ArrayList<>();
+        for (SysUserInfo sysUserInfo : sysUserInfos) {
+            SysUserInfoVO sysUserInfoVO = getSysUserInfoVO(sysUserInfo);
+            sysUserVOList.add(sysUserInfoVO);
+        }
+        return new ResponseResult<>(200, "操作成功", sysUserVOList);
+    }
+
+    private SysUserInfoVO getSysUserInfoVO(SysUserInfo sysUserInfo) {
+        SysUserInfoVO sysUserInfoVO = new SysUserInfoVO();
+        sysUserInfoVO.setId(sysUserInfo.getId());
+        sysUserInfoVO.setUserAccount(sysUserInfo.getUserAccount());
+        sysUserInfoVO.setUserName(sysUserInfo.getUserName());
+        // TODO 处理部门ID
+        sysUserInfoVO.setOrgId(null);
+        sysUserInfoVO.setOrgName(null);
+        // TODO 处理角色
+        Map<Long, String> roleInfo = new HashMap<>();
+        sysUserInfoVO.setRoleIds(roleInfo);
+
+        sysUserInfoVO.setJobNo(sysUserInfo.getJobNo());
+        sysUserInfoVO.setCreatedTime(sysUserInfo.getCreatedTime());
+        sysUserInfoVO.setUpdatedTime(sysUserInfo.getUpdatedTime());
+        sysUserInfoVO.setDeleteFlag(null);
+        sysUserInfoVO.setExpiryDateStart(sysUserInfo.getExpiryDateStart());
+        sysUserInfoVO.setExpiryDateEnd(sysUserInfo.getExpiryDateEnd());
+        sysUserInfoVO.setPhone(sysUserInfo.getPhone());
+        sysUserInfoVO.setAddress(sysUserInfo.getAddress());
+        sysUserInfoVO.setDescription(sysUserInfo.getDescription());
+        return sysUserInfoVO;
     }
 
 }

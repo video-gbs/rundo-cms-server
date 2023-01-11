@@ -62,7 +62,7 @@ public class SysMenuInfo implements Serializable {
 
     @ApiModelProperty("是否隐藏")
     @TableField("hidden")
-    private String hidden;
+    private Integer hidden;
 
     @ApiModelProperty("前端组件import路径")
     @TableField("view_import")

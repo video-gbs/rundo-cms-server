@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jiang4Yu
@@ -33,7 +33,7 @@ public class SysUserInfoVO {
     private Long orgName;
 
     @ApiModelProperty("角色ID列表")
-    List<Long> roleIds;
+    Map<Long, String> roleIds;
 
     @ApiModelProperty("工号")
     private String jobNo;

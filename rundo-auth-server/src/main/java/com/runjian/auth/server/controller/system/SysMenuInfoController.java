@@ -2,14 +2,14 @@ package com.runjian.auth.server.controller.system;
 
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysMenuInfoDTO;
+import com.runjian.auth.server.domain.vo.SysMenuInfoVO;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -38,4 +38,12 @@ public class SysMenuInfoController {
     public ResponseResult updateSysMenu(@RequestBody SysMenuInfoDTO dto) {
         return sysMenuInfoService.updateSysMenu(dto);
     }
+
+    @GetMapping("/sysMenuInfoList")
+    @ApiOperation("获取菜单列表")
+    public ResponseResult<List<SysMenuInfoVO>> sysMenuInfoList() {
+
+        return sysMenuInfoService.sysMenuInfoList();
+    }
+
 }
