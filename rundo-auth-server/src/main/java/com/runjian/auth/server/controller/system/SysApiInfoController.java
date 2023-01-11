@@ -27,12 +27,12 @@ public class SysApiInfoController {
     @Autowired
     private SysApiInfoService sysApiInfoService;
 
-    @PostMapping("/addSysApi")
+    @PostMapping("/add")
     @ApiOperation("添加接口")
     public ResponseResult addSysApi(@RequestBody SysApiInfoDTO dto) {
         return sysApiInfoService.addSysApi(dto);
     }
-    @PostMapping("/updateSysApi")
+    @PostMapping("/update")
     @ApiOperation("编辑接口")
     public ResponseResult updateSysApi(@RequestBody SysApiInfoDTO dto) {
         return sysApiInfoService.updateSysApi(dto);

@@ -26,13 +26,13 @@ public class SysUserInfoController {
     private SysUserInfoService sysUserService;
 
 
-    @PostMapping("/addUser")
+    @PostMapping("/add")
     @ApiOperation("添加用户")
     public ResponseResult addUser(@RequestBody SysUserInfoDTO dto) {
         return sysUserService.addUser(dto);
     }
 
-    @PostMapping("/updateUser")
+    @PostMapping("/update")
     public ResponseResult updateUser(@RequestBody SysUserInfo sysUserInfo) {
         return sysUserService.updateUser();
     }

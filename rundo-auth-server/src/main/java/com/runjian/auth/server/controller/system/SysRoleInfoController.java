@@ -27,13 +27,13 @@ public class SysRoleInfoController {
     @Autowired
     private SysRoleInfoService sysRoleInfoService;
 
-    @PostMapping("/addRole")
+    @PostMapping("/add")
     @ApiOperation("添加角色")
     public ResponseResult addRole(@RequestBody SysRoleInfoDTO dto) {
         return sysRoleInfoService.addRole(dto);
     }
 
-    @PostMapping("/updateRole")
+    @PostMapping("/update")
     @ApiOperation("添加角色")
     public ResponseResult updateRole(@RequestBody SysRoleInfoDTO dto) {
         return sysRoleInfoService.updateRole(dto);

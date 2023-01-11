@@ -26,13 +26,13 @@ public class SysAppInfoController {
     @Autowired
     SysAppInfoService sysAppInfoService;
 
-    @PostMapping("/addSysAppInfo")
+    @PostMapping("/add")
     @ApiOperation("添加应用")
     public ResponseResult addSysAppInfo(@RequestBody SysAppInfoDTO dto) {
         return sysAppInfoService.addSysAppInfo(dto);
     }
 
-    @PostMapping("/updateSysAppInfo")
+    @PostMapping("/update")
     @ApiOperation("编辑应用")
     public ResponseResult updateSysAppInfo(@RequestBody SysAppInfoDTO dto) {
         return sysAppInfoService.updateSysAppInfo(dto);

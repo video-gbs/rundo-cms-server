@@ -27,13 +27,13 @@ public class SysMenuInfoController {
     @Autowired
     private SysMenuInfoService sysMenuInfoService;
 
-    @PostMapping("/addSysMenu")
+    @PostMapping("/add")
     @ApiOperation("添加菜单")
     public ResponseResult addSysMenu(@RequestBody SysMenuInfoDTO dto) {
         return sysMenuInfoService.addSysMenu(dto);
     }
 
-    @PostMapping("/addSysMenu")
+    @PostMapping("/add")
     @ApiOperation("编辑菜单")
     public ResponseResult updateSysMenu(@RequestBody SysMenuInfoDTO dto) {
         return sysMenuInfoService.updateSysMenu(dto);

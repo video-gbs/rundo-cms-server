@@ -1,9 +1,7 @@
 package com.runjian.auth.server.controller.system;
 
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
 import com.runjian.auth.server.entity.system.SysConfig;
-import com.runjian.auth.server.entity.system.SysUserInfo;
 import com.runjian.auth.server.service.system.SysConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,13 +28,13 @@ public class SysConfigController {
     private SysConfigService sysConfigService;
 
 
-    @PostMapping("/addSysConfig")
+    @PostMapping("/add")
     @ApiOperation("添加系统参数配置")
     public ResponseResult addUser(@RequestBody SysConfig dto) {
         return sysConfigService.addSysConfig(dto);
     }
 
-    @PostMapping("/updateSysConfig")
+    @PostMapping("/update")
     @ApiOperation("编辑系统参数配置")
     public ResponseResult updateUser(@RequestBody SysConfig dto) {
         return sysConfigService.updateSysConfig(dto);

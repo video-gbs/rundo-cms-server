@@ -27,13 +27,13 @@ public class SysDictController {
     @Autowired
     private SysDictService sysDictService;
 
-    @PostMapping("/addSysDict")
+    @PostMapping("/add")
     @ApiOperation("添加数据字典")
     public ResponseResult addSysDict(@RequestBody SysDictDTO dto) {
         return sysDictService.addSysDict(dto);
     }
 
-    @PostMapping("/updateSysDict")
+    @PostMapping("/update")
     @ApiOperation("修改数据字典")
     public ResponseResult updateSysDict(@RequestBody SysDictDTO dto) {
         return sysDictService.updateSysDict(dto);
