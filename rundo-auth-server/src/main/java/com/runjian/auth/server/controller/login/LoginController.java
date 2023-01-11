@@ -1,8 +1,8 @@
 package com.runjian.auth.server.controller.login;
 
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.UserInfoDTO;
 import com.runjian.auth.server.service.login.LoginService;
-import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -31,20 +31,14 @@ public class LoginController {
 
     @ApiOperation(value = "登录接口")
     @PostMapping("/login")
-    public CommonResponse login(@RequestBody UserInfoDTO userInfoDTO) {
+    public ResponseResult login(@RequestBody UserInfoDTO userInfoDTO) {
         return loginService.login(userInfoDTO);
     }
 
     @ApiOperation(value = "登出接口")
-    @PostMapping("//logout")
-    public CommonResponse logout() {
+    @PostMapping("/logout")
+    public ResponseResult logout() {
         return loginService.logout();
-    }
-
-    @ApiOperation(value = "刷新token")
-    @PostMapping("/refeshToken")
-    public CommonResponse refreshToken(String token) {
-        return loginService.refreshToken(token);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.runjian.auth.server.config;
+package com.runjian.auth.server.common;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;

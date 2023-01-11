@@ -1,6 +1,7 @@
 package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysRoleInfoDTO;
 import com.runjian.auth.server.entity.SysRoleApi;
 import com.runjian.auth.server.entity.SysRoleApp;
@@ -10,7 +11,6 @@ import com.runjian.auth.server.mapper.role.*;
 import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.service.role.SysRoleInfoService;
 import com.runjian.auth.server.util.SnowflakeUtil;
-import com.runjian.common.config.response.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,9 +48,8 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
     private RoleChannelMapper roleChannelMapper;
 
 
-
     @Override
-    public CommonResponse addRole(SysRoleInfoDTO dto) {
+    public ResponseResult addRole(SysRoleInfoDTO dto) {
         SysRoleInfo sysRoleInfo = new SysRoleInfo();
         Long roleId = idUtil.nextId();
         sysRoleInfo.setId(roleId);
@@ -116,6 +115,6 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
             // TODO 待处理 添加角色通道映射关系
         }
         // 其他
-        return CommonResponse.success("操作成功");
+        return new ResponseResult(200, "操作成功");
     }
 }

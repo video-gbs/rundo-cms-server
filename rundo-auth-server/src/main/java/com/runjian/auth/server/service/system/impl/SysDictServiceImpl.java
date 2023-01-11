@@ -1,11 +1,11 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysDictDTO;
 import com.runjian.auth.server.entity.SysDict;
 import com.runjian.auth.server.mapper.system.SysDictMapper;
 import com.runjian.auth.server.service.system.SysDictService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.common.config.response.CommonResponse;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> implements SysDictService {
 
     @Override
-    public CommonResponse addSysDict(SysDictDTO dto) {
+    public ResponseResult addSysDict(SysDictDTO dto) {
         return null;
     }
 }

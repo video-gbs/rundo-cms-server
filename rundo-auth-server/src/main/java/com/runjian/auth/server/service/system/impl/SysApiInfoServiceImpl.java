@@ -1,6 +1,7 @@
 package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysApiInfoDTO;
 import com.runjian.auth.server.entity.SysApiInfo;
 import com.runjian.auth.server.entity.SysAppApi;
@@ -8,7 +9,6 @@ import com.runjian.auth.server.mapper.app.SysAppApiMapper;
 import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
 import com.runjian.auth.server.service.system.SysApiInfoService;
 import com.runjian.auth.server.util.SnowflakeUtil;
-import com.runjian.common.config.response.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +32,7 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
     private SysAppApiMapper sysAppApiMapper;
 
     @Override
-    public CommonResponse addSysApi(SysApiInfoDTO dto) {
+    public ResponseResult addSysApi(SysApiInfoDTO dto) {
         SysApiInfo sysApiInfo = new SysApiInfo();
         Long apiId = idUtil.nextId();
         sysApiInfo.setId(apiId);
@@ -58,6 +58,6 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
         sysAppApi.setAppId(dto.getAppId());
         sysAppApiMapper.insert(sysAppApi);
 
-        return CommonResponse.success();
+        return new ResponseResult(200,"操作成功");
     }
 }

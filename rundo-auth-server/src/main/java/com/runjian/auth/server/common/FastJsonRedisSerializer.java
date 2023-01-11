@@ -1,4 +1,4 @@
-package com.runjian.auth.server.config;
+package com.runjian.auth.server.common;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.ParserConfig;

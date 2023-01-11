@@ -1,8 +1,8 @@
 package com.runjian.auth.server.controller.system;
 
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysDictDTO;
 import com.runjian.auth.server.service.system.SysDictService;
-import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class SysDictController {
 
     @PostMapping("/addSysDict")
     @ApiOperation("添加接口")
-    public CommonResponse addSysDict(@RequestBody SysDictDTO dto) {
-        return CommonResponse.success(sysDictService.addSysDict(dto));
+    public ResponseResult addSysDict(@RequestBody SysDictDTO dto) {
+        return sysDictService.addSysDict(dto);
     }
 }

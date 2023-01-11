@@ -10,11 +10,6 @@ spring:
     allow-bean-definition-overriding: true
   profiles:
     active: dev
-  devtools:
-    restart:
-      enabled: true
-    livereload:
-      enabled: true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

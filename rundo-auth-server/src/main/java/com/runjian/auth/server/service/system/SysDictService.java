@@ -1,9 +1,9 @@
 package com.runjian.auth.server.service.system;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysDictDTO;
 import com.runjian.auth.server.entity.SysDict;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.common.config.response.CommonResponse;
 
 /**
  * <p>
@@ -15,5 +15,5 @@ import com.runjian.common.config.response.CommonResponse;
  */
 public interface SysDictService extends IService<SysDict> {
 
-    CommonResponse addSysDict(SysDictDTO dto);
+    ResponseResult addSysDict(SysDictDTO dto);
 }

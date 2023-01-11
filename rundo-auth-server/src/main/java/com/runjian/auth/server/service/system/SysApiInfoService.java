@@ -1,9 +1,9 @@
 package com.runjian.auth.server.service.system;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysApiInfoDTO;
 import com.runjian.auth.server.entity.SysApiInfo;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.common.config.response.CommonResponse;
 
 /**
  * <p>
@@ -15,5 +15,5 @@ import com.runjian.common.config.response.CommonResponse;
  */
 public interface SysApiInfoService extends IService<SysApiInfo> {
 
-    CommonResponse addSysApi(SysApiInfoDTO dto);
+    ResponseResult addSysApi(SysApiInfoDTO dto);
 }

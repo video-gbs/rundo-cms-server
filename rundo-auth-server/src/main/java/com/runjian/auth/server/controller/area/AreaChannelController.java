@@ -1,12 +1,11 @@
 package com.runjian.auth.server.controller.area;
 
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.entity.AreaChannel;
 import com.runjian.auth.server.service.area.AreaChannelService;
-import com.runjian.common.config.response.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class AreaChannelController {
 
 
     @GetMapping("/list")
-    public CommonResponse<List<AreaChannel>> getAreaChannelList(){
-        return CommonResponse.success(areaChannelService.list());
+    public ResponseResult<List<AreaChannel>> getAreaChannelList() {
+        return new ResponseResult<>(200, "操作成功", areaChannelService.list());
     }
 }

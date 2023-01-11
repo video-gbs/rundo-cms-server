@@ -1,13 +1,13 @@
 package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysAppInfoDTO;
 import com.runjian.auth.server.entity.SysAppInfo;
 import com.runjian.auth.server.mapper.app.SysAppApiMapper;
 import com.runjian.auth.server.mapper.system.SysAppInfoMapper;
 import com.runjian.auth.server.service.system.SysAppInfoService;
 import com.runjian.auth.server.util.SnowflakeUtil;
-import com.runjian.common.config.response.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +32,7 @@ public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppI
     private SysAppApiMapper sysAppApiMapper;
 
     @Override
-    public CommonResponse addSysAppInfo(SysAppInfoDTO dto) {
+    public ResponseResult addSysAppInfo(SysAppInfoDTO dto) {
         SysAppInfo sysAppInfo = new SysAppInfo();
         sysAppInfo.setId(idUtil.nextId());
         sysAppInfo.setAppName(dto.getAppName());
@@ -46,11 +46,11 @@ public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppI
         // sysAppInfo.setUpdatedBy();
         // sysAppInfo.setCreatedTime();
         // sysAppInfo.setUpdatedTime();
-        return CommonResponse.success(sysAppInfoMapper.insert(sysAppInfo));
+        return new ResponseResult(200, "操作成功", sysAppInfoMapper.insert(sysAppInfo));
     }
 
     @Override
-    public CommonResponse updateSysAppInfo(SysAppInfoDTO dto) {
+    public ResponseResult updateSysAppInfo(SysAppInfoDTO dto) {
         return null;
     }
 }

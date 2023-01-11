@@ -1,4 +1,4 @@
-package com.runjian.auth.server.config;
+package com.runjian.auth.server.common;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -3,6 +3,7 @@ package com.runjian.auth.server.service.system.impl;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
 import com.runjian.auth.server.domain.vo.UserInfoVo;
 import com.runjian.auth.server.entity.*;
@@ -14,7 +15,6 @@ import com.runjian.auth.server.mapper.user.SysUserOrgMapper;
 import com.runjian.auth.server.service.system.SysUserInfoService;
 import com.runjian.auth.server.util.PasswordUtil;
 import com.runjian.auth.server.util.SnowflakeUtil;
-import com.runjian.common.config.response.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,7 +55,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     private SysRoleInfoMapper sysRoleInfoMapper;
 
     @Override
-    public CommonResponse addUser(SysUserInfoDTO dto) {
+    public ResponseResult addUser(SysUserInfoDTO dto) {
         log.info("添加用户传参{}", JSONUtil.toJsonPrettyStr(dto));
         // 1.处理用户基本信息
         SysUserInfo sysUserInfo = new SysUserInfo();
@@ -97,11 +97,11 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
                 sysRoleUserMapper.insert(sysRoleUser);
             }
         }
-        return CommonResponse.success("操作成功");
+        return new ResponseResult(200, "操作成功");
     }
 
     @Override
-    public CommonResponse<UserInfoVo> getUser(Long userId) {
+    public ResponseResult<UserInfoVo> getUser(Long userId) {
         // 1 获取用户基本信息
         SysUserInfo sysUserInfo = sysUserInfoMapper.selectById(userId);
         // 2 获取 用户--部门 映射关系
@@ -139,7 +139,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         userInfoVo.setRoleIds(roleIds);
         userInfoVo.setRoleNames(roleIdNames);
 
-        return CommonResponse.success(userInfoVo);
+        return new ResponseResult<>(200, "操作成功", userInfoVo);
     }
 
     /**
@@ -180,28 +180,28 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     }
 
     @Override
-    public CommonResponse updateUser() {
+    public ResponseResult updateUser() {
         return null;
     }
 
     @Override
-    public CommonResponse deleteUser() {
+    public ResponseResult deleteUser() {
         return null;
     }
 
     @Override
-    public CommonResponse batchDeleteUsers() {
+    public ResponseResult batchDeleteUsers() {
         return null;
     }
 
 
     @Override
-    public CommonResponse getUserList() {
+    public ResponseResult getUserList() {
         return null;
     }
 
     @Override
-    public CommonResponse getUserListByPage() {
+    public ResponseResult getUserListByPage() {
         return null;
     }
 }

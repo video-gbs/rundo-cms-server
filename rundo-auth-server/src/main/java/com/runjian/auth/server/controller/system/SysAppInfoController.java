@@ -1,8 +1,8 @@
 package com.runjian.auth.server.controller.system;
 
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysAppInfoDTO;
 import com.runjian.auth.server.service.system.SysAppInfoService;
-import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class SysAppInfoController {
 
     @PostMapping("/addSysAppInfo")
     @ApiOperation("添加应用")
-    public CommonResponse addSysAppInfo(SysAppInfoDTO dto) {
+    public ResponseResult addSysAppInfo(SysAppInfoDTO dto) {
         return sysAppInfoService.addSysAppInfo(dto);
     }
 

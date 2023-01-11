@@ -1,13 +1,13 @@
 package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysOrgDTO;
 import com.runjian.auth.server.domain.vo.SysOrgVO;
 import com.runjian.auth.server.entity.SysOrg;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.service.system.SysOrgService;
 import com.runjian.auth.server.util.SnowflakeUtil;
-import com.runjian.common.config.response.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +29,7 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
 
 
     @Override
-    public CommonResponse addSysOrg(SysOrgDTO dto) {
+    public ResponseResult addSysOrg(SysOrgDTO dto) {
         SysOrg sysOrg = new SysOrg();
         sysOrg.setId(idUtis.nextId());
         sysOrg.setOrgPid(dto.getOrgPid());
@@ -49,11 +49,11 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         // sysOrg.setCreatedTime();
         // sysOrg.setUpdatedTime();
 
-        return CommonResponse.success(sysOrgMapper.insert(sysOrg));
+        return new ResponseResult(200, "操作成功", sysOrgMapper.insert(sysOrg));
     }
 
     @Override
-    public CommonResponse deleteSysOrg() {
+    public ResponseResult deleteSysOrg() {
         return null;
     }
 
@@ -63,7 +63,7 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     }
 
     @Override
-    public CommonResponse moveSysOrg() {
+    public ResponseResult moveSysOrg() {
         return null;
     }
 }

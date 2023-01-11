@@ -1,8 +1,8 @@
 package com.runjian.auth.server.controller.system;
 
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysApiInfoDTO;
 import com.runjian.auth.server.service.system.SysApiInfoService;
-import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class SysApiInfoController {
 
     @PostMapping("/addSysApi")
     @ApiOperation("添加接口")
-    public CommonResponse addSysApi(@RequestBody SysApiInfoDTO dto) {
+    public ResponseResult addSysApi(@RequestBody SysApiInfoDTO dto) {
         return sysApiInfoService.addSysApi(dto);
     }
 }

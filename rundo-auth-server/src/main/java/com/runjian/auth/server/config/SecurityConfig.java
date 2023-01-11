@@ -1,22 +1,19 @@
 package com.runjian.auth.server.config;
 
-import com.runjian.auth.server.filter.JwtTokenFilter;
-// import com.runjian.auth.server.handler.AccessDeniedHandlerImpl;
-// import com.runjian.auth.server.handler.AuthenticationEntryPointImpl;
+import com.runjian.auth.server.filter.JwtAuthenticationTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Jiang4Yu
@@ -26,27 +23,32 @@ import javax.servlet.http.HttpServletResponse;
  * @date 2022-12-26 周一 22:06
  */
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+// @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    @Autowired
-    private JwtTokenFilter jwtTokenFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+
+    @Autowired
+    private AuthenticationConfiguration authenticationConfiguration;
+
     @Bean
-    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
 
-    // @Autowired
-    // AuthenticationEntryPointImpl authenticationEntryPoint;
-    // @Autowired
-    // AccessDeniedHandlerImpl accessDeniedHandler;
+    @Autowired
+    private AuthenticationEntryPoint authenticationEntryPoint;
+
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
 
     /**
      * 过滤器链
@@ -57,10 +59,11 @@ public class SecurityConfig {
      */
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // 关闭 csrf
+
         http
+                // 关闭 csrf
                 .csrf().disable()
-                // 关闭 session
+                // 关闭 session 不通过Session获取SecurityContext
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
@@ -85,18 +88,12 @@ public class SecurityConfig {
                 .anyRequest().fullyAuthenticated();
 
         // 把token校验过滤器添加到过滤链中
-        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
-
-        // 配置登入认证失败、权限认证失败异常处理器
-        http.exceptionHandling().authenticationEntryPoint(
-                (request, response, ex) -> {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
-                }
-        );
+        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        // 配置异常处理器
+        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).accessDeniedHandler(accessDeniedHandler);
 
         // 允许跨域
         http.cors();
-
 
         return http.build();
     }

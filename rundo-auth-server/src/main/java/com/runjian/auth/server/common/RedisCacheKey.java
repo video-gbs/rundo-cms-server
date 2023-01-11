@@ -1,4 +1,4 @@
-package com.runjian.auth.server.config;
+package com.runjian.auth.server.common;
 
 /**
  * @author Jiang4Yu

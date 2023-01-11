@@ -1,8 +1,8 @@
 package com.runjian.auth.server.controller.system;
 
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysMenuInfoDTO;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
-import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class SysMenuInfoController {
 
     @PostMapping("/addSysMenu")
     @ApiOperation("添加接口")
-    public CommonResponse addSysMenu(@RequestBody SysMenuInfoDTO dto) {
+    public ResponseResult addSysMenu(@RequestBody SysMenuInfoDTO dto) {
         return sysMenuInfoService.addSysMenu(dto);
     }
 }

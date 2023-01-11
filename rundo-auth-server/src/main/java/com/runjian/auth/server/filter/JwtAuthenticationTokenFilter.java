@@ -28,7 +28,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Component
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Autowired
     private RedisCache redisCache;
@@ -36,12 +36,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 1.获取token
-        // final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        // if (!StringUtils.hasText(header) && !header.startsWith("Bearer ")) {
-        //     //放行，让后面的过滤器执行
-        //     filterChain.doFilter(request, response);
-        //     return;
-        // }
         String token = request.getHeader("token");
         if (!StringUtils.hasText(token)) {
             //放行，让后面的过滤器执行
@@ -54,8 +48,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             Claims claims = JwtUtil.parseJWT(token);
             userid = claims.getSubject();
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error("解析token失败{}", e.getMessage());
             throw new RuntimeException("token非法");
         }
         // 3.获取userId,从redis中获取用户信息
@@ -64,8 +56,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             throw new RuntimeException("用户未登录");
         }
         // 4.封装Authentication
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
-
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
+                = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
         // 5.存入SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         // 6.放行，让后面的过滤器执行

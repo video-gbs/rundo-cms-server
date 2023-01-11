@@ -1,4 +1,4 @@
-package com.runjian.auth.server.config;
+package com.runjian.auth.server.common;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Value;

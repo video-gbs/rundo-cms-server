@@ -1,10 +1,10 @@
 package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
 import com.runjian.auth.server.domain.vo.UserInfoVo;
 import com.runjian.auth.server.entity.SysUserInfo;
-import com.runjian.common.config.response.CommonResponse;
 
 /**
  * <p>
@@ -22,7 +22,7 @@ public interface SysUserInfoService extends IService<SysUserInfo> {
      * @param dto
      * @return
      */
-    CommonResponse addUser(SysUserInfoDTO dto);
+    ResponseResult addUser(SysUserInfoDTO dto);
 
 
     /**
@@ -30,35 +30,35 @@ public interface SysUserInfoService extends IService<SysUserInfo> {
      *
      * @return
      */
-    CommonResponse updateUser();
+    ResponseResult updateUser();
 
     /**
      * 删除用户
      *
      * @return
      */
-    CommonResponse deleteUser();
+    ResponseResult deleteUser();
 
     /**
      * 批量删除用户
      *
      * @return
      */
-    CommonResponse batchDeleteUsers();
+    ResponseResult batchDeleteUsers();
 
     /**
      * 查询用户信息
      *
      * @return
      */
-    CommonResponse<UserInfoVo> getUser(Long userId);
+    ResponseResult<UserInfoVo> getUser(Long userId);
 
     /**
      * 用户列表
      *
      * @return
      */
-    CommonResponse getUserList();
+    ResponseResult getUserList();
 
-    CommonResponse getUserListByPage();
+    ResponseResult getUserListByPage();
 }

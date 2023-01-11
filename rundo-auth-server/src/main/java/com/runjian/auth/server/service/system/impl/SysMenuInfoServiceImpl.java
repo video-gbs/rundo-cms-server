@@ -1,12 +1,12 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysMenuInfoDTO;
 import com.runjian.auth.server.entity.SysMenuInfo;
 import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.util.SnowflakeUtil;
-import com.runjian.common.config.response.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
     private SysMenuInfoMapper sysMenuInfoMapper;
 
     @Override
-    public CommonResponse addSysMenu(SysMenuInfoDTO dto) {
+    public ResponseResult addSysMenu(SysMenuInfoDTO dto) {
         SysMenuInfo sysMenuInfo = new SysMenuInfo();
         sysMenuInfo.setId(idUtil.nextId());
         sysMenuInfo.setMenuPid(dto.getMenuPid());
@@ -48,6 +48,6 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
         // sysMenuInfo.setCreatedTime();
         // sysMenuInfo.setUpdatedTime();
 
-        return CommonResponse.success(sysMenuInfoMapper.insert(sysMenuInfo));
+        return new ResponseResult(200, "操作成功", sysMenuInfoMapper.insert(sysMenuInfo));
     }
 }
