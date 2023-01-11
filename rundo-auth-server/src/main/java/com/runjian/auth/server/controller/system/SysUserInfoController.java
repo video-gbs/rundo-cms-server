@@ -2,12 +2,14 @@ package com.runjian.auth.server.controller.system;
 
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
-import com.runjian.auth.server.entity.system.SysUserInfo;
 import com.runjian.auth.server.service.system.SysUserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -33,7 +35,7 @@ public class SysUserInfoController {
     }
 
     @PostMapping("/update")
-    public ResponseResult updateUser(@RequestBody SysUserInfo sysUserInfo) {
-        return sysUserService.updateUser();
+    public ResponseResult updateUser(@RequestBody SysUserInfoDTO dto) {
+        return sysUserService.updateUser(dto);
     }
 }

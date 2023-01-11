@@ -78,7 +78,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     }
 
     @Override
-    public ResponseResult updateUser() {
+    public ResponseResult updateUser(SysUserInfoDTO dto) {
         return null;
     }
 

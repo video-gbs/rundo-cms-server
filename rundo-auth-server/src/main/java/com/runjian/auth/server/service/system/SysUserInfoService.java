@@ -17,6 +17,6 @@ public interface SysUserInfoService extends IService<SysUserInfo> {
 
     ResponseResult addUser(SysUserInfoDTO dto);
 
-    ResponseResult updateUser();
+    ResponseResult updateUser(SysUserInfoDTO dto);
 
 }

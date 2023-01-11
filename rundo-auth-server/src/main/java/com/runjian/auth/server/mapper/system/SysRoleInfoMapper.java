@@ -26,5 +26,18 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      */
     List<Long> selectRoleByUserId(@Param("userId") Long userId);
 
-    int saveUserRole(@Param("userId")Long userId, @Param("roleId")Long roleId);
+    Integer saveUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
+
+    Integer saveRoleApp(@Param("roleId") Long roleId, @Param("id") Long id);
+
+    Integer saveRoleMenu(@Param("roleId") Long roleId, @Param("id") Long id);
+
+    Integer saveRoleOrg(@Param("roleId") Long roleId, @Param("id") Long id);
+
+    Integer saveRoleArea(@Param("roleId") Long roleId, @Param("id") Long id);
+
+    Integer saveRoleChannel(@Param("roleId") Long roleId, @Param("id") Long id);
+
+    Integer saveRoleChannelOperation(@Param("roleId") Long roleId, @Param("id") Long id);
+
 }

@@ -16,5 +16,5 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface SysOrgMapper extends BaseMapper<SysOrg> {
 
-    int saveUserOrg(@Param("userId")Long userId, @Param("orgId")Long orgId);
+    Integer saveUserOrg(@Param("userId")Long userId, @Param("orgId")Long orgId);
 }
