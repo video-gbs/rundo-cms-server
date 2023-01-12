@@ -19,7 +19,7 @@ public class GatewayMqDto<T> extends CommonResponse<T> {
     private String serialNum;
 
     /**
-     * 消息类型
+     * 消息类型 {@link com.runjian.parsing.constant.MsgType}
      */
     private String msgType;
 

@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 /**
  * 设备映射表
+ * @author Miracle
+ * @date 2023/1/12 9:43
  */
 @Data
 public class DeviceInfo {

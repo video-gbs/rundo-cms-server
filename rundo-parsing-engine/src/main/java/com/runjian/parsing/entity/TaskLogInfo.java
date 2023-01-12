@@ -4,6 +4,11 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * 任务日志映射表
+ * @author Miracle
+ * @date 2023/1/12 9:43
+ */
 @Data
 public class TaskLogInfo {
 

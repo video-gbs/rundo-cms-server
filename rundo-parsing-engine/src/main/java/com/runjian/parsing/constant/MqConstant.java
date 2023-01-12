@@ -2,6 +2,11 @@ package com.runjian.parsing.constant;
 
 import lombok.Data;
 
+/**
+ * MQ前缀
+ * @author Miracle
+ * @date 2023/1/12 9:43
+ */
 @Data
 public class MqConstant {
 

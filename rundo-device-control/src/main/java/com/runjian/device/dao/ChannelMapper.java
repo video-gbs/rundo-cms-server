@@ -36,4 +36,10 @@ public interface ChannelMapper {
             " sign_state = #{signState} " +
             " WHERE id = #{id} ")
     void updateSignState(ChannelInfo channelInfo);
+
+    @Update(" UPDATE "  + CHANNEL_TABLE_NAME +
+            " SET update_time = #{updateTime}, " +
+            " online_state = #{online_state} " +
+            " WHERE device_id = #{deviceId} ")
+    void updateOnlineStateByDeviceId(Long deviceId, Integer onlineState);
 }

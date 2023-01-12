@@ -4,6 +4,11 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * 网关映射表
+ * @author Miracle
+ * @date 2023/1/12 9:43
+ */
 @Data
 public class GatewayInfo {
 
@@ -18,12 +23,12 @@ public class GatewayInfo {
     private String serialNum;
 
     /**
-     * 注册类型 1-MQ  2-RETFUL
+     * 注册类型 {@link com.runjian.parsing.constant.SignType}
      */
     private Integer signType;
 
     /**
-     * 网关类型
+     * 网关类型 {@link com.runjian.parsing.constant.GatewayType}
      */
     private Integer gatewayType;
 

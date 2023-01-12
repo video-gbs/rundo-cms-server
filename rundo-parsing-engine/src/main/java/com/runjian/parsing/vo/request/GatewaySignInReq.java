@@ -1,6 +1,5 @@
 package com.runjian.parsing.vo.request;
 
-import com.runjian.parsing.entity.GatewayInfo;
 import lombok.Data;
 
 @Data
@@ -13,7 +12,7 @@ public class GatewaySignInReq {
     private String protocol;
 
     /**
-     * 网关类型
+     * 网关类型 {@link com.runjian.parsing.constant.GatewayType}
      */
     private String gatewayType;
 

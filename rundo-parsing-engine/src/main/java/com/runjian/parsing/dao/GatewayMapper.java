@@ -8,7 +8,11 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-
+/**
+ * 网关数据库操作类
+ * @author Miracle
+ * @date 2023/1/12 9:43
+ */
 @Mapper
 @Repository
 public interface GatewayMapper {

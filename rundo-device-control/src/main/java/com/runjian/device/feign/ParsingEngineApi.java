@@ -5,11 +5,14 @@ import com.runjian.device.vo.feign.PostDeviceAddReq;
 import com.runjian.device.vo.feign.PutPtzControlReq;
 import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.DeviceSyncRsp;
+import com.runjian.device.vo.response.VideoPlayRsp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+
+import java.time.LocalDateTime;
 
 /**
  * 解析引擎远程调用
@@ -59,4 +62,26 @@ public interface ParsingEngineApi {
      */
     @PutMapping("/ptz/control")
     CommonResponse<Boolean> ptzControl(PutPtzControlReq req);
+
+    /**
+     * 通道播放
+     * @param chId 通道ID
+     * @param enableAudio 是否播放音频
+     * @param ssrcCheck 是有使用ssrc
+     * @param mediaUrl 流媒体中心地址
+     * @return
+     */
+    CommonResponse<VideoPlayRsp> channelPlay(Long chId, Boolean enableAudio, Boolean ssrcCheck, String mediaUrl);
+
+    /**
+     * 通道播放
+     * @param chId 通道id
+     * @param enableAudio 是否开启音频
+     * @param ssrcCheck 是否使用ssrc
+     * @param mediaUrl 流媒体中心地址
+     * @param startTime 录播开始时间
+     * @param endTime 录播结束时间
+     * @return
+     */
+    CommonResponse<VideoPlayRsp> channelPlayback(Long chId, Boolean enableAudio, Boolean ssrcCheck, String mediaUrl, LocalDateTime startTime, LocalDateTime endTime);
 }

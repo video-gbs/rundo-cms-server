@@ -2,6 +2,7 @@ package com.runjian.device.service.south.impl;
 
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
+import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.DetailInfo;
@@ -26,6 +27,9 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
 
     @Autowired
     private DetailMapper detailMapper;
+
+    @Autowired
+    private ChannelMapper channelMapper;
 
     /**
      * 设备添加注册
@@ -55,6 +59,8 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             deviceInfo.setOnlineState(onlineState);
             deviceInfo.setUpdateTime(nowTime);
             deviceMapper.update(deviceInfo);
+            // 修改设备下的通道状态
+            channelMapper.updateOnlineStateByDeviceId(id, onlineState);
         }
 
         Optional<DetailInfo> detailInfoOp = detailMapper.selectByDcIdAndType(id, DetailType.DEVICE.getCode());
