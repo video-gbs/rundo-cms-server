@@ -35,15 +35,29 @@ public class SysOrgController {
         return new ResponseResult<>(200, "操作成功", sysOrgService.save(dto));
     }
 
-    @PostMapping
+    @PostMapping("/delete")
     @ApiOperation("删除部门")
-    public ResponseResult<Boolean> delet(@RequestBody SysOrg dto) {
+    public ResponseResult<Boolean> delete(@RequestBody SysOrg dto) {
+        // TODO 级联判断
         return new ResponseResult<>(200, "操作成功", sysOrgService.removeById(dto));
     }
 
+    @PostMapping("/batchDelete")
+    @ApiOperation("批量删除部门")
+    public ResponseResult<Boolean> batchDelete(@RequestBody List<SysOrg> list) {
+        // TODO 级联判断
+        return new ResponseResult<>(200, "操作成功", sysOrgService.removeBatchByIds(list));
+    }
+
+    // @PostMapping("/move")
+    // @ApiOperation("移动部门")
+    // public ResponseResult<Boolean> move(@RequestBody SysOrg dto) {
+    //     return new ResponseResult<>(200, "操作成功", sysOrgService.updateById(dto));
+    // }
+
     @PostMapping("/update")
-    @ApiOperation("编辑部门")
-    public ResponseResult<Boolean> updateSysDict(@RequestBody SysOrg dto) {
+    @ApiOperation("编辑部门信息")
+    public ResponseResult<Boolean> update(@RequestBody SysOrg dto) {
         return new ResponseResult<>(200, "操作成功", sysOrgService.updateById(dto));
     }
 
