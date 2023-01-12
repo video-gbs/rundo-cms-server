@@ -1,8 +1,8 @@
 package com.runjian.auth.server.controller.system;
 
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.dto.SysOrgDTO;
 import com.runjian.auth.server.domain.vo.SysOrgVO;
+import com.runjian.auth.server.entity.system.SysOrg;
 import com.runjian.auth.server.service.system.SysOrgService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,29 +26,40 @@ public class SysOrgController {
     private SysOrgService sysOrgService;
 
     @PostMapping("/add")
-    @ApiOperation("新建部门")
-    public ResponseResult addSysOrg(@RequestBody SysOrgDTO dto) {
-        return sysOrgService.addSysOrg(dto);
+    @ApiOperation("添加部门")
+    public ResponseResult save(@RequestBody SysOrg dto) {
+        sysOrgService.save(dto);
+        return new ResponseResult<>(200, "操作成功");
     }
 
     @PostMapping("/update")
-    @ApiOperation("新建部门")
-    public ResponseResult updateSysOrg(@RequestBody SysOrgDTO dto) {
-        return sysOrgService.updateSysOrg(dto);
+    @ApiOperation("编辑部门")
+    public ResponseResult updateSysDict(@RequestBody SysOrg dto) {
+        sysOrgService.updateById(dto);
+        return new ResponseResult<>(200, "操作成功");
     }
 
-
+    @GetMapping("/getById")
+    @ApiOperation("获取部门信息")
+    public ResponseResult getById(@RequestBody Long id) {
+        return new ResponseResult<>(200, "操作成功", sysOrgService.getById(id));
+    }
     @GetMapping("getSysOrgById")
     @ApiOperation("查询部门")
     public ResponseResult<SysOrgVO> getSysOrgById(Long id) {
         return new ResponseResult<>(200, "操作成", sysOrgService.getSysOrgById(id));
     }
 
-    public ResponseResult moveSysOrg() {
-        return null;
+    @GetMapping("/getList")
+    @ApiOperation("获取部门列表")
+    public ResponseResult getList() {
+        return new ResponseResult<>(200, "操作成功", sysOrgService.list());
     }
 
-    public ResponseResult deleteSysOrg() {
-        return null;
+    @GetMapping("/getListByPage")
+    @ApiOperation("分页获取部门列表")
+    public ResponseResult getListByPage(@RequestBody Long id) {
+        // TODO 分页获取应用列表
+        return new ResponseResult<>(200, "操作成功", sysOrgService.list());
     }
 }

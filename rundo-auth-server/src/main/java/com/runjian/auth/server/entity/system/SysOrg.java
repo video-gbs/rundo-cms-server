@@ -56,6 +56,10 @@ public class SysOrg implements Serializable {
     @TableField("adders")
     private String adders;
 
+    @ApiModelProperty("部门负责人")
+    @TableField("org_leader")
+    private String orgLeader;
+
     @ApiModelProperty("邮箱")
     @TableField("email")
     private String email;
