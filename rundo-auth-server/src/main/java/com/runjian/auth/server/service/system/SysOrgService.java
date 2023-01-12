@@ -1,10 +1,11 @@
 package com.runjian.auth.server.service.system;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.dto.SysOrgDTO;
-import com.runjian.auth.server.domain.vo.SysOrgVO;
+import com.runjian.auth.server.domain.vo.SysOrgNode;
 import com.runjian.auth.server.entity.system.SysOrg;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,13 +17,7 @@ import com.runjian.auth.server.entity.system.SysOrg;
  */
 public interface SysOrgService extends IService<SysOrg> {
 
-    ResponseResult addSysOrg(SysOrgDTO dto);
+    List<SysOrgNode> getSysOrgTree(Long id, String orgName);
 
-    SysOrgVO getSysOrgById(Long id);
-
-    ResponseResult deleteSysOrg();
-
-    ResponseResult moveSysOrg();
-
-    ResponseResult updateSysOrg(SysOrgDTO dto);
+    IPage<SysOrg> getListByPage(Integer pageNum, Integer pageSize);
 }

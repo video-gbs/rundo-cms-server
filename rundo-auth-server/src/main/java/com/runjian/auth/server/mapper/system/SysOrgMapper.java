@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  * 组织机构表 Mapper 接口
@@ -16,5 +18,7 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface SysOrgMapper extends BaseMapper<SysOrg> {
 
-    Integer saveUserOrg(@Param("userId")Long userId, @Param("orgId")Long orgId);
+    Integer saveUserOrg(@Param("userId") Long userId, @Param("orgId") Long orgId);
+
+    List<SysOrg> selectOrgTree(@Param("orgId") Long orgId,@Param("orgName") String orgName);
 }

@@ -43,6 +43,13 @@ public class SysRoleInfoController {
         return sysRoleInfoService.updateRole(dto);
     }
 
+    @PostMapping("/delete")
+    @ApiOperation("删除角色")
+    public ResponseResult deleteRole(@RequestBody Long id) {
+        sysRoleInfoService.removeById(id);
+        return new ResponseResult<>(200, "操作成功");
+    }
+
 
     // @PostMapping("/update")
     // @ApiOperation("编辑角色")

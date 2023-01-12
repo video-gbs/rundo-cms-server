@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.dto;
+package com.runjian.auth.server.domain.vo;
 
 import com.runjian.auth.server.entity.system.SysOrg;
 import com.runjian.auth.server.util.tree.DataTree;
@@ -9,8 +9,8 @@ import java.util.List;
  * @author Jiang4Yu
  * @version V1.0.0
  * @ClassName SysOrgNode
- * @Description 部门树形结构
- * @date 2023-01-10 周二 17:16
+ * @Description 树形
+ * @date 2023-01-12 周四 11:46
  */
 public class SysOrgNode extends SysOrg implements DataTree<SysOrgNode> {
 

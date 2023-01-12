@@ -37,8 +37,8 @@ public class SysOrg implements Serializable {
     private Long orgPid;
 
     @ApiModelProperty("所有间接组织父级ID")
-    @TableField("org_ids")
-    private String orgIds;
+    @TableField("org_pids")
+    private String orgPids;
 
     @ApiModelProperty("组织机构名称")
     @TableField("org_name")
