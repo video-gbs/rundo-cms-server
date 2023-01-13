@@ -1,7 +1,10 @@
 package com.runjian.auth.server.service.area;
 
+import com.runjian.auth.server.domain.vo.AreaNode;
 import com.runjian.auth.server.entity.video.VideoArae;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface VideoAraeService extends IService<VideoArae> {
 
+    List<AreaNode> getTreeList(Long id, String areaName);
 }

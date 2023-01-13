@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.runjian.auth.server.mapper.video.VideoAraeMapper">
+    <select id="selectByRoleId" resultType="java.lang.Long">
+    </select>
 
+    <select id="selectTree" resultType="com.runjian.auth.server.entity.video.VideoArae">
+        SELECT *
+        FROM tb_video_arae
+        <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
+            AND (area_pids like CONCAT('%[', #{id,jdbcType=BIGINT}, ']%') OR id = #{id,jdbcType=BIGINT})
+            <if test="areaName != null and areaName != ''">
+                AND area_name like CONCAT('%', #{areaName,jdbcType=VARCHAR}, '%')
+            </if>
+        </trim>
+    </select>
 </mapper>

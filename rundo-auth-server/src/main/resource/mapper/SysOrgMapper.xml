@@ -12,7 +12,7 @@
         <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
             AND (org_pids like CONCAT('%[', #{orgId,jdbcType=BIGINT}, ']%') OR id = #{orgId,jdbcType=BIGINT})
             <if test="orgName !=null and orgName != '' " >
-                AND org_name like CONCAT('%',#{orgName},'%')
+                AND org_name like CONCAT('%', #{orgName,jdbcType=VARCHAR},'%')
             </if>
         </trim>
     </select>

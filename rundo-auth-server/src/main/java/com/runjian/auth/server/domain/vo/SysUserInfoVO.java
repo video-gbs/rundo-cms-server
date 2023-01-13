@@ -26,15 +26,6 @@ public class SysUserInfoVO {
     @ApiModelProperty("用户姓名")
     private String userName;
 
-    @ApiModelProperty("所属部门ID")
-    private Long orgId;
-
-    @ApiModelProperty("所属部门名称")
-    private Long orgName;
-
-    @ApiModelProperty("角色ID列表")
-    Map<Long, String> roleIds;
-
     @ApiModelProperty("工号")
     private String jobNo;
 
@@ -59,6 +50,15 @@ public class SysUserInfoVO {
 
     @ApiModelProperty("描述")
     private String description;
+
+    @ApiModelProperty("所属部门ID")
+    private Long orgId;
+
+    @ApiModelProperty("所属部门名称")
+    private Long orgName;
+
+    @ApiModelProperty("角色ID列表")
+    Map<Long, String> roleIds;
 
 
 }

@@ -1,10 +1,10 @@
 package com.runjian.auth.server.domain.dto;
 
-import com.runjian.auth.server.entity.system.SysUserInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,7 +18,35 @@ import java.util.List;
 @ApiModel(value = "新建用户", description = "用户信息")
 public class SysUserInfoDTO {
 
-    private SysUserInfo userInfo;
+    @ApiModelProperty("用户账户")
+    private String userAccount;
+
+    @ApiModelProperty("用户姓名")
+    private String userName;
+
+    @ApiModelProperty("用户密码")
+    private String password;
+
+    @ApiModelProperty("邮箱")
+    private String email;
+
+    @ApiModelProperty("电话")
+    private String phone;
+
+    @ApiModelProperty("工号")
+    private String jobNo;
+
+    @ApiModelProperty("地址")
+    private String address;
+
+    @ApiModelProperty("有效期起")
+    private Date expiryDateStart;
+
+    @ApiModelProperty("有效期终")
+    private Date expiryDateEnd;
+
+    @ApiModelProperty("描述信息")
+    private String description;
 
     /**
      * 部门编号

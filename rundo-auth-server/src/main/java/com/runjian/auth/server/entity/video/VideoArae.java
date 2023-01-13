@@ -4,12 +4,13 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.io.Serializable;
-import java.util.Date;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -30,6 +31,25 @@ public class VideoArae implements Serializable {
     @ApiModelProperty("主键ID")
     @TableId("id")
     private Long id;
+
+    @ApiModelProperty("安防区域名称")
+    @TableField("area_name")
+    private String areaName;
+
+    @ApiModelProperty("直接上级")
+    @TableField("area_pid")
+    private Long areaPid;
+
+    @ApiModelProperty("所有上级")
+    @TableField("area_pids")
+    private String areaPids;
+
+    @ApiModelProperty("描述信息")
+    private String description;
+
+    @ApiModelProperty("层级")
+    @TableField("level")
+    private String level;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")

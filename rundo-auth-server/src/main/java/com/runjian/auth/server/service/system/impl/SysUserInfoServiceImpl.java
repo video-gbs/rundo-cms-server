@@ -49,11 +49,26 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     @Override
     public ResponseResult addUser(SysUserInfoDTO dto) {
         // 处理基本信息
-        SysUserInfo sysUserInfo = dto.getUserInfo();
+        SysUserInfo sysUserInfo = new SysUserInfo();
         Long userId = idUtil.nextId();
-        String password = passwordUtil.encode(sysUserInfo.getPassword());
         sysUserInfo.setId(userId);
+        sysUserInfo.setUserAccount(dto.getUserAccount());
+        sysUserInfo.setUserName(dto.getUserName());
+        String password = passwordUtil.encode(dto.getPassword());
         sysUserInfo.setPassword(password);
+        sysUserInfo.setEmail(dto.getEmail());
+        sysUserInfo.setPhone(dto.getPhone());
+        sysUserInfo.setJobNo(dto.getJobNo());
+        sysUserInfo.setAddress(dto.getAddress());
+        sysUserInfo.setExpiryDateStart(dto.getExpiryDateStart());
+        sysUserInfo.setExpiryDateEnd(dto.getExpiryDateEnd());
+        sysUserInfo.setDescription(dto.getDescription());
+        // sysUserInfo.setTenantId();
+        // sysUserInfo.setDeleteFlag();
+        // sysUserInfo.setCreatedBy();
+        // sysUserInfo.setUpdatedBy();
+        // sysUserInfo.setCreatedTime();
+        // sysUserInfo.setUpdatedTime();
         sysUserInfoMapper.insert(sysUserInfo);
         // 处理部门信息
         sysOrgMapper.saveUserOrg(userId, dto.getOrgId());
