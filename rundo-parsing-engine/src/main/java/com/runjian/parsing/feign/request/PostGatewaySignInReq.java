@@ -1,14 +1,23 @@
 package com.runjian.parsing.feign.request;
 
 import com.runjian.parsing.entity.GatewayInfo;
+import com.runjian.parsing.entity.TaskInfo;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
+import java.time.LocalDateTime;
+
+/**
+ * 网关注册请求体
+ * @author Miracle
+ * @date 2023/1/13 11:44
+ */
 @Data
 public class PostGatewaySignInReq {
 
-    public PostGatewaySignInReq(GatewayInfo gatewayInfo){
+    public PostGatewaySignInReq(GatewayInfo gatewayInfo, LocalDateTime outTime){
         BeanUtils.copyProperties(gatewayInfo, this);
+        this.outTime = outTime;
     }
 
     /**
@@ -51,7 +60,9 @@ public class PostGatewaySignInReq {
      */
     private String port;
 
-
-
+    /**
+     * 过期时间
+     */
+    private LocalDateTime outTime;
 
 }

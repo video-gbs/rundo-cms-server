@@ -21,7 +21,7 @@ import java.util.Map;
 public class MqListenerConfig {
 
     @Autowired
-    private PublicMsgListener publicMsgListener;
+    private GatewayPublicMsgListener gatewayPublicMsgListener;
 
     @Autowired
     private DispatchMsgListener dispatchMsgListener;
@@ -45,7 +45,7 @@ public class MqListenerConfig {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(rabbitMqProperties.getQueueData(publicGetQueue).getQueueName());
-        container.setMessageListener(publicMsgListener);
+        container.setMessageListener(gatewayPublicMsgListener);
         container.setConcurrentConsumers(1);
         container.setMaxConcurrentConsumers(1);
         container.setAcknowledgeMode(AcknowledgeMode.MANUAL);

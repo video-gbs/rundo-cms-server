@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * @date 2023/1/12 9:43
  */
 @Data
-public class TaskLogInfo {
+public class TaskInfo {
 
     /**
      * 主键id
@@ -31,17 +31,17 @@ public class TaskLogInfo {
     /**
      * 消息id
      */
-    private Long msgId;
+    private String msgId;
 
     /**
      * 任务名称
      */
-    private String taskName;
+    private String msgType;
 
     /**
      * 状态
      */
-    private Integer state;
+    private Integer taskState;
 
     private LocalDateTime createTime;
 

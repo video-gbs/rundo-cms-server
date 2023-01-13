@@ -15,7 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Slf4j
@@ -29,7 +31,7 @@ public class GatewayServiceImpl implements GatewayService {
     private DeviceControlApi deviceControlApi;
 
     @Override
-    public GatewaySignInRsp signIn(String serialNum, Integer signType, Integer gatewayType, String protocol, String ip, String port) {
+    public GatewaySignInRsp signIn(String serialNum, Integer signType, Integer gatewayType, String protocol, String ip, String port, String outTime) {
         Optional<GatewayInfo> gatewayInfoOp = gatewayMapper.selectBySerialNum(serialNum);
         GatewaySignInRsp gatewaySignInRsp = new GatewaySignInRsp();
         GatewayInfo gatewayInfo;
@@ -53,8 +55,7 @@ public class GatewayServiceImpl implements GatewayService {
             gatewaySignInRsp.setGatewayId(gatewayInfoOp.get().getId());
         }
         // todo 对请求失败做处理
-        System.out.println(gatewayInfo);
-        PostGatewaySignInReq req = new PostGatewaySignInReq(gatewayInfo);
+        PostGatewaySignInReq req = new PostGatewaySignInReq(gatewayInfo, Instant.ofEpochMilli(Long.parseLong(outTime)).atZone(ZoneId.systemDefault()).toLocalDateTime());
         CommonResponse response = deviceControlApi.gatewaySignIn(req);
         if (response.getCode() == 0){
             log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册服务", "网关注册成功", gatewayInfo.getId());

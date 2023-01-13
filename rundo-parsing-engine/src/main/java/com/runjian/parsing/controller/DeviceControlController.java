@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/device")
 public class DeviceControlController {
 
+    public void test(){
 
+    }
 
 }
