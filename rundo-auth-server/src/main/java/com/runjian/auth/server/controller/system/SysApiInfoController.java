@@ -2,6 +2,7 @@ package com.runjian.auth.server.controller.system;
 
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.entity.system.SysApiInfo;
+import com.runjian.auth.server.model.dto.system.SysApiInfoDTO;
 import com.runjian.auth.server.service.system.SysApiInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,8 +27,23 @@ public class SysApiInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加接口")
-    public ResponseResult save(@RequestBody SysApiInfo dto) {
-        sysApiInfoService.save(dto);
+    public ResponseResult save(@RequestBody SysApiInfoDTO dto) {
+        SysApiInfo sysApiInfo = new SysApiInfo();
+        sysApiInfo.setApiPid(dto.getApiPid());
+        // sysApiInfo.setApiPids();
+        sysApiInfo.setApiName(dto.getApiName());
+        sysApiInfo.setApiSort(dto.getApiSort());
+        // sysApiInfo.setApiLevel();
+        sysApiInfo.setUrl(dto.getUrl());
+        // sysApiInfo.setLeaf();
+        sysApiInfo.setStatus(dto.getStatus());
+        // sysApiInfo.setTenantId();
+        // sysApiInfo.setDeleteFlag();
+        // sysApiInfo.setCreatedBy();
+        // sysApiInfo.setUpdatedBy();
+        // sysApiInfo.setCreatedTime();
+        // sysApiInfo.setUpdatedTime();
+        sysApiInfoService.save(sysApiInfo);
         return new ResponseResult<>(200, "操作成功");
     }
 

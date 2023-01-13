@@ -27,9 +27,6 @@ public class SysApiInfoDTO {
     @ApiModelProperty("接口名称")
     private String apiName;
 
-    @ApiModelProperty("接口间接父ID")
-    private String apiPids;
-
     @ApiModelProperty("跳转链接")
     private String url;
 
