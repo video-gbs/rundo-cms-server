@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.vo;
+package com.runjian.auth.server.model.vo.system;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -55,7 +55,7 @@ public class SysUserInfoVO {
     private Long orgId;
 
     @ApiModelProperty("所属部门名称")
-    private Long orgName;
+    private String orgName;
 
     @ApiModelProperty("角色ID列表")
     Map<Long, String> roleIds;

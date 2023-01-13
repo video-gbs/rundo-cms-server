@@ -4,7 +4,7 @@
     <select id="selectByRoleId" resultType="java.lang.Long">
     </select>
 
-    <select id="selectTree" resultType="com.runjian.auth.server.entity.video.VideoArae">
+    <select id="selectTree" resultType="com.runjian.auth.server.entity.video.VideoArea">
         SELECT *
         FROM tb_video_arae
         <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">

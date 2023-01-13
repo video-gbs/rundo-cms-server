@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.login;
+package com.runjian.auth.server.model.dto.login;
 
 import cn.hutool.core.date.DateUtil;
 import com.runjian.auth.server.entity.system.SysUserInfo;
@@ -14,7 +14,7 @@ import java.util.Collection;
  * @Description 登录
  * @date 2023-01-04 周三 16:17
  */
-public class LoginUser implements UserDetails {
+public class LoginUserDTO implements UserDetails {
 
     private SysUserInfo sysUserInfo;
 

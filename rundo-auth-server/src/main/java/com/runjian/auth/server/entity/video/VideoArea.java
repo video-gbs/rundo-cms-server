@@ -24,7 +24,7 @@ import java.util.Date;
 @Setter
 @TableName("tb_video_arae")
 @ApiModel(value = "VideoArae对象", description = "安保区域")
-public class VideoArae implements Serializable {
+public class VideoArea implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

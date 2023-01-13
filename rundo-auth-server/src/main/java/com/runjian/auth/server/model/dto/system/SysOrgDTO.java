@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.dto;
+package com.runjian.auth.server.model.dto.system;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

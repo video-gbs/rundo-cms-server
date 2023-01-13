@@ -31,8 +31,8 @@ public class SysMenuInfoController {
     // }
     @PostMapping("/add")
     @ApiOperation("添加菜单")
-    public ResponseResult save(@RequestBody SysMenuInfo dto) {
-        sysMenuInfoService.save(dto);
+    public ResponseResult save(@RequestBody SysMenuInfo menuInfo) {
+        sysMenuInfoService.save(menuInfo);
         return new ResponseResult<>(200, "操作成功");
     }
 

@@ -1,8 +1,8 @@
 package com.runjian.auth.server.service.login.impl;
 
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.login.LoginUser;
-import com.runjian.auth.server.domain.dto.UserInfoDTO;
+import com.runjian.auth.server.model.dto.login.LoginUserDTO;
+import com.runjian.auth.server.model.dto.login.UserInfoDTO;
 import com.runjian.auth.server.service.login.LoginService;
 import com.runjian.auth.server.util.JwtUtil;
 import com.runjian.auth.server.util.RedisCache;
@@ -48,19 +48,19 @@ public class LoginServiceImpl implements LoginService {
         }
 
         // 认证通过了，使用userid生成一个JWT令牌 并将JWT存入CommonResponse返回
-        LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
-        String userid = loginUser.getSysUserInfo().getId().toString();
+        LoginUserDTO loginUserDTO = (LoginUserDTO) authenticate.getPrincipal();
+        String userid = loginUserDTO.getSysUserInfo().getId().toString();
         String jwt = JwtUtil.createJWT(userid);
         Map<String, String> map = new HashMap<>();
         map.put("token", jwt);
-        map.put("username", loginUser.getSysUserInfo().getUserName());
-        map.put("userAccount", loginUser.getSysUserInfo().getUserAccount());
-        map.put("jobNo", loginUser.getSysUserInfo().getJobNo());
-        map.put("email", loginUser.getSysUserInfo().getEmail());
-        map.put("phone", loginUser.getSysUserInfo().getPhone());
-        map.put("description", loginUser.getSysUserInfo().getDescription());
+        map.put("username", loginUserDTO.getSysUserInfo().getUserName());
+        map.put("userAccount", loginUserDTO.getSysUserInfo().getUserAccount());
+        map.put("jobNo", loginUserDTO.getSysUserInfo().getJobNo());
+        map.put("email", loginUserDTO.getSysUserInfo().getEmail());
+        map.put("phone", loginUserDTO.getSysUserInfo().getPhone());
+        map.put("description", loginUserDTO.getSysUserInfo().getDescription());
         // 把完整的用户信息放入redis中，userId 作为key
-        redisCache.setCacheObject("login:" + userid, loginUser);
+        redisCache.setCacheObject("login:" + userid, loginUserDTO);
         return new ResponseResult(200, "登陆成功", map);
     }
 
@@ -68,8 +68,8 @@ public class LoginServiceImpl implements LoginService {
     public ResponseResult logout() {
         // 获取SecurityContextHolder中的用户ID
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        Long userid = loginUser.getSysUserInfo().getId();
+        LoginUserDTO loginUserDTO = (LoginUserDTO) authentication.getPrincipal();
+        Long userid = loginUserDTO.getSysUserInfo().getId();
         // 删除redis中的UserID
         redisCache.deleteObject("login:" + userid);
         return new ResponseResult(200, "注销成功");

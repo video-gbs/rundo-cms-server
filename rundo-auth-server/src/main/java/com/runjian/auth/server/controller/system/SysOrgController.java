@@ -2,7 +2,7 @@ package com.runjian.auth.server.controller.system;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.vo.SysOrgNode;
+import com.runjian.auth.server.model.vo.system.SysOrgNode;
 import com.runjian.auth.server.entity.system.SysOrg;
 import com.runjian.auth.server.service.system.SysOrgService;
 import io.swagger.annotations.Api;

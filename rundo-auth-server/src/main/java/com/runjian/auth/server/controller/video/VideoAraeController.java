@@ -1,8 +1,9 @@
 package com.runjian.auth.server.controller.video;
 
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.vo.AreaNode;
-import com.runjian.auth.server.entity.video.VideoArae;
+import com.runjian.auth.server.model.dto.video.VideoAreaDTO;
+import com.runjian.auth.server.model.vo.video.AreaNode;
+import com.runjian.auth.server.entity.video.VideoArea;
 import com.runjian.auth.server.service.area.VideoAraeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,17 +31,38 @@ public class VideoAraeController {
 
     @PostMapping("/add")
     @ApiOperation("添加安保区域")
-    public ResponseResult save(@RequestBody VideoArae dto) {
-        videoAraeService.save(dto);
+    public ResponseResult save(@RequestBody VideoAreaDTO dto) {
+        VideoArea area = new VideoArea();
+        area.setAreaName(dto.getAreaName());
+        area.setAreaPid(dto.getAreaPid());
+        // area.setAreaPids();
+        area.setDescription(dto.getDescription());
+        // area.setLevel();
+        // area.setTenantId();
+        // area.setDeleteFlag();
+        // area.setCreatedBy();
+        // area.setUpdatedBy();
+        // area.setCreatedTime();
+        // area.setUpdatedTime();
+        videoAraeService.saveVideoArae(area);
+        return new ResponseResult<>(200, "操作成功");
+    }
+
+    @PostMapping("/delete")
+    @ApiOperation("删除安保区域")
+    public ResponseResult delete(Long id) {
+        // TODO 级联删除
+        videoAraeService.removeById(id);
         return new ResponseResult<>(200, "操作成功");
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑安保区域")
-    public ResponseResult updateSysDict(@RequestBody VideoArae dto) {
+    public ResponseResult update(@RequestBody VideoArea dto) {
         videoAraeService.updateById(dto);
         return new ResponseResult<>(200, "操作成功");
     }
+
 
     @GetMapping("/getById")
     @ApiOperation("获取安保区域信息")
@@ -53,6 +75,7 @@ public class VideoAraeController {
     public ResponseResult<List<AreaNode>> getTreeList(@Param("id") Long id, @Param("areaName") String areaName) {
         return new ResponseResult<>(200, "操作成功", videoAraeService.getTreeList(id, areaName));
     }
+
 
     @GetMapping("/getList")
     @ApiOperation("获取安保区域列表")

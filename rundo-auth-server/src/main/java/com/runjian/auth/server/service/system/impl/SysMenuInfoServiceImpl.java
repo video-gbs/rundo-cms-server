@@ -2,8 +2,8 @@ package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.dto.SysMenuInfoDTO;
-import com.runjian.auth.server.domain.vo.SysMenuInfoVO;
+import com.runjian.auth.server.model.dto.system.SysMenuInfoDTO;
+import com.runjian.auth.server.model.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.entity.system.SysMenuInfo;
 import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
 import com.runjian.auth.server.service.system.SysMenuInfoService;

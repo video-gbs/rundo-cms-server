@@ -1,8 +1,8 @@
 package com.runjian.auth.server.service.area.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.vo.AreaNode;
-import com.runjian.auth.server.entity.video.VideoArae;
+import com.runjian.auth.server.model.vo.video.AreaNode;
+import com.runjian.auth.server.entity.video.VideoArea;
 import com.runjian.auth.server.mapper.video.VideoAraeMapper;
 import com.runjian.auth.server.service.area.VideoAraeService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * @since 2023-01-03 11:45:53
  */
 @Service
-public class VideoAraeServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArae> implements VideoAraeService {
+public class VideoAraeServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea> implements VideoAraeService {
 
     @Autowired
     private VideoAraeMapper videoAraeMapper;
@@ -31,7 +31,7 @@ public class VideoAraeServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArae
     @Override
     public List<AreaNode> getTreeList(Long id, String areaName) {
         if (id != null) {
-            List<VideoArae> videoList = videoAraeMapper.selectTree(id, areaName);
+            List<VideoArea> videoList = videoAraeMapper.selectTree(id, areaName);
             List<AreaNode> areaNodeList = videoList.stream().map(
                     item -> {
                         AreaNode bean = new AreaNode();
@@ -47,5 +47,10 @@ public class VideoAraeServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArae
         } else {
             throw new RuntimeException("查询安保区域ID不能为空");
         }
+    }
+
+    @Override
+    public void saveVideoArae(VideoArea dto) {
+
     }
 }

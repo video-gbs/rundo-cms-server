@@ -16,4 +16,12 @@
             </if>
         </trim>
     </select>
+
+    <select id="getByUserId" resultType="java.lang.Long">
+        SELECT
+            org_id
+        FROM tb_sys_user_org
+        WHERE
+            user_id = #{userId,jdbcType=BIGINT}
+    </select>
 </mapper>

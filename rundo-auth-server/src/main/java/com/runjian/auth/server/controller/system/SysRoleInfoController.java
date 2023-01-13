@@ -1,7 +1,7 @@
 package com.runjian.auth.server.controller.system;
 
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.dto.SysRoleInfoDTO;
+import com.runjian.auth.server.model.dto.system.SysRoleInfoDTO;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

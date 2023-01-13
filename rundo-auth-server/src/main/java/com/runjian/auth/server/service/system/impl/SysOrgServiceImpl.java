@@ -3,7 +3,7 @@ package com.runjian.auth.server.service.system.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.vo.SysOrgNode;
+import com.runjian.auth.server.model.vo.system.SysOrgNode;
 import com.runjian.auth.server.entity.system.SysOrg;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.service.system.SysOrgService;

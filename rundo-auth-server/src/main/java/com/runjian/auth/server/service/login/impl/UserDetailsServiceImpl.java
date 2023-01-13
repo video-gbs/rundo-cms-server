@@ -1,7 +1,7 @@
 package com.runjian.auth.server.service.login.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.runjian.auth.server.domain.login.LoginUser;
+import com.runjian.auth.server.model.dto.login.LoginUserDTO;
 import com.runjian.auth.server.entity.system.SysUserInfo;
 import com.runjian.auth.server.mapper.system.*;
 import com.runjian.auth.server.mapper.video.ChannelOperationMapper;
@@ -118,16 +118,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         authorities.addAll(roleIdsList);
 
-        LoginUser loginUser = new LoginUser();
-        loginUser.setSysUserInfo(sysUserInfo);
-        loginUser.setAuthorities(
+        LoginUserDTO loginUserDTO = new LoginUserDTO();
+        loginUserDTO.setSysUserInfo(sysUserInfo);
+        loginUserDTO.setAuthorities(
                 AuthorityUtils.commaSeparatedStringToAuthorityList(
                         String.join(",", authorities)
                 )
         );
 
         // 把数据封装为 UserDetails 返回
-        return loginUser;
+        return loginUserDTO;
     }
 
 

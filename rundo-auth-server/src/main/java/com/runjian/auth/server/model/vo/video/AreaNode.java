@@ -1,6 +1,6 @@
-package com.runjian.auth.server.domain.vo;
+package com.runjian.auth.server.model.vo.video;
 
-import com.runjian.auth.server.entity.video.VideoArae;
+import com.runjian.auth.server.entity.video.VideoArea;
 import com.runjian.auth.server.util.tree.DataTree;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  * @Description 安保区域树形
  * @date 2023-01-13 周五 9:54
  */
-public class AreaNode extends VideoArae implements DataTree<AreaNode> {
+public class AreaNode extends VideoArea implements DataTree<AreaNode> {
 
     private List<AreaNode> children;
 

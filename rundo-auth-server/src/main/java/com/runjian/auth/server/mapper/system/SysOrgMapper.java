@@ -20,5 +20,7 @@ public interface SysOrgMapper extends BaseMapper<SysOrg> {
 
     Integer saveUserOrg(@Param("userId") Long userId, @Param("orgId") Long orgId);
 
-    List<SysOrg> selectOrgTree(@Param("orgId") Long orgId,@Param("orgName") String orgName);
+    List<SysOrg> selectOrgTree(@Param("orgId") Long orgId, @Param("orgName") String orgName);
+
+    Long getByUserId(@Param("userId") Long userId);
 }

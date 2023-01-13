@@ -1,8 +1,8 @@
 package com.runjian.auth.server.controller.system;
 
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.dto.SysUserInfoDTO;
-import com.runjian.auth.server.domain.vo.SysUserInfoVO;
+import com.runjian.auth.server.model.dto.system.SysUserInfoDTO;
+import com.runjian.auth.server.model.vo.system.SysUserInfoVO;
 import com.runjian.auth.server.service.system.SysUserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,9 +38,9 @@ public class SysUserInfoController {
         return sysUserService.updateUser(dto);
     }
 
-    @GetMapping("/getUser")
+    @PostMapping("/getUser")
     @ApiOperation("获取用户详情")
-    public ResponseResult<SysUserInfoVO> getUser(@RequestBody Long id) {
+    public ResponseResult<SysUserInfoVO> getUser(Long id) {
         return sysUserService.getUser(id);
     }
 

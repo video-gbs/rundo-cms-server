@@ -1,6 +1,6 @@
 package com.runjian.auth.server.mapper.video;
 
-import com.runjian.auth.server.entity.video.VideoArae;
+import com.runjian.auth.server.entity.video.VideoArea;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -16,9 +16,9 @@ import java.util.List;
  * @since 2023-01-03 11:45:53
  */
 @Mapper
-public interface VideoAraeMapper extends BaseMapper<VideoArae> {
+public interface VideoAraeMapper extends BaseMapper<VideoArea> {
 
     List<Long> selectByRoleId(Long roleId);
 
-    List<VideoArae> selectTree(@Param("id")Long id, @Param("areaName") String areaName);
+    List<VideoArea> selectTree(@Param("id")Long id, @Param("areaName") String areaName);
 }
