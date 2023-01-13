@@ -7,6 +7,7 @@ import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
+import com.runjian.device.constant.StreamType;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
@@ -90,6 +91,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                     channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
                     channelInfo.setOnlineState(CommonEnum.ENABLE.getCode());
                     channelInfo.setDeviceId(deviceId);
+                    channelInfo.setStreamMode(StreamType.UDP.getMsg());
                     channelInfo.setCreateTime(nowTime);
                     channelInfo.setUpdateTime(nowTime);
                     channelSaveList.add(channelInfo);

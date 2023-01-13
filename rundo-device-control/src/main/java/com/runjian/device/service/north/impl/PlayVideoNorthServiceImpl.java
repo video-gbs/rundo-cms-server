@@ -57,15 +57,15 @@ public class PlayVideoNorthServiceImpl implements PlayVideoNorthService {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道处于离线状态");
         }
         DeviceInfo deviceInfo = getDeviceInfo(channelInfo.getDeviceId());
-        CommonResponse<String> response = streamManageApi.applyPlay(channelInfo.getId(), deviceInfo.getGatewayId(), true);
+        CommonResponse<?> response = streamManageApi.applyPlay(channelInfo.getId(), deviceInfo.getGatewayId(), true);
         if (response.getCode() != 0){
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "设备播放失败", response.getData(), response.getMsg());
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
 
-        CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlay(chId, enableAudio, ssrcCheck, response.getData());
+        CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlay(chId, enableAudio, ssrcCheck, channelInfo.getStreamMode());
         if (videoPlayRspCommonResponse.getCode() != 0){
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "设备播放失败", response.getData(), response.getMsg());
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
         return videoPlayRspCommonResponse.getData();
@@ -74,7 +74,7 @@ public class PlayVideoNorthServiceImpl implements PlayVideoNorthService {
     /**
      * 获取设备信息
      * @param deviceId 设备id
-     * @return
+     * @return 设备信息
      */
     @NotNull
     private DeviceInfo getDeviceInfo(Long deviceId) {
@@ -87,7 +87,7 @@ public class PlayVideoNorthServiceImpl implements PlayVideoNorthService {
     }
 
     /**
-     *
+     * 视频回放
      * @param chId 通道id
      * @param enableAudio 是否播放音频
      * @param ssrcCheck 是否使用ssrc
@@ -103,14 +103,14 @@ public class PlayVideoNorthServiceImpl implements PlayVideoNorthService {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道处于离线状态");
         }
         DeviceInfo deviceInfo = getDeviceInfo(channelInfo.getDeviceId());
-        CommonResponse<String> response = streamManageApi.applyPlay(channelInfo.getId(), deviceInfo.getGatewayId(), false);
+        CommonResponse<?> response = streamManageApi.applyPlay(channelInfo.getId(), deviceInfo.getGatewayId(), false);
         if (response.getCode() != 0){
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "设备播放失败", response.getData(), response.getMsg());
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频回放失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlayback(chId, enableAudio, ssrcCheck, response.getData(), startTime, endTime);
+        CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlayback(chId, enableAudio, ssrcCheck, channelInfo.getStreamMode(), startTime, endTime);
         if (videoPlayRspCommonResponse.getCode() != 0){
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "设备播放失败", response.getData(), response.getMsg());
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频回放失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
         return videoPlayRspCommonResponse.getData();
@@ -119,7 +119,7 @@ public class PlayVideoNorthServiceImpl implements PlayVideoNorthService {
     /**
      * 获取通道信息
      * @param chId 通道id
-     * @return
+     * @return 通道信息
      */
     @NotNull
     private ChannelInfo getChannelInfo(Long chId) {

@@ -19,6 +19,6 @@ public interface StreamManageApi {
      * @param isPlayback 是否是回播
      * @return
      */
-    CommonResponse<String> applyPlay(Long channelId, Long gatewayId, Boolean isPlayback);
+    CommonResponse<?> applyPlay(Long channelId, Long gatewayId, Boolean isPlayback);
 
 }

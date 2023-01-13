@@ -71,7 +71,8 @@ public interface ParsingEngineApi {
      * @param mediaUrl 流媒体中心地址
      * @return
      */
-    CommonResponse<VideoPlayRsp> channelPlay(Long chId, Boolean enableAudio, Boolean ssrcCheck, String mediaUrl);
+    @PutMapping("/video/play")
+    CommonResponse<VideoPlayRsp> channelPlay(Long chId, Boolean enableAudio, Boolean ssrcCheck, String streamMode);
 
     /**
      * 通道播放
@@ -83,5 +84,6 @@ public interface ParsingEngineApi {
      * @param endTime 录播结束时间
      * @return
      */
-    CommonResponse<VideoPlayRsp> channelPlayback(Long chId, Boolean enableAudio, Boolean ssrcCheck, String mediaUrl, LocalDateTime startTime, LocalDateTime endTime);
+    @PutMapping("/video/playback")
+    CommonResponse<VideoPlayRsp> channelPlayback(Long chId, Boolean enableAudio, Boolean ssrcCheck, String streamMode, LocalDateTime startTime, LocalDateTime endTime);
 }

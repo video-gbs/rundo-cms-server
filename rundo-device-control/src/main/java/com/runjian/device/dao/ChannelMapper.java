@@ -22,13 +22,13 @@ public interface ChannelMapper {
     String CHANNEL_TABLE_NAME = "rundo_channel";
 
     @Insert({" <script> " +
-            " INSERT INTO " + CHANNEL_TABLE_NAME + "(dcId, type, ip, port, name, manufacturer, model, firmware, ptz_type, username, password, update_time, create_time) values " +
-            " <foreach collection='detailSaveList' item='item' separator=','>(#{item.dcId}, #{item.type}, #{item.ip}, #{item.port}, #{item.name}, #{item.manufacturer}, #{item.model}, #{item.firmware}, #{item.ptzType}, #{item.username}, #{item.password}, #{item.updateTime}, #{item.createTime})</foreach> " +
+            " INSERT INTO " + CHANNEL_TABLE_NAME + "(id, device_id, sign_state, online_state, channel_type, stream_mode, update_time, create_time) values " +
+            " <foreach collection='saveList' item='item' separator=','>(#{id.id}, #{item.deviceId}, #{item.signState}, #{item.onlineState}, #{item.channel_type}, #{item.streamMode}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>"})
     void batchSave(List<ChannelInfo> saveList);
 
     @Select(" SELECT * FROM " + CHANNEL_TABLE_NAME +
-            " WHERE id = #{id} ")
+            " WHERE id = #{channelId} ")
     Optional<ChannelInfo> selectById(Long channelId);
 
     @Update(" UPDATE "  + CHANNEL_TABLE_NAME +
