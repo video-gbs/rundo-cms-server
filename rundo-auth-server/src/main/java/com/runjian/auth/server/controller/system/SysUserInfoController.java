@@ -27,7 +27,6 @@ public class SysUserInfoController {
     @Autowired
     private SysUserInfoService sysUserService;
 
-
     @PostMapping("/add")
     @ApiOperation("添加用户")
     public ResponseResult addUser(@RequestBody SysUserInfoDTO dto) {
