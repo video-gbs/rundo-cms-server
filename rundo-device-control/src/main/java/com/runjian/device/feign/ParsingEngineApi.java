@@ -25,11 +25,11 @@ public interface ParsingEngineApi {
 
     /**
      * 设备信息同步
-     * @param id 设备id
+     * @param deviceId 设备id
      * @return 设备同步消息体
      */
     @GetMapping("/device/sync")
-    CommonResponse<DeviceSyncRsp> deviceSync(Long id);
+    CommonResponse<DeviceSyncRsp> deviceSync(Long deviceId);
 
     /**
      * 设备添加
@@ -45,7 +45,7 @@ public interface ParsingEngineApi {
      * @return 删除结果
      */
     @DeleteMapping("/device/delete")
-    CommonResponse<Boolean> deviceDelete(Long id);
+    CommonResponse<Boolean> deviceDelete(Long deviceId);
 
     /**
      * 通道同步
@@ -58,32 +58,32 @@ public interface ParsingEngineApi {
     /**
      * 云台控制服务
      * @param req 云台控制请求体
-     * @return
+     * @return 是否成功
      */
     @PutMapping("/ptz/control")
     CommonResponse<Boolean> ptzControl(PutPtzControlReq req);
 
     /**
      * 通道播放
-     * @param chId 通道ID
+     * @param channelId 通道ID
      * @param enableAudio 是否播放音频
      * @param ssrcCheck 是有使用ssrc
-     * @param mediaUrl 流媒体中心地址
+     * @param streamMode 流模式
      * @return
      */
     @PutMapping("/video/play")
-    CommonResponse<VideoPlayRsp> channelPlay(Long chId, Boolean enableAudio, Boolean ssrcCheck, String streamMode);
+    CommonResponse<VideoPlayRsp> channelPlay(Long channelId, Boolean enableAudio, Boolean ssrcCheck, String streamMode);
 
     /**
-     * 通道播放
-     * @param chId 通道id
+     * 通道回放
+     * @param channelId 通道id
      * @param enableAudio 是否开启音频
      * @param ssrcCheck 是否使用ssrc
-     * @param mediaUrl 流媒体中心地址
+     * @param streamMode 流模式
      * @param startTime 录播开始时间
      * @param endTime 录播结束时间
      * @return
      */
     @PutMapping("/video/playback")
-    CommonResponse<VideoPlayRsp> channelPlayback(Long chId, Boolean enableAudio, Boolean ssrcCheck, String streamMode, LocalDateTime startTime, LocalDateTime endTime);
+    CommonResponse<VideoPlayRsp> channelPlayback(Long channelId, Boolean enableAudio, Boolean ssrcCheck, String streamMode, LocalDateTime startTime, LocalDateTime endTime);
 }

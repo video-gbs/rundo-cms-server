@@ -15,9 +15,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum TaskState {
 
-    INIT(0, "初始化"),
-    RUNNING(1, "执行中"),
-    SUCCESS(2, "已完成"),
+
+    RUNNING(0, "执行中"),
+    SUCCESS(1, "已完成"),
     ERROR(-1, "异常")
 
     ;

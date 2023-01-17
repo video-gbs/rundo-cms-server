@@ -10,7 +10,7 @@ public class PutGatewayHeartbeatReq {
     /**
      * 网关序列号
      */
-    private String serialNum;
+    private Long gatewayId;
 
     /**
      * 心跳时间

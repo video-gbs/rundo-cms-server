@@ -1,7 +1,10 @@
 package com.runjian.parsing.dao;
 
+import com.runjian.parsing.entity.ChannelInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 /**
  * @author Miracle
@@ -12,4 +15,6 @@ import org.springframework.stereotype.Repository;
 public interface ChannelMapper {
 
     String CHANNEL_TABLE_NAME = "rundo_channel";
+
+    Optional<ChannelInfo> selectById(Long id);
 }

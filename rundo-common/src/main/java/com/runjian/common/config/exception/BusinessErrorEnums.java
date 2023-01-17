@@ -46,7 +46,7 @@ public enum BusinessErrorEnums {
 
     FEIGN_REQUEST_BUSINESS_ERROR(500, 15000, "第三方系统业务请求异常"),
 
-
+    FEIGN_REQUEST_TIME_OUT(500, 15001, "第三方系统业务请求超时"),
 
 
     /**************************** 用户模块相关异常,PREFIX:USER CODE:20xxx ****************************/

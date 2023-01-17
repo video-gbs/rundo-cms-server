@@ -1,4 +1,4 @@
-package com.runjian.parsing.vo.request;
+package com.runjian.parsing.vo.dto;
 
 import lombok.Data;
 

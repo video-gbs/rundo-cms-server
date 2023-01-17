@@ -33,4 +33,6 @@ public interface GatewayMapper {
             " (#{serialNum}, #{signType}, #{gatewayType}, #{protocol}, #{ip}, #{port}, #{updateTime}, #{createTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(GatewayInfo gatewayInfo);
+
+    Optional<GatewayInfo> selectById(Long gatewayId);
 }

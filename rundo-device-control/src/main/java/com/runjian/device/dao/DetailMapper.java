@@ -71,4 +71,10 @@ public interface DetailMapper {
             " </foreach> " +
             " </script>")
     void batchUpdate(List<DetailInfo> detailUpdateList);
+
+    @Delete(" DELETE FROM " + DETAIL_TABLE_NAME +
+            " WHERE id in " +
+            " <foreach collection='channelInfoIdList' item='item' open='(' separator=',' close=')' >#{item}</foreach> " +
+            " AND type = #{type} ")
+    void deleteByDcIdsAndType(List<Long> channelInfoIdList, Integer type);
 }

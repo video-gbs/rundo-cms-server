@@ -8,6 +8,7 @@ import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
+import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.DeviceInfo;
@@ -51,6 +52,9 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
 
     @Autowired
     private ChannelNorthService channelNorthService;
+
+    @Autowired
+    private ChannelMapper channelMapper;
 
     /**
      * 设备主动添加
@@ -177,13 +181,16 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         // 判断网关是否删除成功
         if (isDeleted){
             // 若删除成功，删除所有数据
-            deviceMapper.deleteById(deviceInfo.getId());
             detailMapper.deleteByDcIdAndType(deviceInfo.getId(), DetailType.DEVICE.getCode());
+            deviceMapper.deleteById(deviceInfo.getId());
+            // 删除通道信息
+            channelNorthService.deleteByDeviceId(deviceInfo.getId(), true);
         }else {
             // 删除失败，将数据设置为删除状态
             deviceInfo.setSignState(SignState.DELETED.getCode());
             deviceInfo.setUpdateTime(LocalDateTime.now());
             deviceMapper.update(deviceInfo);
+            channelNorthService.deleteByDeviceId(deviceInfo.getId(), false);
         }
     }
 }

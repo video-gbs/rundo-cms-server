@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 通道北向服务
@@ -148,6 +149,28 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         channelInfo.setSignState(SignState.SUCCESS.getCode());
         channelInfo.setUpdateTime(LocalDateTime.now());
         channelMapper.updateSignState(channelInfo);
+
+    }
+
+    @Override
+    public void deleteByDeviceId(Long deviceId, Boolean isDeleteData) {
+        List<ChannelInfo> channelInfoList = channelMapper.selectByDeviceId(deviceId);
+        if (channelInfoList.size() == 0){
+            return;
+        }
+        if (isDeleteData){
+            List<Long> channelInfoIdList = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
+            detailMapper.deleteByDcIdsAndType(channelInfoIdList, DetailType.CHANNEL.getCode());
+            channelMapper.deleteByDeviceId(deviceId);
+        }else {
+            LocalDateTime nowTime = LocalDateTime.now();
+            channelInfoList.forEach(channelInfo -> {
+                channelInfo.setSignState(SignState.DELETED.getCode());
+                channelInfo.setUpdateTime(nowTime);
+            });
+            channelMapper.batchUpdateSignState(channelInfoList);
+        }
+
 
     }
 }

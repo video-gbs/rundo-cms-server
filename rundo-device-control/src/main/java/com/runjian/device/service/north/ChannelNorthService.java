@@ -21,4 +21,10 @@ public interface ChannelNorthService {
      * @param channelId 通道Id
      */
     void channelSignSuccess(Long channelId);
+
+    /**
+     * 删除设备Id
+     * @param deviceId 设备id
+     */
+    void deleteByDeviceId(Long deviceId, Boolean isDeleteData);
 }

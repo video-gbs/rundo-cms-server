@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * 网关传输消息体
  */
 @Data
-public class GatewayMqDto<T> extends CommonResponse<T> {
+public class CommonMqDto<T> extends CommonResponse<T> {
 
 
     /**
@@ -36,21 +36,21 @@ public class GatewayMqDto<T> extends CommonResponse<T> {
 
     /**
      * 复制请求体信息做返回
-     * @param gatewayMqDto
+     * @param commonMqDto
      */
-    public void copyRequest(GatewayMqDto gatewayMqDto){
-        this.serialNum = gatewayMqDto.getSerialNum();
-        this.msgType = gatewayMqDto.getMsgType();
-        this.msgId = gatewayMqDto.getMsgId();
+    public void copyRequest(CommonMqDto commonMqDto){
+        this.serialNum = commonMqDto.getSerialNum();
+        this.msgType = commonMqDto.getMsgType();
+        this.msgId = commonMqDto.getMsgId();
         this.time = LocalDateTime.now();
     }
 
-    public  static <T> GatewayMqDto<T> createByCommonResponse(CommonResponse<T> commonResponse){
-        GatewayMqDto<T> gatewayMqDto = new GatewayMqDto<>();
-        gatewayMqDto.setCode(commonResponse.getCode());
-        gatewayMqDto.setMsg(commonResponse.getMsg());
-        gatewayMqDto.setData(commonResponse.getData());
-        return gatewayMqDto;
+    public  static <T> CommonMqDto<T> createByCommonResponse(CommonResponse<T> commonResponse){
+        CommonMqDto<T> commonMqDto = new CommonMqDto<>();
+        commonMqDto.setCode(commonResponse.getCode());
+        commonMqDto.setMsg(commonResponse.getMsg());
+        commonMqDto.setData(commonResponse.getData());
+        return commonMqDto;
     }
 
 }

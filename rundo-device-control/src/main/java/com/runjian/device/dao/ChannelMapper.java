@@ -1,10 +1,7 @@
 package com.runjian.device.dao;
 
 import com.runjian.device.entity.ChannelInfo;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -42,4 +39,22 @@ public interface ChannelMapper {
             " online_state = #{online_state} " +
             " WHERE device_id = #{deviceId} ")
     void updateOnlineStateByDeviceId(Long deviceId, Integer onlineState);
+
+    @Delete(" DELETE FROM " + CHANNEL_TABLE_NAME +
+            " WHERE device_id = #{deviceId} ")
+    void deleteByDeviceId(Long deviceId);
+
+    @Select(" SELECT * FROM " + CHANNEL_TABLE_NAME +
+            " WHERE device_id = #{deviceId} ")
+    List<ChannelInfo> selectByDeviceId(Long deviceId);
+
+    @Update(" <script> " +
+            " <foreach collection='channelInfoList' item='item' separator=';'> " +
+            " UPDATE " + CHANNEL_TABLE_NAME +
+            " SET update_time = #{item.updateTime}  " +
+            " , sign_state = #{item.sign_state} " +
+            " WHERE id = #{item.id} "+
+            " </foreach> " +
+            " </script>")
+    void batchUpdateSignState(List<ChannelInfo> channelInfoList);
 }

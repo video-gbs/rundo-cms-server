@@ -1,11 +1,12 @@
 package com.runjian.parsing.constant;
 
+import com.runjian.parsing.vo.CommonMqDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * 消息类型
- * @see com.runjian.parsing.vo.GatewayMqDto#msgType
+ * @see CommonMqDto#msgType
  * @author Miracle
  * @date 2023/1/12 9:43
  */
