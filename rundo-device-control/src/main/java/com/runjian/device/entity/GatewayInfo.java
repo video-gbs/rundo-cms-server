@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 
 /**
  * 网关信息
+ * @author Miracle
+ * @date 2023/01/06 16:56
  */
 @Data
 public class GatewayInfo {
@@ -31,9 +33,9 @@ public class GatewayInfo {
     private Integer signType;
 
     /**
-     * 在线状态 0-离线 1-在线
+     * 在线状态 0-离线 1-在线 {@link com.runjian.common.constant.CommonEnum}
      */
-    private Integer online;
+    private Integer onlineState;
 
     /**
      * 网关类型

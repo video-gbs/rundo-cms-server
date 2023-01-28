@@ -4,12 +4,17 @@ import com.runjian.common.constant.CommonEnum;
 import com.runjian.device.entity.GatewayInfo;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-
+/**
+ * 设备注册请求体
+ * @author Miracle
+ * @date 2023/01/06 16:56
+ */
 @Data
 public class PostGatewaySignInReq {
 
@@ -36,14 +41,14 @@ public class PostGatewaySignInReq {
      * 注册类型 1-MQ  2-RETFUL
      */
     @NotNull(message = "注册类型不能为空")
-    @Size(min = 1, max = 2, message = "非法注册类型")
+    @Range(min = 1, max = 2, message = "非法注册类型")
     private Integer signType;
 
     /**
      * 网关类型
      */
     @NotNull(message = "网关类型不能为空")
-    @Size(min = 1, max = 2, message = "非法网关类型")
+    @Range(min = 1, max = 2, message = "非法网关类型")
     private Integer gatewayType;
 
     /**
@@ -68,13 +73,20 @@ public class PostGatewaySignInReq {
     private String port;
 
     /**
+     * 心跳过期时间不能为空
+     */
+    @NotNull(message = "过期时间不能为空")
+    private LocalDateTime outTime;
+
+    /**
      * 转化为gateway对象
      * @return
      */
     public GatewayInfo toGatewayInfo() {
         GatewayInfo gatewayInfo = new GatewayInfo();
         LocalDateTime nowTime = LocalDateTime.now();
-        gatewayInfo.setOnline(CommonEnum.ENABLE.getCode());
+        BeanUtils.copyProperties(this, gatewayInfo);
+        gatewayInfo.setOnlineState(CommonEnum.ENABLE.getCode());
         gatewayInfo.setCreateTime(nowTime);
         gatewayInfo.setUpdateTime(nowTime);
         return gatewayInfo;

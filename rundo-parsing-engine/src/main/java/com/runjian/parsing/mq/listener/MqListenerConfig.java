@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Miracle
  * @date 2022/5/25 10:59
@@ -18,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 public class MqListenerConfig {
 
     @Autowired
-    private PublicMsgListener publicMsgListener;
+    private GatewayPublicMsgListener gatewayPublicMsgListener;
 
     @Autowired
     private DispatchMsgListener dispatchMsgListener;
@@ -28,6 +31,8 @@ public class MqListenerConfig {
 
     @Value("${gateway.public.queue-id-get}")
     private String publicGetQueue;
+
+    public static Map<String, SimpleMessageListenerContainer> containerMap = new HashMap<>(2);
 
     /**
      * 配置公共消息监听器
@@ -40,10 +45,11 @@ public class MqListenerConfig {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(rabbitMqProperties.getQueueData(publicGetQueue).getQueueName());
-        container.setMessageListener(publicMsgListener);
+        container.setMessageListener(gatewayPublicMsgListener);
         container.setConcurrentConsumers(1);
         container.setMaxConcurrentConsumers(1);
         container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        containerMap.put("PUBLIC", container);
         return container;
     }
 
@@ -61,6 +67,7 @@ public class MqListenerConfig {
         container.setConcurrentConsumers(1);
         container.setMaxConcurrentConsumers(1);
         container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        containerMap.put("DISPATCH", container);
         return container;
     }
 

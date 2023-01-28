@@ -2,6 +2,12 @@ package com.runjian.device.vo.response;
 
 import lombok.Data;
 
+
+/**
+ * 视频播放返回体
+ * @author Miracle
+ * @date 2023/1/9 9:55
+ */
 @Data
 public class VideoPlayRsp {
 

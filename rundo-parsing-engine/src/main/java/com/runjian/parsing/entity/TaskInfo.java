@@ -4,8 +4,13 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * 任务日志映射表
+ * @author Miracle
+ * @date 2023/1/12 9:43
+ */
 @Data
-public class TaskLogInfo {
+public class TaskInfo {
 
     /**
      * 主键id
@@ -24,19 +29,34 @@ public class TaskLogInfo {
     private Long deviceId;
 
     /**
+     * 通道id
+     */
+    private Long channelId;
+
+    /**
      * 消息id
      */
-    private Long msgId;
+    private String clientMsgId;
+
+    /**
+     * 队列id
+     */
+    private String mqId;
 
     /**
      * 任务名称
      */
-    private String taskName;
+    private String msgType;
 
     /**
      * 状态
      */
-    private Integer state;
+    private Integer taskState;
+
+    /**
+     * 说明
+     */
+    private String desc;
 
     private LocalDateTime createTime;
 

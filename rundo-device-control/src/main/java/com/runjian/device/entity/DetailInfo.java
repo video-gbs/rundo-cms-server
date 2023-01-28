@@ -5,7 +5,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 详细信息
+ * 设备或者通道的详细信息
+ * @author Miracle
+ * @date 2023/01/06 16:56
  */
 @Data
 public class DetailInfo {
@@ -16,7 +18,12 @@ public class DetailInfo {
     private Long id;
 
     /**
-     * 类型 1-通道 2-设备
+     * 设备通道id
+     */
+    private Long dcId;
+
+    /**
+     * 类型 1-通道 2-设备 {@link com.runjian.device.constant.DetailType}
      */
     private Integer type;
 

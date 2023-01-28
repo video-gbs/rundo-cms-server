@@ -42,15 +42,11 @@ public enum BusinessErrorEnums {
 
     VALID_REPETITIVE_OPERATION_ERROR(400, 10011, "短时间重复的操作"),
 
-    /**************************** WVP源码相关,PREFIX:VALID CODE:15xxx ****************************/
+    /**************************** FEIGN第三方访问相关,PREFIX:FEIGN CODE:15xxx ****************************/
 
-    WVP_DEVICE_PREVIEW_ERROR(500, 15001, "设备预览API调用失败！"),
+    FEIGN_REQUEST_BUSINESS_ERROR(500, 15000, "第三方系统业务请求异常"),
 
-    WVP_PLAYBACK_TIMEOUT(500, 15002, "回放超时"),
-
-    WVP_PLAYBACK_ERROR(500, 15002, "回放异常"),
-
-
+    FEIGN_REQUEST_TIME_OUT(500, 15001, "第三方系统业务请求超时"),
 
 
     /**************************** 用户模块相关异常,PREFIX:USER CODE:20xxx ****************************/
@@ -87,6 +83,8 @@ public enum BusinessErrorEnums {
 
     MQ_EXCHANGE_IS_NOT_FOUND(500, 22003, "找不到该exchange"),
 
+    MQ_CONTAINER_NOT_FOUND(500, 60007, "找不到对应的container"),
+
 
 
     /**************************** 业务类型异常,PREFIX:模块名 CODE:3xxxx ****************************/
@@ -106,6 +104,8 @@ public enum BusinessErrorEnums {
     SSE_CONNECT_ERROR(400, 30010, "SSE用户连接异常"),
 
     DEFAULT_MEDIA_DELETE_ERROR(400, 30011, "默认配置节点不可删除"),
+
+
 
     /****************************  数据错误：50001-599999 Start ****************************/
 
@@ -158,9 +158,9 @@ public enum BusinessErrorEnums {
      * 接口负载过高
      */
     INTERFACE_EXCEED_LOAD(500,60006, "接口负载过高"),
-    /****************************  接口错误：60001-69999 End ****************************/
-    ;
 
+
+;
 
     /**
      * 状态

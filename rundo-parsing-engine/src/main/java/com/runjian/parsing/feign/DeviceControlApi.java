@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface DeviceControlApi {
 
     @PostMapping("/gateway/south/sign-in")
-    CommonResponse gatewaySignIn(@RequestBody PostGatewaySignInReq req);
+    CommonResponse<?> gatewaySignIn(@RequestBody PostGatewaySignInReq req);
 
     @PutMapping("/gateway/south/heartbeat")
-    CommonResponse gatewayHeartbeat(@RequestBody PutGatewayHeartbeatReq req);
+    CommonResponse<?> gatewayHeartbeat(@RequestBody PutGatewayHeartbeatReq req);
 }
