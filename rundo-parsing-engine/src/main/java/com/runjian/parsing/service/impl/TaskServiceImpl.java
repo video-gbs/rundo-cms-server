@@ -29,7 +29,7 @@ public class TaskServiceImpl implements TaskService {
     private TaskMapper taskMapper;
 
     @Override
-    public Long createAsyncTask(Long gatewayId, Long deviceId, Long channelId, String clientMsgId, String mqId, MsgType msgType, DeferredResult<CommonResponse<?>> deferredResult) {
+    public Long createAsyncTask(Long gatewayId, Long deviceId, Long channelId, String clientMsgId, String mqId, String msgType, DeferredResult<CommonResponse<?>> deferredResult) {
         Long taskId = createTask(gatewayId, deviceId, channelId, clientMsgId, mqId, msgType, TaskState.RUNNING, null);
         asynReqMap.put(taskId, deferredResult);
         deferredResult.onTimeout(() -> {
@@ -40,7 +40,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Long createTask(Long gatewayId, Long deviceId, Long channelId, String clientMsgId, String mqId, MsgType msgType, TaskState taskState, String desc) {
+    public Long createTask(Long gatewayId, Long deviceId, Long channelId, String clientMsgId, String mqId, String msgType, TaskState taskState, String desc) {
         LocalDateTime nowTime = LocalDateTime.now();
         TaskInfo taskInfo = new TaskInfo();
         taskInfo.setGatewayId(gatewayId);
@@ -48,7 +48,7 @@ public class TaskServiceImpl implements TaskService {
         taskInfo.setChannelId(channelId);
         taskInfo.setClientMsgId(clientMsgId);
         taskInfo.setMqId(mqId);
-        taskInfo.setMsgType(msgType.getMsg());
+        taskInfo.setMsgType(msgType);
         taskInfo.setCreateTime(nowTime);
         taskInfo.setUpdateTime(nowTime);
         taskInfo.setTaskState(taskState.getCode());
@@ -58,7 +58,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public DeferredResult<?> removeDeferredResult(Long taskId) {
+    public TaskInfo getTask(Long taskId) {
+        Optional<TaskInfo> taskInfoOp = taskMapper.selectById(taskId);
+        if (taskInfoOp.isEmpty()){
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("任务%s不存在", taskId));
+        }
+        return taskInfoOp.get();
+    }
+
+    @Override
+    public DeferredResult removeDeferredResult(Long taskId) {
         return asynReqMap.remove(taskId);
     }
 

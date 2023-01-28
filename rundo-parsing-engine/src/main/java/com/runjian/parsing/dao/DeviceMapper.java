@@ -19,4 +19,6 @@ public interface DeviceMapper {
     Optional<DeviceInfo> selectById(Long deviceId);
 
     void save(DeviceInfo deviceInfo);
+
+    void deleteById(Long deviceId);
 }

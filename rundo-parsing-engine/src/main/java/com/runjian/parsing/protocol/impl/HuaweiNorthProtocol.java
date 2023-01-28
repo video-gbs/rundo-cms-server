@@ -1,4 +1,4 @@
-package com.runjian.parsing.service.protocol;
+package com.runjian.parsing.protocol.impl;
 
 import com.runjian.common.config.response.CommonResponse;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,7 @@ import java.util.Map;
  * @date 2023/1/17 18:27
  */
 @Service
-public class HuaweiProtocol extends DefaultProtocol {
+public class HuaweiNorthProtocol extends DefaultNorthProtocol {
 
     @Override
     public void deviceAdd(Long gatewayId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {

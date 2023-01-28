@@ -17,4 +17,6 @@ public interface ChannelMapper {
     String CHANNEL_TABLE_NAME = "rundo_channel";
 
     Optional<ChannelInfo> selectById(Long id);
+
+    void deleteByDeviceId(Long deviceId);
 }

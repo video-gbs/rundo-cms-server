@@ -4,7 +4,7 @@ package com.runjian.parsing.service.impl;
 import com.runjian.parsing.constant.IdType;
 import com.runjian.parsing.service.DataBaseService;
 import com.runjian.parsing.service.ProtocolService;
-import com.runjian.parsing.service.protocol.Protocol;
+import com.runjian.parsing.protocol.NorthProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -32,9 +32,9 @@ public class ProtocolServiceImpl implements ProtocolService {
      */
     @PostConstruct
     public void init(){
-        Map<String, Protocol> protocolRealizeMap = applicationContext.getBeansOfType(Protocol.class);
-        for (Protocol protocol : protocolRealizeMap.values()){
-            PROTOCOL_MAP.put(protocol.getProtocolName(), protocol);
+        Map<String, NorthProtocol> protocolRealizeMap = applicationContext.getBeansOfType(NorthProtocol.class);
+        for (NorthProtocol northProtocol : protocolRealizeMap.values()){
+            PROTOCOL_MAP.put(northProtocol.getProtocolName(), northProtocol);
         }
     }
 
@@ -44,7 +44,7 @@ public class ProtocolServiceImpl implements ProtocolService {
      * @param idType {@link IdType}
      * @return 协议
      */
-    public Protocol getProtocol(Long id, IdType idType){
+    public NorthProtocol getProtocol(Long id, IdType idType){
         switch (idType){
             case CHANNEL:
                 id = dataBaseService.getChannelInfo(id).getDeviceId();
@@ -53,18 +53,18 @@ public class ProtocolServiceImpl implements ProtocolService {
             case GATEWAY:
                 return PROTOCOL_MAP.get( dataBaseService.getGatewayInfo(id).getProtocol());
             default:
-                return PROTOCOL_MAP.get(Protocol.DEFAULT_PROTOCOL);
+                return PROTOCOL_MAP.get(NorthProtocol.DEFAULT_PROTOCOL);
         }
     }
 
     /**
      * 添加协议
      * @param protocolName 协议名称
-     * @param protocol 协议
+     * @param northProtocol 协议
      */
-    public void addProtocol(String protocolName, Protocol protocol){
+    public void addProtocol(String protocolName, NorthProtocol northProtocol){
         synchronized (this){
-            PROTOCOL_MAP.put(protocolName, protocol);
+            PROTOCOL_MAP.put(protocolName, northProtocol);
         }
     }
 

@@ -24,12 +24,17 @@ public enum MsgType {
     DEVICE_SIGN_IN("DEVICE_SIGN_IN"),
     DEVICE_SYNC("DEVICE_SYNC"),
 
+    DEVICE_DELETE("DEVICE_DELETE"),
+
+    DEVICE_ADD("DEVICE_ADD"),
+
     /****************** 通道相关消息 ******************/
     CHANNEL_SYNC("CHANNEL_SYNC"),
     CHANNEL_PLAY("CHANNEL_PLAY"),
     CHANNEL_PLAYBACK("CHANNEL_PLAYBACK"),
     CHANNEL_STOP_PLAY("CHANNEL_STOP_PLAY"),
     CHANNEL_PTZ_CONTROL("CHANNEL_PTZ_CONTROL"),
+    CHANNEL_RECORD("CHANNEL_RECORD"),
 
     /****************** 流媒体管理服务相关消息 ******************/
     STREAM_SIGN_IN("STREAM_SIGN_IN"),
@@ -37,9 +42,8 @@ public enum MsgType {
 
     /****************** 其他 ******************/
     ERROR("ERROR"),
-    OTHER("OTHER"),
-    ;
 
+    ;
     private final String msg;
 
 }
