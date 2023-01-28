@@ -1,9 +1,10 @@
 package com.runjian.auth.server.service.area.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.model.vo.video.AreaNode;
 import com.runjian.auth.server.entity.video.VideoArea;
 import com.runjian.auth.server.mapper.video.VideoAraeMapper;
+import com.runjian.auth.server.model.vo.video.AreaNode;
 import com.runjian.auth.server.service.area.VideoAraeService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -29,6 +30,20 @@ public class VideoAraeServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     private VideoAraeMapper videoAraeMapper;
 
     @Override
+    public List<AreaNode> getTreeList() {
+        QueryWrapper<VideoArea> queryWrapper = new QueryWrapper<>();
+        List<VideoArea> videoList = videoAraeMapper.selectList(queryWrapper);
+        List<AreaNode> areaNodeList = videoList.stream().map(
+                item -> {
+                    AreaNode bean = new AreaNode();
+                    BeanUtils.copyProperties(item, bean);
+                    return bean;
+                }
+        ).collect(Collectors.toList());
+        return DataTreeUtil.buiidTree(areaNodeList, 1L);
+    }
+
+    @Override
     public List<AreaNode> getTreeList(Long id, String areaName) {
         if (id != null) {
             List<VideoArea> videoList = videoAraeMapper.selectTree(id, areaName);
@@ -51,6 +66,6 @@ public class VideoAraeServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public void saveVideoArae(VideoArea dto) {
-
+        videoAraeMapper.insert(dto);
     }
 }

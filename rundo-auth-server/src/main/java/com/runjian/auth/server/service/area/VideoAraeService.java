@@ -16,7 +16,11 @@ import java.util.List;
  */
 public interface VideoAraeService extends IService<VideoArea> {
 
+    List<AreaNode> getTreeList();
+
     List<AreaNode> getTreeList(Long id, String areaName);
 
     void saveVideoArae(VideoArea dto);
+
+
 }
