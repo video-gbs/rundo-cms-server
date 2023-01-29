@@ -1,7 +1,7 @@
 package com.runjian.parsing.service;
 
 import com.runjian.parsing.constant.IdType;
-import com.runjian.parsing.service.protocol.Protocol;
+import com.runjian.parsing.protocol.NorthProtocol;
 
 import java.util.HashMap;
 
@@ -14,7 +14,7 @@ public interface ProtocolService {
     /**
      * 协议集合
      */
-    HashMap<String, Protocol> PROTOCOL_MAP = new HashMap<>();
+    HashMap<String, NorthProtocol> PROTOCOL_MAP = new HashMap<>();
 
     /**
      * 初始化将所有协议的实现都加载进来
@@ -27,13 +27,13 @@ public interface ProtocolService {
      * @param idType {@link IdType}
      * @return 协议
      */
-    Protocol getProtocol(Long id, IdType idType);
+    NorthProtocol getProtocol(Long id, IdType idType);
 
     /**
      * 添加协议
      * @param protocolName 协议名称
-     * @param protocol 协议
+     * @param northProtocol 协议
      */
-    void addProtocol(String protocolName, Protocol protocol);
+    void addProtocol(String protocolName, NorthProtocol northProtocol);
 
 }

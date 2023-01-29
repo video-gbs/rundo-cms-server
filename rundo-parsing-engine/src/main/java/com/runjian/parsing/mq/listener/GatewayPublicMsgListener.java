@@ -1,6 +1,7 @@
 package com.runjian.parsing.mq.listener;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
 import com.rabbitmq.client.Channel;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;

@@ -37,7 +37,7 @@ public class DeviceController {
     @GetMapping("/device/sync")
     public DeferredResult<CommonResponse<?>> deviceSync(@RequestParam Long deviceId){
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getProtocol(deviceId, IdType.DEVICE).deviceSync(deviceId, response);
+        //protocolService.getProtocol(deviceId, IdType.DEVICE).deviceSync(deviceId, response);
         return response;
     }
 

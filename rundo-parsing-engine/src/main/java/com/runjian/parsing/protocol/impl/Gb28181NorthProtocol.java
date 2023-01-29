@@ -1,11 +1,9 @@
-package com.runjian.parsing.service.protocol;
+package com.runjian.parsing.protocol.impl;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.service.DataBaseService;
-import com.runjian.parsing.service.TaskService;
-import com.runjian.parsing.service.impl.ProtocolServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -19,16 +17,13 @@ import java.util.Map;
  * @date 2023/1/17 14:39
  */
 @Service
-public class Gb28181Protocol extends DefaultProtocol {
+public class Gb28181NorthProtocol extends DefaultNorthProtocol {
 
     @Autowired
     private DataBaseService dataBaseService;
 
     @Autowired
     private DeviceMapper deviceMapper;
-
-    @Autowired
-    private TaskService taskService;
 
     @Override
     public String getProtocolName() {
