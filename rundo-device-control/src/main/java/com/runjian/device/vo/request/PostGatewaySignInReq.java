@@ -23,7 +23,7 @@ public class PostGatewaySignInReq {
      */
     @NotNull(message = "主键id不能为空")
     @Range(min = 1, message = "非法主键Id")
-    private Long id;
+    private Long gatewayId;
 
     /**
      * 网关唯一序列号 网关ID

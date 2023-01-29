@@ -47,7 +47,7 @@ public class DefaultNorthProtocol implements NorthProtocol {
     }
 
     @Override
-    public void deviceSync(Long deviceId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
+    public void deviceSync(Long deviceId, DeferredResult<CommonResponse<?>> response) {
         customEvent(deviceId, IdType.DEVICE, MsgType.CHANNEL_RECORD.getMsg(), null, response);
     }
 
@@ -57,15 +57,19 @@ public class DefaultNorthProtocol implements NorthProtocol {
     }
 
     @Override
-    public  void deviceDelete(Long deviceId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
+    public  void deviceDelete(Long deviceId, DeferredResult<CommonResponse<?>> response) {
         customEvent(deviceId, IdType.DEVICE, MsgType.CHANNEL_RECORD.getMsg(), null, response);
     }
 
     @Override
-    public void channelSync(Long deviceId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
+    public void channelSync(Long deviceId, DeferredResult<CommonResponse<?>> response) {
         customEvent(deviceId, IdType.DEVICE, MsgType.CHANNEL_SYNC.getMsg(), null, response);
     }
 
+    @Override
+    public void channelPtzControl(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
+        customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_CONTROL.getMsg(), null, response);
+    }
 
     @Override
     public void channelPlay(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
@@ -73,7 +77,7 @@ public class DefaultNorthProtocol implements NorthProtocol {
     }
 
     @Override
-    public void getChannelRecord(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
+    public void channelRecord(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
         customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_RECORD.getMsg(), dataMap, response);
     }
 
@@ -85,6 +89,7 @@ public class DefaultNorthProtocol implements NorthProtocol {
     @Override
     public void customEvent(Long mainId, IdType idType, String msgType, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
         GatewayConvertDto gatewayConvertDto = new GatewayConvertDto();
+        gatewayConvertDto.setDataMap(dataMap);
         Long deviceId = null;
         Long channelId = null;
         switch (idType){

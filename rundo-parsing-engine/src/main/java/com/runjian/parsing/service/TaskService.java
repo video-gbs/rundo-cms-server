@@ -38,7 +38,7 @@ public interface TaskService {
      * @param taskId 任务id
      * @return 任务信息
      */
-    TaskInfo getTask(Long taskId);
+    TaskInfo getTask(Long taskId, TaskState taskState);
 
     /**
      * 获取并移除异步返回体

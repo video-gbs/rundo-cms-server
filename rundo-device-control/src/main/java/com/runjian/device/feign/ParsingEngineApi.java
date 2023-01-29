@@ -1,8 +1,8 @@
 package com.runjian.device.feign;
 
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.device.vo.feign.PostDeviceAddReq;
-import com.runjian.device.vo.feign.PutPtzControlReq;
+import com.runjian.device.vo.feign.DeviceControlReq;
+import com.runjian.device.vo.feign.VideoRecordRsp;
 import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.VideoPlayRsp;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import java.time.LocalDateTime;
 
 /**
  * 解析引擎远程调用
@@ -32,15 +31,15 @@ public interface ParsingEngineApi {
 
     /**
      * 设备添加
-     * @param req 设备添加请求体
+     * @param req 设备请求体
      * @return 设备id
      */
     @PostMapping("/device/add")
-    CommonResponse<Long> deviceAdd(PostDeviceAddReq req);
+    CommonResponse<Long> deviceAdd(DeviceControlReq req);
 
     /**
      * 设备删除
-     * @param id 设备id
+     * @param deviceId 设备id
      * @return 删除结果
      */
     @DeleteMapping("/device/delete")
@@ -59,30 +58,30 @@ public interface ParsingEngineApi {
      * @param req 云台控制请求体
      * @return 是否成功
      */
-    @PutMapping("/ptz/control")
-    CommonResponse<Boolean> ptzControl(PutPtzControlReq req);
+    @PutMapping("/channel/ptz/control")
+    CommonResponse<Boolean> channelPtzControl(DeviceControlReq req);
 
     /**
      * 通道播放
-     * @param channelId 通道ID
-     * @param enableAudio 是否播放音频
-     * @param ssrcCheck 是有使用ssrc
-     * @param streamMode 流模式
+     * @param req 设备请求体
      * @return
      */
-    @PutMapping("/video/play")
-    CommonResponse<VideoPlayRsp> channelPlay(Long channelId, Boolean enableAudio, Boolean ssrcCheck, String streamMode);
+    @PutMapping("/channel/video/play")
+    CommonResponse<VideoPlayRsp> channelPlay(DeviceControlReq req);
+
+    /**
+     * 通道回放视频获取
+     * @param req
+     * @return
+     */
+    @PutMapping("/channel/video/record")
+    CommonResponse<VideoRecordRsp> channelRecord(DeviceControlReq req);
 
     /**
      * 通道回放
-     * @param channelId 通道id
-     * @param enableAudio 是否开启音频
-     * @param ssrcCheck 是否使用ssrc
-     * @param streamMode 流模式
-     * @param startTime 录播开始时间
-     * @param endTime 录播结束时间
+     * @param req 设备请求体
      * @return
      */
-    @PutMapping("/video/playback")
-    CommonResponse<VideoPlayRsp> channelPlayback(Long channelId, Boolean enableAudio, Boolean ssrcCheck, String streamMode, LocalDateTime startTime, LocalDateTime endTime);
+    @PutMapping("/channel/video/playback")
+    CommonResponse<VideoPlayRsp> channelPlayback(DeviceControlReq req);
 }

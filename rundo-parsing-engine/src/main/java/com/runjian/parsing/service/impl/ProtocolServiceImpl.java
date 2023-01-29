@@ -2,6 +2,7 @@ package com.runjian.parsing.service.impl;
 
 
 import com.runjian.parsing.constant.IdType;
+import com.runjian.parsing.protocol.SouthProtocol;
 import com.runjian.parsing.service.DataBaseService;
 import com.runjian.parsing.service.ProtocolService;
 import com.runjian.parsing.protocol.NorthProtocol;
@@ -32,28 +33,53 @@ public class ProtocolServiceImpl implements ProtocolService {
      */
     @PostConstruct
     public void init(){
-        Map<String, NorthProtocol> protocolRealizeMap = applicationContext.getBeansOfType(NorthProtocol.class);
-        for (NorthProtocol northProtocol : protocolRealizeMap.values()){
-            PROTOCOL_MAP.put(northProtocol.getProtocolName(), northProtocol);
+        Map<String, NorthProtocol> northProtocolRealizeMap = applicationContext.getBeansOfType(NorthProtocol.class);
+        for (NorthProtocol northProtocol : northProtocolRealizeMap.values()){
+            NORTH_PROTOCOL_MAP.put(northProtocol.getProtocolName(), northProtocol);
+        }
+
+        Map<String, SouthProtocol> southProtocolRealizeMap = applicationContext.getBeansOfType(SouthProtocol.class);
+        for (SouthProtocol southProtocol : southProtocolRealizeMap.values()){
+            SOUTH_PROTOCOL_MAP.put(southProtocol.getProtocolName(), southProtocol);
         }
     }
 
     /**
-     * 获取协议
+     * 获取北向协议
      * @param id 数据表id
      * @param idType {@link IdType}
      * @return 协议
      */
-    public NorthProtocol getProtocol(Long id, IdType idType){
+    public NorthProtocol getNorthProtocol(Long id, IdType idType){
         switch (idType){
             case CHANNEL:
                 id = dataBaseService.getChannelInfo(id).getDeviceId();
             case DEVICE:
                 id = dataBaseService.getDeviceInfo(id).getGatewayId();
             case GATEWAY:
-                return PROTOCOL_MAP.get( dataBaseService.getGatewayInfo(id).getProtocol());
+                return NORTH_PROTOCOL_MAP.getOrDefault(dataBaseService.getGatewayInfo(id).getProtocol(), NORTH_PROTOCOL_MAP.get(NorthProtocol.DEFAULT_PROTOCOL));
             default:
-                return PROTOCOL_MAP.get(NorthProtocol.DEFAULT_PROTOCOL);
+                return NORTH_PROTOCOL_MAP.get(NorthProtocol.DEFAULT_PROTOCOL);
+        }
+    }
+
+    /**
+     * 获取南向协议
+     * @param id 数据表id
+     * @param idType {@link IdType}
+     * @return 协议
+     */
+    @Override
+    public SouthProtocol getSouthProtocol(Long id, IdType idType) {
+        switch (idType){
+            case CHANNEL:
+                id = dataBaseService.getChannelInfo(id).getDeviceId();
+            case DEVICE:
+                id = dataBaseService.getDeviceInfo(id).getGatewayId();
+            case GATEWAY:
+                return SOUTH_PROTOCOL_MAP.getOrDefault(dataBaseService.getGatewayInfo(id).getProtocol(), SOUTH_PROTOCOL_MAP.get(SouthProtocol.DEFAULT_PROTOCOL));
+            default:
+                return SOUTH_PROTOCOL_MAP.get(SouthProtocol.DEFAULT_PROTOCOL);
         }
     }
 
@@ -62,9 +88,21 @@ public class ProtocolServiceImpl implements ProtocolService {
      * @param protocolName 协议名称
      * @param northProtocol 协议
      */
-    public void addProtocol(String protocolName, NorthProtocol northProtocol){
+    public void addNorthProtocol(String protocolName, NorthProtocol northProtocol){
         synchronized (this){
-            PROTOCOL_MAP.put(protocolName, northProtocol);
+            NORTH_PROTOCOL_MAP.put(protocolName, northProtocol);
+        }
+    }
+
+    /**
+     * 添加协议
+     * @param protocolName 协议名称
+     * @param southProtocol 协议
+     */
+    @Override
+    public void addSouthProtocol(String protocolName, SouthProtocol southProtocol) {
+        synchronized (this){
+            SOUTH_PROTOCOL_MAP.put(protocolName, southProtocol);
         }
     }
 

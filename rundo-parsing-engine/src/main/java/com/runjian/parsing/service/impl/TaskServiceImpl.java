@@ -58,12 +58,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskInfo getTask(Long taskId) {
+    public TaskInfo getTask(Long taskId, TaskState taskState) {
         Optional<TaskInfo> taskInfoOp = taskMapper.selectById(taskId);
         if (taskInfoOp.isEmpty()){
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("任务%s不存在", taskId));
         }
-        return taskInfoOp.get();
+        TaskInfo taskInfo = taskInfoOp.get();
+        if (!taskInfo.getTaskState().equals(taskState.getCode())){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, String.format("任务状态异常，当前任务状态：%s", TaskState.getMsg(taskInfo.getTaskState())));
+        }
+        return taskInfo;
     }
 
     @Override
@@ -86,11 +90,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void taskSuccess(Long taskId) {
-        taskMapper.updateTaskState(taskId, null);
+        taskMapper.updateState(taskId, TaskState.SUCCESS.getCode(), null, LocalDateTime.now());
     }
 
     @Override
     public void taskError(Long taskId, String detail) {
-        taskMapper.updateTaskState(taskId, detail);
+        taskMapper.updateState(taskId, TaskState.SUCCESS.getCode(), detail, LocalDateTime.now());
     }
 }

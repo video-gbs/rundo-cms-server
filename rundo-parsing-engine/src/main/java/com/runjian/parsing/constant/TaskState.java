@@ -24,5 +24,16 @@ public enum TaskState {
     private final Integer code;
     private final String msg;
 
+    public static String getMsg(int code){
+        if (code == 0){
+            return RUNNING.getMsg();
+        } else if (code == 1) {
+            return SUCCESS.getMsg();
+        } else if (code == -1){
+            return ERROR.getMsg();
+        }
+        return null;
+    }
+
 
 }

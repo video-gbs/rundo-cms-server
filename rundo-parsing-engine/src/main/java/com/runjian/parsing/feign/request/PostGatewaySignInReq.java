@@ -23,7 +23,7 @@ public class PostGatewaySignInReq {
     /**
      * 主键id
      */
-    private Long id;
+    private Long gatewayId;
 
     /**
      * 网关唯一序列号 网关ID
