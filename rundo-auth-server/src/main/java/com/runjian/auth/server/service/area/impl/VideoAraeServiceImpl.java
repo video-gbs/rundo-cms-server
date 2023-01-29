@@ -1,12 +1,15 @@
 package com.runjian.auth.server.service.area.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.entity.video.VideoArea;
 import com.runjian.auth.server.mapper.video.VideoAraeMapper;
+import com.runjian.auth.server.model.dto.video.VideoAreaDTO;
 import com.runjian.auth.server.model.vo.video.AreaNode;
 import com.runjian.auth.server.service.area.VideoAraeService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
+@Slf4j
 @Service
 public class VideoAraeServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea> implements VideoAraeService {
 
@@ -65,7 +69,25 @@ public class VideoAraeServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     }
 
     @Override
-    public void saveVideoArae(VideoArea dto) {
-        videoAraeMapper.insert(dto);
+    public void saveVideoArae(VideoAreaDTO dto) {
+        VideoArea area = new VideoArea();
+        area.setAreaName(dto.getAreaName());
+        area.setAreaPid(dto.getAreaPid());
+        // 查取上级节点的Pids
+        VideoArea prentInfo = videoAraeMapper.selectById(dto.getAreaPid());
+        String pids = prentInfo.getAreaPids() + ",[" + dto.getAreaPid() + "]";
+        area.setAreaPids(pids);
+        area.setDescription(dto.getDescription());
+        int pLevel = Integer.parseInt(prentInfo.getLevel());
+        pLevel = pLevel + 1;
+        area.setLevel(Integer.toString(pLevel));
+        // area.setTenantId();
+        // area.setDeleteFlag();
+        // area.setCreatedBy();
+        // area.setUpdatedBy();
+        // area.setCreatedTime();
+        // area.setUpdatedTime();
+        log.info("添加安防区域入库数据信息{}", JSONUtil.toJsonStr(area));
+        videoAraeMapper.insert(area);
     }
 }

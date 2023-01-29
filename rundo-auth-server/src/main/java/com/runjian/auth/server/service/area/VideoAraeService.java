@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.area;
 
+import com.runjian.auth.server.model.dto.video.VideoAreaDTO;
 import com.runjian.auth.server.model.vo.video.AreaNode;
 import com.runjian.auth.server.entity.video.VideoArea;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -20,7 +21,7 @@ public interface VideoAraeService extends IService<VideoArea> {
 
     List<AreaNode> getTreeList(Long id, String areaName);
 
-    void saveVideoArae(VideoArea dto);
+    void saveVideoArae(VideoAreaDTO dto);
 
 
 }

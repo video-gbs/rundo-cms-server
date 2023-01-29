@@ -2,9 +2,9 @@ package com.runjian.auth.server.controller.video;
 
 import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.common.ResponseResult;
+import com.runjian.auth.server.entity.video.VideoArea;
 import com.runjian.auth.server.model.dto.video.VideoAreaDTO;
 import com.runjian.auth.server.model.vo.video.AreaNode;
-import com.runjian.auth.server.entity.video.VideoArea;
 import com.runjian.auth.server.service.area.VideoAraeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,25 +35,8 @@ public class VideoAraeController {
     @PostMapping("/add")
     @ApiOperation("添加安防区域")
     public ResponseResult save(@RequestBody VideoAreaDTO dto) {
-        VideoArea area = new VideoArea();
-        area.setAreaName(dto.getAreaName());
-        area.setAreaPid(dto.getAreaPid());
-        // 查取上级节点的Pids
-        VideoArea prentInfo = videoAraeService.getById(dto.getAreaPid());
-        String pids = prentInfo.getAreaPids() + ",[" + dto.getAreaPid() + "]";
-        area.setAreaPids(pids);
-        area.setDescription(dto.getDescription());
-        int pLevel = Integer.parseInt(prentInfo.getLevel());
-        pLevel = pLevel + 1;
-        area.setLevel(Integer.toString(pLevel));
-        // area.setTenantId();
-        // area.setDeleteFlag();
-        // area.setCreatedBy();
-        // area.setUpdatedBy();
-        // area.setCreatedTime();
-        // area.setUpdatedTime();
-        log.info("添加安防区域入库数据信息{}",JSONUtil.toJsonStr(area));
-        videoAraeService.saveVideoArae(area);
+        log.info("添加安防区域前端传参信息{}", JSONUtil.toJsonStr(dto));
+        videoAraeService.saveVideoArae(dto);
         return new ResponseResult<>(200, "操作成功");
     }
 
