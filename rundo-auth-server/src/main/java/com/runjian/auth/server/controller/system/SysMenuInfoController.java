@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 /**
  * <p>
  * 菜单信息表 前端控制器
@@ -30,22 +32,10 @@ public class SysMenuInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加菜单")
-    public ResponseResult addSysMenu(@RequestBody SysMenuInfoDTO dto) {
+    public ResponseResult addSysMenu(@RequestBody @Valid SysMenuInfoDTO dto) {
         log.info("添加菜单前端传参信息{}", JSONUtil.toJsonStr(dto));
         return sysMenuInfoService.addSysMenu(dto);
     }
-    // @PostMapping("/add")
-    // @ApiOperation("添加菜单")
-    // public ResponseResult save(@RequestBody SysMenuInfo menuInfo) {
-    //     sysMenuInfoService.save(menuInfo);
-    //     return new ResponseResult<>(200, "操作成功");
-    // }
-
-    // @PostMapping("/update")
-    // @ApiOperation("编辑菜单")
-    // public ResponseResult updateSysMenu(@RequestBody SysMenuInfoDTO dto) {
-    //     return sysMenuInfoService.updateSysMenu(dto);
-    // }
 
     @PostMapping("/update")
     @ApiOperation("编辑菜单")

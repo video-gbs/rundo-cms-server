@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Jiang4Yu
  * @version V1.0.0
@@ -16,8 +18,10 @@ import lombok.Data;
 public class UserInfoDTO {
 
     @ApiModelProperty(value = "用户名", required = true, position = 1)
+    @NotNull
     private String username;
 
     @ApiModelProperty(value = "密码", required = true, position = 2)
+    @NotNull
     private String password;
 }

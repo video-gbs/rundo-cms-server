@@ -1,10 +1,8 @@
 package com.runjian.auth.server.mapper.system;
 
-import com.runjian.auth.server.entity.system.SysAppInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.runjian.auth.server.entity.system.SysAppInfo;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
 
 /**
  * <p>
@@ -17,5 +15,4 @@ import java.util.List;
 @Mapper
 public interface SysAppInfoMapper extends BaseMapper<SysAppInfo> {
 
-    List<Long> selectByRoleId(Long roleId);
 }

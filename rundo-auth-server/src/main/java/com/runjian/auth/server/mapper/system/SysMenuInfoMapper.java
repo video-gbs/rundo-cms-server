@@ -1,10 +1,9 @@
 package com.runjian.auth.server.mapper.system;
 
-import com.runjian.auth.server.entity.system.SysMenuInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.runjian.auth.server.entity.system.SysMenuInfo;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -17,5 +16,6 @@ import java.util.List;
 @Mapper
 public interface SysMenuInfoMapper extends BaseMapper<SysMenuInfo> {
 
-    List<Long> selectByRoleId(Long roleId);
+
+    int saveAppMenu(@Param("appId") Long appId, @Param("menuId") Long menuId);
 }

@@ -35,11 +35,11 @@ public class SysMenuInfoDTO {
     @ApiModelProperty("菜单图标")
     private String icon;
 
-    @ApiModelProperty("接口排序")
+    @ApiModelProperty("排序")
     @NotNull
     private String menuSort;
 
-    @ApiModelProperty("跳转链接")
+    @ApiModelProperty("跳转URL")
     private String url;
 
     @ApiModelProperty(value = "前端组件Import路径")

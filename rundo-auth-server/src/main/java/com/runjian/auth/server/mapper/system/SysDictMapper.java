@@ -1,7 +1,7 @@
 package com.runjian.auth.server.mapper.system;
 
-import com.runjian.auth.server.entity.system.SysDict;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.runjian.auth.server.entity.system.SysDict;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

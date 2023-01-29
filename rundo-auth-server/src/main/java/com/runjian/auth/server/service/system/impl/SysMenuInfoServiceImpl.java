@@ -2,12 +2,11 @@ package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.model.dto.system.SysMenuInfoDTO;
-import com.runjian.auth.server.model.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.entity.system.SysMenuInfo;
 import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
+import com.runjian.auth.server.model.dto.system.SysMenuInfoDTO;
+import com.runjian.auth.server.model.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
-import com.runjian.auth.server.util.RundoIdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,36 +25,38 @@ import java.util.List;
 public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMenuInfo> implements SysMenuInfoService {
 
     @Autowired
-    private RundoIdUtil idUtil;
-
-    @Autowired
     private SysMenuInfoMapper sysMenuInfoMapper;
 
     @Override
     public ResponseResult addSysMenu(SysMenuInfoDTO dto) {
         SysMenuInfo sysMenuInfo = new SysMenuInfo();
         sysMenuInfo.setMenuPid(dto.getMenuPid());
-        // 查取上级节点的Pids
         SysMenuInfo parentInfo = sysMenuInfoMapper.selectById(dto.getMenuPid());
-        String pids = parentInfo.getMenuPids() + "[" + dto.getMenuPid() + "]";
-        sysMenuInfo.setMenuPids(pids);
+        String menuPids = parentInfo.getMenuPids() + "[" + dto.getMenuPid() + "]";
+        sysMenuInfo.setMenuPids(menuPids);
         sysMenuInfo.setMenuName(dto.getMenuName());
         sysMenuInfo.setMenuSort(dto.getMenuSort());
+        // 新增菜单默认不是叶子节点
+        sysMenuInfo.setLeaf(0);
         sysMenuInfo.setUrl(dto.getUrl());
         sysMenuInfo.setIcon(dto.getIcon());
+        sysMenuInfo.setLevel(parentInfo.getLevel() + 1);
         sysMenuInfo.setHidden(dto.getHidden());
+        sysMenuInfo.setStatus(dto.getStatus());
         sysMenuInfo.setViewImport(dto.getViewImport());
-        // sysMenuInfo.setLeaf();
-        // sysMenuInfo.setStatus(dto.getStatus());
-
+        // TODO 处理租客信息
         // sysMenuInfo.setTenantId();
         // sysMenuInfo.setDeleteFlag();
         // sysMenuInfo.setCreatedBy();
         // sysMenuInfo.setUpdatedBy();
         // sysMenuInfo.setCreatedTime();
         // sysMenuInfo.setUpdatedTime();
-
-        return new ResponseResult(200, "操作成功", sysMenuInfoMapper.insert(sysMenuInfo));
+        sysMenuInfoMapper.insert(sysMenuInfo);
+        // 处理应用菜单映射管理
+        Long menuId = sysMenuInfo.getId();
+        Long appId = dto.getAppId();
+        sysMenuInfoMapper.saveAppMenu(menuId, appId);
+        return new ResponseResult(200, "操作成功", null);
     }
 
     @Override
