@@ -34,9 +34,11 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
     @Override
     public ResponseResult addSysMenu(SysMenuInfoDTO dto) {
         SysMenuInfo sysMenuInfo = new SysMenuInfo();
-        sysMenuInfo.setId(idUtil.nextId());
         sysMenuInfo.setMenuPid(dto.getMenuPid());
-        sysMenuInfo.setMenuPids(dto.getMenuPids());
+        // 查取上级节点的Pids
+        SysMenuInfo parentInfo = sysMenuInfoMapper.selectById(dto.getMenuPid());
+        String pids = parentInfo.getMenuPids() + "[" + dto.getMenuPid() + "]";
+        sysMenuInfo.setMenuPids(pids);
         sysMenuInfo.setMenuName(dto.getMenuName());
         sysMenuInfo.setMenuSort(dto.getMenuSort());
         sysMenuInfo.setUrl(dto.getUrl());
@@ -45,6 +47,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
         sysMenuInfo.setViewImport(dto.getViewImport());
         // sysMenuInfo.setLeaf();
         // sysMenuInfo.setStatus(dto.getStatus());
+
         // sysMenuInfo.setTenantId();
         // sysMenuInfo.setDeleteFlag();
         // sysMenuInfo.setCreatedBy();

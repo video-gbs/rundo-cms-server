@@ -28,9 +28,6 @@ public class SysMenuInfoDTO {
     @NotNull
     private Long menuPid;
 
-    @ApiModelProperty("菜单间接父ID")
-    private String menuPids;
-
     @ApiModelProperty("菜单名称")
     @NotNull
     private String menuName;

@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -40,10 +40,10 @@ public class SysUserInfoDTO {
     private String address;
 
     @ApiModelProperty("有效期起")
-    private Date expiryDateStart;
+    private LocalDateTime expiryDateStart;
 
     @ApiModelProperty("有效期终")
-    private Date expiryDateEnd;
+    private LocalDateTime expiryDateEnd;
 
     @ApiModelProperty("描述信息")
     private String description;

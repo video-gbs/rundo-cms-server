@@ -1,16 +1,13 @@
 package com.runjian.auth.server.entity.system;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -22,7 +19,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@TableName("tb_sys_org")
+@TableName("sys_org")
 @ApiModel(value = "SysOrg对象", description = "组织机构表")
 public class SysOrg implements Serializable {
 
@@ -70,23 +67,28 @@ public class SysOrg implements Serializable {
 
     @ApiModelProperty("层级")
     @TableField("level")
-    private String level;
+    private Integer level;
 
     @ApiModelProperty("是否叶子节点")
     @TableField("leaf")
-    private String leaf;
+    private Integer leaf;
 
     @ApiModelProperty("描述信息")
     @TableField("description")
     private String description;
+
+    @ApiModelProperty("禁用状态;0:启用(否）,1:禁用(是)")
+    @TableField("status")
+    private Integer status;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")
     private Long tenantId;
 
     @ApiModelProperty("逻辑删除")
-    @TableField(value = "delete_flag", fill = FieldFill.INSERT)
-    private String deleteFlag;
+    @TableField("delete_flag")
+    @TableLogic
+    private Integer deleteFlag;
 
     @ApiModelProperty("创建人")
     @TableField("created_by")
@@ -97,12 +99,12 @@ public class SysOrg implements Serializable {
     private Long updatedBy;
 
     @ApiModelProperty("创建时间")
-    @TableField("created_time")
-    private Date createdTime;
+    @TableField(value = "created_time", fill = FieldFill.INSERT)
+    private LocalDateTime createdTime;
 
     @ApiModelProperty("更新时间")
-    @TableField("updated_time")
-    private Date updatedTime;
+    @TableField(value = "updated_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updatedTime;
 
 
 }

@@ -1,6 +1,6 @@
 package com.runjian.auth.server.model.dto.login;
 
-import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.runjian.auth.server.entity.system.SysUserInfo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,7 +54,7 @@ public class LoginUserDTO implements UserDetails {
     @Override
     public boolean isAccountNonExpired() {
         if (null != sysUserInfo.getExpiryDateEnd()) {
-            int flag = DateUtil.compare(sysUserInfo.getExpiryDateEnd(), DateUtil.date());
+            long flag = LocalDateTimeUtil.between(sysUserInfo.getExpiryDateEnd(), LocalDateTimeUtil.now()).toDays();
             return flag > 0;
         }
         return true;

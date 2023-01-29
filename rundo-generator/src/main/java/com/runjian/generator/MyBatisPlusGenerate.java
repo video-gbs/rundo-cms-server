@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.config.*;
-import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.baomidou.mybatisplus.generator.fill.Column;
@@ -39,7 +38,13 @@ public class MyBatisPlusGenerate {
     /**
      * JDBC 连接地址
      */
-    private static final String JDBC_URL = "jdbc:mysql://rundo-mysql:3306/rundo_rbac?serverTimezone=Asia/Shanghai&useLegacyDatetimeCode=false&nullNamePatternMatchesAll=true&zeroDateTimeBehavior=CONVERT_TO_NULL&tinyInt1isBit=false&autoReconnect=true&useSSL=false&pinGlobalTxToPhysicalConnection=true";
+    private static final String JDBC_URL = "jdbc:mysql://192.168.91.100:3306/rundo_rbac?serverTimezone=Asia/Shanghai" +
+            "&useLegacyDatetimeCode=false" +
+            "&nullNamePatternMatchesAll=true" +
+            "&allowPublicKeyRetrieval=true" +
+            "&zeroDateTimeBehavior=CONVERT_TO_NULL&tinyInt1isBit=false" +
+            "&autoReconnect=true&useSSL=false" +
+            "&pinGlobalTxToPhysicalConnection=true";
 
     /**
      * 数据库账号
@@ -49,7 +54,7 @@ public class MyBatisPlusGenerate {
     /**
      * 数据库密码
      */
-    private static final String JDBC_PASSWORD = "JiangYu)1234";
+    private static final String JDBC_PASSWORD = "rundomysql";
 
     /**
      * 包配置 - 父级目录
@@ -60,7 +65,7 @@ public class MyBatisPlusGenerate {
      * 包配置 - 模块目录 <br>
      * 注意：如果表前缀与模块命相同，生成时会删除前缀，比如：core_admin 最终构建为 Admin, AdminController ...
      */
-    private static final String PACKAGE_MODULE_NAME = "authServer";
+    private static final String PACKAGE_MODULE_NAME = "";
 
     /**
      * 包配置 - 实体类目录
@@ -90,7 +95,7 @@ public class MyBatisPlusGenerate {
     /**
      * 父类配置 - entity
      */
-    private static final String SUPER_ENTITY = "com.runjian.common.base.BaseDomain";
+    private static final String SUPER_ENTITY = "com.runjian.auth.server.base.BaseEntity";
 
     /**
      * 父类配置 - service
@@ -110,7 +115,14 @@ public class MyBatisPlusGenerate {
     /**
      * 要生成的表，用 `,` 分割，all 代表生成所有表
      */
-    private static final String TABLES = "all";
+    private static final String TABLES = "sys_api_info," +
+            "sys_app_info," +
+            "sys_config," +
+            "sys_dict," +
+            "sys_menu_info," +
+            "sys_user_info," +
+            "sys_role_info," +
+            "sys_org";
 
     /**
      * 数据源配置
@@ -140,7 +152,7 @@ public class MyBatisPlusGenerate {
                 // 注释日期时间格式
                 .commentDate("yyyy-MM-dd HH:mm:ss")
                 // 定义生成的实体类中日期的类型
-                .dateType(DateType.ONLY_DATE)
+                // .dateType(DateType.ONLY_DATE)
                 // 覆盖之前的文件
                 .fileOverride()
                 // 开启 swagger 模式
@@ -205,18 +217,17 @@ public class MyBatisPlusGenerate {
                 // 不实现 Serializable 接口，不生产 SerialVersionUID
                 // .disableSerialVersionUID()
                 // 逻辑删除字段名
-                // .logicDeleteColumnName("deleted")
+                .logicDeleteColumnName("delete_flag")
                 // 数据库表映射到实体的命名策略：下划线转驼峰命
                 .naming(NamingStrategy.underline_to_camel)
                 // 数据库表字段映射到实体的命名策略：下划线转驼峰命
                 .columnNaming(NamingStrategy.underline_to_camel)
                 // 定义在基础BaseDomain中的通用字段
-                // .addSuperEntityColumns("id", "create_time", "update_time")
+                // .addSuperEntityColumns("id", "created_time", "updated_time")
                 //添加表字段填充，"create_time"字段自动填充为插入时间，"update_time"字段自动填充为插入修改时间
                 .addTableFills(
-                        new Column("delete_flag", FieldFill.INSERT),
-                        new Column("create_time", FieldFill.INSERT),
-                        new Column("update_time", FieldFill.INSERT_UPDATE)
+                        new Column("created_time", FieldFill.INSERT),
+                        new Column("updated_time", FieldFill.INSERT_UPDATE)
                 )
                 // 开启生成实体时生成字段注解
                 .enableTableFieldAnnotation()

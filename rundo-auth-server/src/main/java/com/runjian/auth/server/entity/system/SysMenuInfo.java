@@ -1,16 +1,13 @@
 package com.runjian.auth.server.entity.system;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -22,7 +19,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@TableName("tb_sys_menu_info")
+@TableName("sys_menu_info")
 @ApiModel(value = "SysMenuInfo对象", description = "菜单信息表")
 public class SysMenuInfo implements Serializable {
 
@@ -50,7 +47,7 @@ public class SysMenuInfo implements Serializable {
 
     @ApiModelProperty("是否子节点")
     @TableField("leaf")
-    private String leaf;
+    private Integer leaf;
 
     @ApiModelProperty("跳转URL")
     @TableField("url")
@@ -60,25 +57,30 @@ public class SysMenuInfo implements Serializable {
     @TableField("icon")
     private String icon;
 
-    @ApiModelProperty("是否隐藏")
+    @ApiModelProperty("层级")
+    @TableField("level")
+    private Integer level;
+
+    @ApiModelProperty("是否隐藏;0:显示(否）,1:隐藏(是)")
     @TableField("hidden")
     private Integer hidden;
+
+    @ApiModelProperty("是否禁用;0:启用(否）,1:禁用(是)")
+    @TableField("status")
+    private Integer status;
 
     @ApiModelProperty("前端组件import路径")
     @TableField("view_import")
     private String viewImport;
-
-    @ApiModelProperty("禁用状态")
-    @TableField("status")
-    private Integer status;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")
     private Long tenantId;
 
     @ApiModelProperty("逻辑删除")
-    @TableField(value = "delete_flag", fill = FieldFill.INSERT)
-    private String deleteFlag;
+    @TableField("delete_flag")
+    @TableLogic
+    private Integer deleteFlag;
 
     @ApiModelProperty("创建人")
     @TableField("created_by")
@@ -89,12 +91,12 @@ public class SysMenuInfo implements Serializable {
     private Long updatedBy;
 
     @ApiModelProperty("创建时间")
-    @TableField("created_time")
-    private Date createdTime;
+    @TableField(value = "created_time", fill = FieldFill.INSERT)
+    private LocalDateTime createdTime;
 
     @ApiModelProperty("更新时间")
-    @TableField("updated_time")
-    private Date updatedTime;
+    @TableField(value = "updated_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updatedTime;
 
 
 }

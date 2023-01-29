@@ -1,16 +1,13 @@
 package com.runjian.auth.server.entity.system;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -22,10 +19,9 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@TableName("tb_sys_api_info")
+@TableName("sys_api_info")
 @ApiModel(value = "SysApiInfo对象", description = "接口信息表")
 public class SysApiInfo implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
@@ -49,8 +45,8 @@ public class SysApiInfo implements Serializable {
     private String apiSort;
 
     @ApiModelProperty("接口层级")
-    @TableField("api_level")
-    private String apiLevel;
+    @TableField("level")
+    private Integer level;
 
     @ApiModelProperty("跳转链接")
     @TableField("url")
@@ -58,7 +54,7 @@ public class SysApiInfo implements Serializable {
 
     @ApiModelProperty("是否叶子节点")
     @TableField("leaf")
-    private String leaf;
+    private Integer leaf;
 
     @ApiModelProperty("禁用状态")
     @TableField("status")
@@ -69,8 +65,9 @@ public class SysApiInfo implements Serializable {
     private Long tenantId;
 
     @ApiModelProperty("逻辑删除")
-    @TableField(value = "delete_flag", fill = FieldFill.INSERT)
-    private String deleteFlag;
+    @TableField("delete_flag")
+    @TableLogic
+    private Integer deleteFlag;
 
     @ApiModelProperty("创建人")
     @TableField("created_by")
@@ -81,12 +78,12 @@ public class SysApiInfo implements Serializable {
     private Long updatedBy;
 
     @ApiModelProperty("创建时间")
-    @TableField("created_time")
-    private Date createdTime;
+    @TableField(value = "created_time", fill = FieldFill.INSERT)
+    private LocalDateTime createdTime;
 
     @ApiModelProperty("更新时间")
-    @TableField("updated_time")
-    private Date updatedTime;
+    @TableField(value = "updated_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updatedTime;
 
 
 }

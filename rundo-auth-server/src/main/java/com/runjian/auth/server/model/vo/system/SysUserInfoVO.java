@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -30,17 +30,17 @@ public class SysUserInfoVO {
     private String jobNo;
 
     @ApiModelProperty("创建时间")
-    private Date createdTime;
+    private LocalDateTime createdTime;
 
     @ApiModelProperty("更新时间")
-    private Date updatedTime;
+    private LocalDateTime updatedTime;
     @ApiModelProperty("逻辑删除")
     private String deleteFlag;
 
     @ApiModelProperty("有效期起")
-    private Date expiryDateStart;
+    private LocalDateTime expiryDateStart;
     @ApiModelProperty("有效期止")
-    private Date expiryDateEnd;
+    private LocalDateTime expiryDateEnd;
 
     @ApiModelProperty("电话")
     private String phone;
