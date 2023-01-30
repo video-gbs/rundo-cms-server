@@ -70,9 +70,7 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
     @Override
     public Page<SysApiInfoVO> getSysApiInfoByPage(Integer pageNum, Integer pageSize) {
         Page<SysApiInfoVO> page = new Page<>(pageNum, pageSize);
-        List<SysApiInfoVO> sysApiInfoVOList = getSysApiInfoList();
-        page.setRecords(sysApiInfoVOList);
-        return page;
+        return sysApiInfoMapper.MySelectPage(page);
     }
 
     @Override

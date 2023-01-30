@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.runjian.auth.server.mapper.system.SysApiInfoMapper">
-    <select id="selectByRoleId" resultType="java.lang.String">
-        SELECT
-            url
-        FROM
-            tb_sys_api_info api
-                LEFT JOIN tb_sys_role_api rapi ON api.id = rapi.api_id
-                LEFT JOIN tb_sys_role_info role ON role.id = rapi.role_id
-        WHERE
-            role.id =#{roleId,jdbcType=BIGINT}
-    </select>
 
     <insert id="insertAppApi">
         INSERT INTO sys_app_api (app_id, api_id)
         VALUES (#{appId,jdbcType=BIGINT}, #{apiId,jdbcType=BIGINT})
     </insert>
+
+    <select id="MySelectPage" resultType="com.runjian.auth.server.domain.vo.system.SysApiInfoVO">
+        SELECT
+            sai.id,
+            sai.api_pid,
+            sai.api_name,
+            sai.api_sort,
+            sai.url,
+            sai.level
+        FROM
+            sys_api_info sai
+        WHERE
+            sai.delete_flag = 0
+    </select>
 </mapper>

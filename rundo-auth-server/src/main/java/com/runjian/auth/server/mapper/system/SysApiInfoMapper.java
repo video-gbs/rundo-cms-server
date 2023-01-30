@@ -1,7 +1,9 @@
 package com.runjian.auth.server.mapper.system;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.runjian.auth.server.domain.entity.system.SysApiInfo;
+import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,4 +19,6 @@ import org.apache.ibatis.annotations.Param;
 public interface SysApiInfoMapper extends BaseMapper<SysApiInfo> {
 
     void insertAppApi(@Param("appId") Long appId, @Param("apiId") Long apiId);
+
+    Page<SysApiInfoVO> MySelectPage(Page<SysApiInfoVO> page);
 }

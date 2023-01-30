@@ -1,5 +1,8 @@
 package com.runjian.auth.server.domain.vo.system;
 
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 /**
  * @author Jiang4Yu
  * @version V1.0.0
@@ -7,5 +10,23 @@ package com.runjian.auth.server.domain.vo.system;
  * @Description 接口详情
  * @date 2023-01-30 周一 14:27
  */
+@Data
 public class SysApiInfoVO {
+    @ApiModelProperty("主键ID")
+    private Long id;
+
+    @ApiModelProperty("接口直接父ID")
+    private Long apiPid;
+
+    @ApiModelProperty("接口名称")
+    private String apiName;
+
+    @ApiModelProperty("排序")
+    private String apiSort;
+
+    @ApiModelProperty("跳转链接")
+    private String url;
+
+    @ApiModelProperty("接口层级")
+    private Integer level;
 }

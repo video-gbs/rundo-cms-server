@@ -63,15 +63,11 @@ public class SysMenuInfoController {
         return null;
     }
 
-
-
     @GetMapping("/getById")
     @ApiOperation("通过ID获取菜单详情")
     public ResponseResult<SysMenuInfoVO> getById(@RequestParam Long id) {
         return new ResponseResult<>(200, "操作成功", sysMenuInfoService.getSysMenuInfoById(id));
     }
-
-
 
 
     @GetMapping("/getList")
