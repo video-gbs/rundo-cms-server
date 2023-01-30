@@ -1,6 +1,6 @@
 package com.runjian.auth.server.mapper.video;
 
-import com.runjian.auth.server.entity.video.VideoWarningPlanForm;
+import com.runjian.auth.server.domain.entity.video.VideoWarningPlanForm;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

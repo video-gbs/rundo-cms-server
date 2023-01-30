@@ -2,9 +2,9 @@ package com.runjian.auth.server.controller.video;
 
 import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.entity.video.VideoArea;
-import com.runjian.auth.server.model.dto.video.VideoAreaDTO;
-import com.runjian.auth.server.model.vo.video.AreaNode;
+import com.runjian.auth.server.domain.entity.video.VideoArea;
+import com.runjian.auth.server.domain.dto.video.VideoAreaDTO;
+import com.runjian.auth.server.domain.vo.video.AreaNode;
 import com.runjian.auth.server.service.area.VideoAraeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

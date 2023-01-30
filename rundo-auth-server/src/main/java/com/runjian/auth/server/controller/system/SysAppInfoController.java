@@ -1,9 +1,9 @@
 package com.runjian.auth.server.controller.system;
 
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.model.dto.system.AddSysAppInfoDTO;
-import com.runjian.auth.server.model.dto.system.UpdateSysAppInfoDTO;
-import com.runjian.auth.server.model.vo.system.SysAppInfoVO;
+import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
+import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.service.system.SysAppInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

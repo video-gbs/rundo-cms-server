@@ -1,0 +1,77 @@
+package com.runjian.auth.server.domain.entity.system;
+
+import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+/**
+ * <p>
+ * 数据字典表
+ * </p>
+ *
+ * @author Jiang4Yu@126.com
+ * @since 2023-01-04 15:16:33
+ */
+@Getter
+@Setter
+@TableName("sys_dict")
+@ApiModel(value = "SysDict对象", description = "数据字典表")
+public class SysDict implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @ApiModelProperty("主键ID")
+    @TableId("id")
+    private Long id;
+
+    @ApiModelProperty("分组名称")
+    @TableField("group_name")
+    private String groupName;
+
+    @ApiModelProperty("分组编码")
+    @TableField("group_code")
+    private String groupCode;
+
+    @ApiModelProperty("字典项名称")
+    @TableField("item_name")
+    private String itemName;
+
+    @ApiModelProperty("字典值")
+    @TableField("item_value")
+    private String itemValue;
+
+    @ApiModelProperty("字典描述")
+    @TableField("item_desc")
+    private String itemDesc;
+
+    @ApiModelProperty("租户号")
+    @TableField("tenant_id")
+    private Long tenantId;
+
+    @ApiModelProperty("逻辑删除")
+    @TableField("delete_flag")
+    @TableLogic
+    private Integer deleteFlag;
+
+    @ApiModelProperty("创建人")
+    @TableField("created_by")
+    private Long createdBy;
+
+    @ApiModelProperty("更新人")
+    @TableField("updated_by")
+    private Long updatedBy;
+
+    @ApiModelProperty("创建时间")
+    @TableField(value = "created_time", fill = FieldFill.INSERT)
+    private LocalDateTime createdTime;
+
+    @ApiModelProperty("更新时间")
+    @TableField(value = "updated_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updatedTime;
+
+
+}

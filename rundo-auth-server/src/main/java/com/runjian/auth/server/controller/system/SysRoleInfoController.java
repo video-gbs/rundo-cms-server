@@ -1,7 +1,7 @@
 package com.runjian.auth.server.controller.system;
 
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.model.dto.system.SysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.AddSysRoleInfoDTO;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,13 +26,13 @@ public class SysRoleInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加角色")
-    public ResponseResult addRole(@RequestBody SysRoleInfoDTO dto) {
+    public ResponseResult addRole(@RequestBody AddSysRoleInfoDTO dto) {
         return sysRoleInfoService.addRole(dto);
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑角色")
-    public ResponseResult updateRole(@RequestBody SysRoleInfoDTO dto) {
+    public ResponseResult updateRole(@RequestBody AddSysRoleInfoDTO dto) {
         return sysRoleInfoService.updateRole(dto);
     }
 

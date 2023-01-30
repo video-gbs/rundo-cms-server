@@ -1,6 +1,6 @@
 package com.runjian.auth.server.service.waringplan.impl;
 
-import com.runjian.auth.server.entity.video.VideoWarningPlanForm;
+import com.runjian.auth.server.domain.entity.video.VideoWarningPlanForm;
 import com.runjian.auth.server.mapper.video.VideoWarningPlanFormMapper;
 import com.runjian.auth.server.service.waringplan.VideoWarningPlanFormService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

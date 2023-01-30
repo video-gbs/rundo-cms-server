@@ -1,10 +1,17 @@
 package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.entity.system.SysConfig;
+import com.runjian.auth.server.domain.entity.system.SysConfig;
 import com.runjian.auth.server.mapper.system.SysConfigMapper;
+import com.runjian.auth.server.domain.dto.system.AddSysConfigDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateSysConfigDTO;
+import com.runjian.auth.server.domain.vo.system.SysConfigVO;
 import com.runjian.auth.server.service.system.SysConfigService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,4 +23,31 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
+
+    @Autowired
+    private SysConfigMapper sysConfigMapper;
+
+    @Override
+    public void saveSysConfig(AddSysConfigDTO dto) {
+        SysConfig sysConfig = new SysConfig();
+        BeanUtils.copyProperties(dto,sysConfig);
+        sysConfigMapper.insert(sysConfig);
+    }
+
+    @Override
+    public void updateSysConfigById(UpdateSysConfigDTO dto) {
+        SysConfig sysConfig = sysConfigMapper.selectById(dto.getId());
+
+
+    }
+
+    @Override
+    public SysConfigVO getSysConfigById(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<SysConfigVO> getSysConfigList() {
+        return null;
+    }
 }

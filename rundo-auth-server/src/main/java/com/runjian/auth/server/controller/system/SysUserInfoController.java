@@ -1,11 +1,13 @@
 package com.runjian.auth.server.controller.system;
 
+import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.model.dto.system.SysUserInfoDTO;
-import com.runjian.auth.server.model.vo.system.SysUserInfoVO;
+import com.runjian.auth.server.domain.dto.system.AddSysUserInfoDTO;
+import com.runjian.auth.server.domain.vo.system.SysUserInfoVO;
 import com.runjian.auth.server.service.system.SysUserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,7 @@ import java.util.List;
  * @since 2023-01-03 11:53:37
  */
 @Api(tags = "用户管理")
+@Slf4j
 @RestController
 @RequestMapping("/sysUserInfo")
 public class SysUserInfoController {
@@ -29,13 +32,18 @@ public class SysUserInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加用户")
-    public ResponseResult addUser(@RequestBody SysUserInfoDTO dto) {
-        return sysUserService.addUser(dto);
+    public ResponseResult<?> addUser(@RequestBody AddSysUserInfoDTO dto) {
+        log.info("添加用户前端传参{}", JSONUtil.toJsonStr(dto));
+        sysUserService.addUser(dto);
+        return new ResponseResult<>(200, "操作成功");
     }
 
     @PostMapping("/update")
-    public ResponseResult updateUser(@RequestBody SysUserInfoDTO dto) {
-        return sysUserService.updateUser(dto);
+    @ApiOperation("编辑用户")
+    public ResponseResult<?> updateUser(@RequestBody AddSysUserInfoDTO dto) {
+        log.info("编辑用户前端传参{}", JSONUtil.toJsonStr(dto));
+        sysUserService.updateUser(dto);
+        return new ResponseResult<>(200, "操作成功");
     }
 
     @PostMapping("/getUser")

@@ -2,9 +2,9 @@ package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.entity.system.SysRoleInfo;
+import com.runjian.auth.server.domain.entity.system.SysRoleInfo;
 import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
-import com.runjian.auth.server.model.dto.system.SysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.AddSysRoleInfoDTO;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
 import com.runjian.auth.server.util.RundoIdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
     private SysRoleInfoMapper roleInfoMapper;
 
     @Override
-    public ResponseResult addRole(SysRoleInfoDTO dto) {
+    public ResponseResult addRole(AddSysRoleInfoDTO dto) {
         SysRoleInfo role = new SysRoleInfo();
         Long roleId = idUtil.nextId();
         role.setId(roleId);
@@ -92,7 +92,7 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
     }
 
     @Override
-    public ResponseResult updateRole(SysRoleInfoDTO dto) {
+    public ResponseResult updateRole(AddSysRoleInfoDTO dto) {
         return null;
     }
 }

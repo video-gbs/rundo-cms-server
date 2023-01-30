@@ -1,6 +1,6 @@
 package com.runjian.auth.server.service.area.impl;
 
-import com.runjian.auth.server.entity.video.ChannelOperation;
+import com.runjian.auth.server.domain.entity.video.ChannelOperation;
 import com.runjian.auth.server.mapper.video.ChannelOperationMapper;
 import com.runjian.auth.server.service.area.ChannelOperationService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;

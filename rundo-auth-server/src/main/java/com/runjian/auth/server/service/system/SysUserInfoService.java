@@ -2,9 +2,9 @@ package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.model.dto.system.SysUserInfoDTO;
-import com.runjian.auth.server.model.vo.system.SysUserInfoVO;
-import com.runjian.auth.server.entity.system.SysUserInfo;
+import com.runjian.auth.server.domain.dto.system.AddSysUserInfoDTO;
+import com.runjian.auth.server.domain.vo.system.SysUserInfoVO;
+import com.runjian.auth.server.domain.entity.system.SysUserInfo;
 
 import java.util.List;
 
@@ -18,9 +18,9 @@ import java.util.List;
  */
 public interface SysUserInfoService extends IService<SysUserInfo> {
 
-    ResponseResult addUser(SysUserInfoDTO dto);
+    ResponseResult addUser(AddSysUserInfoDTO dto);
 
-    ResponseResult updateUser(SysUserInfoDTO dto);
+    ResponseResult updateUser(AddSysUserInfoDTO dto);
 
     ResponseResult<SysUserInfoVO> getUser(Long id);
 

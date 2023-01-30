@@ -2,8 +2,8 @@ package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.model.vo.system.SysOrgNode;
-import com.runjian.auth.server.entity.system.SysOrg;
+import com.runjian.auth.server.domain.vo.system.SysOrgNode;
+import com.runjian.auth.server.domain.entity.system.SysOrg;
 
 import java.util.List;
 

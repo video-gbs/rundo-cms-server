@@ -2,11 +2,11 @@ package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.entity.system.SysMenuInfo;
+import com.runjian.auth.server.domain.entity.system.SysMenuInfo;
 import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
-import com.runjian.auth.server.model.dto.system.AddSysMenuInfoDTO;
-import com.runjian.auth.server.model.dto.system.UpdateSysMenuInfoDTO;
-import com.runjian.auth.server.model.vo.system.SysMenuInfoVO;
+import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
+import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.runjian.auth.server.filter;
 
-import com.runjian.auth.server.model.dto.login.LoginUser;
+import com.runjian.auth.server.domain.dto.login.LoginUser;
 import com.runjian.auth.server.util.JwtUtil;
 import com.runjian.auth.server.util.RedisCache;
 import io.jsonwebtoken.Claims;

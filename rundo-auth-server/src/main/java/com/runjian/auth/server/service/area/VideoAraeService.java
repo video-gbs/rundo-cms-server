@@ -1,8 +1,8 @@
 package com.runjian.auth.server.service.area;
 
-import com.runjian.auth.server.model.dto.video.VideoAreaDTO;
-import com.runjian.auth.server.model.vo.video.AreaNode;
-import com.runjian.auth.server.entity.video.VideoArea;
+import com.runjian.auth.server.domain.dto.video.VideoAreaDTO;
+import com.runjian.auth.server.domain.vo.video.AreaNode;
+import com.runjian.auth.server.domain.entity.video.VideoArea;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

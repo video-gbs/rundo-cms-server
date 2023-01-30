@@ -2,13 +2,13 @@ package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.entity.system.SysOrg;
-import com.runjian.auth.server.entity.system.SysUserInfo;
+import com.runjian.auth.server.domain.entity.system.SysOrg;
+import com.runjian.auth.server.domain.entity.system.SysUserInfo;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.mapper.system.SysUserInfoMapper;
-import com.runjian.auth.server.model.dto.system.SysUserInfoDTO;
-import com.runjian.auth.server.model.vo.system.SysUserInfoVO;
+import com.runjian.auth.server.domain.dto.system.AddSysUserInfoDTO;
+import com.runjian.auth.server.domain.vo.system.SysUserInfoVO;
 import com.runjian.auth.server.service.system.SysUserInfoService;
 import com.runjian.auth.server.util.PasswordUtil;
 import com.runjian.auth.server.util.RundoIdUtil;
@@ -48,7 +48,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     private SysRoleInfoMapper sysRoleInfoMapper;
 
     @Override
-    public ResponseResult addUser(SysUserInfoDTO dto) {
+    public ResponseResult addUser(AddSysUserInfoDTO dto) {
         // 处理基本信息
         SysUserInfo sysUserInfo = new SysUserInfo();
         Long userId = idUtil.nextId();
@@ -82,7 +82,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     }
 
     @Override
-    public ResponseResult updateUser(SysUserInfoDTO dto) {
+    public ResponseResult updateUser(AddSysUserInfoDTO dto) {
         return null;
     }
 
