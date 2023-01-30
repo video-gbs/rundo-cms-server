@@ -1,6 +1,6 @@
 package com.runjian.auth.server.filter;
 
-import com.runjian.auth.server.model.dto.login.LoginUserDTO;
+import com.runjian.auth.server.model.dto.login.LoginUser;
 import com.runjian.auth.server.util.JwtUtil;
 import com.runjian.auth.server.util.RedisCache;
 import io.jsonwebtoken.Claims;
@@ -52,13 +52,13 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
         // 3.获取userId,从redis中获取用户信息
         String redisKey = "login:" + userid;
-        LoginUserDTO loginUserDTO = redisCache.getCacheObject(redisKey);
-        if (Objects.isNull(loginUserDTO)) {
+        LoginUser loginUser = redisCache.getCacheObject(redisKey);
+        if (Objects.isNull(loginUser)) {
             throw new RuntimeException("用户未登录");
         }
         // 4.封装Authentication
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUserDTO,null, loginUserDTO.getAuthorities());
+                new UsernamePasswordAuthenticationToken(loginUser,null, loginUser.getAuthorities());
         // 5.存入SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         // 6.放行，让后面的过滤器执行

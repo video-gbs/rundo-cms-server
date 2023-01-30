@@ -1,27 +1,24 @@
-package com.runjian.auth.server.model.dto.system;
+package com.runjian.auth.server.model.vo.system;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
 /**
  * @author Jiang4Yu
  * @version V1.0.0
- * @ClassName SysAppInfoDTO
- * @Description 添加应用
- * @date 2023-01-10 周二 10:11
+ * @ClassName SysAppInfoVO
+ * @Description 应用详情
+ * @date 2023-01-30 周一 14:12
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@ApiModel(value = "添加应用", description = "应用信息")
-public class SysAppInfoDTO {
+public class SysAppInfoVO {
 
-    @ApiModelProperty(value = "应用名称",required = true)
+    @ApiModelProperty("主键ID")
+    private Long id;
+
+    @ApiModelProperty(value = "应用名称")
     @NotBlank
     private String appName;
 

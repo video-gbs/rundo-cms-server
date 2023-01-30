@@ -2,6 +2,7 @@ package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.entity.system.SysApiInfo;
+import com.runjian.auth.server.model.dto.system.SysApiInfoDTO;
 
 /**
  * <p>
@@ -12,4 +13,6 @@ import com.runjian.auth.server.entity.system.SysApiInfo;
  * @since 2023-01-03 11:45:53
  */
 public interface SysApiInfoService extends IService<SysApiInfo> {
+
+    void saveSysApiInfo(SysApiInfoDTO dto);
 }

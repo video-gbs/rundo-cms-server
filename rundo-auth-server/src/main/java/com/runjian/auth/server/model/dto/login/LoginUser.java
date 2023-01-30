@@ -14,7 +14,7 @@ import java.util.Collection;
  * @Description 登录
  * @date 2023-01-04 周三 16:17
  */
-public class LoginUserDTO implements UserDetails {
+public class LoginUser implements UserDetails {
 
     private SysUserInfo sysUserInfo;
 

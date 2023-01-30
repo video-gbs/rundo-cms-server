@@ -30,13 +30,6 @@ public class SysRoleInfoController {
         return sysRoleInfoService.addRole(dto);
     }
 
-    // @PostMapping("/add")
-    // @ApiOperation("添加角色")
-    // public ResponseResult save(@RequestBody SysRoleInfo dto) {
-    //     sysRoleInfoService.save(dto);
-    //     return new ResponseResult<>(200, "操作成功");
-    // }
-
     @PostMapping("/update")
     @ApiOperation("编辑角色")
     public ResponseResult updateRole(@RequestBody SysRoleInfoDTO dto) {

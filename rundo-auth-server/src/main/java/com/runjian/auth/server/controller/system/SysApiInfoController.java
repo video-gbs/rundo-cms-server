@@ -28,22 +28,7 @@ public class SysApiInfoController {
     @PostMapping("/add")
     @ApiOperation("添加接口")
     public ResponseResult save(@RequestBody SysApiInfoDTO dto) {
-        SysApiInfo sysApiInfo = new SysApiInfo();
-        sysApiInfo.setApiPid(dto.getApiPid());
-        // sysApiInfo.setApiPids();
-        sysApiInfo.setApiName(dto.getApiName());
-        sysApiInfo.setApiSort(dto.getApiSort());
-        // sysApiInfo.setApiLevel();
-        sysApiInfo.setUrl(dto.getUrl());
-        // sysApiInfo.setLeaf();
-        sysApiInfo.setStatus(dto.getStatus());
-        // sysApiInfo.setTenantId();
-        // sysApiInfo.setDeleteFlag();
-        // sysApiInfo.setCreatedBy();
-        // sysApiInfo.setUpdatedBy();
-        // sysApiInfo.setCreatedTime();
-        // sysApiInfo.setUpdatedTime();
-        sysApiInfoService.save(sysApiInfo);
+        sysApiInfoService.saveSysApiInfo(dto);
         return new ResponseResult<>(200, "操作成功");
     }
 

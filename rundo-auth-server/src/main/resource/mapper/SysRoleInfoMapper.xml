@@ -1,46 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.runjian.auth.server.mapper.system.SysRoleInfoMapper">
-    <select id="selectRoleByUserId" resultType="java.lang.Long">
-        SELECT role.id
-        FROM sys_role_info role
-                 LEFT JOIN sys_role_user ru ON ru.role_id = role.id
-                 LEFT JOIN sys_user_info userInfo ON userInfo.id = ru.user_id
-        WHERE userInfo.id = #{userId,jdbcType=BIGINT}
+
+    <select id="selectRoleByUserId" resultType="java.lang.String">
+        SELECT
+            sri.role_code
+        FROM
+            sys_role_info sri
+            LEFT JOIN sys_role_user sru ON sru.role_id = sri.id
+            LEFT JOIN sys_user_info sui ON sui.id = sru.user_id
+        WHERE
+            sui.id = #{userId,jdbcType=BIGINT}
     </select>
 
-    <select id="saveUserRole" resultType="java.lang.Integer">
-        INSERT INTO sys_role_user (user_id, role_id)
-        VALUES (user_id = #{userId,jdbcType=BIGINT}, role_id = #{roleId,jdbcType=BIGINT})
+    <select id="findApiByRoleCode" resultType="java.lang.String">
+        SELECT
+            sai.url
+        FROM
+            sys_api_info sai
+            LEFT JOIN sys_role_api sra ON sra.api_id = sai.id
+            LEFT JOIN sys_role_info sri ON sri.id = sra.role_id
+        WHERE
+            sri.role_code = #{roleCode}
     </select>
 
-    <select id="saveRoleApp" resultType="java.lang.Integer">
-        INSERT INTO sys_role_app (role_id, id)
-        VALUES (role_id = #{roleId,jdbcType=BIGINT}, id = #{id,jdbcType=BIGINT})
+    <select id="findMenuByRoleCode" resultType="java.lang.String">
+        SELECT
+            sai.url
+        FROM
+            sys_api_info sai
+            LEFT JOIN sys_role_api sra ON sai.id = sra.id
+            LEFT JOIN sys_role_info sri ON sri.id = sra.id
+        WHERE
+            sri.role_code = #{roleCode}
     </select>
 
-    <select id="saveRoleMenu" resultType="java.lang.Integer">
-        INSERT INTO sys_role_menu (role_id, id)
-        VALUES (role_id = #{roleId,jdbcType=BIGINT}, id = #{id,jdbcType=BIGINT})
-    </select>
-
-    <select id="saveRoleOrg" resultType="java.lang.Integer">
-        INSERT INTO sys_role_org (role_id, id)
-        VALUES (role_id = #{roleId,jdbcType=BIGINT}, role_id = #{id,jdbcType=BIGINT})
-    </select>
-
-    <select id="saveRoleArea" resultType="java.lang.Integer">
-        INSERT INTO role_area (role_id, id)
-        VALUES (role_id = #{roleId,jdbcType=BIGINT}, id = #{id,jdbcType=BIGINT})
-    </select>
-
-    <select id="saveRoleChannel" resultType="java.lang.Integer">
-        INSERT INTO role_channel (role_id, id)
-        VALUES (role_id = #{roleId,jdbcType=BIGINT}, id = #{id,jdbcType=BIGINT})
-    </select>
-
-    <select id="saveRoleChannelOperation" resultType="java.lang.Integer">
-        INSERT INTO role_channel_operation (role_id, id)
-        VALUES (role_id = #{roleId,jdbcType=BIGINT}, id = #{id,jdbcType=BIGINT})
+    <select id="findAppByRoleCode" resultType="java.lang.String">
+        SELECT
+        FROM sys_api_info sai
+            LEFT JOIN sys_role_api sra ON sai.id = sra.id
+            LEFT JOIN sys_role_info sri ON sri.id = sra.id
+        WHERE sri.role_code = #{roleCode}
     </select>
 </mapper>

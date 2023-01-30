@@ -40,12 +40,13 @@ public class SysMenuInfoController {
     @PostMapping("/update")
     @ApiOperation("编辑菜单")
     public ResponseResult updateSysDict(@RequestBody SysMenuInfo dto) {
+        log.info("编辑菜单前端传参信息{}", JSONUtil.toJsonStr(dto));
         sysMenuInfoService.updateById(dto);
         return new ResponseResult<>(200, "操作成功");
     }
 
     @GetMapping("/getById")
-    @ApiOperation("获取菜单信息")
+    @ApiOperation("通过ID获取菜单详细信息")
     public ResponseResult getById(@RequestBody Long id) {
         return new ResponseResult<>(200, "操作成功", sysMenuInfoService.getById(id));
     }
@@ -62,11 +63,5 @@ public class SysMenuInfoController {
         // TODO 分页获取应用列表
         return new ResponseResult<>(200, "操作成功", sysMenuInfoService.list());
     }
-
-    // @GetMapping("/sysMenuInfoList")
-    // @ApiOperation("获取菜单列表")
-    // public ResponseResult<List<SysMenuInfoVO>> sysMenuInfoList() {
-    //     return sysMenuInfoService.sysMenuInfoList();
-    // }
 
 }

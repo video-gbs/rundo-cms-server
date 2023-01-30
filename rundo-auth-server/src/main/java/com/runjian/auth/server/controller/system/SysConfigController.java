@@ -24,7 +24,6 @@ public class SysConfigController {
     @Autowired
     private SysConfigService sysConfigService;
 
-
     @PostMapping("/add")
     @ApiOperation("添加系统参数配置")
     public ResponseResult add(@RequestBody SysConfig dto) {

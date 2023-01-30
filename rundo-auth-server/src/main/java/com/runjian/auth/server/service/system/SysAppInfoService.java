@@ -2,6 +2,11 @@ package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.entity.system.SysAppInfo;
+import com.runjian.auth.server.model.dto.system.AddSysAppInfoDTO;
+import com.runjian.auth.server.model.dto.system.UpdateSysAppInfoDTO;
+import com.runjian.auth.server.model.vo.system.SysAppInfoVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +18,11 @@ import com.runjian.auth.server.entity.system.SysAppInfo;
  */
 public interface SysAppInfoService extends IService<SysAppInfo> {
 
+    void saveSysAppInfo(AddSysAppInfoDTO dto);
+
+    void updateSysAppInfoById(UpdateSysAppInfoDTO dto);
+
+    SysAppInfoVO getSysAppInfoById(Long id);
+
+    List<SysAppInfoVO> getSysAppInfoList();
 }

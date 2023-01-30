@@ -3,6 +3,9 @@ package com.runjian.auth.server.mapper.system;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.runjian.auth.server.entity.system.SysRoleInfo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +17,38 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
+
+    /**
+     * 根据用户ID查询用户角色
+     *
+     * @param userId
+     * @return
+     */
+    List<String> selectRoleByUserId(@Param("userId") Long userId);
+
+    /**
+     * 根据角色编码查询接口权限
+     *
+     * @param roleCode
+     * @return
+     */
+    List<String> findApiByRoleCode(@Param("roleCode") String roleCode);
+
+    /**
+     * 根据角色编码查询菜单权限
+     *
+     * @param roleCode
+     * @return
+     */
+    List<String> findMenuByRoleCode(@Param("roleCode") String roleCode);
+
+    /**
+     * 根据角色编码查询应用权限
+     *
+     * @param roleCode
+     * @return
+     */
+    List<String> findAppByRoleCode(@Param("roleCode") String roleCode);
+
 
 }
