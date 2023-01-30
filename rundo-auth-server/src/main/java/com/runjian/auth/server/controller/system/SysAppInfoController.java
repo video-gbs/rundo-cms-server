@@ -1,6 +1,8 @@
 package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.runjian.auth.server.common.CommonPage;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
@@ -68,9 +70,14 @@ public class SysAppInfoController {
 
     @GetMapping("/getListByPage")
     @ApiOperation("获取应用列表 分页")
-    public ResponseResult<?> getListByPage() {
+    public ResponseResult<CommonPage<SysAppInfoVO>> getListByPage(@RequestParam(value = "pageNum", defaultValue = "1")
+                                                                  Integer pageNum,
+                                                                  @RequestParam(value = "pageSize", defaultValue = "20")
+                                                                  Integer pageSize) {
+
+        Page<SysAppInfoVO> sysAppInfoVOPage = sysAppInfoService.getSysAppInfoByPage(pageNum, pageSize);
         // TODO 分页获取应用列表
-        return new ResponseResult<>(200, "操作成功", sysAppInfoService.list());
+        return new ResponseResult<>(200, "操作成功", CommonPage.restPage(sysAppInfoVOPage));
     }
 
 

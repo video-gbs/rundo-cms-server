@@ -1,16 +1,18 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.entity.system.SysAppInfo;
-import com.runjian.auth.server.mapper.system.SysAppInfoMapper;
 import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
+import com.runjian.auth.server.domain.entity.system.SysAppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
+import com.runjian.auth.server.mapper.system.SysAppInfoMapper;
 import com.runjian.auth.server.service.system.SysAppInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,14 +32,14 @@ public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppI
     @Override
     public void saveSysAppInfo(AddSysAppInfoDTO dto) {
         SysAppInfo sysAppInfo = new SysAppInfo();
-        BeanUtils.copyProperties(dto,sysAppInfo);
+        BeanUtils.copyProperties(dto, sysAppInfo);
         sysAppInfoMapper.insert(sysAppInfo);
     }
 
     @Override
     public void updateSysAppInfoById(UpdateSysAppInfoDTO dto) {
         SysAppInfo sysAppInfo = new SysAppInfo();
-        BeanUtils.copyProperties(dto,sysAppInfo);
+        BeanUtils.copyProperties(dto, sysAppInfo);
         sysAppInfoMapper.updateById(sysAppInfo);
     }
 
@@ -47,17 +49,31 @@ public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppI
     }
 
     @Override
+    public Page<SysAppInfoVO> getSysAppInfoByPage(Integer pageNum, Integer pageSize) {
+        Page<SysAppInfoVO> page = new Page<>(pageNum, pageSize);
+        List<SysAppInfoVO> sysAppInfoVOList = getSysAppInfoList();
+        page.setRecords(sysAppInfoVOList);
+        return page;
+    }
+
+    @Override
     public SysAppInfoVO getSysAppInfoById(Long id) {
         SysAppInfo sysAppInfo = sysAppInfoMapper.selectById(id);
         SysAppInfoVO sysAppInfoVO = new SysAppInfoVO();
-        BeanUtils.copyProperties(sysAppInfo,sysAppInfoVO);
+        BeanUtils.copyProperties(sysAppInfo, sysAppInfoVO);
         return sysAppInfoVO;
     }
 
     @Override
     public List<SysAppInfoVO> getSysAppInfoList() {
-        // List<SysAppInfo> sysAppInfoList = sysAppInfoMapper.selectList();
-        return null;
+        List<SysAppInfoVO> sysAppInfoVOList = new ArrayList<>();
+        List<SysAppInfo> sysAppInfoList = sysAppInfoMapper.selectList(null);
+        for (SysAppInfo sysAppInfo : sysAppInfoList) {
+            SysAppInfoVO sysAppInfoVO = new SysAppInfoVO();
+            BeanUtils.copyProperties(sysAppInfo, sysAppInfoVO);
+            sysAppInfoVOList.add(sysAppInfoVO);
+        }
+        return sysAppInfoVOList;
     }
 
 
