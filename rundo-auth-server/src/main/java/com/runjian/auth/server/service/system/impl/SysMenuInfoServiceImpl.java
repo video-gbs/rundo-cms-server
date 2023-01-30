@@ -66,6 +66,11 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
     }
 
     @Override
+    public void removeSysMenuInfoById(Long id) {
+
+    }
+
+    @Override
     public ResponseResult<List<SysMenuInfoVO>> sysMenuInfoList() {
         List<SysMenuInfo> sysMenuInfoList = sysMenuInfoMapper.selectList(null);
         List<SysMenuInfoVO> sysMenuInfos = new ArrayList<SysMenuInfoVO>();
@@ -100,4 +105,6 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
     public List<SysMenuInfoVO> getSysMenuInfoList() {
         return null;
     }
+
+
 }

@@ -37,22 +37,42 @@ public class SysMenuInfoController {
     public ResponseResult<?> addSysMenu(@RequestBody @Valid AddSysMenuInfoDTO dto) {
         log.info("添加菜单前端传参信息{}", JSONUtil.toJsonStr(dto));
         sysMenuInfoService.addSysMenu(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return new ResponseResult<>(200, "新增菜单项成功!");
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑菜单")
-    public ResponseResult<?> updateSysDict(@RequestBody UpdateSysMenuInfoDTO dto) {
+    public ResponseResult<?> updateSysMenu(@RequestBody UpdateSysMenuInfoDTO dto) {
         log.info("编辑菜单前端传参信息{}", JSONUtil.toJsonStr(dto));
         sysMenuInfoService.updateSysMenuInfoById(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return new ResponseResult<>(200, "更新菜单项成功!");
     }
+
+    @PostMapping("/remove")
+    @ApiOperation("删除菜单")
+    public ResponseResult<?> removeSysMenu(@RequestParam Long id) {
+        log.info("删除菜单前端传参信息{}", id);
+        sysMenuInfoService.removeSysMenuInfoById(id);
+        return new ResponseResult<>(200, "删除菜单项成功!");
+    }
+
+    @PostMapping("/tree")
+    @ApiOperation("获取菜单层级树")
+    public ResponseResult<?> getSysMenuTree() {
+
+        return null;
+    }
+
+
 
     @GetMapping("/getById")
     @ApiOperation("通过ID获取菜单详情")
     public ResponseResult<SysMenuInfoVO> getById(@RequestParam Long id) {
         return new ResponseResult<>(200, "操作成功", sysMenuInfoService.getSysMenuInfoById(id));
     }
+
+
+
 
     @GetMapping("/getList")
     @ApiOperation("获取菜单列表 无分页")
