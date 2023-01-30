@@ -51,9 +51,7 @@ public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppI
     @Override
     public Page<SysAppInfoVO> getSysAppInfoByPage(Integer pageNum, Integer pageSize) {
         Page<SysAppInfoVO> page = new Page<>(pageNum, pageSize);
-        List<SysAppInfoVO> sysAppInfoVOList = getSysAppInfoList();
-        page.setRecords(sysAppInfoVOList);
-        return page;
+        return sysAppInfoMapper.MySelectPage(page);
     }
 
     @Override

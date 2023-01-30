@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
@@ -67,8 +68,17 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
     }
 
     @Override
+    public Page<SysApiInfoVO> getSysApiInfoByPage(Integer pageNum, Integer pageSize) {
+        Page<SysApiInfoVO> page = new Page<>(pageNum, pageSize);
+        List<SysApiInfoVO> sysApiInfoVOList = getSysApiInfoList();
+        page.setRecords(sysApiInfoVOList);
+        return page;
+    }
+
+    @Override
     public List<SysApiInfoVO> getSysApiInfoList() {
         return null;
     }
+
 
 }

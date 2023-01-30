@@ -1,6 +1,7 @@
 package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
@@ -61,8 +62,11 @@ public class SysApiInfoController {
 
     @GetMapping("/getListByPage")
     @ApiOperation("获取接口列表 分页")
-    public ResponseResult getListByPage(@RequestBody Long id) {
+    public ResponseResult<IPage<SysApiInfoVO>> getListByPage(@RequestParam(value = "pageNum", defaultValue = "1")
+                                                             Integer pageNum,
+                                                             @RequestParam(value = "pageSize", defaultValue = "20")
+                                                             Integer pageSize) {
         // TODO 分页获取应用列表
-        return new ResponseResult<>(200, "操作成功", sysApiInfoService.list());
+        return new ResponseResult<>(200, "操作成功", sysApiInfoService.getSysApiInfoByPage(pageNum, pageSize));
     }
 }

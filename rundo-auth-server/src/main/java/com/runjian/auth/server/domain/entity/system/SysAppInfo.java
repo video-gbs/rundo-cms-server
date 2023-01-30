@@ -45,6 +45,10 @@ public class SysAppInfo implements Serializable {
     @TableField("app_desc")
     private String appDesc;
 
+    @ApiModelProperty(value = "禁用状态", notes = "0正常，1禁用")
+    @TableField("status")
+    private Integer status;
+
     @ApiModelProperty("租户号")
     @TableField("tenant_id")
     private Long tenantId;
