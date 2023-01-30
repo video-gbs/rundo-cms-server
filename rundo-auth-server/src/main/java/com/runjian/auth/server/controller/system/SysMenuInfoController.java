@@ -2,8 +2,9 @@ package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.entity.system.SysMenuInfo;
-import com.runjian.auth.server.model.dto.system.SysMenuInfoDTO;
+import com.runjian.auth.server.model.dto.system.AddSysMenuInfoDTO;
+import com.runjian.auth.server.model.dto.system.UpdateSysMenuInfoDTO;
+import com.runjian.auth.server.model.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <p>
@@ -32,29 +34,30 @@ public class SysMenuInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加菜单")
-    public ResponseResult addSysMenu(@RequestBody @Valid SysMenuInfoDTO dto) {
+    public ResponseResult<?> addSysMenu(@RequestBody @Valid AddSysMenuInfoDTO dto) {
         log.info("添加菜单前端传参信息{}", JSONUtil.toJsonStr(dto));
-        return sysMenuInfoService.addSysMenu(dto);
+        sysMenuInfoService.addSysMenu(dto);
+        return new ResponseResult<>(200, "操作成功");
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑菜单")
-    public ResponseResult updateSysDict(@RequestBody SysMenuInfo dto) {
+    public ResponseResult<?> updateSysDict(@RequestBody UpdateSysMenuInfoDTO dto) {
         log.info("编辑菜单前端传参信息{}", JSONUtil.toJsonStr(dto));
-        sysMenuInfoService.updateById(dto);
+        sysMenuInfoService.updateSysMenuInfoById(dto);
         return new ResponseResult<>(200, "操作成功");
     }
 
     @GetMapping("/getById")
-    @ApiOperation("通过ID获取菜单详细信息")
-    public ResponseResult getById(@RequestBody Long id) {
-        return new ResponseResult<>(200, "操作成功", sysMenuInfoService.getById(id));
+    @ApiOperation("通过ID获取菜单详情")
+    public ResponseResult<SysMenuInfoVO> getById(@RequestBody Long id) {
+        return new ResponseResult<>(200, "操作成功", sysMenuInfoService.getSysMenuInfoById(id));
     }
 
     @GetMapping("/getList")
-    @ApiOperation("获取菜单列表")
-    public ResponseResult getList() {
-        return new ResponseResult<>(200, "操作成功", sysMenuInfoService.list());
+    @ApiOperation("获取菜单列表 无分页")
+    public ResponseResult<List<SysMenuInfoVO>> getList() {
+        return new ResponseResult<>(200, "操作成功", sysMenuInfoService.getSysMenuInfoList());
     }
 
     @GetMapping("/getListByPage")

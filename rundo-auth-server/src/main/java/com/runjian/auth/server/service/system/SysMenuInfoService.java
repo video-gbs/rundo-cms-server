@@ -2,7 +2,8 @@ package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.model.dto.system.SysMenuInfoDTO;
+import com.runjian.auth.server.model.dto.system.AddSysMenuInfoDTO;
+import com.runjian.auth.server.model.dto.system.UpdateSysMenuInfoDTO;
 import com.runjian.auth.server.model.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.entity.system.SysMenuInfo;
 
@@ -18,10 +19,16 @@ import java.util.List;
  */
 public interface SysMenuInfoService extends IService<SysMenuInfo> {
 
-    ResponseResult addSysMenu(SysMenuInfoDTO dto);
+    void addSysMenu(AddSysMenuInfoDTO dto);
 
-    ResponseResult updateSysMenu(SysMenuInfoDTO dto);
+    ResponseResult updateSysMenu(AddSysMenuInfoDTO dto);
 
     ResponseResult<List<SysMenuInfoVO>> sysMenuInfoList();
+
+    void updateSysMenuInfoById(UpdateSysMenuInfoDTO dto);
+
+    SysMenuInfoVO getSysMenuInfoById(Long id);
+
+    List<SysMenuInfoVO> getSysMenuInfoList();
 
 }

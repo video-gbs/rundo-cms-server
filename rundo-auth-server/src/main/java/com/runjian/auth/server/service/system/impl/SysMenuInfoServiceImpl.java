@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.entity.system.SysMenuInfo;
 import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
-import com.runjian.auth.server.model.dto.system.SysMenuInfoDTO;
+import com.runjian.auth.server.model.dto.system.AddSysMenuInfoDTO;
+import com.runjian.auth.server.model.dto.system.UpdateSysMenuInfoDTO;
 import com.runjian.auth.server.model.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
     private SysMenuInfoMapper sysMenuInfoMapper;
 
     @Override
-    public ResponseResult addSysMenu(SysMenuInfoDTO dto) {
+    public void addSysMenu(AddSysMenuInfoDTO dto) {
         SysMenuInfo sysMenuInfo = new SysMenuInfo();
         sysMenuInfo.setMenuPid(dto.getMenuPid());
         SysMenuInfo parentInfo = sysMenuInfoMapper.selectById(dto.getMenuPid());
@@ -56,11 +58,10 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
         Long menuId = sysMenuInfo.getId();
         Long appId = dto.getAppId();
         sysMenuInfoMapper.saveAppMenu(menuId, appId);
-        return new ResponseResult(200, "操作成功", null);
     }
 
     @Override
-    public ResponseResult updateSysMenu(SysMenuInfoDTO dto) {
+    public ResponseResult updateSysMenu(AddSysMenuInfoDTO dto) {
         return null;
     }
 
@@ -80,5 +81,23 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
             sysMenuInfoVO.setHidden(sysMenuInfo.getHidden());
         }
         return new ResponseResult<>(200, "操作全部", sysMenuInfos);
+    }
+
+    @Override
+    public void updateSysMenuInfoById(UpdateSysMenuInfoDTO dto) {
+
+    }
+
+    @Override
+    public SysMenuInfoVO getSysMenuInfoById(Long id) {
+        SysMenuInfo menuInfo = sysMenuInfoMapper.selectById(id);
+        SysMenuInfoVO sysMenuInfoVO = new SysMenuInfoVO();
+        BeanUtils.copyProperties(menuInfo,sysMenuInfoVO);
+        return sysMenuInfoVO;
+    }
+
+    @Override
+    public List<SysMenuInfoVO> getSysMenuInfoList() {
+        return null;
     }
 }

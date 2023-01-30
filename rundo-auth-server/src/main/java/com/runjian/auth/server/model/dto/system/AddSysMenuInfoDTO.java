@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "添加菜单", description = "菜单信息")
-public class SysMenuInfoDTO {
+public class AddSysMenuInfoDTO {
 
     @ApiModelProperty("所属应用ID")
     @NotNull
