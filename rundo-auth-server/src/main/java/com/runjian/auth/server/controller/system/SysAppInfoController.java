@@ -73,8 +73,6 @@ public class SysAppInfoController {
                                                                   Integer pageNum,
                                                              @RequestParam(value = "pageSize", defaultValue = "20")
                                                                   Integer pageSize) {
-
-        // TODO 分页获取应用列表
         return new ResponseResult<>(200, "操作成功", sysAppInfoService.getSysAppInfoByPage(pageNum, pageSize));
     }
 
