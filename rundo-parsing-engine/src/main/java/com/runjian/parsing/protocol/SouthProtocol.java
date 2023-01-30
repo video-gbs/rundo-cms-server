@@ -1,6 +1,8 @@
 package com.runjian.parsing.protocol;
 
 
+import com.runjian.parsing.constant.IdType;
+
 /**
  * @author Miracle
  * @date 2023/1/28 14:59
@@ -76,6 +78,15 @@ public interface SouthProtocol {
      * @param data 数据集合
      */
     void channelPlayback(Long taskId, Object data);
+
+    /**
+     * 通用消息处理
+     * @param gatewayId
+     * @param msgId
+     * @param msgType
+     * @param data
+     */
+    void commonEvent(Long gatewayId, String msgId, String msgType, Object data);
 
     /**
      * 通用消息处理

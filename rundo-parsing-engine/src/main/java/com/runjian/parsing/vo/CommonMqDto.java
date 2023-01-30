@@ -1,5 +1,6 @@
 package com.runjian.parsing.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.runjian.common.config.response.CommonResponse;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,6 +33,7 @@ public class CommonMqDto<T> extends CommonResponse<T> {
      * time
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private LocalDateTime time;
 
     /**

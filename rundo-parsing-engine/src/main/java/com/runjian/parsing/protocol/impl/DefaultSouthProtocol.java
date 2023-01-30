@@ -1,5 +1,6 @@
 package com.runjian.parsing.protocol.impl;
 
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
@@ -13,7 +14,7 @@ import com.runjian.parsing.entity.ChannelInfo;
 import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.entity.TaskInfo;
 import com.runjian.parsing.feign.DeviceControlApi;
-import com.runjian.parsing.protocol.DefaultMapName;
+import com.runjian.parsing.protocol.AbstractSouthProtocol;
 import com.runjian.parsing.protocol.SouthProtocol;
 import com.runjian.parsing.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ import java.util.Optional;
  * @date 2023/1/28 15:45
  */
 @Service
-public class DefaultSouthProtocol extends DefaultMapName implements SouthProtocol {
+public class DefaultSouthProtocol extends AbstractSouthProtocol  {
 
     @Autowired
     private TaskService taskService;
@@ -81,7 +82,7 @@ public class DefaultSouthProtocol extends DefaultMapName implements SouthProtoco
      */
     @Override
     public void deviceSync(Long taskId, Object data) {
-        TaskInfo taskInfo = taskService.getTask(taskId, TaskState.RUNNING);
+        TaskInfo taskInfo = taskService.getTaskValid(taskId, TaskState.RUNNING);
         if (Objects.isNull(data)){
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "同步数据为空");
         }
@@ -99,7 +100,7 @@ public class DefaultSouthProtocol extends DefaultMapName implements SouthProtoco
      */
     @Override
     public void deviceAdd(Long taskId, Object data) {
-        TaskInfo taskInfo = taskService.getTask(taskId, TaskState.RUNNING);
+        TaskInfo taskInfo = taskService.getTaskValid(taskId, TaskState.RUNNING);
         if (Objects.isNull(data)){
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "设备id为空");
         }
@@ -123,7 +124,7 @@ public class DefaultSouthProtocol extends DefaultMapName implements SouthProtoco
      */
     @Override
     public void deviceDelete(Long taskId, Object data) {
-        TaskInfo taskInfo = taskService.getTask(taskId, TaskState.RUNNING);
+        TaskInfo taskInfo = taskService.getTaskValid(taskId, TaskState.RUNNING);
         if (Objects.isNull(data)){
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "返回结果为空");
         }
@@ -148,7 +149,7 @@ public class DefaultSouthProtocol extends DefaultMapName implements SouthProtoco
         }
         JSONObject jsonData = JSON.parseObject(data.toString());
         JSONArray objects = jsonData.getJSONArray(CHANNEL_SYNC_LIST);
-        TaskInfo taskInfo = taskService.getTask(taskId, TaskState.RUNNING);
+        TaskInfo taskInfo = taskService.getTaskValid(taskId, TaskState.RUNNING);
         if (Objects.nonNull(objects) && objects.size() > 0){
             for (int i = 0; i < objects.size(); i++){
                 JSONObject jsonObject = objects.getJSONObject(i);
@@ -174,29 +175,59 @@ public class DefaultSouthProtocol extends DefaultMapName implements SouthProtoco
         taskService.taskSuccess(taskId);
     }
 
-    @Override
-    public void channelPtzControl(Long taskId, Object data) {
-        customEvent(taskId, data);
-    }
+
 
     @Override
-    public void channelPlay(Long taskId, Object dataMap) {
-        customEvent(taskId, dataMap);
-    }
+    public void commonEvent(Long gatewayId, String msgId, String msgType, Object data) {
 
-    @Override
-    public void channelRecord(Long taskId, Object dataMap) {
-        customEvent(taskId, dataMap);
-    }
+        // 判断数据是否存在
+        JSONObject jsonData = new JSONObject();
 
-    @Override
-    public void channelPlayback(Long taskId, Object dataMap) {
-        customEvent(taskId, dataMap);
+        // 尝试进行数据转换
+        if (Objects.nonNull(data)){
+            jsonData = JSON.parseObject(data.toString());
+            String deviceIdStr = jsonData.getString(DEVICE_ID);
+
+            if (Objects.nonNull(deviceIdStr)){
+                Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceIdStr);
+                if (deviceInfoOp.isPresent()){
+                    DeviceInfo deviceInfo = deviceInfoOp.get();
+                    jsonData.put(DEVICE_ID, deviceInfo.getId());
+                    String channelIdStr = jsonData.getString(CHANNEL_ID);
+                    if (Objects.nonNull(channelIdStr)){
+                        Optional<ChannelInfo> channelInfoOp = channelMapper.selectByDeviceIdAndOriginId(deviceInfo.getId(), channelIdStr);
+                        if (channelInfoOp.isPresent()){
+                            ChannelInfo channelInfo = channelInfoOp.get();
+                            jsonData.put(CHANNEL_ID, channelInfo.getId());
+                        }
+                    }
+                }
+            }
+        }
+
+        // 将消息类型数据插入
+        jsonData.put(MSG_TYPE, msgType);
+        jsonData.put(GATEWAY_ID, gatewayId);
+
+        // 判断是否是北向接口任务
+        if (StringUtils.isNumber(msgId)){
+            long taskId = Long.parseLong(msgId);
+            if (Objects.nonNull(taskService.getTask(taskId))){
+                customEvent(taskId, jsonData);
+                return;
+            }
+        }
+
+        // 直接将信息往上层推
+        CommonResponse<?> commonResponse = deviceControlApi.commonEvent(jsonData);
+        if (commonResponse.getCode() != 0){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
     }
 
     @Override
     public void customEvent(Long taskId, Object dataMap) {
-        TaskInfo taskInfo = taskService.getTask(taskId, TaskState.RUNNING);
+        taskService.getTaskValid(taskId, TaskState.RUNNING);
         taskService.removeDeferredResult(taskId).setResult(CommonResponse.success(dataMap));
         taskService.taskSuccess(taskId);
     }

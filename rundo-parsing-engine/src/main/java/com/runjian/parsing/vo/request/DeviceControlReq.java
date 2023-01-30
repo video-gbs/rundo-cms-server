@@ -1,7 +1,6 @@
 package com.runjian.parsing.vo.request;
 
 
-import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.validator.ValidationResult;
 import com.runjian.common.validator.ValidatorFunction;
@@ -11,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 设备添加请求体
+ * 通用北向消息传输体
  * @author Miracle
  * @date 2023/1/9 15:11
  */

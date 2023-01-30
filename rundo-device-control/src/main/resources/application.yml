@@ -56,7 +56,7 @@ spring:
 
   # rabbitmq 配置
   rabbitmq:
-    host: 127.0.0.1
+    host: 124.71.21.11
     port: 5672
     username: wvp
     password: wvp12345678

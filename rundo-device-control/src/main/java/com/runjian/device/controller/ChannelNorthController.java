@@ -4,6 +4,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.feign.PutPtzControlReq;
+import com.runjian.device.vo.feign.VideoRecordRsp;
 import com.runjian.device.vo.request.PutChannelPlayReq;
 import com.runjian.device.vo.request.PutChannelPlaybackReq;
 import com.runjian.device.vo.request.PutChannelSignSuccessReq;
@@ -11,6 +12,8 @@ import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.VideoPlayRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 /**
  * 通道北向控制器
@@ -30,7 +33,7 @@ public class ChannelNorthController {
     /**
      * 通道同步
      * @param deviceId 设备ID
-     * @return
+     * @return ChannelSyncRsp
      */
     @GetMapping("/sync")
     public CommonResponse<ChannelSyncRsp> channelSync(@RequestParam Long deviceId){
@@ -61,6 +64,18 @@ public class ChannelNorthController {
 
     /**
      * 视频回放
+     * @param chId 回放请求体
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 视频播放返回体
+     */
+    @GetMapping("/record")
+    public CommonResponse<VideoRecordRsp> videoPlayback(@RequestParam Long chId, @RequestParam LocalDateTime startTime, @RequestParam LocalDateTime endTime){
+        return CommonResponse.success(channelNorthService.channelRecord(chId, startTime, endTime));
+    }
+
+    /**
+     * 视频回放
      * @param request 回放请求体
      * @return 视频播放返回体
      */
@@ -76,7 +91,7 @@ public class ChannelNorthController {
      * @return
      */
     @PutMapping("/control")
-    public CommonResponse ptzControl(@RequestBody PutPtzControlReq req){
+    public CommonResponse<?> ptzControl(@RequestBody PutPtzControlReq req){
         validatorService.validateRequest(req);
         channelNorthService.channelPtzControl(req.getChannelId(),req.getCommandCode(),req.getHorizonSpeed(),req.getVerticalSpeed(),req.getZoomSpeed(),req.getTotalSpeed());
         return CommonResponse.success();

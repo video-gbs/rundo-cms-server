@@ -22,7 +22,7 @@ import java.util.Objects;
 @RestController
 public class DeviceController {
 
-    private static final long OUT_TIME = 5000L;
+    private static final long OUT_TIME = 10000L;
 
     @Autowired
     private ProtocolService protocolService;

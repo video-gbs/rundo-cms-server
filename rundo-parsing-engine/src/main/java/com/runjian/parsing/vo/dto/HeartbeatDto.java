@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 /**
- * 心跳信息
+ * 心跳信息传输体
  * @author Miracle
  * @date 2023/1/16 9:42
  */

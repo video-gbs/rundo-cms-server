@@ -18,6 +18,7 @@ public class PostGatewaySignInReq {
     public PostGatewaySignInReq(GatewayInfo gatewayInfo, LocalDateTime outTime){
         BeanUtils.copyProperties(gatewayInfo, this);
         this.outTime = outTime;
+        this.gatewayId = gatewayInfo.getId();
     }
 
     /**

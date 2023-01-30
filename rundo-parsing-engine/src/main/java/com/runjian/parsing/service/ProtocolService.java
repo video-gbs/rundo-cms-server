@@ -1,6 +1,7 @@
 package com.runjian.parsing.service;
 
 import com.runjian.parsing.constant.IdType;
+import com.runjian.parsing.protocol.AbstractSouthProtocol;
 import com.runjian.parsing.protocol.NorthProtocol;
 import com.runjian.parsing.protocol.SouthProtocol;
 

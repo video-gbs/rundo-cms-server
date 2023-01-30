@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -50,4 +51,15 @@ public interface TaskMapper {
             " WHERE id = #{taskId} " +
             " </script> ")
     void updateState(Long taskId, Integer state, String desc, LocalDateTime now);
+
+    List<TaskInfo> selectByState(Integer code);
+
+    @Update({" <script> " +
+            " <foreach collection='taskInfoOutTimeList' item='item' separator=';'> " +
+            " UPDATE " + TASK_TABLE_NAME +
+            " SET update_time = #{item.updateTime} , state = #{item.state}, desc = #{item.desc} " +
+            " WHERE id = #{item.id} "+
+            " </foreach> " +
+            " </script> "})
+    void updatesOutTime(List<TaskInfo> taskInfoOutTimeList);
 }

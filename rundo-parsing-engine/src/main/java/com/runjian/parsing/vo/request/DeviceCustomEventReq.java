@@ -7,6 +7,7 @@ import java.util.Map;
 
 
 /**
+ * 通用北向消息传输体
  * @author Miracle
  * @date 2023/1/29 15:22
  */

@@ -1,5 +1,6 @@
 package com.runjian.device.service.north;
 
+import com.runjian.device.vo.feign.VideoRecordRsp;
 import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.VideoPlayRsp;
 
@@ -18,7 +19,6 @@ public interface ChannelNorthService {
      */
     ChannelSyncRsp channelSync(Long deviceId);
 
-
     /**
      * 通道注册状态转为成功
      * @param channelId 通道Id
@@ -36,6 +36,17 @@ public interface ChannelNorthService {
      * @param chId 通道id
      */
     VideoPlayRsp channelPlay(Long chId, Boolean enableAudio, Boolean ssrcCheck);
+
+    /**
+     * 获取录像数据
+     * @param chId 通道id
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return
+     */
+    VideoRecordRsp channelRecord(Long chId, LocalDateTime startTime, LocalDateTime endTime);
+
+
 
     /**
      * 回放

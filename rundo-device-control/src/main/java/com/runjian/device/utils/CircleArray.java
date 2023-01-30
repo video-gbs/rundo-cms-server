@@ -50,6 +50,8 @@ public class CircleArray<T> {
             circleSize = 60;
         }
         this.circleSize = circleSize;
+        this.dataIndexMap = new HashMap<>();
+        this.indexDataMap = new HashMap<>();
     }
 
     /**
@@ -84,7 +86,7 @@ public class CircleArray<T> {
             // 计算插入位置
             long position = (currentIndex + offset) % circleSize;
             // 获取上一次的插入位置
-            Long oldPosition = dataIndexMap.get(data);
+            Long oldPosition = dataIndexMap.getOrDefault(data, null);
             // 判断是否存在数据
             if (Objects.nonNull(oldPosition)){
                 // 获取上一次插入位置的数据

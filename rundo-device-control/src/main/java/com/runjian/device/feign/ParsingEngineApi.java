@@ -71,7 +71,7 @@ public interface ParsingEngineApi {
 
     /**
      * 通道回放视频获取
-     * @param req
+     * @param req 设备请求体
      * @return
      */
     @PutMapping("/channel/video/record")

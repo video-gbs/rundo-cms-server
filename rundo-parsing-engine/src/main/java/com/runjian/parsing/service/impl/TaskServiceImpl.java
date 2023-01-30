@@ -10,11 +10,14 @@ import com.runjian.parsing.entity.TaskInfo;
 import com.runjian.parsing.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 任务服务
@@ -28,6 +31,7 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskMapper taskMapper;
 
+
     @Override
     public Long createAsyncTask(Long gatewayId, Long deviceId, Long channelId, String clientMsgId, String mqId, String msgType, DeferredResult<CommonResponse<?>> deferredResult) {
         Long taskId = createTask(gatewayId, deviceId, channelId, clientMsgId, mqId, msgType, TaskState.RUNNING, null);
@@ -35,6 +39,7 @@ public class TaskServiceImpl implements TaskService {
         deferredResult.onTimeout(() -> {
             deferredResult.setResult(CommonResponse.failure(BusinessErrorEnums.FEIGN_REQUEST_TIME_OUT));
             asynReqMap.remove(taskId);
+            taskError(taskId, "OUT_TIME");
         });
         return taskId;
     }
@@ -51,21 +56,27 @@ public class TaskServiceImpl implements TaskService {
         taskInfo.setMsgType(msgType);
         taskInfo.setCreateTime(nowTime);
         taskInfo.setUpdateTime(nowTime);
-        taskInfo.setTaskState(taskState.getCode());
+        taskInfo.setState(taskState.getCode());
         taskInfo.setDesc(desc);
         taskMapper.save(taskInfo);
         return taskInfo.getId();
     }
 
     @Override
-    public TaskInfo getTask(Long taskId, TaskState taskState) {
+    public TaskInfo getTask(Long taskId) {
+        Optional<TaskInfo> taskInfoOp = taskMapper.selectById(taskId);
+        return taskInfoOp.orElse(null);
+    }
+
+    @Override
+    public TaskInfo getTaskValid(Long taskId, TaskState taskState) {
         Optional<TaskInfo> taskInfoOp = taskMapper.selectById(taskId);
         if (taskInfoOp.isEmpty()){
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("任务%s不存在", taskId));
         }
         TaskInfo taskInfo = taskInfoOp.get();
-        if (!taskInfo.getTaskState().equals(taskState.getCode())){
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, String.format("任务状态异常，当前任务状态：%s", TaskState.getMsg(taskInfo.getTaskState())));
+        if (!taskInfo.getState().equals(taskState.getCode())){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, String.format("任务状态异常，当前任务状态：%s", TaskState.getMsg(taskInfo.getState())));
         }
         return taskInfo;
     }
@@ -97,4 +108,6 @@ public class TaskServiceImpl implements TaskService {
     public void taskError(Long taskId, String detail) {
         taskMapper.updateState(taskId, TaskState.SUCCESS.getCode(), detail, LocalDateTime.now());
     }
+
+
 }
