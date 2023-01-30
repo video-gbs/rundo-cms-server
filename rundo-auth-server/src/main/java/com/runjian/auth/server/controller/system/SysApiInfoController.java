@@ -49,7 +49,7 @@ public class SysApiInfoController {
 
     @GetMapping("/getById")
     @ApiOperation("获取接口信息")
-    public ResponseResult<SysApiInfoVO> getById(@RequestBody Long id) {
+    public ResponseResult<SysApiInfoVO> getById(@RequestParam Long id) {
         return new ResponseResult<>(200, "操作成功", sysApiInfoService.getSysApiInfoById(id));
     }
 

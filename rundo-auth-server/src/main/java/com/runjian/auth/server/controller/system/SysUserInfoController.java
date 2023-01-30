@@ -48,7 +48,7 @@ public class SysUserInfoController {
 
     @PostMapping("/getUser")
     @ApiOperation("获取用户详情")
-    public ResponseResult<SysUserInfoVO> getUser(Long id) {
+    public ResponseResult<SysUserInfoVO> getUser(@RequestParam Long id) {
         return sysUserService.getUser(id);
     }
 

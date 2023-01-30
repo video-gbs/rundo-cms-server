@@ -44,7 +44,7 @@ public class SysConfigController {
 
     @GetMapping("/getById")
     @ApiOperation("获取编辑系统参数配置信息")
-    public ResponseResult<SysConfigVO> getById(@RequestBody Long id) {
+    public ResponseResult<SysConfigVO> getById(@RequestParam Long id) {
         return new ResponseResult<>(200, "操作成功", sysConfigService.getSysConfigById(id));
     }
 

@@ -48,7 +48,7 @@ public class SysAppInfoController {
 
     @PostMapping("/remove")
     @ApiOperation("删除应用")
-    public ResponseResult<?> remove(@RequestParam(value = "id") Long id) {
+    public ResponseResult<?> remove(@RequestParam Long id) {
         log.info("删除应用信息前端传参{}", id);
         sysAppInfoService.removeSysAppInfoById(id);
         return new ResponseResult<>(200, "操作成功");
@@ -56,7 +56,7 @@ public class SysAppInfoController {
 
     @GetMapping("/getById")
     @ApiOperation("获取应用信息")
-    public ResponseResult<SysAppInfoVO> getById(@RequestBody Long id) {
+    public ResponseResult<SysAppInfoVO> getById(@RequestParam Long id) {
         return new ResponseResult<>(200, "操作成功", sysAppInfoService.getSysAppInfoById(id));
     }
 
@@ -68,7 +68,7 @@ public class SysAppInfoController {
 
     @GetMapping("/getListByPage")
     @ApiOperation("获取应用列表 分页")
-    public ResponseResult<?> getListByPage(@RequestBody Long id) {
+    public ResponseResult<?> getListByPage() {
         // TODO 分页获取应用列表
         return new ResponseResult<>(200, "操作成功", sysAppInfoService.list());
     }

@@ -38,7 +38,7 @@ public class SysRoleInfoController {
 
     @PostMapping("/delete")
     @ApiOperation("删除角色")
-    public ResponseResult deleteRole(@RequestBody Long id) {
+    public ResponseResult deleteRole(@RequestParam Long id) {
         sysRoleInfoService.removeById(id);
         return new ResponseResult<>(200, "操作成功");
     }

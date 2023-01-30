@@ -44,7 +44,7 @@ public class SysDictController {
 
     @GetMapping("/getById")
     @ApiOperation("获取数据字典信息")
-    public ResponseResult<SysDictVO> getById(@RequestBody Long id) {
+    public ResponseResult<SysDictVO> getById(@RequestParam Long id) {
         return new ResponseResult<>(200, "操作成功", sysDictService.getSysDictById(id));
     }
 
