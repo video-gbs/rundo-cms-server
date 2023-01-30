@@ -20,6 +20,12 @@ public class AddSysRoleInfoDTO {
     @ApiModelProperty(value = "角色名称", required = true)
     private String roleName;
 
+    @ApiModelProperty(value = "角色编码", required = true)
+    private String roleCode;
+
+    @ApiModelProperty(value = "角色排序")
+    private Integer roleSort;
+
     @ApiModelProperty("角色描述")
     private String roleDesc;
 

@@ -54,6 +54,13 @@ public class SysApiInfoController {
         return new ResponseResult<>(200, "操作成功", sysApiInfoService.getSysApiInfoById(id));
     }
 
+    @PostMapping("/tree")
+    @ApiOperation("获取菜单层级树")
+    public ResponseResult<?> getApiInfoTree() {
+
+        return null;
+    }
+
     @GetMapping("/getList")
     @ApiOperation("获取接口列表 无分页")
     public ResponseResult<List<SysApiInfoVO>> getList() {

@@ -27,13 +27,13 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
     private SysRoleInfoMapper roleInfoMapper;
 
     @Override
-    public ResponseResult addRole(AddSysRoleInfoDTO dto) {
+    public void addRole(AddSysRoleInfoDTO dto) {
         SysRoleInfo role = new SysRoleInfo();
         Long roleId = idUtil.nextId();
         role.setId(roleId);
         role.setRoleName(dto.getRoleName());
         role.setRoleCode(roleId.toString());
-        role.setRoleSort("1");
+        role.setRoleSort(dto.getRoleSort());
         role.setRoleDesc(dto.getRoleDesc());
         // role.setParentRoleId();
         // role.setParentRoleIds();
@@ -87,8 +87,6 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
         //     }
         // }
 
-
-        return new ResponseResult(200, "操作成功");
     }
 
     @Override

@@ -67,6 +67,14 @@ public class SysOrgController {
         return new ResponseResult<>(200, "操作成功", sysOrgService.updateById(dto));
     }
 
+    @PostMapping("/tree")
+    @ApiOperation("获取组织机构层级树")
+    public ResponseResult<?> tree() {
+
+        return null;
+    }
+
+
     @GetMapping("/getById")
     @ApiOperation("获取部门信息")
     public ResponseResult<SysOrg> getById(@RequestParam Long id) {

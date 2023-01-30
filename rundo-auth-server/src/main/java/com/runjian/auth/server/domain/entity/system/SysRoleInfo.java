@@ -39,7 +39,7 @@ public class SysRoleInfo implements Serializable {
 
     @ApiModelProperty("角色顺序")
     @TableField("role_sort")
-    private String roleSort;
+    private Integer roleSort;
 
     @ApiModelProperty("角色描述")
     @TableField("role_desc")

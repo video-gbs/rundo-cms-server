@@ -27,13 +27,8 @@ public class SysRoleInfoController {
     @PostMapping("/add")
     @ApiOperation("添加角色")
     public ResponseResult addRole(@RequestBody AddSysRoleInfoDTO dto) {
-        return sysRoleInfoService.addRole(dto);
-    }
-
-    @PostMapping("/update")
-    @ApiOperation("编辑角色")
-    public ResponseResult updateRole(@RequestBody AddSysRoleInfoDTO dto) {
-        return sysRoleInfoService.updateRole(dto);
+        sysRoleInfoService.addRole(dto);
+        return new ResponseResult<>(200, "操作成功");
     }
 
     @PostMapping("/delete")
@@ -43,13 +38,12 @@ public class SysRoleInfoController {
         return new ResponseResult<>(200, "操作成功");
     }
 
+    @PostMapping("/update")
+    @ApiOperation("编辑角色")
+    public ResponseResult updateRole(@RequestBody AddSysRoleInfoDTO dto) {
+        return sysRoleInfoService.updateRole(dto);
+    }
 
-    // @PostMapping("/update")
-    // @ApiOperation("编辑角色")
-    // public ResponseResult updateSysDict(@RequestBody SysRoleInfo dto) {
-    //     sysRoleInfoService.updateById(dto);
-    //     return new ResponseResult<>(200, "操作成功");
-    // }
 
     @GetMapping("/getById")
     @ApiOperation("获取角色信息")
