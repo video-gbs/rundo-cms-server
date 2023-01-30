@@ -39,7 +39,7 @@ public class SysAppInfo implements Serializable {
 
     @ApiModelProperty("应用服务端口")
     @TableField("app_port")
-    private String appPort;
+    private Integer appPort;
 
     @ApiModelProperty("应用简介")
     @TableField("app_desc")
@@ -50,7 +50,7 @@ public class SysAppInfo implements Serializable {
     private Long tenantId;
 
     @ApiModelProperty("逻辑删除")
-    @TableField("delete_flag")
+    @TableField(value = "delete_flag", fill = FieldFill.INSERT)
     @TableLogic
     private Integer deleteFlag;
 

@@ -1,5 +1,6 @@
 package com.runjian.auth.server.controller.system;
 
+import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
@@ -7,6 +8,7 @@ import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.service.system.SysApiInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,7 @@ import java.util.List;
  * @since 2023-01-03 11:53:37
  */
 @Api(tags = "接口管理")
+@Slf4j
 @RestController
 @RequestMapping("/sysApiInfo")
 public class SysApiInfoController {
@@ -31,6 +34,7 @@ public class SysApiInfoController {
     @PostMapping("/add")
     @ApiOperation("添加接口")
     public ResponseResult<?> save(@RequestBody AddSysApiInfoDTO dto) {
+        log.info("添加接口信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysApiInfoService.saveSysApiInfo(dto);
         return new ResponseResult<>(200, "操作成功");
     }
@@ -38,6 +42,7 @@ public class SysApiInfoController {
     @PostMapping("/update")
     @ApiOperation("编辑接口")
     public ResponseResult<?> updateSysDict(@RequestBody UpdateSysApiInfoDTO dto) {
+        log.info("添加接口信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysApiInfoService.updateSysApiInfoById(dto);
         return new ResponseResult<>(200, "操作成功");
     }

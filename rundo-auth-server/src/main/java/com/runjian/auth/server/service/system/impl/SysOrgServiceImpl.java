@@ -3,11 +3,11 @@ package com.runjian.auth.server.service.system.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
 import com.runjian.auth.server.domain.entity.system.SysOrg;
-import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.domain.vo.system.SysOrgNode;
+import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.service.system.SysOrgService;
-import com.runjian.auth.server.util.RundoIdUtil;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -27,11 +27,39 @@ import java.util.stream.Collectors;
  */
 @Service
 public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> implements SysOrgService {
-    @Autowired
-    private RundoIdUtil idUtis;
 
     @Autowired
     private SysOrgMapper sysOrgMapper;
+
+    @Override
+    public void saveSysOrg(AddSysOrgDTO dto) {
+        SysOrg sysOrg = new SysOrg();
+        sysOrg.setOrgPid(dto.getOrgPid());
+        // TODO 处理上级节点
+        // sysOrg.setOrgPids();
+        sysOrg.setOrgName(dto.getOrgName());
+        sysOrg.setOrgCode(dto.getOrgCode());
+        sysOrg.setOrgSort(dto.getOrgSort());
+        sysOrg.setAdders(dto.getAdders());
+        sysOrg.setOrgLeader(dto.getOrgLeader());
+        sysOrg.setEmail(dto.getEmail());
+        sysOrg.setPhone(dto.getPhone());
+        // TODO 处理组织机构层级
+        // sysOrg.setLevel();
+        sysOrg.setLeaf(0);
+        sysOrg.setDescription(dto.getDescription());
+        sysOrg.setStatus(0);
+
+        // sysOrg.setTenantId();
+        // sysOrg.setDeleteFlag();
+        // sysOrg.setCreatedBy();
+        // sysOrg.setUpdatedBy();
+        // sysOrg.setCreatedTime();
+        // sysOrg.setUpdatedTime();
+
+        sysOrgMapper.insert(sysOrg);
+
+    }
 
 
     public List<SysOrgNode> getSysOrgTree(Long orgId, String orgName) {
@@ -61,5 +89,7 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         Page<SysOrg> page = Page.of(pageNum, pageSize);
         return sysOrgMapper.selectPage(page, null);
     }
+
+
 
 }

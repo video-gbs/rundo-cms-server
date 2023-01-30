@@ -1,13 +1,12 @@
 package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.entity.system.SysApiInfo;
-import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
 import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
+import com.runjian.auth.server.domain.entity.system.SysApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
+import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
 import com.runjian.auth.server.service.system.SysApiInfoService;
-import com.runjian.auth.server.util.RundoIdUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +23,6 @@ import java.util.List;
  */
 @Service
 public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiInfo> implements SysApiInfoService {
-    @Autowired
-    private RundoIdUtil idUtil;
 
     @Autowired
     private SysApiInfoMapper sysApiInfoMapper;
@@ -48,12 +45,16 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
         // sysApiInfo.setCreatedTime();
         // sysApiInfo.setUpdatedTime();
         sysApiInfoMapper.insert(sysApiInfo);
+        Long apiId = sysApiInfo.getId();
+        Long appId = dto.getAppId();
+        // 处理应用 API映射
+        sysApiInfoMapper.insertAppApi(appId, apiId);
     }
 
     @Override
     public void updateSysApiInfoById(UpdateSysApiInfoDTO dto) {
         SysApiInfo sysApiInfo = new SysApiInfo();
-        BeanUtils.copyProperties(dto,sysApiInfo);
+        BeanUtils.copyProperties(dto, sysApiInfo);
         sysApiInfoMapper.updateById(sysApiInfo);
     }
 

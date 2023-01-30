@@ -62,7 +62,7 @@ public class SysRoleInfo implements Serializable {
     private Long tenantId;
 
     @ApiModelProperty("逻辑删除")
-    @TableField("delete_flag")
+    @TableField(value = "delete_flag", fill = FieldFill.INSERT)
     @TableLogic
     private Integer deleteFlag;
 

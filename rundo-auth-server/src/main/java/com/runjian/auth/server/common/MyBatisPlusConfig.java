@@ -1,6 +1,5 @@
 package com.runjian.auth.server.common;
 
-import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,15 +14,25 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MyBatisPlusConfig {
 
+
+    /**
+     * 监测sql执行效率的插件,生产记得注释掉
+     *
+     * @return
+     */
+    // @Bean
+    // public PerformanceMonitorInterceptor performanceMonitorInterceptor() {
+    //     return new PerformanceMonitorInterceptor();
+    // }
+
     /**
      * MybatisPlus分页配置
      *
      * @return
      */
     @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor() {
-        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
-        return interceptor;
+    public PaginationInnerInterceptor paginationInnerInterceptor() {
+        return new PaginationInnerInterceptor();
     }
+
 }

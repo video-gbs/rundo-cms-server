@@ -11,4 +11,9 @@
         WHERE
             role.id =#{roleId,jdbcType=BIGINT}
     </select>
+
+    <insert id="insertAppApi">
+        INSERT INTO sys_app_api (app_id, api_id)
+        VALUES (#{appId,jdbcType=BIGINT}, #{apiId,jdbcType=BIGINT})
+    </insert>
 </mapper>

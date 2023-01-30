@@ -1,12 +1,15 @@
 package com.runjian.auth.server.controller.system;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.vo.system.SysOrgNode;
+import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
 import com.runjian.auth.server.domain.entity.system.SysOrg;
+import com.runjian.auth.server.domain.vo.system.SysOrgNode;
 import com.runjian.auth.server.service.system.SysOrgService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,7 @@ import java.util.List;
  * @since 2023-01-03 11:53:37
  */
 @Api(tags = "部门管理")
+@Slf4j
 @RestController
 @RequestMapping("/sysOrg")
 public class SysOrgController {
@@ -31,8 +35,10 @@ public class SysOrgController {
 
     @PostMapping("/add")
     @ApiOperation("添加部门")
-    public ResponseResult<Boolean> save(@RequestBody SysOrg dto) {
-        return new ResponseResult<>(200, "操作成功", sysOrgService.save(dto));
+    public ResponseResult<Boolean> save(@RequestBody AddSysOrgDTO dto) {
+        log.info("添加部门前端传参信息{}", JSONUtil.toJsonStr(dto));
+        sysOrgService.saveSysOrg(dto);
+        return new ResponseResult<>(200, "操作成功");
     }
 
     @PostMapping("/delete")

@@ -1,5 +1,6 @@
 package com.runjian.auth.server.controller.system;
 
+import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
@@ -7,6 +8,7 @@ import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.service.system.SysAppInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,7 @@ import java.util.List;
  * @since 2023-01-03 11:53:37
  */
 @Api(tags = "应用管理")
+@Slf4j
 @RestController
 @RequestMapping("/sysAppInfo")
 public class SysAppInfoController {
@@ -30,6 +33,7 @@ public class SysAppInfoController {
     @PostMapping("/add")
     @ApiOperation("添加应用")
     public ResponseResult<?> save(@RequestBody AddSysAppInfoDTO dto) {
+        log.info("添加应用信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysAppInfoService.saveSysAppInfo(dto);
         return new ResponseResult<>(200, "操作成功");
     }
@@ -37,6 +41,7 @@ public class SysAppInfoController {
     @PostMapping("/update")
     @ApiOperation("编辑应用")
     public ResponseResult<?> update(@RequestBody UpdateSysAppInfoDTO dto) {
+        log.info("编辑应用信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysAppInfoService.updateSysAppInfoById(dto);
         return new ResponseResult<>(200, "操作成功");
     }

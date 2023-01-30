@@ -26,6 +26,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         log.info("MybatisPlus 添加时自动参数填充");
+        this.setFieldValByName("deleteFlag", 0, metaObject);
         this.setFieldValByName("createdTime", LocalDateTime.now(), metaObject);
         this.setFieldValByName("updatedTime", LocalDateTime.now(), metaObject);
 

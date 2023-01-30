@@ -21,16 +21,22 @@ public class AddSysOrgDTO {
     @ApiModelProperty(value = "部门名称", required = true)
     private String orgName;
 
+    @ApiModelProperty("部门结构编码")
+    private String orgCode;
+
+    @ApiModelProperty("排序")
+    private String orgSort;
+
     @ApiModelProperty(value = "部门负责人")
-    private String personName;
+    private String orgLeader;
 
     @ApiModelProperty(value = "手机号码")
     private String phone;
 
-    @ApiModelProperty(value = "手机号码")
+    @ApiModelProperty(value = "邮箱")
     private String email;
 
-    @ApiModelProperty(value = "手机号码")
+    @ApiModelProperty(value = "地址")
     private String adders;
 
     @ApiModelProperty(value = "描述信息")
