@@ -40,9 +40,17 @@ public class SysAppInfoController {
 
     @PostMapping("/update")
     @ApiOperation("编辑应用")
-    public ResponseResult<?> update(@RequestBody UpdateSysAppInfoDTO dto) {
+    public ResponseResult<?> modify(@RequestBody UpdateSysAppInfoDTO dto) {
         log.info("编辑应用信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysAppInfoService.updateSysAppInfoById(dto);
+        return new ResponseResult<>(200, "操作成功");
+    }
+
+    @PostMapping("/remove")
+    @ApiOperation("删除应用")
+    public ResponseResult<?> remove(@RequestParam(value = "id") Long id) {
+        log.info("删除应用信息前端传参{}", id);
+        sysAppInfoService.removeSysAppInfoById(id);
         return new ResponseResult<>(200, "操作成功");
     }
 

@@ -25,4 +25,6 @@ public interface SysAppInfoService extends IService<SysAppInfo> {
     SysAppInfoVO getSysAppInfoById(Long id);
 
     List<SysAppInfoVO> getSysAppInfoList();
+
+    void removeSysAppInfoById(Long id);
 }

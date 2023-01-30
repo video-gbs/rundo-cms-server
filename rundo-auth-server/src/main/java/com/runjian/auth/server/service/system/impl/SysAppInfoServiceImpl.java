@@ -42,6 +42,11 @@ public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppI
     }
 
     @Override
+    public void removeSysAppInfoById(Long id) {
+        sysAppInfoMapper.deleteById(id);
+    }
+
+    @Override
     public SysAppInfoVO getSysAppInfoById(Long id) {
         SysAppInfo sysAppInfo = sysAppInfoMapper.selectById(id);
         SysAppInfoVO sysAppInfoVO = new SysAppInfoVO();
@@ -54,4 +59,6 @@ public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppI
         // List<SysAppInfo> sysAppInfoList = sysAppInfoMapper.selectList();
         return null;
     }
+
+
 }
