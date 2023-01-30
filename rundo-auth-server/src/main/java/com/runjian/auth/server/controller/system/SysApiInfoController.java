@@ -1,13 +1,16 @@
 package com.runjian.auth.server.controller.system;
 
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.entity.system.SysApiInfo;
-import com.runjian.auth.server.model.dto.system.SysApiInfoDTO;
+import com.runjian.auth.server.model.dto.system.AddSysApiInfoDTO;
+import com.runjian.auth.server.model.dto.system.UpdateSysApiInfoDTO;
+import com.runjian.auth.server.model.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.service.system.SysApiInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -27,32 +30,32 @@ public class SysApiInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加接口")
-    public ResponseResult save(@RequestBody SysApiInfoDTO dto) {
+    public ResponseResult<?> save(@RequestBody AddSysApiInfoDTO dto) {
         sysApiInfoService.saveSysApiInfo(dto);
         return new ResponseResult<>(200, "操作成功");
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑接口")
-    public ResponseResult updateSysDict(@RequestBody SysApiInfo dto) {
-        sysApiInfoService.updateById(dto);
+    public ResponseResult<?> updateSysDict(@RequestBody UpdateSysApiInfoDTO dto) {
+        sysApiInfoService.updateSysApiInfoById(dto);
         return new ResponseResult<>(200, "操作成功");
     }
 
     @GetMapping("/getById")
     @ApiOperation("获取接口信息")
-    public ResponseResult getById(@RequestBody Long id) {
-        return new ResponseResult<>(200, "操作成功", sysApiInfoService.getById(id));
+    public ResponseResult<SysApiInfoVO> getById(@RequestBody Long id) {
+        return new ResponseResult<>(200, "操作成功", sysApiInfoService.getSysApiInfoById(id));
     }
 
     @GetMapping("/getList")
-    @ApiOperation("获取接口列表")
-    public ResponseResult getList() {
-        return new ResponseResult<>(200, "操作成功", sysApiInfoService.list());
+    @ApiOperation("获取接口列表 无分页")
+    public ResponseResult<List<SysApiInfoVO>> getList() {
+        return new ResponseResult<>(200, "操作成功", sysApiInfoService.getSysApiInfoList());
     }
 
     @GetMapping("/getListByPage")
-    @ApiOperation("分页获取接口列表")
+    @ApiOperation("获取接口列表 分页")
     public ResponseResult getListByPage(@RequestBody Long id) {
         // TODO 分页获取应用列表
         return new ResponseResult<>(200, "操作成功", sysApiInfoService.list());

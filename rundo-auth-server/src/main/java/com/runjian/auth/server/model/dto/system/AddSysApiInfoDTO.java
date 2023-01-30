@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "添加接口", description = "接口信息")
-public class SysApiInfoDTO {
+public class AddSysApiInfoDTO {
     @ApiModelProperty("应用ID")
     private Long appId;
 

@@ -3,11 +3,16 @@ package com.runjian.auth.server.service.system.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.entity.system.SysApiInfo;
 import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
-import com.runjian.auth.server.model.dto.system.SysApiInfoDTO;
+import com.runjian.auth.server.model.dto.system.AddSysApiInfoDTO;
+import com.runjian.auth.server.model.dto.system.UpdateSysApiInfoDTO;
+import com.runjian.auth.server.model.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.service.system.SysApiInfoService;
 import com.runjian.auth.server.util.RundoIdUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -26,7 +31,7 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
     private SysApiInfoMapper sysApiInfoMapper;
 
     @Override
-    public void saveSysApiInfo(SysApiInfoDTO dto) {
+    public void saveSysApiInfo(AddSysApiInfoDTO dto) {
         SysApiInfo sysApiInfo = new SysApiInfo();
         sysApiInfo.setApiPid(dto.getApiPid());
         // sysApiInfo.setApiPids();
@@ -43,6 +48,26 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
         // sysApiInfo.setCreatedTime();
         // sysApiInfo.setUpdatedTime();
         sysApiInfoMapper.insert(sysApiInfo);
+    }
+
+    @Override
+    public void updateSysApiInfoById(UpdateSysApiInfoDTO dto) {
+        SysApiInfo sysApiInfo = new SysApiInfo();
+        BeanUtils.copyProperties(dto,sysApiInfo);
+        sysApiInfoMapper.updateById(sysApiInfo);
+    }
+
+    @Override
+    public SysApiInfoVO getSysApiInfoById(Long id) {
+        SysApiInfo sysApiInfo = sysApiInfoMapper.selectById(id);
+        SysApiInfoVO sysApiInfoVO = new SysApiInfoVO();
+        BeanUtils.copyProperties(sysApiInfo, sysApiInfoVO);
+        return sysApiInfoVO;
+    }
+
+    @Override
+    public List<SysApiInfoVO> getSysApiInfoList() {
+        return null;
     }
 
 }

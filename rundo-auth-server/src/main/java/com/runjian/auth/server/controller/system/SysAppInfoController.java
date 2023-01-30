@@ -29,14 +29,14 @@ public class SysAppInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加应用")
-    public ResponseResult save(@RequestBody AddSysAppInfoDTO dto) {
+    public ResponseResult<?> save(@RequestBody AddSysAppInfoDTO dto) {
         sysAppInfoService.saveSysAppInfo(dto);
         return new ResponseResult<>(200, "操作成功");
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑应用")
-    public ResponseResult update(@RequestBody UpdateSysAppInfoDTO dto) {
+    public ResponseResult<?> update(@RequestBody UpdateSysAppInfoDTO dto) {
         sysAppInfoService.updateSysAppInfoById(dto);
         return new ResponseResult<>(200, "操作成功");
     }
@@ -55,7 +55,7 @@ public class SysAppInfoController {
 
     @GetMapping("/getListByPage")
     @ApiOperation("获取应用列表 分页")
-    public ResponseResult getListByPage(@RequestBody Long id) {
+    public ResponseResult<?> getListByPage(@RequestBody Long id) {
         // TODO 分页获取应用列表
         return new ResponseResult<>(200, "操作成功", sysAppInfoService.list());
     }
