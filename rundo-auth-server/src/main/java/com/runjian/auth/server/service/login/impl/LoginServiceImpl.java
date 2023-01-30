@@ -51,6 +51,7 @@ public class LoginServiceImpl implements LoginService {
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
         String userid = loginUser.getSysUserInfo().getId().toString();
         String jwt = JwtUtil.createJWT(userid);
+
         Map<String, String> map = new HashMap<>();
         map.put("token", jwt);
         map.put("username", loginUser.getSysUserInfo().getUserName());
@@ -59,6 +60,7 @@ public class LoginServiceImpl implements LoginService {
         map.put("email", loginUser.getSysUserInfo().getEmail());
         map.put("phone", loginUser.getSysUserInfo().getPhone());
         map.put("description", loginUser.getSysUserInfo().getDescription());
+
         // 把完整的用户信息放入redis中，userId 作为key
         redisCache.setCacheObject("login:" + userid, loginUser);
         return new ResponseResult(200, "登陆成功", map);

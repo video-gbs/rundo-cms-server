@@ -83,10 +83,11 @@ public class SecurityConfig {
                 .antMatchers("/**/*.css").permitAll()
                 .antMatchers("/**/*.png").permitAll()
                 .antMatchers("/**/*.ico").permitAll()
+                // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
 
         ;
-        // 除上面外的所有请求全部需要鉴权认证
+
         // 配置RBAC权限控制级别的接口权限校验
         // http.authorizeRequests().anyRequest()
         //         .access("@rundoRbacService.hasPermission(request,authentication)");

@@ -2,6 +2,10 @@ package com.runjian.auth.server.domain.dto.login;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,6 +18,10 @@ import java.util.Collection;
  * @Description 登录
  * @date 2023-01-04 周三 16:17
  */
+@Data
+@Slf4j
+@NoArgsConstructor
+@AllArgsConstructor
 public class LoginUser implements UserDetails {
 
     private SysUserInfo sysUserInfo;
@@ -24,7 +32,6 @@ public class LoginUser implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
-
 
     /**
      * 获取密码
@@ -54,7 +61,7 @@ public class LoginUser implements UserDetails {
     @Override
     public boolean isAccountNonExpired() {
         if (null != sysUserInfo.getExpiryDateEnd()) {
-            long flag = LocalDateTimeUtil.between(sysUserInfo.getExpiryDateEnd(), LocalDateTimeUtil.now()).toDays();
+            long flag = LocalDateTimeUtil.between(LocalDateTimeUtil.now(), sysUserInfo.getExpiryDateEnd()).toDays();
             return flag > 0;
         }
         return true;
@@ -93,15 +100,4 @@ public class LoginUser implements UserDetails {
         return true;
     }
 
-    public SysUserInfo getSysUserInfo() {
-        return sysUserInfo;
-    }
-
-    public void setSysUserInfo(SysUserInfo sysUserInfo) {
-        this.sysUserInfo = sysUserInfo;
-    }
-
-    public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
-        this.authorities = authorities;
-    }
 }

@@ -1,13 +1,12 @@
 package com.runjian.auth.server.service.login.impl;
 
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.runjian.auth.server.domain.dto.login.LoginUser;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
 import com.runjian.auth.server.mapper.system.*;
 import com.runjian.auth.server.mapper.video.ChannelOperationMapper;
 import com.runjian.auth.server.mapper.video.VideoAraeMapper;
 import com.runjian.auth.server.mapper.video.VideoChannelMapper;
-import com.runjian.auth.server.domain.dto.login.LoginUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -122,7 +121,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         String.join(",", authorities)
                 )
         );
-        log.info("用户权限信息：{}", JSONUtil.toJsonStr(loginUser));
         return loginUser;
     }
 
