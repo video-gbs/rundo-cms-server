@@ -56,15 +56,15 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
         PageSysDictDTO page = new PageSysDictDTO();
         page.setItemName(dto.getItemName());
         page.setItemValue(dto.getItemValue());
-        if (null != dto.getPageSize() && dto.getPageSize() > 0){
-            page.setSize(dto.getPageSize());
-        }else {
-            page.setSize(20);
-        }
         if (null != dto.getCurrent() && dto.getCurrent() > 0) {
             page.setCurrent(dto.getCurrent());
         } else {
             page.setCurrent(1);
+        }
+        if (null != dto.getPageSize() && dto.getPageSize() > 0){
+            page.setSize(dto.getPageSize());
+        }else {
+            page.setSize(20);
         }
         return sysDictMapper.MySelectPage(page);
     }
