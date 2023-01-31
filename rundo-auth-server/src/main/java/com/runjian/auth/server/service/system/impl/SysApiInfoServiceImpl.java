@@ -1,6 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
@@ -12,13 +12,14 @@ import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysApiInfoTree;
 import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
 import com.runjian.auth.server.service.system.SysApiInfoService;
-import org.apache.commons.lang3.StringUtils;
+import com.runjian.auth.server.util.tree.DataTreeUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -89,32 +90,23 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
 
     @Override
     public List<SysApiInfoTree> getSysApiInfoTree(QuerySysApiInfoDTO dto) {
-        List<SysApiInfoTree> sysApiInfoTreeList = new ArrayList<>();
-        // TODO 树形接口
-        LambdaQueryWrapper<SysApiInfo> queryWrapper = new LambdaQueryWrapper<>();
-        if (StringUtils.isNotEmpty(dto.getApiName())) {
-            queryWrapper.like(SysApiInfo::getApiName, dto.getApiName());
-        }
-        if (StringUtils.isNotEmpty(dto.getUrl())) {
-            queryWrapper.like(SysApiInfo::getUrl, dto.getUrl());
-        }
+        List<SysApiInfoVO> sysApiInfoVOList = new ArrayList<>();
+        QueryWrapper<SysApiInfo> queryWrapper = new QueryWrapper<>();
         List<SysApiInfo> sysApiInfoList = sysApiInfoMapper.selectList(queryWrapper);
         for (SysApiInfo sysApiInfo : sysApiInfoList) {
-            SysApiInfoTree sysApiInfoTree = new SysApiInfoTree();
-            sysApiInfoTree.setId(sysApiInfo.getId());
-            sysApiInfoTree.setApiPid(sysApiInfo.getApiPid());
-            sysApiInfoTree.setApiName(sysApiInfo.getApiName());
-            sysApiInfoTree.setApiSort(sysApiInfo.getApiSort());
-            sysApiInfoTree.setUrl(sysApiInfo.getUrl());
-            sysApiInfoTree.setLevel(sysApiInfo.getLevel());
-            sysApiInfoTreeList.add(sysApiInfoTree);
+            SysApiInfoVO sysApiInfoVO = new SysApiInfoVO();
+            BeanUtils.copyProperties(sysApiInfo, sysApiInfoVO);
+            sysApiInfoVOList.add(sysApiInfoVO);
         }
-        return sysApiInfoTreeList;
-        // if (StringUtils.isNotEmpty(dto.getApiName()) || StringUtils.isNotEmpty(dto.getUrl())) {
-        //     return sysApiInfoTreeList;
-        // } else {
-        //     return DataTreeUtil.buiidTree(sysApiInfoTreeList, 1L);
-        // }
+        List<SysApiInfoTree> sysApiInfoTreeList = sysApiInfoVOList.stream().map(
+                item -> {
+                    SysApiInfoTree bean = new SysApiInfoTree();
+                    BeanUtils.copyProperties(item, bean);
+                    return bean;
+                }
+        ).collect(Collectors.toList());
+        return DataTreeUtil.buiidTree(sysApiInfoTreeList, 1L);
+
     }
 
     @Override

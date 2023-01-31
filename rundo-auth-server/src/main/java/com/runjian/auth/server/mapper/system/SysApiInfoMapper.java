@@ -21,4 +21,6 @@ public interface SysApiInfoMapper extends BaseMapper<SysApiInfo> {
     void insertAppApi(@Param("appId") Long appId, @Param("apiId") Long apiId);
 
     Page<SysApiInfoVO> MySelectPage(Page<SysApiInfoVO> page);
+
+    // List<SysApiInfoVO> selectSysApiInfoTree(@Param("id") Long id,@Param("apiName") String apiName, @Param("url") String url);
 }
