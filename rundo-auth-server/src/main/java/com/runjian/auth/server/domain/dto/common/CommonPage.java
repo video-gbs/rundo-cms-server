@@ -13,9 +13,9 @@ import lombok.Data;
 @Data
 public class CommonPage {
     @ApiModelProperty(value = "页面容量")
-    private long pageSize;
+    private Long pageSize;
 
     @ApiModelProperty("页面大小")
-    private long current;
+    private Long current;
 
 }

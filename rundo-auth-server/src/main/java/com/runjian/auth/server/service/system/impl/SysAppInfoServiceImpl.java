@@ -55,11 +55,16 @@ public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppI
         PageSysAppInfoDTO pageSysAppInfoDTO = new PageSysAppInfoDTO();
         pageSysAppInfoDTO.setAppName(dto.getAppName());
         pageSysAppInfoDTO.setAppIp(dto.getAppIp());
-        pageSysAppInfoDTO.setCurrent(dto.getCurrent());
-        pageSysAppInfoDTO.setSize(dto.getPageSize());
-
-        Page<SysAppInfoVO> page = sysAppInfoMapper.MySelectPage(pageSysAppInfoDTO);
-        return page;
+        boolean pageSize = null != dto.getPageSize() && dto.getPageSize() >= 0;
+        boolean pageCurrent = null != dto.getCurrent() && dto.getCurrent() >= 0;
+        if (pageSize && pageCurrent) {
+            pageSysAppInfoDTO.setCurrent(dto.getCurrent());
+            pageSysAppInfoDTO.setSize(dto.getPageSize());
+        } else {
+            pageSysAppInfoDTO.setCurrent(1);
+            pageSysAppInfoDTO.setSize(20);
+        }
+        return sysAppInfoMapper.MySelectPage(pageSysAppInfoDTO);
     }
 
     @Override
