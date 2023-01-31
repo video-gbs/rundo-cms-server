@@ -1,19 +1,22 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
 import com.runjian.auth.server.domain.entity.system.SysOrg;
+import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.service.system.SysOrgService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,8 +38,9 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     public void saveSysOrg(AddSysOrgDTO dto) {
         SysOrg sysOrg = new SysOrg();
         sysOrg.setOrgPid(dto.getOrgPid());
-        // TODO 处理上级节点
-        // sysOrg.setOrgPids();
+        SysOrg parentInfo = sysOrgMapper.selectById(dto.getOrgPid());
+        String orgPids = parentInfo.getOrgPids() + "[" + dto.getOrgPid() + "]";
+        sysOrg.setOrgPids(orgPids);
         sysOrg.setOrgName(dto.getOrgName());
         sysOrg.setOrgCode(dto.getOrgCode());
         sysOrg.setOrgSort(dto.getOrgSort());
@@ -44,8 +48,7 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         sysOrg.setOrgLeader(dto.getOrgLeader());
         sysOrg.setEmail(dto.getEmail());
         sysOrg.setPhone(dto.getPhone());
-        // TODO 处理组织机构层级
-        // sysOrg.setLevel();
+        sysOrg.setLevel(parentInfo.getLevel() + 1);
         sysOrg.setLeaf(0);
         sysOrg.setDescription(dto.getDescription());
         sysOrg.setStatus(0);
@@ -61,27 +64,46 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
 
     }
 
-
-    public List<SysOrgTree> getSysOrgTree(Long orgId, String orgName) {
-        if (orgId != null) {
-            List<SysOrg> orgList = sysOrgMapper.selectOrgTree(orgId, orgName);
-
-            List<SysOrgTree> sysOrgTreeList = orgList.stream().map(
-                    item -> {
-                        SysOrgTree bean = new SysOrgTree();
-                        BeanUtils.copyProperties(item, bean);
-                        return bean;
-                    }
-            ).collect(Collectors.toList());
-            if (StringUtils.isNotEmpty(orgName)) {
-                return sysOrgTreeList;
-            } else {
-                return DataTreeUtil.buiidTree(sysOrgTreeList, orgId);
-            }
-
-        } else {
-            throw new RuntimeException("查询组织机构ID不能为空");
+    @Override
+    public String removeSysOrgById(Long id) {
+        // 1.确认当前需要删除的组织有无下级组织
+        LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(SysOrg::getOrgPids, "[" + id + "]");
+        List<SysOrg> sysOrgChild = sysOrgMapper.selectList(queryWrapper);
+        if (sysOrgChild.size() > 0) {
+            // 1.1 有下级组织不允许删除
+            return "不能删除含有下级组织的机构";
         }
+        sysOrgMapper.deleteById(id);
+        return "删除组织，操作成功!";
+    }
+
+    @Override
+    public void updateSysOrgById(UpdateSysOrgDTO dto) {
+        SysOrg sysOrg = new SysOrg();
+        BeanUtils.copyProperties(dto, sysOrg);
+        sysOrgMapper.updateById(sysOrg);
+    }
+
+
+    @Override
+    public List<SysOrgTree> getSysOrgTree() {
+        List<SysOrgVO> sysOrgVOList = new ArrayList<>();
+        LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
+        List<SysOrg> sysOrgList = sysOrgMapper.selectList(queryWrapper);
+        for (SysOrg sysOrg : sysOrgList) {
+            SysOrgVO sysOrgVO = new SysOrgVO();
+            BeanUtils.copyProperties(sysOrg, sysOrgVO);
+            sysOrgVOList.add(sysOrgVO);
+        }
+        List<SysOrgTree> sysOrgTreeList = sysOrgList.stream().map(
+                item -> {
+                    SysOrgTree bean = new SysOrgTree();
+                    BeanUtils.copyProperties(item, bean);
+                    return bean;
+                }
+        ).collect(Collectors.toList());
+        return DataTreeUtil.buiidTree(sysOrgTreeList, 1L);
     }
 
     @Override
@@ -89,7 +111,6 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         Page<SysOrg> page = Page.of(pageNum, pageSize);
         return sysOrgMapper.selectPage(page, null);
     }
-
 
 
 }

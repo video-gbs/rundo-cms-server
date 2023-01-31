@@ -51,7 +51,7 @@ public class SysMenuInfoController {
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除菜单")
-    public ResponseResult<?> removeSysMenu(@PathVariable Long id) {
+    public ResponseResult<String> removeSysMenu(@PathVariable Long id) {
         log.info("删除菜单前端传参信息{}", id);
         return new ResponseResult<>(200, sysMenuInfoService.removeSysMenuInfoById(id));
     }

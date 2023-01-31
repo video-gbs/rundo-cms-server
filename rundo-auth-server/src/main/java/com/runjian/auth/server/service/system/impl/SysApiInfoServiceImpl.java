@@ -1,6 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
@@ -91,7 +91,7 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
     @Override
     public List<SysApiInfoTree> getSysApiInfoTree(QuerySysApiInfoDTO dto) {
         List<SysApiInfoVO> sysApiInfoVOList = new ArrayList<>();
-        QueryWrapper<SysApiInfo> queryWrapper = new QueryWrapper<>();
+        LambdaQueryWrapper<SysApiInfo> queryWrapper = new LambdaQueryWrapper<>();
         List<SysApiInfo> sysApiInfoList = sysApiInfoMapper.selectList(queryWrapper);
         for (SysApiInfo sysApiInfo : sysApiInfoList) {
             SysApiInfoVO sysApiInfoVO = new SysApiInfoVO();

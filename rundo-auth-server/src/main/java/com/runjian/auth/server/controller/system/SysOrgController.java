@@ -4,6 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
 import com.runjian.auth.server.domain.entity.system.SysOrg;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.service.system.SysOrgService;
@@ -41,11 +42,10 @@ public class SysOrgController {
         return new ResponseResult<>(200, "操作成功");
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/remove/{id}")
     @ApiOperation("删除部门")
-    public ResponseResult<Boolean> delete(@RequestBody SysOrg dto) {
-        // TODO 级联判断
-        return new ResponseResult<>(200, "操作成功", sysOrgService.removeById(dto));
+    public ResponseResult<String> delete(@PathVariable Long id) {
+        return new ResponseResult<>(200, "操作成功", sysOrgService.removeSysOrgById(id));
     }
 
     @PostMapping("/batchDelete")
@@ -63,17 +63,17 @@ public class SysOrgController {
 
     @PostMapping("/update")
     @ApiOperation("编辑部门信息")
-    public ResponseResult<Boolean> update(@RequestBody SysOrg dto) {
-        return new ResponseResult<>(200, "操作成功", sysOrgService.updateById(dto));
+    public ResponseResult<Boolean> update(@RequestBody UpdateSysOrgDTO dto) {
+        log.info("编辑部门信息前端传参信息{}", JSONUtil.toJsonStr(dto));
+        sysOrgService.updateSysOrgById(dto);
+        return new ResponseResult<>(200, "操作成功");
     }
 
-    @PostMapping("/tree")
+    @GetMapping("/tree")
     @ApiOperation("获取组织机构层级树")
-    public ResponseResult<?> tree() {
-
-        return null;
+    public ResponseResult<List<SysOrgTree>> getSysOrgById() {
+        return new ResponseResult<>(200, "操作成", sysOrgService.getSysOrgTree());
     }
-
 
     @GetMapping("/getById")
     @ApiOperation("获取部门信息")
@@ -94,11 +94,5 @@ public class SysOrgController {
         return new ResponseResult<>(200, "操作成功", sysOrgService.getListByPage(pageNum, pageSize));
     }
 
-    @GetMapping("/getSysOrgTreeById")
-    @ApiOperation("获取组织机构树")
-    public ResponseResult<List<SysOrgTree>> getSysOrgById(
-            @Param("id") Long id,
-            @Param("orgNameLike") String orgName) {
-        return new ResponseResult<>(200, "操作成", sysOrgService.getSysOrgTree(id, orgName));
-    }
+
 }
