@@ -12,7 +12,6 @@ import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysApiInfoTree;
 import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
 import com.runjian.auth.server.service.system.SysApiInfoService;
-import com.runjian.auth.server.util.tree.DataTreeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,9 +90,14 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
     @Override
     public List<SysApiInfoTree> getSysApiInfoTree(QuerySysApiInfoDTO dto) {
         List<SysApiInfoTree> sysApiInfoTreeList = new ArrayList<>();
+        // TODO 树形接口
         LambdaQueryWrapper<SysApiInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(SysApiInfo::getApiName, dto.getApiName());
-        queryWrapper.like(SysApiInfo::getUrl, dto.getUrl());
+        if (StringUtils.isNotEmpty(dto.getApiName())) {
+            queryWrapper.like(SysApiInfo::getApiName, dto.getApiName());
+        }
+        if (StringUtils.isNotEmpty(dto.getUrl())) {
+            queryWrapper.like(SysApiInfo::getUrl, dto.getUrl());
+        }
         List<SysApiInfo> sysApiInfoList = sysApiInfoMapper.selectList(queryWrapper);
         for (SysApiInfo sysApiInfo : sysApiInfoList) {
             SysApiInfoTree sysApiInfoTree = new SysApiInfoTree();
@@ -105,11 +109,12 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
             sysApiInfoTree.setLevel(sysApiInfo.getLevel());
             sysApiInfoTreeList.add(sysApiInfoTree);
         }
-        if (StringUtils.isNotEmpty(dto.getApiName()) || StringUtils.isNotEmpty(dto.getUrl())) {
-            return sysApiInfoTreeList;
-        } else {
-            return DataTreeUtil.buiidTree(sysApiInfoTreeList, 1L);
-        }
+        return sysApiInfoTreeList;
+        // if (StringUtils.isNotEmpty(dto.getApiName()) || StringUtils.isNotEmpty(dto.getUrl())) {
+        //     return sysApiInfoTreeList;
+        // } else {
+        //     return DataTreeUtil.buiidTree(sysApiInfoTreeList, 1L);
+        // }
     }
 
     @Override
