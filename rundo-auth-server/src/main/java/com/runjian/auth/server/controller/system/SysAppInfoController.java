@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysAppInfoDTO;
+import com.runjian.auth.server.domain.dto.system.StatusSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.service.system.SysAppInfoService;
@@ -53,6 +54,14 @@ public class SysAppInfoController {
     public ResponseResult<?> remove(@PathVariable Long id) {
         log.info("删除应用信息前端传参{}", id);
         sysAppInfoService.removeSysAppInfoById(id);
+        return new ResponseResult<>(200, "操作成功");
+    }
+
+    @PostMapping("/status/change")
+    @ApiOperation("应用状态切换")
+    public ResponseResult<?> changeStatus(@RequestBody StatusSysAppInfoDTO dto) {
+        log.info("应用状态切换前端传参{}", JSONUtil.toJsonStr(dto));
+        sysAppInfoService.changeStatus(dto);
         return new ResponseResult<>(200, "操作成功");
     }
 

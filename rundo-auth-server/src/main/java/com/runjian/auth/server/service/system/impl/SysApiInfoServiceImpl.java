@@ -32,10 +32,11 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
     public void saveSysApiInfo(AddSysApiInfoDTO dto) {
         SysApiInfo sysApiInfo = new SysApiInfo();
         sysApiInfo.setApiPid(dto.getApiPid());
-        // sysApiInfo.setApiPids();
+        SysApiInfo parentApiInfo = sysApiInfoMapper.selectById(dto.getApiPid());
+        sysApiInfo.setApiPids(parentApiInfo.getApiPids() + ",[" + dto.getApiPid() + "]");
         sysApiInfo.setApiName(dto.getApiName());
         sysApiInfo.setApiSort(dto.getApiSort());
-        // sysApiInfo.setApiLevel();
+        sysApiInfo.setLevel(parentApiInfo.getLevel() + 1);
         sysApiInfo.setUrl(dto.getUrl());
         sysApiInfo.setLeaf(0);
         sysApiInfo.setStatus(dto.getStatus());

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysAppInfoDTO;
+import com.runjian.auth.server.domain.dto.system.StatusSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysAppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
@@ -66,6 +67,13 @@ public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppI
             page.setSize(20);
         }
         return sysAppInfoMapper.MySelectPage(page);
+    }
+
+    @Override
+    public void changeStatus(StatusSysAppInfoDTO dto) {
+        SysAppInfo sysAppInfo = sysAppInfoMapper.selectById(dto.getId());
+        sysAppInfo.setStatus(dto.getStatus());
+        sysAppInfoMapper.updateById(sysAppInfo);
     }
 
     @Override

@@ -3,22 +3,23 @@ package com.runjian.auth.server.domain.dto.system;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
 
 /**
  * @author Jiang4Yu
  * @version V1.0.0
- * @ClassName UpdateSysApiInfoDTO
- * @Description 编辑接口
- * @date 2023-01-30 周一 14:22
+ * @ClassName StatusSysAppInfoDTO
+ * @Description 应用状态切换
+ * @date 2023-01-31 周二 14:06
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "编辑接口", description = "接口信息")
-public class UpdateSysApiInfoDTO extends AddSysApiInfoDTO {
+@ApiModel(value = "应用状态切换", description = "状态切换")
+public class StatusSysAppInfoDTO {
     @ApiModelProperty("编号ID")
     @NotNull
     private Long id;
+
+    @ApiModelProperty(value = "禁用状态", notes = "0正常，1禁用")
+    private Integer status;
 }
