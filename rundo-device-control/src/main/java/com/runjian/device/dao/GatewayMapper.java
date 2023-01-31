@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,8 +41,8 @@ public interface GatewayMapper {
     void update(GatewayInfo gatewayInfo);
 
     @Select(" SELECT * FROM " + GATEWAY_TABLE_NAME +
-            " WHERE id = #{id} ")
-    Optional<GatewayInfo> selectById(Long id);
+            " WHERE id = #{gatewayId} ")
+    Optional<GatewayInfo> selectById(Long gatewayId);
 
     @Update({" <script> " +
             " UPDATE "  + GATEWAY_TABLE_NAME +
@@ -50,11 +51,16 @@ public interface GatewayMapper {
             " WHERE id IN "+
             " <foreach collection='gatewayIds'  item='item'  open='(' separator=',' close=')' > #{item} </foreach> " +
             " </script> "})
-    void batchUpdateOnlineState(Set<Long> gatewayIds, Integer code);
+    void batchUpdateOnlineState(Set<Long> gatewayIds, Integer onlineState, LocalDateTime updateTime);
 
     @Update(" UPDATE "  + GATEWAY_TABLE_NAME +
             " SET update_time = #{updateTime}, " +
             " online_state = #{onlineState} " +
-            " WHERE id = #{id} ")
-    void updateOnlineState(Long gatewayId, Integer onlineState);
+            " WHERE id = #{gatewayId} ")
+    void updateOnlineState(Long gatewayId, Integer onlineState, LocalDateTime updateTime);
+
+    @Update(" UPDATE "  + GATEWAY_TABLE_NAME +
+            " SET update_time = #{updateTime}, " +
+            " online_state = #{onlineState} ")
+    void setAllOnlineState(Integer onlineState, LocalDateTime updateTime);
 }

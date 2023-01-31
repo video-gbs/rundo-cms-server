@@ -3,12 +3,11 @@ package com.runjian.parsing.protocol.impl;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.constant.IdType;
 import com.runjian.parsing.constant.MqConstant;
-import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.entity.ChannelInfo;
 import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.mq.config.RabbitMqSender;
-import com.runjian.parsing.protocol.NorthProtocol;
+import com.runjian.parsing.protocol.AbstractNorthProtocol;
 import com.runjian.parsing.service.DataBaseService;
 import com.runjian.parsing.service.TaskService;
 import com.runjian.parsing.vo.CommonMqDto;
@@ -27,7 +26,7 @@ import java.util.UUID;
  * @date 2023/1/17 14:14
  */
 @Service
-public class DefaultNorthProtocol implements NorthProtocol {
+public class DefaultNorthProtocol extends AbstractNorthProtocol {
 
     @Autowired
     private TaskService taskService;
@@ -47,44 +46,9 @@ public class DefaultNorthProtocol implements NorthProtocol {
     }
 
     @Override
-    public void deviceSync(Long deviceId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        customEvent(deviceId, IdType.DEVICE, MsgType.CHANNEL_RECORD.getMsg(), null, response);
-    }
-
-    @Override
-    public void deviceAdd(Long gatewayId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        customEvent(gatewayId, IdType.GATEWAY, MsgType.DEVICE_ADD.getMsg(), dataMap, response);
-    }
-
-    @Override
-    public  void deviceDelete(Long deviceId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        customEvent(deviceId, IdType.DEVICE, MsgType.CHANNEL_RECORD.getMsg(), null, response);
-    }
-
-    @Override
-    public void channelSync(Long deviceId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        customEvent(deviceId, IdType.DEVICE, MsgType.CHANNEL_SYNC.getMsg(), null, response);
-    }
-
-
-    @Override
-    public void channelPlay(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_PLAY.getMsg(), dataMap, response);
-    }
-
-    @Override
-    public void getChannelRecord(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_RECORD.getMsg(), dataMap, response);
-    }
-
-    @Override
-    public void channelPlayback(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_PLAYBACK.getMsg(), dataMap, response);
-    }
-
-    @Override
     public void customEvent(Long mainId, IdType idType, String msgType, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
         GatewayConvertDto gatewayConvertDto = new GatewayConvertDto();
+        gatewayConvertDto.setDataMap(dataMap);
         Long deviceId = null;
         Long channelId = null;
         switch (idType){

@@ -21,7 +21,6 @@ public interface TaskService {
      */
     Map<Long, DeferredResult<?>> asynReqMap = new ConcurrentHashMap<>();
 
-
     /**
      * 创建异步任务
      * @return 任务id
@@ -39,6 +38,13 @@ public interface TaskService {
      * @return 任务信息
      */
     TaskInfo getTask(Long taskId);
+
+    /**
+     * 获取任务(带校验)
+     * @param taskId 任务id
+     * @return 任务信息
+     */
+    TaskInfo getTaskValid(Long taskId, TaskState taskState);
 
     /**
      * 获取并移除异步返回体
@@ -69,4 +75,6 @@ public interface TaskService {
      * @param detail 说明
      */
     void taskError(Long taskId, String detail);
+
+
 }

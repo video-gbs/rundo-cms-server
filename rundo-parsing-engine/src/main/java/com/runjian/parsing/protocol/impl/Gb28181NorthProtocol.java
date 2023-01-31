@@ -3,6 +3,7 @@ package com.runjian.parsing.protocol.impl;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.DeviceInfo;
+import com.runjian.parsing.protocol.AbstractSouthProtocol;
 import com.runjian.parsing.service.DataBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

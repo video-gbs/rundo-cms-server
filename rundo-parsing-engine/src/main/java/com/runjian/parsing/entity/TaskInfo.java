@@ -51,7 +51,7 @@ public class TaskInfo {
     /**
      * 状态
      */
-    private Integer taskState;
+    private Integer state;
 
     /**
      * 说明

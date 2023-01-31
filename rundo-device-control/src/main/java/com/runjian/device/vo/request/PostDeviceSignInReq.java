@@ -33,13 +33,12 @@ public class PostDeviceSignInReq {
      */
     @NotNull(message = "在线状态不能为空")
     @Range(min = 0, max = 1, message = "非法在线状态")
-    private Integer online;
+    private Integer onlineState;
 
     /**
-     * 设备类型 1-设备 2-NVR 3-DVR 4-CVR
+     * 设备类型 1-设备 2-NVR 3-DVR 4-CVR 5-未知
      */
-    @NotNull(message = "设备类型不能为空")
-    @Range(min = 1, max = 4, message = "非法设备类型")
+    @Range(min = 1, max = 5, message = "非法设备类型")
     private Integer deviceType;
 
     /**

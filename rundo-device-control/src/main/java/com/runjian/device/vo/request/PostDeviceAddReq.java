@@ -2,8 +2,6 @@ package com.runjian.device.vo.request;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
-
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -17,7 +15,6 @@ public class PostDeviceAddReq {
     /**
      * 原始设备Id
      */
-    @NotBlank(message = "设备ID不能为空")
     private String deviceId;
 
     /**
@@ -68,6 +65,16 @@ public class PostDeviceAddReq {
      * 云台类型
      */
     private Integer ptzType;
+
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 密码
+     */
+    private String password;
 
 
 }

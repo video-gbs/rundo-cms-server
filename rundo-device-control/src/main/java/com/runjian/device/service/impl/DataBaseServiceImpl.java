@@ -1,15 +1,15 @@
-package com.runjian.parsing.service.impl;
+package com.runjian.device.service.impl;
 
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
-import com.runjian.parsing.dao.ChannelMapper;
-import com.runjian.parsing.dao.DeviceMapper;
-import com.runjian.parsing.dao.GatewayMapper;
-import com.runjian.parsing.dao.TaskMapper;
-import com.runjian.parsing.entity.ChannelInfo;
-import com.runjian.parsing.entity.DeviceInfo;
-import com.runjian.parsing.entity.GatewayInfo;
-import com.runjian.parsing.service.DataBaseService;
+
+import com.runjian.device.dao.ChannelMapper;
+import com.runjian.device.dao.DeviceMapper;
+import com.runjian.device.dao.GatewayMapper;
+import com.runjian.device.entity.ChannelInfo;
+import com.runjian.device.entity.DeviceInfo;
+import com.runjian.device.entity.GatewayInfo;
+import com.runjian.device.service.DataBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

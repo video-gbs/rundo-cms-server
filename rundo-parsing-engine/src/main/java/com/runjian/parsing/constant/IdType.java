@@ -13,5 +13,7 @@ public enum IdType {
 
     GATEWAY,
     DEVICE,
-    CHANNEL;
+    CHANNEL,
+
+    ;
 }

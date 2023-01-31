@@ -20,12 +20,11 @@ public interface GatewayMapper {
     String GATEWAY_TABLE_NAME = "rundo_gateway";
 
 
-    @Select(value = {" <script>" +
+    @Select(" <script>" +
             " SELECT * FROM " + GATEWAY_TABLE_NAME +
             " WHERE serial_num = #{serialNum} " +
-            " </script>"})
+            " </script>")
     Optional<GatewayInfo> selectBySerialNum(String serialNum);
-
 
     @Insert(" INSERT INTO " + GATEWAY_TABLE_NAME +
             " (serial_num, sign_type, gateway_type, protocol, ip, port, update_time, create_time) " +
@@ -34,5 +33,9 @@ public interface GatewayMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(GatewayInfo gatewayInfo);
 
-    Optional<GatewayInfo> selectById(Long gatewayId);
+    @Select(" <script>" +
+            " SELECT * FROM " + GATEWAY_TABLE_NAME +
+            " WHERE id = #{gatewayId} " +
+            " </script>")
+    Optional<GatewayInfo> selectById(Long id);
 }

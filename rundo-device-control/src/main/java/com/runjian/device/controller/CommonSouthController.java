@@ -2,8 +2,8 @@ package com.runjian.device.controller;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
-import com.runjian.device.service.south.DeviceSouthService;
-import com.runjian.device.vo.request.PostDeviceSignInReq;
+import com.runjian.device.vo.feign.DeviceControlReq;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,30 +11,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 设备南向控制器
  * @author Miracle
- * @date 2023/01/06 16:56
+ * @date 2023/1/30 11:09
  */
+@Slf4j
 @RestController
-@RequestMapping("/device/south")
-public class DeviceSouthController {
-
+@RequestMapping("/common/south")
+public class CommonSouthController {
 
     @Autowired
     private ValidatorService validatorService;
 
-    @Autowired
-    private DeviceSouthService deviceSouthService;
-
-    /**
-     * 设备主动注册
-     * @param req 设备注册请求体
-     * @return
-     */
-    @PostMapping("/sign-in")
-    public CommonResponse signIn(@RequestBody PostDeviceSignInReq req){
+    @PostMapping("/event")
+    public CommonResponse<?> event(@RequestBody DeviceControlReq req){
         validatorService.validateRequest(req);
-        deviceSouthService.signIn(req.getId(), req.getGatewayId(), req.getOnlineState(), req.getDeviceType(), req.getIp(), req.getPort());
+        log.info(req.toString());
         return CommonResponse.success();
     }
 }

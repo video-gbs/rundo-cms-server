@@ -15,6 +15,6 @@ public class PutGatewayHeartbeatReq {
     /**
      * 心跳时间
      */
-    private LocalDateTime heartbeatTime;
+    private LocalDateTime outTime;
 
 }

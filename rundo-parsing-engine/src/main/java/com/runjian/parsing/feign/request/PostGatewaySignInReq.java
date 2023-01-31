@@ -18,12 +18,13 @@ public class PostGatewaySignInReq {
     public PostGatewaySignInReq(GatewayInfo gatewayInfo, LocalDateTime outTime){
         BeanUtils.copyProperties(gatewayInfo, this);
         this.outTime = outTime;
+        this.gatewayId = gatewayInfo.getId();
     }
 
     /**
      * 主键id
      */
-    private Long id;
+    private Long gatewayId;
 
     /**
      * 网关唯一序列号 网关ID

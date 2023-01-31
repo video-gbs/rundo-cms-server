@@ -1,5 +1,6 @@
 package com.runjian.parsing.service.impl;
 
+import com.alibaba.druid.util.StringUtils;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
@@ -10,9 +11,7 @@ import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.feign.DeviceControlApi;
 import com.runjian.parsing.feign.request.PostGatewaySignInReq;
 import com.runjian.parsing.service.GatewayService;
-import com.runjian.parsing.service.TaskService;
 import com.runjian.parsing.vo.request.PutGatewayHeartbeatReq;
-import com.runjian.parsing.vo.response.GatewayHeartbeatRsp;
 import com.runjian.parsing.vo.response.GatewaySignInRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,10 +49,9 @@ public class GatewayServiceImpl implements GatewayService {
     public GatewaySignInRsp signIn(String serialNum, Integer signType, Integer gatewayType, String protocol, String ip, String port, String outTime) {
         Optional<GatewayInfo> gatewayInfoOp = gatewayMapper.selectBySerialNum(serialNum);
         GatewaySignInRsp gatewaySignInRsp = new GatewaySignInRsp();
-        GatewayInfo gatewayInfo;
+        GatewayInfo gatewayInfo = gatewayInfoOp.orElse(new GatewayInfo());
         if (gatewayInfoOp.isEmpty()){
             LocalDateTime nowTime = LocalDateTime.now();
-            gatewayInfo = new GatewayInfo();
             gatewayInfo.setSerialNum(serialNum);
             gatewayInfo.setSignType(signType);
             gatewayInfo.setGatewayType(gatewayType);
@@ -88,12 +86,15 @@ public class GatewayServiceImpl implements GatewayService {
      */
     @Override
     public Long heartbeat(String serialNum, String heartbeatTime) {
+        if (!StringUtils.isNumber(heartbeatTime) || System.currentTimeMillis() >= Long.parseLong(heartbeatTime)){
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("非法时间戳:%s", heartbeatTime));
+        }
         Optional<GatewayInfo> gatewayInfoOp = gatewayMapper.selectBySerialNum(serialNum);
         if (gatewayInfoOp.isEmpty()){
             return null;
         }
         PutGatewayHeartbeatReq putGatewayHeartbeatReq = new PutGatewayHeartbeatReq();
-        putGatewayHeartbeatReq.setHeartbeatTime(Instant.ofEpochMilli(Long.parseLong(heartbeatTime)).atZone(ZoneId.systemDefault()).toLocalDateTime());
+        putGatewayHeartbeatReq.setOutTime(Instant.ofEpochMilli(Long.parseLong(heartbeatTime)).atZone(ZoneId.systemDefault()).toLocalDateTime());
         putGatewayHeartbeatReq.setGatewayId(gatewayInfoOp.get().getId());
         CommonResponse<?> response = deviceControlApi.gatewayHeartbeat(putGatewayHeartbeatReq);
         if (response.getCode() != 0){
