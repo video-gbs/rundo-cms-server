@@ -66,8 +66,9 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Transactional(rollbackFor = Exception.class)
     public void deviceAdd(String originId, Long gatewayId, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password) {
         LocalDateTime nowTime = LocalDateTime.now();
-        // 发送注册请求，返回数据ID
 
+
+        // 发送注册请求，返回数据ID
         DeviceControlReq req = new DeviceControlReq();
         req.setGatewayId(gatewayId);
         req.putData("deviceId", originId);
@@ -83,6 +84,18 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         }
         // 获取id
         Long id =  response.getData();
+        //判断数据是否存在，存在直接修改注册状态为已添加
+        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
+        if (deviceInfoOp.isPresent()){
+            DeviceInfo deviceInfo = deviceInfoOp.get();
+            if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "设备已添加");
+            }
+            deviceInfo.setSignState(SignState.SUCCESS.getCode());
+            deviceInfo.setUpdateTime(nowTime);
+            deviceMapper.updateSignState(deviceInfo);
+        }
+
         DeviceInfo deviceInfo = new DeviceInfo();
         deviceInfo.setId(id);
         deviceInfo.setGatewayId(gatewayId);

@@ -31,6 +31,11 @@ public class ChannelDetailRsp {
     private String port;
 
     /**
+     * 在线状态
+     */
+    private Integer onlineState;
+
+    /**
      * 名称
      */
     private String name;

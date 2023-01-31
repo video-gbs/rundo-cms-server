@@ -82,27 +82,34 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         // 判断是否有通道
         if (channelSyncRsp.getNum() > 0){
             List<ChannelInfo> channelSaveList = new ArrayList<>(channelSyncRsp.getNum());
+            List<ChannelInfo> channelUpdateList = new ArrayList<>(channelSyncRsp.getNum());
             List<DetailInfo> detailSaveList = new ArrayList<>(channelSyncRsp.getNum());
             List<DetailInfo> detailUpdateList = new ArrayList<>(channelSyncRsp.getNum());
             LocalDateTime nowTime = LocalDateTime.now();
             // 循环通道进行添加
             for (ChannelDetailRsp rsp : channelSyncRsp.getChannelDetailList()){
-                Optional<ChannelInfo> ChannelInfoOp = channelMapper.selectById(rsp.getChannelId());
+                Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(rsp.getChannelId());
                 // 判断通道信息是否已存在
-                if (ChannelInfoOp.isEmpty()){
+                if (channelInfoOp.isEmpty()){
                     ChannelInfo channelInfo = new ChannelInfo();
                     channelInfo.setId(rsp.getChannelId());
                     channelInfo.setChannelType(rsp.getChannelType());
                     channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
-                    channelInfo.setOnlineState(CommonEnum.ENABLE.getCode());
+                    channelInfo.setOnlineState(rsp.getOnlineState());
                     channelInfo.setDeviceId(deviceId);
                     channelInfo.setStreamMode(StreamType.UDP.getMsg());
                     channelInfo.setCreateTime(nowTime);
                     channelInfo.setUpdateTime(nowTime);
                     channelSaveList.add(channelInfo);
+                } else {
+                    ChannelInfo channelInfo = channelInfoOp.get();
+                    channelInfo.setOnlineState(rsp.getOnlineState());
+                    channelInfo.setUpdateTime(nowTime);
+                    channelUpdateList.add(channelInfo);
                 }
                 Optional<DetailInfo> detailInfoOp = detailMapper.selectByDcIdAndType(rsp.getChannelId(), DetailType.CHANNEL.getCode());
-                DetailInfo detailInfo = new DetailInfo();
+                DetailInfo detailInfo = detailInfoOp.orElse(new DetailInfo());
+                detailInfo.setDcId(rsp.getChannelId());
                 detailInfo.setIp(rsp.getIp());
                 detailInfo.setPort(rsp.getPort());
                 detailInfo.setName(rsp.getName());
@@ -113,7 +120,6 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                 detailInfo.setUpdateTime(nowTime);
                 // 判断数据是否为空，根据情况保存或者更新
                 if (detailInfoOp.isEmpty()){
-                    detailInfo.setDcId(rsp.getChannelId());
                     detailInfo.setType(DetailType.CHANNEL.getCode());
                     detailInfo.setCreateTime(nowTime);
                     detailSaveList.add(detailInfo);
@@ -124,6 +130,9 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             // 对数据进行批量保存
             if (channelSaveList.size() > 0){
                 channelMapper.batchSave(channelSaveList);
+            }
+            if (channelUpdateList.size() > 0){
+                channelMapper.batchUpdateOnlineState(channelUpdateList);
             }
             if (detailSaveList.size() > 0){
                 detailMapper.batchSave(detailSaveList);

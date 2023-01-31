@@ -1,5 +1,6 @@
 package com.runjian.device.service.south.impl;
 
+import com.runjian.common.constant.CommonEnum;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
 import com.runjian.device.dao.ChannelMapper;
@@ -7,6 +8,7 @@ import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
+import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.south.DeviceSouthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,9 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
 
     @Autowired
     private ChannelMapper channelMapper;
+
+    @Autowired
+    private ChannelNorthService channelNorthService;
 
     /**
      * 设备添加注册
@@ -56,11 +61,22 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             deviceMapper.save(deviceInfo);
         }else {
             DeviceInfo deviceInfo = deviceInfoOp.get();
-            deviceInfo.setOnlineState(onlineState);
+            // 修改设备状态
             deviceInfo.setUpdateTime(nowTime);
-            deviceMapper.update(deviceInfo);
-            // 修改设备下的通道状态
-            channelMapper.updateOnlineStateByDeviceId(id, onlineState);
+            // 设备从离线到在线，进行通道同步
+            if (onlineState.equals(CommonEnum.ENABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+                // 对通道同步
+                deviceInfo.setOnlineState(onlineState);
+                deviceMapper.update(deviceInfo);
+                if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                    channelNorthService.channelSync(deviceInfo.getId());
+                }
+            } else if (onlineState.equals(CommonEnum.DISABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.ENABLE.getCode())) {
+                // 将通道全部离线
+                deviceInfo.setOnlineState(onlineState);
+                deviceMapper.update(deviceInfo);
+                channelMapper.updateOnlineStateByDeviceId(id, onlineState, nowTime);
+            }
         }
 
         Optional<DetailInfo> detailInfoOp = detailMapper.selectByDcIdAndType(id, DetailType.DEVICE.getCode());

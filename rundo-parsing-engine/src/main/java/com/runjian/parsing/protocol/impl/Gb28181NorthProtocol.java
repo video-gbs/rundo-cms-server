@@ -43,4 +43,5 @@ public class Gb28181NorthProtocol extends DefaultNorthProtocol {
         deviceMapper.save(deviceInfo);
         response.setResult(CommonResponse.success(deviceInfo.getId()));
     }
+
 }

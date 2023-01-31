@@ -18,6 +18,8 @@ import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -40,11 +42,17 @@ public class DispatchMsgListener implements ChannelAwareMessageListener {
                 throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("网关不存在，网关序列号：%s", mqRequest.getSerialNum()));
             }
             GatewayInfo gatewayInfo = gatewayInfoOp.get();
-            if (!StringUtils.isNumber(mqRequest.getMsgId())){
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).commonEvent(gatewayInfo.getId(), mqRequest.getMsgId(), mqRequest.getMsgType(), mqRequest.getData());
-            }
+
+
             if (mqRequest.getMsgType().equals(MsgType.DEVICE_SIGN_IN.getMsg())) {
                 protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceSignIn(gatewayInfo.getId(), mqRequest.getData());
+                return;
+            }
+
+            if (!StringUtils.isNumber(mqRequest.getMsgId())){
+                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).commonEvent(gatewayInfo.getId(), mqRequest.getMsgId(), mqRequest.getMsgType(), mqRequest.getData());
+            } else if (mqRequest.getCode() != 0){
+                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
             } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_SYNC.getMsg())) {
                 protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceSync(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
             } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_ADD.getMsg())) {

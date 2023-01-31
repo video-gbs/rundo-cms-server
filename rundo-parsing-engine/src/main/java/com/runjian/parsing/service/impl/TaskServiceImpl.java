@@ -10,14 +10,11 @@ import com.runjian.parsing.entity.TaskInfo;
 import com.runjian.parsing.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 任务服务
@@ -57,7 +54,7 @@ public class TaskServiceImpl implements TaskService {
         taskInfo.setCreateTime(nowTime);
         taskInfo.setUpdateTime(nowTime);
         taskInfo.setState(taskState.getCode());
-        taskInfo.setDesc(desc);
+        taskInfo.setDetail(desc);
         taskMapper.save(taskInfo);
         return taskInfo.getId();
     }
@@ -95,7 +92,7 @@ public class TaskServiceImpl implements TaskService {
         taskInfo.setDeviceId(deviceId);
         taskInfo.setChannelId(channelId);
         taskInfo.setMsgType(msgType.getMsg());
-        taskInfo.setDesc(desc);
+        taskInfo.setDetail(desc);
         taskMapper.update(taskInfo);
     }
 

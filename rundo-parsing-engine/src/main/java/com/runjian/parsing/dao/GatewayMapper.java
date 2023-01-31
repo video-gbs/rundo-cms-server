@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 /**
  * 网关数据库操作类
@@ -33,9 +34,10 @@ public interface GatewayMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(GatewayInfo gatewayInfo);
 
-    @Select(" <script>" +
-            " SELECT * FROM " + GATEWAY_TABLE_NAME +
-            " WHERE id = #{gatewayId} " +
-            " </script>")
+    @Select(" SELECT * FROM " + GATEWAY_TABLE_NAME +
+            " WHERE id = #{gatewayId} ")
     Optional<GatewayInfo> selectById(Long id);
+
+    @Select(" SELECT * FROM " + GATEWAY_TABLE_NAME)
+    List<GatewayInfo> selectAll();
 }

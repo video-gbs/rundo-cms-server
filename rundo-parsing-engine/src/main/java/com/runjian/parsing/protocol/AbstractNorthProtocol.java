@@ -15,7 +15,7 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
 
     @Override
     public void deviceSync(Long deviceId, DeferredResult<CommonResponse<?>> response) {
-        customEvent(deviceId, IdType.DEVICE, MsgType.CHANNEL_RECORD.getMsg(), null, response);
+        customEvent(deviceId, IdType.DEVICE, MsgType.DEVICE_SYNC.getMsg(), null, response);
     }
 
     @Override
@@ -25,7 +25,7 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
 
     @Override
     public  void deviceDelete(Long deviceId, DeferredResult<CommonResponse<?>> response) {
-        customEvent(deviceId, IdType.DEVICE, MsgType.CHANNEL_RECORD.getMsg(), null, response);
+        customEvent(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE.getMsg(), null, response);
     }
 
     @Override

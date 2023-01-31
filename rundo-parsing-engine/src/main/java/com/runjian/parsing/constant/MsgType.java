@@ -23,9 +23,7 @@ public enum MsgType {
     /****************** 设备相关消息 ******************/
     DEVICE_SIGN_IN("DEVICE_SIGN_IN"),
     DEVICE_SYNC("DEVICE_SYNC"),
-
     DEVICE_DELETE("DEVICE_DELETE"),
-
     DEVICE_ADD("DEVICE_ADD"),
 
     /****************** 通道相关消息 ******************/

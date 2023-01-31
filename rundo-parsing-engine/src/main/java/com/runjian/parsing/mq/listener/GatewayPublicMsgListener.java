@@ -13,7 +13,6 @@ import com.runjian.parsing.mq.config.RabbitMqProperties;
 import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.service.GatewayService;
 import com.runjian.parsing.vo.CommonMqDto;
-import com.runjian.parsing.vo.dto.HeartbeatDto;
 import com.runjian.parsing.vo.request.GatewaySignInReq;
 import com.runjian.parsing.vo.response.GatewaySignInRsp;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -73,10 +73,10 @@ public class GatewayPublicMsgListener implements ChannelAwareMessageListener {
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
         String msgBody = new String(message.getBody());
-        log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册信息监听器", "接收到网关注册信息，执行注册流程", msgBody);
         CommonMqDto mqRequest = JSONObject.parseObject(msgBody, CommonMqDto.class);
         // 判断是否是注册信息
         if (mqRequest.getMsgType().equals(MsgType.GATEWAY_SIGN_IN.getMsg())) {
+            log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册或心跳信息监听器", "接收到网关注册信息，执行注册流程", msgBody);
             try {
                 // 提取请求体信息
                 GatewaySignInReq req = JSONObject.parseObject(mqRequest.getData().toString(), GatewaySignInReq.class);
@@ -116,7 +116,6 @@ public class GatewayPublicMsgListener implements ChannelAwareMessageListener {
 
         } else if (mqRequest.getMsgType().equals(MsgType.GATEWAY_HEARTBEAT.getMsg())) {
             try {
-
                 Long gatewayId = gatewayService.heartbeat(mqRequest.getSerialNum(), mqRequest.getData().toString());
                 CommonMqDto mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
                 mqResponse.copyRequest(mqRequest);

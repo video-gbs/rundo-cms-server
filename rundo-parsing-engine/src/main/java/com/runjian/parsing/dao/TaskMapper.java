@@ -20,9 +20,9 @@ public interface TaskMapper {
 
 
     @Insert(" INSERT INTO " + TASK_TABLE_NAME +
-            " (gateway_id, device_id, channel_id, client_msg_id, mq_id, msg_type, state, desc, update_time, create_time) " +
+            " (gateway_id, device_id, channel_id, client_msg_id, mq_id, msg_type, state, detail, update_time, create_time) " +
             " VALUES " +
-            " (#{gatewayId}, #{deviceId}, #{channelId}, #{clientMsgId}, #{mqId}, #{msgType}, #{state}, #{desc}, #{updateTime}, #{createTime})")
+            " (#{gatewayId}, #{deviceId}, #{channelId}, #{clientMsgId}, #{mqId}, #{msgType}, #{state}, #{detail}, #{updateTime}, #{createTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(TaskInfo taskInfo);
 
@@ -38,7 +38,7 @@ public interface TaskMapper {
             " <if test='deviceId != null'>, device_id = #{deviceId} </if> " +
             " <if test='channelId != null'>, channel_id = #{channelId} </if> " +
             " <if test='msgType != null'>, msg_type = #{msgType} </if> " +
-            " <if test='desc != null'>, desc = #{desc} </if> " +
+            " <if test='detail != null'>, desc = #{detail} </if> " +
             " WHERE id = #{id} "+
             " </script> "})
     void update(TaskInfo taskInfo);
@@ -47,17 +47,17 @@ public interface TaskMapper {
             " UPDATE "  + TASK_TABLE_NAME +
             " SET update_time = #{updateTime} " +
             " , state = #{state} " +
-            " <if test='detail != null'>, desc = #{desc} </if> " +
+            " <if test='detail != null'>, desc = #{detail} </if> " +
             " WHERE id = #{taskId} " +
             " </script> ")
-    void updateState(Long taskId, Integer state, String desc, LocalDateTime now);
+    void updateState(Long taskId, Integer state, String detail, LocalDateTime updateTime);
 
     List<TaskInfo> selectByState(Integer code);
 
     @Update({" <script> " +
             " <foreach collection='taskInfoOutTimeList' item='item' separator=';'> " +
             " UPDATE " + TASK_TABLE_NAME +
-            " SET update_time = #{item.updateTime} , state = #{item.state}, desc = #{item.desc} " +
+            " SET update_time = #{item.updateTime} , state = #{item.state}, desc = #{item.detail} " +
             " WHERE id = #{item.id} "+
             " </foreach> " +
             " </script> "})

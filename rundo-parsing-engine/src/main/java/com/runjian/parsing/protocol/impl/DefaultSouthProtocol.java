@@ -15,7 +15,6 @@ import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.entity.TaskInfo;
 import com.runjian.parsing.feign.DeviceControlApi;
 import com.runjian.parsing.protocol.AbstractSouthProtocol;
-import com.runjian.parsing.protocol.SouthProtocol;
 import com.runjian.parsing.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -230,5 +229,12 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol  {
         taskService.getTaskValid(taskId, TaskState.RUNNING);
         taskService.removeDeferredResult(taskId).setResult(CommonResponse.success(dataMap));
         taskService.taskSuccess(taskId);
+    }
+
+    @Override
+    public void errorEvent(Long taskId, CommonResponse<?> response) {
+        taskService.getTaskValid(taskId, TaskState.RUNNING);
+        taskService.removeDeferredResult(taskId).setResult(response);
+        taskService.taskError(taskId, response.getMsg());
     }
 }

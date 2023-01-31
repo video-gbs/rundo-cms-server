@@ -19,7 +19,7 @@ public class PostDeviceSignInReq {
      */
     @NotNull(message = "设备id不能为空")
     @Range(min = 1, message = "非法设备id")
-    private Long id;
+    private Long deviceId;
 
     /**
      * 网关id

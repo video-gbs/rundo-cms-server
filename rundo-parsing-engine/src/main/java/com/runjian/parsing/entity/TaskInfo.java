@@ -56,7 +56,7 @@ public class TaskInfo {
     /**
      * 说明
      */
-    private String desc;
+    private String detail;
 
     private LocalDateTime createTime;
 

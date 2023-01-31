@@ -19,9 +19,9 @@ public interface DetailMapper {
     String DETAIL_TABLE_NAME = "rundo_detail";
 
     @Insert(" INSERT INTO " + DETAIL_TABLE_NAME +
-            " (id, serial_num, name, sign_type, gateway_type, protocol, ip, port, update_time, create_time) " +
+            " (dc_id, type, ip, port, name, manufacturer, model, firmware, ptz_type, username, password, update_time, create_time) " +
             " VALUES " +
-            " (#{id}, #{serialNum}, #{name}, #{signType}, #{gatewayType}, #{protocol}, #{ip}, #{port}, #{updateTime}, #{createTime})")
+            " (#{dcId}, #{type}, #{ip}, #{port}, #{name}, #{manufacturer}, #{model}, #{firmware}, #{ptzType}, #{username}, #{password}, #{updateTime}, #{createTime})")
     void save(DetailInfo detailInfo);
 
     @Select(" SELECT * FROM " + DETAIL_TABLE_NAME +
@@ -49,7 +49,7 @@ public interface DetailMapper {
     void deleteByDcIdAndType(Long dcId, Integer type);
 
     @Insert({" <script> " +
-            " INSERT INTO " + DETAIL_TABLE_NAME + "(dcId, type, ip, port, name, manufacturer, model, firmware, ptz_type, username, password, update_time, create_time) values " +
+            " INSERT INTO " + DETAIL_TABLE_NAME + "(dc_id, type, ip, port, name, manufacturer, model, firmware, ptz_type, username, password, update_time, create_time) values " +
             " <foreach collection='detailSaveList' item='item' separator=','>(#{item.dcId}, #{item.type}, #{item.ip}, #{item.port}, #{item.name}, #{item.manufacturer}, #{item.model}, #{item.firmware}, #{item.ptzType}, #{item.username}, #{item.password}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>"})
     void batchSave(List<DetailInfo> detailSaveList);
@@ -64,7 +64,7 @@ public interface DetailMapper {
             " , manufacturer = #{item.manufacturer} " +
             " , model = #{item.model} " +
             " , firmware = #{item.firmware} " +
-            " , ptzType = #{item.ptzType} " +
+            " , ptz_type = #{item.ptzType} " +
             " , username = #{item.username} " +
             " , password = #{item.password} " +
             " WHERE id = #{item.id} "+

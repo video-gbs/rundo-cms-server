@@ -4,6 +4,7 @@ import com.runjian.device.entity.ChannelInfo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ public interface ChannelMapper {
 
     @Insert({" <script> " +
             " INSERT INTO " + CHANNEL_TABLE_NAME + "(id, device_id, sign_state, online_state, channel_type, stream_mode, update_time, create_time) values " +
-            " <foreach collection='saveList' item='item' separator=','>(#{id.id}, #{item.deviceId}, #{item.signState}, #{item.onlineState}, #{item.channel_type}, #{item.streamMode}, #{item.updateTime}, #{item.createTime})</foreach> " +
+            " <foreach collection='saveList' item='item' separator=','>(#{item.id}, #{item.deviceId}, #{item.signState}, #{item.onlineState}, #{item.channelType}, #{item.streamMode}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>"})
     void batchSave(List<ChannelInfo> saveList);
 
@@ -36,9 +37,9 @@ public interface ChannelMapper {
 
     @Update(" UPDATE "  + CHANNEL_TABLE_NAME +
             " SET update_time = #{updateTime}, " +
-            " online_state = #{online_state} " +
+            " online_state = #{onlineState} " +
             " WHERE device_id = #{deviceId} ")
-    void updateOnlineStateByDeviceId(Long deviceId, Integer onlineState);
+    void updateOnlineStateByDeviceId(Long deviceId, Integer onlineState, LocalDateTime updateTime);
 
     @Delete(" DELETE FROM " + CHANNEL_TABLE_NAME +
             " WHERE device_id = #{deviceId} ")
@@ -52,9 +53,19 @@ public interface ChannelMapper {
             " <foreach collection='channelInfoList' item='item' separator=';'> " +
             " UPDATE " + CHANNEL_TABLE_NAME +
             " SET update_time = #{item.updateTime}  " +
-            " , sign_state = #{item.sign_state} " +
+            " , sign_state = #{item.signState} " +
             " WHERE id = #{item.id} "+
             " </foreach> " +
-            " </script>")
+            " </script> ")
     void batchUpdateSignState(List<ChannelInfo> channelInfoList);
+
+    @Update(" <script> " +
+            " <foreach collection='channelInfoList' item='item' separator=';'> " +
+            " UPDATE " + CHANNEL_TABLE_NAME +
+            " SET update_time = #{item.updateTime}  " +
+            " , online_state = #{item.onlineState} " +
+            " WHERE id = #{item.id} "+
+            " </foreach> " +
+            " </script> ")
+    void batchUpdateOnlineState(List<ChannelInfo> channelInfoList);
 }
