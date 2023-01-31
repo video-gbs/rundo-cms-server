@@ -3,6 +3,7 @@ package com.runjian.auth.server.service.system;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysAppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
@@ -29,5 +30,5 @@ public interface SysAppInfoService extends IService<SysAppInfo> {
 
     void removeSysAppInfoById(Long id);
 
-    Page<SysAppInfoVO> getSysAppInfoByPage(Integer pageNum, Integer pageSize);
+    Page<SysAppInfoVO> getSysAppInfoByPage(QuerySysAppInfoDTO dto);
 }

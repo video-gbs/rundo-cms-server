@@ -9,6 +9,14 @@
                sai.app_desc,
                sai.status
         FROM sys_app_info sai
-        WHERE sai.delete_flag = 0
+        <where>
+            sai.delete_flag = 0
+            <if test="appIp != null and appIp != ''">
+                AND sai.app_ip = #{appIp,jdbcType=VARCHAR}
+            </if>
+            <if test="appName != null and appName != ''">
+                AND sai.app_name = #{appName,jdbcType=VARCHAR}
+            </if>
+        </where>
     </select>
 </mapper>

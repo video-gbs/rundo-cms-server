@@ -4,6 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.service.system.SysAppInfoService;
@@ -67,13 +68,10 @@ public class SysAppInfoController {
         return new ResponseResult<>(200, "操作成功", sysAppInfoService.getSysAppInfoList());
     }
 
-    @GetMapping("/getListByPage")
+    @PostMapping("/getListByPage")
     @ApiOperation("获取应用列表 分页")
-    public ResponseResult<IPage<SysAppInfoVO>> getListByPage(@RequestParam(value = "pageNum", defaultValue = "1")
-                                                                  Integer pageNum,
-                                                             @RequestParam(value = "pageSize", defaultValue = "20")
-                                                                  Integer pageSize) {
-        return new ResponseResult<>(200, "操作成功", sysAppInfoService.getSysAppInfoByPage(pageNum, pageSize));
+    public ResponseResult<IPage<SysAppInfoVO>> getListByPage(@RequestBody QuerySysAppInfoDTO dto) {
+        return new ResponseResult<>(200, "操作成功", sysAppInfoService.getSysAppInfoByPage(dto));
     }
 
 

@@ -2,7 +2,9 @@ package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.domain.dto.page.PageSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysAppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
@@ -49,9 +51,15 @@ public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppI
     }
 
     @Override
-    public Page<SysAppInfoVO> getSysAppInfoByPage(Integer pageNum, Integer pageSize) {
-        Page<SysAppInfoVO> page = new Page<>(pageNum, pageSize);
-        return sysAppInfoMapper.MySelectPage(page);
+    public Page<SysAppInfoVO> getSysAppInfoByPage(QuerySysAppInfoDTO dto) {
+        PageSysAppInfoDTO pageSysAppInfoDTO = new PageSysAppInfoDTO();
+        pageSysAppInfoDTO.setAppName(dto.getAppName());
+        pageSysAppInfoDTO.setAppIp(dto.getAppIp());
+        pageSysAppInfoDTO.setCurrent(dto.getCurrent());
+        pageSysAppInfoDTO.setSize(dto.getPageSize());
+
+        Page<SysAppInfoVO> page = sysAppInfoMapper.MySelectPage(pageSysAppInfoDTO);
+        return page;
     }
 
     @Override
