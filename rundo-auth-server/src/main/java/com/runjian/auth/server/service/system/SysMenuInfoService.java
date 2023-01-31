@@ -31,5 +31,5 @@ public interface SysMenuInfoService extends IService<SysMenuInfo> {
 
     List<SysMenuInfoVO> getSysMenuInfoList();
 
-    void removeSysMenuInfoById(Long id);
+    String removeSysMenuInfoById(Long id);
 }

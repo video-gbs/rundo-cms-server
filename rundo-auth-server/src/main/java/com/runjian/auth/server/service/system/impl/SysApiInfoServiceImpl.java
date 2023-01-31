@@ -1,17 +1,24 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysApiInfoDTO;
+import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
+import com.runjian.auth.server.domain.vo.tree.SysApiInfoTree;
 import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
 import com.runjian.auth.server.service.system.SysApiInfoService;
+import com.runjian.auth.server.util.tree.DataTreeUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,6 +79,37 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
     public Page<SysApiInfoVO> getSysApiInfoByPage(Integer pageNum, Integer pageSize) {
         Page<SysApiInfoVO> page = new Page<>(pageNum, pageSize);
         return sysApiInfoMapper.MySelectPage(page);
+    }
+
+    @Override
+    public void changeStatus(StatusSysApiInfoDTO dto) {
+        SysApiInfo sysApiInfo = sysApiInfoMapper.selectById(dto.getId());
+        sysApiInfo.setStatus(dto.getStatus());
+        sysApiInfoMapper.updateById(sysApiInfo);
+    }
+
+    @Override
+    public List<SysApiInfoTree> getSysApiInfoTree(QuerySysApiInfoDTO dto) {
+        List<SysApiInfoTree> sysApiInfoTreeList = new ArrayList<>();
+        LambdaQueryWrapper<SysApiInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(SysApiInfo::getApiName, dto.getApiName());
+        queryWrapper.like(SysApiInfo::getUrl, dto.getUrl());
+        List<SysApiInfo> sysApiInfoList = sysApiInfoMapper.selectList(queryWrapper);
+        for (SysApiInfo sysApiInfo : sysApiInfoList) {
+            SysApiInfoTree sysApiInfoTree = new SysApiInfoTree();
+            sysApiInfoTree.setId(sysApiInfo.getId());
+            sysApiInfoTree.setApiPid(sysApiInfo.getApiPid());
+            sysApiInfoTree.setApiName(sysApiInfo.getApiName());
+            sysApiInfoTree.setApiSort(sysApiInfo.getApiSort());
+            sysApiInfoTree.setUrl(sysApiInfo.getUrl());
+            sysApiInfoTree.setLevel(sysApiInfo.getLevel());
+            sysApiInfoTreeList.add(sysApiInfoTree);
+        }
+        if (StringUtils.isNotEmpty(dto.getApiName()) || StringUtils.isNotEmpty(dto.getUrl())) {
+            return sysApiInfoTreeList;
+        } else {
+            return DataTreeUtil.buiidTree(sysApiInfoTreeList, 1L);
+        }
     }
 
     @Override

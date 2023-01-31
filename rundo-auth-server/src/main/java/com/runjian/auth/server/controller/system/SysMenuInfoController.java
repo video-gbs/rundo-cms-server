@@ -5,6 +5,7 @@ import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
 import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
+import com.runjian.auth.server.domain.vo.tree.SysMenuInfoTree;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -48,17 +49,16 @@ public class SysMenuInfoController {
         return new ResponseResult<>(200, "更新菜单项成功!");
     }
 
-    @PostMapping("/remove")
+    @PostMapping("/remove/{id}")
     @ApiOperation("删除菜单")
-    public ResponseResult<?> removeSysMenu(@RequestParam Long id) {
+    public ResponseResult<?> removeSysMenu(@PathVariable Long id) {
         log.info("删除菜单前端传参信息{}", id);
-        sysMenuInfoService.removeSysMenuInfoById(id);
-        return new ResponseResult<>(200, "删除菜单项成功!");
+        return new ResponseResult<>(200, sysMenuInfoService.removeSysMenuInfoById(id));
     }
 
     @PostMapping("/tree")
     @ApiOperation("获取菜单层级树")
-    public ResponseResult<?> getSysMenuTree() {
+    public ResponseResult<SysMenuInfoTree> getSysMenuTree() {
 
         return null;
     }

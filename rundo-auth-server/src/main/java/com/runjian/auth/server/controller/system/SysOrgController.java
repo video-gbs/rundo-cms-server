@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
 import com.runjian.auth.server.domain.entity.system.SysOrg;
-import com.runjian.auth.server.domain.vo.system.SysOrgNode;
+import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.service.system.SysOrgService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -96,7 +96,7 @@ public class SysOrgController {
 
     @GetMapping("/getSysOrgTreeById")
     @ApiOperation("获取组织机构树")
-    public ResponseResult<List<SysOrgNode>> getSysOrgById(
+    public ResponseResult<List<SysOrgTree>> getSysOrgById(
             @Param("id") Long id,
             @Param("orgNameLike") String orgName) {
         return new ResponseResult<>(200, "操作成", sysOrgService.getSysOrgTree(id, orgName));

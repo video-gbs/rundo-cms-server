@@ -24,7 +24,7 @@ public class SysApiInfoVO {
     private String apiName;
 
     @ApiModelProperty("排序")
-    private String apiSort;
+    private Integer apiSort;
 
     @ApiModelProperty("跳转链接")
     private String url;

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
 import com.runjian.auth.server.domain.entity.system.SysOrg;
-import com.runjian.auth.server.domain.vo.system.SysOrgNode;
+import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.service.system.SysOrgService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
@@ -62,21 +62,21 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     }
 
 
-    public List<SysOrgNode> getSysOrgTree(Long orgId, String orgName) {
+    public List<SysOrgTree> getSysOrgTree(Long orgId, String orgName) {
         if (orgId != null) {
             List<SysOrg> orgList = sysOrgMapper.selectOrgTree(orgId, orgName);
 
-            List<SysOrgNode> sysOrgNodeList = orgList.stream().map(
+            List<SysOrgTree> sysOrgTreeList = orgList.stream().map(
                     item -> {
-                        SysOrgNode bean = new SysOrgNode();
+                        SysOrgTree bean = new SysOrgTree();
                         BeanUtils.copyProperties(item, bean);
                         return bean;
                     }
             ).collect(Collectors.toList());
             if (StringUtils.isNotEmpty(orgName)) {
-                return sysOrgNodeList;
+                return sysOrgTreeList;
             } else {
-                return DataTreeUtil.buiidTree(sysOrgNodeList, orgId);
+                return DataTreeUtil.buiidTree(sysOrgTreeList, orgId);
             }
 
         } else {
