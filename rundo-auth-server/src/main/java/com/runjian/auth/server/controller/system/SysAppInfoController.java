@@ -56,9 +56,9 @@ public class SysAppInfoController {
         return new ResponseResult<>(200, "操作成功");
     }
 
-    @GetMapping("/getById")
+    @GetMapping("/getById/{id}")
     @ApiOperation("获取应用信息")
-    public ResponseResult<SysAppInfoVO> getById(@RequestParam Long id) {
+    public ResponseResult<SysAppInfoVO> getById(@PathVariable Long id) {
         return new ResponseResult<>(200, "操作成功", sysAppInfoService.getSysAppInfoById(id));
     }
 

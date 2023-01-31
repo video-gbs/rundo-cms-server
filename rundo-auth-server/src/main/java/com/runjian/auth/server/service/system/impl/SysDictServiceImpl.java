@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,26 +30,39 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
 
     @Autowired
     private SysDictMapper sysDictMapper;
+
     @Override
     public void saveSysDict(AddSysDictDTO dto) {
         SysDict sysDict = new SysDict();
-        BeanUtils.copyProperties(dto,sysDict);
+        BeanUtils.copyProperties(dto, sysDict);
         sysDictMapper.insert(sysDict);
     }
 
     @Override
     public void updateSysDictById(UpdateSysDictDTO dto) {
-
+        SysDict sysDict = sysDictMapper.selectById(dto.getId());
+        BeanUtils.copyProperties(dto, sysDict);
+        sysDictMapper.updateById(sysDict);
     }
 
     @Override
     public SysDictVO getSysDictById(Long id) {
-        return null;
+        SysDict sysDict = sysDictMapper.selectById(id);
+        SysDictVO sysDictVO = new SysDictVO();
+        BeanUtils.copyProperties(sysDict, sysDictVO);
+        return sysDictVO;
     }
 
     @Override
     public List<SysDictVO> getSysDictList() {
-        return null;
+        List<SysDict> sysDictList = sysDictMapper.selectList(null);
+        List<SysDictVO> sysDictVOList = new ArrayList<>();
+        for (SysDict sysDict : sysDictList) {
+            SysDictVO sysDictVO = new SysDictVO();
+            BeanUtils.copyProperties(sysDict, sysDictVO);
+            sysDictVOList.add(sysDictVO);
+        }
+        return sysDictVOList;
     }
 
     @Override
@@ -61,11 +75,16 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
         } else {
             page.setCurrent(1);
         }
-        if (null != dto.getPageSize() && dto.getPageSize() > 0){
+        if (null != dto.getPageSize() && dto.getPageSize() > 0) {
             page.setSize(dto.getPageSize());
-        }else {
+        } else {
             page.setSize(20);
         }
         return sysDictMapper.MySelectPage(page);
+    }
+
+    @Override
+    public void removeSysDictById(Long id) {
+        sysDictMapper.deleteById(id);
     }
 }

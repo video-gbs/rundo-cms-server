@@ -29,4 +29,6 @@ public interface SysDictService extends IService<SysDict> {
     List<SysDictVO> getSysDictList();
 
     Page<SysDictVO> getSysDictByPage(QureySysDictDTO dto);
+
+    void removeSysDictById(Long id);
 }
