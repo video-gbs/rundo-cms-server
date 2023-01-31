@@ -1,5 +1,6 @@
 package com.runjian.auth.server.domain.vo.system;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ import lombok.Data;
 public class SysOrgVO {
 
     @ApiModelProperty("部门编号")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
     @ApiModelProperty("上级部门")
     private Long orgPid;

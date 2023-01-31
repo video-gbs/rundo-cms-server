@@ -1,5 +1,6 @@
 package com.runjian.auth.server.domain.vo.system;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,6 +20,7 @@ import java.util.Map;
 public class SysUserInfoVO {
 
     @ApiModelProperty("用户编号")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
     @ApiModelProperty("用户账户")
     private String userAccount;
