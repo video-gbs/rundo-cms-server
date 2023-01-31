@@ -8,16 +8,17 @@ import lombok.EqualsAndHashCode;
 /**
  * @author Jiang4Yu
  * @version V1.0.0
- * @ClassName PageSysAppInfoDTO
- * @Description
- * @date 2023-01-31 周二 9:46
+ * @ClassName PageSysDictDTO
+ * @Description 字典分页
+ * @date 2023-01-31 周二 11:08
  */
+
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class PageSysAppInfoDTO extends Page {
-    @ApiModelProperty(value = "应用名称", required = true)
-    private String appName;
+public class PageSysDictDTO extends Page {
+    @ApiModelProperty("字典项名称")
+    private String itemName;
 
-    @ApiModelProperty(value = "应用所在IP", required = true)
-    private String appIp;
+    @ApiModelProperty("字典值")
+    private String itemValue;
 }

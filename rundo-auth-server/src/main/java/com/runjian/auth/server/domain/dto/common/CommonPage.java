@@ -15,7 +15,7 @@ public class CommonPage {
     @ApiModelProperty(value = "页面容量")
     private Long pageSize;
 
-    @ApiModelProperty("页面大小")
+    @ApiModelProperty("当前页面")
     private Long current;
 
 }

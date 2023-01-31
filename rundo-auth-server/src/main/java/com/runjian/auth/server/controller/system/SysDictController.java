@@ -1,7 +1,9 @@
 package com.runjian.auth.server.controller.system;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysDictDTO;
+import com.runjian.auth.server.domain.dto.system.QureySysDictDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysDictDTO;
 import com.runjian.auth.server.domain.vo.system.SysDictVO;
 import com.runjian.auth.server.service.system.SysDictService;
@@ -10,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -37,7 +40,7 @@ public class SysDictController {
 
     @PostMapping("/update")
     @ApiOperation("修改数据字典")
-    public ResponseResult updateSysDict(@RequestBody UpdateSysDictDTO dto) {
+    public ResponseResult<?> updateSysDict(@RequestBody UpdateSysDictDTO dto) {
         sysDictService.updateSysDictById(dto);
         return new ResponseResult<>(200, "操作成功");
     }
@@ -54,10 +57,10 @@ public class SysDictController {
         return new ResponseResult<>(200, "操作成功", sysDictService.getSysDictList());
     }
 
-    @GetMapping("/getListByPage")
+    @PostMapping("/getListByPage")
     @ApiOperation("分页获取数据字典列表")
-    public ResponseResult getListByPage(@RequestBody Long id) {
+    public ResponseResult<IPage<SysDictVO>> getListByPage(@RequestBody @Valid QureySysDictDTO dto) {
         // TODO 分页获取数据字典列表
-        return new ResponseResult<>(200, "操作成功", sysDictService.getSysDictList());
+        return new ResponseResult<>(200, "操作成功", sysDictService.getSysDictByPage(dto));
     }
 }

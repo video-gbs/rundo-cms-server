@@ -48,9 +48,9 @@ public class SysAppInfoController {
         return new ResponseResult<>(200, "操作成功");
     }
 
-    @PostMapping("/remove")
+    @PostMapping("/remove/{id}")
     @ApiOperation("删除应用")
-    public ResponseResult<?> remove(@RequestParam Long id) {
+    public ResponseResult<?> remove(@PathVariable Long id) {
         log.info("删除应用信息前端传参{}", id);
         sysAppInfoService.removeSysAppInfoById(id);
         return new ResponseResult<>(200, "操作成功");
