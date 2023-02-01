@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -22,7 +22,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@TableName("tb_video_arae")
+@TableName("video_area")
 @ApiModel(value = "VideoArae对象", description = "安保区域")
 public class VideoArea implements Serializable {
 
@@ -49,7 +49,7 @@ public class VideoArea implements Serializable {
 
     @ApiModelProperty("层级")
     @TableField("level")
-    private String level;
+    private Integer level;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")
@@ -57,7 +57,7 @@ public class VideoArea implements Serializable {
 
     @ApiModelProperty("逻辑删除")
     @TableField(value = "delete_flag", fill = FieldFill.INSERT)
-    private String deleteFlag;
+    private Integer deleteFlag;
 
     @ApiModelProperty("创建人")
     @TableField("created_by")
@@ -68,12 +68,12 @@ public class VideoArea implements Serializable {
     private Long updatedBy;
 
     @ApiModelProperty("创建时间")
-    @TableField("created_time")
-    private Date createdTime;
+    @TableField(value = "created_time", fill = FieldFill.INSERT)
+    private LocalDateTime createdTime;
 
     @ApiModelProperty("更新时间")
-    @TableField("updated_time")
-    private Date updatedTime;
+    @TableField(value = "updated_time", fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updatedTime;
 
 
 }

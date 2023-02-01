@@ -29,5 +29,5 @@ public class VideoAreaVO {
     private String description;
 
     @ApiModelProperty("层级")
-    private String level;
+    private Integer level;
 }

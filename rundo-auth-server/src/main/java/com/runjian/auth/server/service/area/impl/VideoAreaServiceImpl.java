@@ -40,14 +40,11 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         VideoArea area = new VideoArea();
         area.setAreaName(dto.getAreaName());
         area.setAreaPid(dto.getAreaPid());
-        // 查取上级节点的Pids
         VideoArea prentInfo = videoAraeMapper.selectById(dto.getAreaPid());
         String pids = prentInfo.getAreaPids() + ",[" + dto.getAreaPid() + "]";
         area.setAreaPids(pids);
         area.setDescription(dto.getDescription());
-        int pLevel = Integer.parseInt(prentInfo.getLevel());
-        pLevel = pLevel + 1;
-        area.setLevel(Integer.toString(pLevel));
+        area.setLevel(prentInfo.getLevel() + 1);
         // area.setTenantId();
         // area.setDeleteFlag();
         // area.setCreatedBy();
@@ -144,7 +141,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
             List<VideoArea> sunChildrenList = getChildren(videoArea.getId());
             if (sunChildrenList.size() > 0) {
                 for (VideoArea sun : sunChildrenList) {
-                    updateChildren(sun,sunChildrenList);
+                    updateChildren(sun, sunChildrenList);
                 }
             }
         }
