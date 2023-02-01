@@ -1,5 +1,6 @@
 package com.runjian.auth.server.domain.vo.video;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -15,11 +16,13 @@ import lombok.Data;
 @ApiModel(value = "VideoArea对象", description = "安保区域")
 public class VideoAreaVO {
     @ApiModelProperty("主键ID")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
     @ApiModelProperty("安防区域名称")
     private String areaName;
 
     @ApiModelProperty("直接上级")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long areaPid;
 
     @ApiModelProperty("描述信息")
