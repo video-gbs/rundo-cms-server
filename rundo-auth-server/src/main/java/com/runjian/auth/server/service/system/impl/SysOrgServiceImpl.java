@@ -121,9 +121,12 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         sysOrg.setLevel(parentInfo.getLevel() + 1);
         sysOrgMapper.updateById(sysOrg);
         // 5.更新子节点信息
-        for (SysOrg org : childrenList) {
-            updateChildren(org, childrenList);
+        if (childrenList.size() > 0) {
+            for (SysOrg org : childrenList) {
+                updateChildren(org, childrenList);
+            }
         }
+
 
     }
 
@@ -161,8 +164,10 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
             org.setLevel(parentInfo.getLevel() + 1);
             sysOrgMapper.updateById(org);
             List<SysOrg> sunChildrenList = getChildren(org.getId());
-            for (SysOrg sun : sunChildrenList) {
-                updateChildren(sun, sunChildrenList);
+            if (sunChildrenList.size() > 0) {
+                for (SysOrg sun : sunChildrenList) {
+                    updateChildren(sun, sunChildrenList);
+                }
             }
         }
     }
