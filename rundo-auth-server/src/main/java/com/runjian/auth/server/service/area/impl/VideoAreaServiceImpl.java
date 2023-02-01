@@ -75,13 +75,20 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public String removeVideoAreaById(Long id) {
-        // 1.确认当前需要删除的安防区域有无下级安防区域
-        LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(VideoArea::getAreaPids, "[" + id + "]");
-        List<VideoArea> videoAreaChildren = videoAraeMapper.selectList(queryWrapper);
-        if (videoAreaChildren.size() > 0) {
-            return "不能删除含有下级安防区域的安防区域";
+        // 1.判断是否为根节点
+        VideoArea videoArea = videoAraeMapper.selectById(id);
+        if (videoArea.getAreaPid().equals(0L)){
+            return "系统内置根节点不能删除";
         }
+        // 2.确认当前需要删除的安防区域有无下级安防区域
+        LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.likeRight(VideoArea::getAreaPids, "[" + videoArea.getAreaPid() + "]");
+        List<VideoArea> videoAreaChildren = videoAraeMapper.selectList(queryWrapper);
+        // 3.删除子代节点
+        for (VideoArea area : videoAreaChildren) {
+            videoAraeMapper.deleteById(area.getId());
+        }
+        // 4.删除目标节点
         videoAraeMapper.deleteById(id);
         return "删除安防区域，操作成功";
     }
@@ -119,6 +126,27 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
                     return videoAreaVO;
                 }
         ).collect(Collectors.toList());
+    }
+
+    @Override
+    public String batchDelete(List<Long> ids) {
+        // 1.确定节点ID不为空
+        if (ids.size() <= 0) {
+            return "没有选定删除目标";
+        }
+        // 2.检索删除的节点中是否包含根节点
+        List<VideoArea> videoAreaList = videoAraeMapper.selectBatchIds(ids);
+        boolean flag = false;
+        for (VideoArea area : videoAreaList) {
+            if (area.getAreaPid().equals(0L)){
+                flag = true;
+            }
+        }
+        if (flag){
+            return "删除目标中包含系统内置根节点";
+        }
+        videoAraeMapper.deleteBatchIds(ids);
+        return "删除组织，操作成功!";
     }
 
     @Override

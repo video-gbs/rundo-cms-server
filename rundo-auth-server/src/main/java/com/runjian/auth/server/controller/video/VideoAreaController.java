@@ -47,6 +47,12 @@ public class VideoAreaController {
         return new ResponseResult<>(200, "操作成功", videoAreaSaervice.removeVideoAreaById(id));
     }
 
+    @PostMapping("/batchDelete")
+    @ApiOperation("批量删除安防区域")
+    public ResponseResult<String> batchDelete(@RequestBody List<Long> ids) {
+        return new ResponseResult<>(200, "操作成功",videoAreaSaervice.batchDelete(ids));
+    }
+
     @PostMapping("/update")
     @ApiOperation("编辑安防区域")
     public ResponseResult<?> update(@RequestBody UpdateVideoAreaDTO dto) {

@@ -33,4 +33,6 @@ public interface VideoAreaSaervice extends IService<VideoArea> {
     void moveVideoArea(MoveVideoAreaDTO dto);
 
     List<VideoAreaVO> getVideoAreaList();
+
+    String batchDelete(List<Long> ids);
 }
