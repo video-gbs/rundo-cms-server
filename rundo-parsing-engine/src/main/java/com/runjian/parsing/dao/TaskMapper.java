@@ -38,7 +38,7 @@ public interface TaskMapper {
             " <if test='deviceId != null'>, device_id = #{deviceId} </if> " +
             " <if test='channelId != null'>, channel_id = #{channelId} </if> " +
             " <if test='msgType != null'>, msg_type = #{msgType} </if> " +
-            " <if test='detail != null'>, desc = #{detail} </if> " +
+            " <if test='detail != null'>, detail = #{detail} </if> " +
             " WHERE id = #{id} "+
             " </script> "})
     void update(TaskInfo taskInfo);
@@ -47,7 +47,7 @@ public interface TaskMapper {
             " UPDATE "  + TASK_TABLE_NAME +
             " SET update_time = #{updateTime} " +
             " , state = #{state} " +
-            " <if test='detail != null'>, desc = #{detail} </if> " +
+            " <if test='detail != null'>, detail = #{detail} </if> " +
             " WHERE id = #{taskId} " +
             " </script> ")
     void updateState(Long taskId, Integer state, String detail, LocalDateTime updateTime);
@@ -57,7 +57,7 @@ public interface TaskMapper {
     @Update({" <script> " +
             " <foreach collection='taskInfoOutTimeList' item='item' separator=';'> " +
             " UPDATE " + TASK_TABLE_NAME +
-            " SET update_time = #{item.updateTime} , state = #{item.state}, desc = #{item.detail} " +
+            " SET update_time = #{item.updateTime} , state = #{item.state}, detail = #{item.detail} " +
             " WHERE id = #{item.id} "+
             " </foreach> " +
             " </script> "})

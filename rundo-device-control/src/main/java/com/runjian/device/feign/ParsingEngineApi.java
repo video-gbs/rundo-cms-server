@@ -2,11 +2,12 @@ package com.runjian.device.feign;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.vo.feign.DeviceControlReq;
-import com.runjian.device.vo.feign.VideoRecordRsp;
+import com.runjian.device.vo.response.VideoRecordRsp;
 import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.VideoPlayRsp;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -63,7 +64,7 @@ public interface ParsingEngineApi {
      * @param req 设备请求体
      * @return
      */
-    @PutMapping("/channel/video/play")
+    @PostMapping("/channel/video/play")
     CommonResponse<VideoPlayRsp> channelPlay(@RequestBody DeviceControlReq req);
 
     /**
@@ -71,7 +72,7 @@ public interface ParsingEngineApi {
      * @param req 设备请求体
      * @return
      */
-    @PutMapping("/channel/video/record")
+    @PostMapping("/channel/video/record")
     CommonResponse<VideoRecordRsp> channelRecord(@RequestBody DeviceControlReq req);
 
     /**
@@ -79,6 +80,6 @@ public interface ParsingEngineApi {
      * @param req 设备请求体
      * @return
      */
-    @PutMapping("/channel/video/playback")
+    @PostMapping("/channel/video/playback")
     CommonResponse<VideoPlayRsp> channelPlayback(@RequestBody DeviceControlReq req);
 }

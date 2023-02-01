@@ -11,7 +11,7 @@ import java.util.Map;
  * @author Miracle
  * @date 2023/1/30 14:15
  */
-public abstract class AbstractNorthProtocol implements NorthProtocol {
+public abstract class AbstractNorthProtocol extends StandardName implements NorthProtocol {
 
     @Override
     public void deviceSync(Long deviceId, DeferredResult<CommonResponse<?>> response) {
@@ -35,7 +35,7 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
 
     @Override
     public void channelPtzControl(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_CONTROL.getMsg(), null, response);
+        customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_CONTROL.getMsg(), dataMap, response);
     }
 
     @Override
@@ -45,7 +45,7 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
 
     @Override
     public void channelRecord(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_RECORD.getMsg(), dataMap, response);
+        customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_RECORD_INFO.getMsg(), dataMap, response);
     }
 
     @Override

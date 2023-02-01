@@ -18,8 +18,7 @@ import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -43,14 +42,18 @@ public class DispatchMsgListener implements ChannelAwareMessageListener {
             }
             GatewayInfo gatewayInfo = gatewayInfoOp.get();
 
-
+            // 主动推送消息
             if (mqRequest.getMsgType().equals(MsgType.DEVICE_SIGN_IN.getMsg())) {
                 protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceSignIn(gatewayInfo.getId(), mqRequest.getData());
                 return;
+            } else if (!StringUtils.isNumber(mqRequest.getMsgId())) {
+                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).commonEvent(gatewayInfo.getId(), mqRequest.getMsgId(), mqRequest.getMsgType(), mqRequest.getData());
+                return;
             }
 
-            if (!StringUtils.isNumber(mqRequest.getMsgId())){
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).commonEvent(gatewayInfo.getId(), mqRequest.getMsgId(), mqRequest.getMsgType(), mqRequest.getData());
+            // 返回的消息
+            if (mqRequest.getTime().plusSeconds(10).isBefore(LocalDateTime.now())){
+                // 超时的消息不再处理
             } else if (mqRequest.getCode() != 0){
                 protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
             } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_SYNC.getMsg())) {
@@ -65,7 +68,7 @@ public class DispatchMsgListener implements ChannelAwareMessageListener {
                 protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelPtzControl(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
             } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_PLAY.getMsg())) {
                 protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_RECORD.getMsg())) {
+            } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_RECORD_INFO.getMsg())) {
                 protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
             } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_PLAYBACK.getMsg())) {
                 protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelPlayback(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
@@ -73,7 +76,11 @@ public class DispatchMsgListener implements ChannelAwareMessageListener {
                 protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).commonEvent(gatewayInfo.getId(), mqRequest.getMsgId(), mqRequest.getMsgType(), mqRequest.getData());
             }
         } catch (Exception ex) {
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ网关消息处理服务", "处理失败", new String(message.getBody()), ex);
+            if (ex instanceof BusinessException){
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ网关消息处理服务", "处理失败", new String(message.getBody()), ex.getMessage());
+            }else {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ网关消息处理服务", "处理失败", new String(message.getBody()), ex);
+            }
         } finally {
             channel.basicAck(deliveryTag, true);
         }

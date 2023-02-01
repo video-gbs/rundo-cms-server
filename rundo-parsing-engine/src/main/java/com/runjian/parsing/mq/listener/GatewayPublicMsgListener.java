@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -102,7 +103,7 @@ public class GatewayPublicMsgListener implements ChannelAwareMessageListener {
                 gatewaySignInRsp.setMqExchange(rabbitMqProperties.getExchangeData(queueData.getExchangeId()).getExchange().getName());
                 gatewaySignInRsp.setMqGetQueue(key1);
                 gatewaySignInRsp.setMqSetQueue(key2);
-                CommonMqDto mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success(gatewaySignInRsp));
+                CommonMqDto<?> mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success(gatewaySignInRsp));
                 mqResponse.copyRequest(mqRequest);
                 // 发送消息到公共频道
                 String mqId = UUID.randomUUID().toString().replace("-", "");
@@ -116,8 +117,12 @@ public class GatewayPublicMsgListener implements ChannelAwareMessageListener {
 
         } else if (mqRequest.getMsgType().equals(MsgType.GATEWAY_HEARTBEAT.getMsg())) {
             try {
+                // 检测心跳信息是否过期
+                if (mqRequest.getTime().plusMinutes(3).isBefore(LocalDateTime.now())){
+                    return;
+                }
                 Long gatewayId = gatewayService.heartbeat(mqRequest.getSerialNum(), mqRequest.getData().toString());
-                CommonMqDto mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
+                CommonMqDto<?> mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
                 mqResponse.copyRequest(mqRequest);
                 // 判断设备信息是否存在
                 if (Objects.isNull(gatewayId)) {

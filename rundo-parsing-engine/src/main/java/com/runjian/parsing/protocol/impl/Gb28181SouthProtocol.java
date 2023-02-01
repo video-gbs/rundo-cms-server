@@ -11,13 +11,8 @@ import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.entity.ChannelInfo;
 import com.runjian.parsing.entity.TaskInfo;
 import com.runjian.parsing.service.TaskService;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.async.DeferredResult;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,42 +30,28 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
     @Autowired
     private ChannelMapper channelMapper;
 
-    @Getter
-    @AllArgsConstructor
-    private enum MapData{
+    private final String IP = "ipAddress";
 
-        DEVICE_ONLINE_STATE("online", "onlineState"),
-        CHANNEL_ONLINE_STATE("status", "onlineState"),
-        CHANNEL_NAME("channelName", "name"),
-        CHANNEL_TYPE(null, "channelType"),
-        CHANNEL_IP("ipAddress", "ip");
+    private final String DEVICE_ONLINE_STATE = "online";
+
+    private final String CHANNEL_ONLINE_STATE = "status";
+
+    private final String CHANNEL_NAME = "channelName";
 
 
-        private String originName;
-
-        private String standardName;
-    }
-
+    /**
+     * 重写设备注册
+     * @param gatewayId 网关id
+     * @param data 数据集合
+     */
     @Override
     public void deviceSignIn(Long gatewayId, Object data) {
         JSONObject jsonObject = convertOnlineState(data);
         super.deviceSignIn(gatewayId,  jsonObject);
     }
 
-
-    private JSONObject convertOnlineState(Object data) {
-        if (Objects.isNull(data)){
-            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "结果为空");
-        }
-        JSONObject jsonObject = JSON.parseObject(data.toString());
-        int onlineState = jsonObject.getIntValue(MapData.DEVICE_ONLINE_STATE.originName);
-        jsonObject.put(MapData.DEVICE_ONLINE_STATE.standardName, onlineState);
-        return jsonObject;
-    }
-
-
     /**
-     * 设备同步
+     * 重写设备同步
      * @param taskId 任务id
      * @param data 数据集合
      */
@@ -80,6 +61,11 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
         super.deviceSync(taskId, jsonObject);
     }
 
+    /**
+     * 重写通道同步
+     * @param taskId 任务id
+     * @param data 数据集合
+     */
     @Override
     public void channelSync(Long taskId, Object data) {
         if (Objects.isNull(data)){
@@ -106,17 +92,32 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
                     channelMapper.save(channelInfo);
                 }
                 // 转换数据
-                int onlineState = jsonObject.getIntValue(MapData.CHANNEL_ONLINE_STATE.originName);
-                String channelName = jsonObject.getString(MapData.CHANNEL_NAME.originName);
-                String channelIp = jsonObject.getString(MapData.CHANNEL_IP.originName);
-                jsonObject.put(MapData.CHANNEL_TYPE.standardName, 5);
-                jsonObject.put(MapData.CHANNEL_ONLINE_STATE.standardName, onlineState);
-                jsonObject.put(CHANNEL_ID, channelInfo.getId());
-                jsonObject.put(MapData.CHANNEL_NAME.standardName, channelName);
-                jsonObject.put(MapData.CHANNEL_IP.standardName, channelIp);
+                int onlineState = jsonObject.getIntValue(this.CHANNEL_ONLINE_STATE);
+                String channelName = jsonObject.getString(this.CHANNEL_NAME);
+                String channelIp = jsonObject.getString(this.IP);
+                jsonObject.put(super.CHANNEL_TYPE, 5);
+                jsonObject.put(super.ONLINE_STATE, onlineState);
+                jsonObject.put(super.CHANNEL_ID, channelInfo.getId());
+                jsonObject.put(super.DEVICE_CHANNEL_NAME, channelName);
+                jsonObject.put(super.IP, channelIp);
             }
         }
         taskService.removeDeferredResult(taskId).setResult(CommonResponse.success(jsonData));
         taskService.taskSuccess(taskId);
+    }
+
+    /**
+     * 转换在线状态
+     * @param data 传输数据
+     * @return
+     */
+    private JSONObject convertOnlineState(Object data) {
+        if (Objects.isNull(data)){
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "结果为空");
+        }
+        JSONObject jsonObject = JSON.parseObject(data.toString());
+        int onlineState = jsonObject.getIntValue(this.DEVICE_ONLINE_STATE);
+        jsonObject.put(super.ONLINE_STATE, onlineState);
+        return jsonObject;
     }
 }

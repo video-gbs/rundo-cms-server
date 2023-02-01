@@ -4,13 +4,14 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.feign.PutPtzControlReq;
-import com.runjian.device.vo.feign.VideoRecordRsp;
+import com.runjian.device.vo.response.VideoRecordRsp;
 import com.runjian.device.vo.request.PutChannelPlayReq;
 import com.runjian.device.vo.request.PutChannelPlaybackReq;
 import com.runjian.device.vo.request.PutChannelSignSuccessReq;
 import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.VideoPlayRsp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -56,22 +57,22 @@ public class ChannelNorthController {
      * @param request 点播请求体
      * @return 视频播放返回体
      */
-    @PutMapping("/play")
+    @PostMapping("/play")
     public CommonResponse<VideoPlayRsp> videoPlay(@RequestBody PutChannelPlayReq request) {
         validatorService.validateRequest(request);
-        return CommonResponse.success(channelNorthService.channelPlay(request.getChId(), request.getEnableAudio(), request.getSsrcCheck()));
+        return CommonResponse.success(channelNorthService.channelPlay(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck()));
     }
 
     /**
      * 视频回放
-     * @param chId 回放请求体
+     * @param channelId 回放请求体
      * @param startTime 开始时间
      * @param endTime 结束时间
      * @return 视频播放返回体
      */
     @GetMapping("/record")
-    public CommonResponse<VideoRecordRsp> videoPlayback(@RequestParam Long chId, @RequestParam LocalDateTime startTime, @RequestParam LocalDateTime endTime){
-        return CommonResponse.success(channelNorthService.channelRecord(chId, startTime, endTime));
+    public CommonResponse<VideoRecordRsp> videoRecordInfo(@RequestParam Long channelId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime){
+        return CommonResponse.success(channelNorthService.channelRecord(channelId, startTime, endTime));
     }
 
     /**
@@ -79,10 +80,10 @@ public class ChannelNorthController {
      * @param request 回放请求体
      * @return 视频播放返回体
      */
-    @PutMapping("/playback")
+    @PostMapping("/playback")
     public CommonResponse<VideoPlayRsp> videoPlayback(@RequestBody PutChannelPlaybackReq request){
         validatorService.validateRequest(request);
-        return CommonResponse.success(channelNorthService.channelPlayback(request.getChId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStartTime(), request.getEndTime()));
+        return CommonResponse.success(channelNorthService.channelPlayback(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStartTime(), request.getEndTime()));
     }
 
     /**
@@ -90,10 +91,10 @@ public class ChannelNorthController {
      * @param req 云台控制请求体
      * @return
      */
-    @PutMapping("/control")
+    @PutMapping("/ptz/control")
     public CommonResponse<?> ptzControl(@RequestBody PutPtzControlReq req){
         validatorService.validateRequest(req);
-        channelNorthService.channelPtzControl(req.getChannelId(),req.getCommandCode(),req.getHorizonSpeed(),req.getVerticalSpeed(),req.getZoomSpeed(),req.getTotalSpeed());
+        channelNorthService.channelPtzControl(req.getChannelId(),req.getCmdCode(),req.getHorizonSpeed(),req.getVerticalSpeed(),req.getZoomSpeed(),req.getTotalSpeed());
         return CommonResponse.success();
     }
 

@@ -180,6 +180,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
      * @param deviceId 设备id
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deviceDelete(Long deviceId) {
         DeviceInfo deviceInfo = getDeviceInfo(deviceId);
         // 触发删除流程，返回boolean

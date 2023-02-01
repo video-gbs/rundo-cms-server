@@ -28,6 +28,8 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskMapper taskMapper;
 
+    private static final String OUT_TIME = "OUT_TIME";
+
 
     @Override
     public Long createAsyncTask(Long gatewayId, Long deviceId, Long channelId, String clientMsgId, String mqId, String msgType, DeferredResult<CommonResponse<?>> deferredResult) {
@@ -36,7 +38,7 @@ public class TaskServiceImpl implements TaskService {
         deferredResult.onTimeout(() -> {
             deferredResult.setResult(CommonResponse.failure(BusinessErrorEnums.FEIGN_REQUEST_TIME_OUT));
             asynReqMap.remove(taskId);
-            taskError(taskId, "OUT_TIME");
+            taskError(taskId, OUT_TIME);
         });
         return taskId;
     }

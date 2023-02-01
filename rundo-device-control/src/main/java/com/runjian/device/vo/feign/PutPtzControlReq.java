@@ -25,7 +25,7 @@ public class PutPtzControlReq {
      */
     @NotNull(message = "指令Code不能为空")
     @Range(min = 0, message = "非法指令Code")
-    private Integer commandCode;
+    private Integer cmdCode;
 
     /**
      * 水平速度

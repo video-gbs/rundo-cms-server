@@ -3,7 +3,6 @@ package com.runjian.parsing.protocol.impl;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.DeviceInfo;
-import com.runjian.parsing.protocol.AbstractSouthProtocol;
 import com.runjian.parsing.service.DataBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ public class Gb28181NorthProtocol extends DefaultNorthProtocol {
         dataBaseService.getGatewayInfo(gatewayId);
         DeviceInfo deviceInfo = new DeviceInfo();
         LocalDateTime nowTime = LocalDateTime.now();
-        deviceInfo.setOriginId(dataMap.get("deviceId").toString());
+        deviceInfo.setOriginId(dataMap.get(super.DEVICE_ID).toString());
         deviceInfo.setGatewayId(gatewayId);
         deviceInfo.setCreateTime(nowTime);
         deviceInfo.setUpdateTime(nowTime);
