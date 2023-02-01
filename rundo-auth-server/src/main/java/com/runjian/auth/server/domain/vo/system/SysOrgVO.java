@@ -24,7 +24,7 @@ public class SysOrgVO {
     private String orgName;
 
     @ApiModelProperty("部门负责人")
-    private String personName;
+    private String orgLeader;
 
     @ApiModelProperty("手机号码")
     private String phone;
@@ -34,6 +34,12 @@ public class SysOrgVO {
 
     @ApiModelProperty("地址")
     private String adders;
+
+    @ApiModelProperty("组织机构排序")
+    private String orgSort;
+
+    @ApiModelProperty("层级")
+    private Integer level;
 
     @ApiModelProperty("描述信息")
     private String description;
