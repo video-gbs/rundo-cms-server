@@ -35,7 +35,7 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     private SysOrgMapper sysOrgMapper;
 
     @Override
-    public void saveSysOrg(AddSysOrgDTO dto) {
+    public SysOrgVO saveSysOrg(AddSysOrgDTO dto) {
         SysOrg sysOrg = new SysOrg();
         sysOrg.setOrgPid(dto.getOrgPid());
         SysOrg parentInfo = sysOrgMapper.selectById(dto.getOrgPid());
@@ -61,6 +61,10 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         // sysOrg.setUpdatedTime();
 
         sysOrgMapper.insert(sysOrg);
+
+        SysOrgVO sysOrgVO = new SysOrgVO();
+        BeanUtils.copyProperties(sysOrg, sysOrgVO);
+        return sysOrgVO;
 
     }
 

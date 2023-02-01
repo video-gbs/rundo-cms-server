@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * <p>
  * 角色信息表 前端控制器
@@ -25,18 +27,24 @@ public class SysRoleInfoController {
     private SysRoleInfoService sysRoleInfoService;
 
     @PostMapping("/add")
-    @ApiOperation("添加角色")
-    public ResponseResult addRole(@RequestBody AddSysRoleInfoDTO dto) {
+    @ApiOperation("新建角色")
+    public ResponseResult<?> addRole(@RequestBody AddSysRoleInfoDTO dto) {
         sysRoleInfoService.addRole(dto);
         return new ResponseResult<>(200, "操作成功");
     }
 
-    @PostMapping("/delete")
+    @PostMapping("/remove/{id}")
     @ApiOperation("删除角色")
-    public ResponseResult deleteRole(@RequestParam Long id) {
+    public ResponseResult<?> remove( @PathVariable Long id) {
         sysRoleInfoService.removeById(id);
         return new ResponseResult<>(200, "操作成功");
     }
+
+    public ResponseResult<?> batchRemove(@RequestBody List<Long> ids) {
+
+        return new ResponseResult<>(200, "操作成功");
+    }
+
 
     @PostMapping("/update")
     @ApiOperation("编辑角色")

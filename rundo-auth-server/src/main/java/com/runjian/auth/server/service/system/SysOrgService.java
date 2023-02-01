@@ -25,7 +25,7 @@ public interface SysOrgService extends IService<SysOrg> {
 
     IPage<SysOrg> getListByPage(Integer pageNum, Integer pageSize);
 
-    void saveSysOrg(AddSysOrgDTO dto);
+    SysOrgVO saveSysOrg(AddSysOrgDTO dto);
 
     String removeSysOrgById(Long id);
 
