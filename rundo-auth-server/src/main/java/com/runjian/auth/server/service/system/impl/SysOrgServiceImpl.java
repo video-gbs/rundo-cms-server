@@ -70,14 +70,20 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
 
     @Override
     public String removeSysOrgById(Long id) {
-        // 1.确认当前需要删除的组织有无下级组织
-        LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(SysOrg::getOrgPids, "[" + id + "]");
-        List<SysOrg> sysOrgChild = sysOrgMapper.selectList(queryWrapper);
-        if (sysOrgChild.size() > 0) {
-            // 1.1 有下级组织不允许删除
-            return "不能删除含有下级组织的机构";
+        // 1.判断是否为根节点
+        SysOrg sysOrg = sysOrgMapper.selectById(id);
+        if (sysOrg.getOrgPid().equals(0L)) {
+            return "系统内置根节点不能删除";
         }
+        // 2.查取该节点的所有子代节点
+        LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.likeRight(SysOrg::getOrgPids, sysOrg.getOrgPids() + "[" + sysOrg.getId() + "]");
+        List<SysOrg> sysOrgChild = sysOrgMapper.selectList(queryWrapper);
+        // 3.删除子代节点
+        for (SysOrg org : sysOrgChild) {
+            sysOrgMapper.deleteById(org.getId());
+        }
+        // 4.删除目标节点
         sysOrgMapper.deleteById(id);
         return "删除组织，操作成功!";
     }
@@ -129,6 +135,28 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
             }
         }
 
+
+    }
+
+    @Override
+    public String batchDelete(List<Long> ids) {
+        // 1.确定节点ID不为空
+        if (ids.size() <= 0) {
+            return "没有选定删除目标";
+        }
+        // 2.检索删除的节点中是否包含根节点
+        List<SysOrg> sysOrgList = sysOrgMapper.selectBatchIds(ids);
+        boolean flag = false;
+        for (SysOrg sysOrg : sysOrgList) {
+            if (sysOrg.getOrgPid().equals(0L)){
+                flag = true;
+            }
+        }
+        if (flag){
+            return "删除目标中包含系统内置根节点";
+        }
+        sysOrgMapper.deleteBatchIds(ids);
+        return "删除组织，操作成功!";
 
     }
 

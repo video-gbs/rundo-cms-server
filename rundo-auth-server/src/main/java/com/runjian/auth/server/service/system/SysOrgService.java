@@ -36,4 +36,6 @@ public interface SysOrgService extends IService<SysOrg> {
     List<SysOrgVO> getSysOrgList();
 
     void moveSysOrg(MoveSysOrgDTO dto);
+
+    String batchDelete(List<Long> ids);
 }

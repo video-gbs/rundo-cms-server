@@ -48,9 +48,8 @@ public class SysOrgController {
 
     @PostMapping("/batchDelete")
     @ApiOperation("批量删除部门")
-    public ResponseResult<Boolean> batchDelete(@RequestBody List<Long> ids) {
-        // TODO 级联判断
-        return new ResponseResult<>(200, "操作成功", sysOrgService.removeBatchByIds(ids));
+    public ResponseResult<String> batchDelete(@RequestBody List<Long> ids) {
+        return new ResponseResult<>(200, "操作成功",sysOrgService.batchDelete(ids));
     }
 
     @PostMapping("/update")
