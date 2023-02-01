@@ -12,8 +12,8 @@ import lombok.Data;
  * @date 2023-01-13 周五 14:34
  */
 @Data
-@ApiModel(value = "VideoArae对象", description = "安保区域")
-public class VideoAreaDTO {
+@ApiModel(value = "VideoArea对象", description = "安保区域")
+public class AddVideoAreaDTO {
 
     @ApiModelProperty("安防区域名称")
     private String areaName;

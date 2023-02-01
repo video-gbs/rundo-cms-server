@@ -63,7 +63,7 @@ public class SysOrgController {
     }
 
     @PostMapping("/move")
-    @ApiOperation("移动部门，接口已定义，逻辑待处理")
+    @ApiOperation("移动部门")
     public ResponseResult<?> move(@RequestBody MoveSysOrgDTO dto) {
         sysOrgService.moveSysOrg(dto);
         return new ResponseResult<>(200, "操作成功");
