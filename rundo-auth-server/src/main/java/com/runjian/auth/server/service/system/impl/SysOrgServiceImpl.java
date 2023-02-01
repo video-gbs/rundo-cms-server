@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
+import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
 import com.runjian.auth.server.domain.entity.system.SysOrg;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
@@ -83,6 +84,43 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         SysOrg sysOrg = new SysOrg();
         BeanUtils.copyProperties(dto, sysOrg);
         sysOrgMapper.updateById(sysOrg);
+    }
+
+    @Override
+    public SysOrgVO getSysOrgById(Long id) {
+        SysOrg sysOrg = sysOrgMapper.selectById(id);
+        SysOrgVO sysOrgVO = new SysOrgVO();
+        BeanUtils.copyProperties(sysOrg, sysOrgVO);
+        return sysOrgVO;
+    }
+
+    @Override
+    public List<SysOrgVO> getSysOrgList() {
+        List<SysOrg> sysOrgList = sysOrgMapper.selectList(null);
+        return sysOrgList.stream().map(
+                item ->{
+                    SysOrgVO sysOrgVO = new SysOrgVO();
+                    BeanUtils.copyProperties(item,sysOrgVO);
+                    return sysOrgVO;
+                }
+        ).collect(Collectors.toList());
+    }
+
+    @Override
+    public void moveSysOrg(MoveSysOrgDTO dto) {
+        // TODO
+        // 1.根据上级组织ID，查询上级组织ID信息
+        SysOrg parentInfo = sysOrgMapper.selectById(dto.getOrgPid());
+        // 2.根据id，查询当前组织的信息
+        SysOrg sysOrg = sysOrgMapper.selectById(dto.getId());
+        // 3.根据id，查询当前组织的下级组织信息
+        LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(SysOrg::getOrgPids, "[" + dto.getId() + "]");
+        List<SysOrg> childrenList = sysOrgMapper.selectList(queryWrapper);
+        // 4.更新当前节点信息
+
+        // 5.更新子节点信息
+
     }
 
 

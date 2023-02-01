@@ -29,10 +29,10 @@ public class SysOrgVO {
     @ApiModelProperty("手机号码")
     private String phone;
 
-    @ApiModelProperty("手机号码")
+    @ApiModelProperty("邮箱")
     private String email;
 
-    @ApiModelProperty("手机号码")
+    @ApiModelProperty("地址")
     private String adders;
 
     @ApiModelProperty("描述信息")

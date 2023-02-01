@@ -1,17 +1,16 @@
 package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
+import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
-import com.runjian.auth.server.domain.entity.system.SysOrg;
+import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.service.system.SysOrgService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,24 +47,25 @@ public class SysOrgController {
         return new ResponseResult<>(200, "操作成功", sysOrgService.removeSysOrgById(id));
     }
 
-    @PostMapping("/batchDelete")
-    @ApiOperation("批量删除部门")
-    public ResponseResult<Boolean> batchDelete(@RequestBody List<SysOrg> list) {
-        // TODO 级联判断
-        return new ResponseResult<>(200, "操作成功", sysOrgService.removeBatchByIds(list));
-    }
-
-    // @PostMapping("/move")
-    // @ApiOperation("移动部门")
-    // public ResponseResult<Boolean> move(@RequestBody SysOrg dto) {
-    //     return new ResponseResult<>(200, "操作成功", sysOrgService.updateById(dto));
+    // @PostMapping("/batchDelete")
+    // @ApiOperation("批量删除部门")
+    // public ResponseResult<Boolean> batchDelete(@RequestBody List<SysOrg> list) {
+    //     // TODO 级联判断
+    //     return new ResponseResult<>(200, "操作成功", sysOrgService.removeBatchByIds(list));
     // }
 
     @PostMapping("/update")
     @ApiOperation("编辑部门信息")
-    public ResponseResult<Boolean> update(@RequestBody UpdateSysOrgDTO dto) {
+    public ResponseResult<?> update(@RequestBody UpdateSysOrgDTO dto) {
         log.info("编辑部门信息前端传参信息{}", JSONUtil.toJsonStr(dto));
         sysOrgService.updateSysOrgById(dto);
+        return new ResponseResult<>(200, "操作成功");
+    }
+
+    @PostMapping("/move")
+    @ApiOperation("移动部门，接口已定义，逻辑待处理")
+    public ResponseResult<?> move(@RequestBody MoveSysOrgDTO dto) {
+        sysOrgService.moveSysOrg(dto);
         return new ResponseResult<>(200, "操作成功");
     }
 
@@ -75,24 +75,24 @@ public class SysOrgController {
         return new ResponseResult<>(200, "操作成", sysOrgService.getSysOrgTree());
     }
 
-    @GetMapping("/getById")
+    @GetMapping("/getById/{id}")
     @ApiOperation("获取部门信息")
-    public ResponseResult<SysOrg> getById(@RequestParam Long id) {
-        return new ResponseResult<>(200, "操作成功", sysOrgService.getById(id));
+    public ResponseResult<SysOrgVO> getById(@PathVariable Long id) {
+        return new ResponseResult<>(200, "操作成功", sysOrgService.getSysOrgById(id));
     }
 
     @GetMapping("/getList")
     @ApiOperation("获取部门列表")
-    public ResponseResult<List<SysOrg>> getList() {
-        return new ResponseResult<>(200, "操作成功", sysOrgService.list());
+    public ResponseResult<List<SysOrgVO>> getList() {
+        return new ResponseResult<>(200, "操作成功", sysOrgService.getSysOrgList());
     }
 
-    @GetMapping("/getListByPage")
-    @ApiOperation("分页获取部门列表")
-    public ResponseResult<IPage<SysOrg>> getListByPage(@Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize) {
-        // TODO 分页获取应用列表
-        return new ResponseResult<>(200, "操作成功", sysOrgService.getListByPage(pageNum, pageSize));
-    }
+    // @GetMapping("/getListByPage")
+    // @ApiOperation("分页获取部门列表")
+    // public ResponseResult<IPage<SysOrgVO>> getListByPage() {
+    //     // TODO 分页获取应用列表
+    //     return new ResponseResult<>(200, "操作成功", sysOrgService.getListByPage(pageNum, pageSize));
+    // }
 
 
 }
