@@ -20,7 +20,7 @@ import java.util.List;
  */
 public interface VideoAreaSaervice extends IService<VideoArea> {
 
-    void saveVideoArae(AddVideoAreaDTO dto);
+    VideoAreaVO saveVideoArae(AddVideoAreaDTO dto);
 
     void updateVideoAreaById(UpdateVideoAreaDTO dto);
 

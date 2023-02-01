@@ -35,7 +35,7 @@ public class VideoAreaController {
 
     @PostMapping("/add")
     @ApiOperation("添加安防区域")
-    public ResponseResult<?> save(@RequestBody AddVideoAreaDTO dto) {
+    public ResponseResult<VideoAreaVO> save(@RequestBody AddVideoAreaDTO dto) {
         log.info("添加安防区域前端传参信息{}", JSONUtil.toJsonStr(dto));
         videoAreaSaervice.saveVideoArae(dto);
         return new ResponseResult<>(200, "操作成功");

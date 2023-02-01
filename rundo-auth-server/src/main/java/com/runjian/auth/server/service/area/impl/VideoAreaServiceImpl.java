@@ -36,7 +36,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     private VideoAraeMapper videoAraeMapper;
 
     @Override
-    public void saveVideoArae(AddVideoAreaDTO dto) {
+    public VideoAreaVO saveVideoArae(AddVideoAreaDTO dto) {
         VideoArea area = new VideoArea();
         area.setAreaName(dto.getAreaName());
         area.setAreaPid(dto.getAreaPid());
@@ -53,6 +53,9 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         // area.setUpdatedTime();
         log.info("添加安防区域入库数据信息{}", JSONUtil.toJsonStr(area));
         videoAraeMapper.insert(area);
+        VideoAreaVO videoAreaVO = new VideoAreaVO();
+        BeanUtils.copyProperties(area,videoAreaVO);
+        return videoAreaVO;
     }
 
     @Override
