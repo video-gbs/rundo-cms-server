@@ -18,6 +18,7 @@ public class SysApiInfoVO {
     private Long id;
 
     @ApiModelProperty("接口直接父ID")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long apiPid;
 
     @ApiModelProperty("接口名称")

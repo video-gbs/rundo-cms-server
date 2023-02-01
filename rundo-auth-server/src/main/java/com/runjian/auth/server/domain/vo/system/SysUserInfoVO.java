@@ -54,6 +54,7 @@ public class SysUserInfoVO {
     private String description;
 
     @ApiModelProperty("所属部门ID")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long orgId;
 
     @ApiModelProperty("所属部门名称")

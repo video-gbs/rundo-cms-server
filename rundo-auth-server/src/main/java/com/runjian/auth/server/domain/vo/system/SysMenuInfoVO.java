@@ -1,6 +1,5 @@
 package com.runjian.auth.server.domain.vo.system;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,7 +18,7 @@ public class SysMenuInfoVO {
     private Long id;
 
     @ApiModelProperty("直接父级菜单ID")
-    @TableField("menu_pid")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long menuPid;
 
     @ApiModelProperty("图标")

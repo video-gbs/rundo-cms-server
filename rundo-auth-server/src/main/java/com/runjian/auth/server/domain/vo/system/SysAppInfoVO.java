@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-
 /**
  * @author Jiang4Yu
  * @version V1.0.0
@@ -21,7 +19,6 @@ public class SysAppInfoVO {
     private Long id;
 
     @ApiModelProperty(value = "应用名称")
-    @NotBlank
     private String appName;
 
     @ApiModelProperty("应用所在IP")

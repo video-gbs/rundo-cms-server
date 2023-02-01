@@ -1,5 +1,6 @@
 package com.runjian.auth.server.domain.vo.system;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -31,6 +32,7 @@ public class UserInfoVo {
     private Date expiryDateEnd;
 
     @ApiModelProperty("直属部门")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long orgId;
 
     @ApiModelProperty("直属部门")
