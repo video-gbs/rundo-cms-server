@@ -58,9 +58,9 @@ public class SysMenuInfoController {
 
     @PostMapping("/tree")
     @ApiOperation("获取菜单层级树")
-    public ResponseResult<SysMenuInfoTree> getSysMenuTree() {
+    public ResponseResult<List<SysMenuInfoTree>> getSysMenuTree() {
 
-        return null;
+        return new ResponseResult<>(200, "操作成", sysMenuInfoService.getSysOrgTree());
     }
 
     @GetMapping("/getById")

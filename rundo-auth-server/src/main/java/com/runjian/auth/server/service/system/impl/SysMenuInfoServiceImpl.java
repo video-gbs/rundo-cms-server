@@ -7,6 +7,7 @@ import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysMenuInfo;
 import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
+import com.runjian.auth.server.domain.vo.tree.SysMenuInfoTree;
 import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
 import org.springframework.beans.BeanUtils;
@@ -80,6 +81,11 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
         sysMenuInfoMapper.deleteById(id);
         return "删除菜单，操作成功!";
 
+    }
+
+    @Override
+    public List<SysMenuInfoTree> getSysOrgTree() {
+        return null;
     }
 
     @Override

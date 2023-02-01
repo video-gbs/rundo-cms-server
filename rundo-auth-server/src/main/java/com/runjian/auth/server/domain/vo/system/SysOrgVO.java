@@ -18,6 +18,7 @@ public class SysOrgVO {
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
     @ApiModelProperty("上级部门")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long orgPid;
 
     @ApiModelProperty("部门名称")

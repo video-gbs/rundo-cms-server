@@ -98,9 +98,9 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     public List<SysOrgVO> getSysOrgList() {
         List<SysOrg> sysOrgList = sysOrgMapper.selectList(null);
         return sysOrgList.stream().map(
-                item ->{
+                item -> {
                     SysOrgVO sysOrgVO = new SysOrgVO();
-                    BeanUtils.copyProperties(item,sysOrgVO);
+                    BeanUtils.copyProperties(item, sysOrgVO);
                     return sysOrgVO;
                 }
         ).collect(Collectors.toList());
@@ -113,13 +113,17 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         SysOrg parentInfo = sysOrgMapper.selectById(dto.getOrgPid());
         // 2.根据id，查询当前组织的信息
         SysOrg sysOrg = sysOrgMapper.selectById(dto.getId());
-        // 3.根据id，查询当前组织的下级组织信息
-        LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(SysOrg::getOrgPids, "[" + dto.getId() + "]");
-        List<SysOrg> childrenList = sysOrgMapper.selectList(queryWrapper);
+        // 3.根据id，查询当前组织的直接下级组织信息
+        List<SysOrg> childrenList = getChildren(sysOrg.getId());
         // 4.更新当前节点信息
-
+        sysOrg.setOrgPid(parentInfo.getId());
+        sysOrg.setOrgPids(parentInfo.getOrgPids() + "[" + parentInfo.getId() + "]");
+        sysOrg.setLevel(parentInfo.getLevel() + 1);
+        sysOrgMapper.updateById(sysOrg);
         // 5.更新子节点信息
+        for (SysOrg org : childrenList) {
+            updateChildren(org, childrenList);
+        }
 
     }
 
@@ -150,5 +154,23 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         return sysOrgMapper.selectPage(page, null);
     }
 
+    private void updateChildren(SysOrg sysOrg, List<SysOrg> childrenList) {
+        SysOrg parentInfo = sysOrgMapper.selectById(sysOrg.getOrgPid());
+        for (SysOrg org : childrenList) {
+            org.setOrgPids(parentInfo.getOrgPids() + "[" + sysOrg.getId() + "]");
+            org.setLevel(parentInfo.getLevel() + 1);
+            sysOrgMapper.updateById(org);
+            List<SysOrg> sunChildrenList = getChildren(org.getId());
+            for (SysOrg sun : sunChildrenList) {
+                updateChildren(sun, sunChildrenList);
+            }
+        }
+    }
+
+    private List<SysOrg> getChildren(Long orgPid) {
+        LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(SysOrg::getOrgPid, orgPid);
+        return sysOrgMapper.selectList(queryWrapper);
+    }
 
 }
