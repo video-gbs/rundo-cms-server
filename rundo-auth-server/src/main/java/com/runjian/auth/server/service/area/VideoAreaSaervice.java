@@ -31,4 +31,6 @@ public interface VideoAreaSaervice extends IService<VideoArea> {
     List<VideoAreaTree> getTreeList();
 
     void moveVideoArea(MoveVideoAreaDTO dto);
+
+    List<VideoAreaVO> getVideoAreaList();
 }

@@ -17,7 +17,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -108,7 +107,6 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
 
     @Override
     public void moveSysOrg(MoveSysOrgDTO dto) {
-        // TODO
         // 1.根据上级组织ID，查询上级组织ID信息
         SysOrg parentInfo = sysOrgMapper.selectById(dto.getOrgPid());
         // 2.根据id，查询当前组织的信息
@@ -130,17 +128,10 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
 
     }
 
-
     @Override
     public List<SysOrgTree> getSysOrgTree() {
-        List<SysOrgVO> sysOrgVOList = new ArrayList<>();
         LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
         List<SysOrg> sysOrgList = sysOrgMapper.selectList(queryWrapper);
-        for (SysOrg sysOrg : sysOrgList) {
-            SysOrgVO sysOrgVO = new SysOrgVO();
-            BeanUtils.copyProperties(sysOrg, sysOrgVO);
-            sysOrgVOList.add(sysOrgVO);
-        }
         List<SysOrgTree> sysOrgTreeList = sysOrgList.stream().map(
                 item -> {
                     SysOrgTree bean = new SysOrgTree();
@@ -172,9 +163,9 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         }
     }
 
-    private List<SysOrg> getChildren(Long orgPid) {
+    private List<SysOrg> getChildren(Long id) {
         LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(SysOrg::getOrgPid, orgPid);
+        queryWrapper.eq(SysOrg::getOrgPid, id);
         return sysOrgMapper.selectList(queryWrapper);
     }
 

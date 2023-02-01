@@ -2,7 +2,6 @@ package com.runjian.auth.server.service.area.impl;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.video.AddVideoAreaDTO;
 import com.runjian.auth.server.domain.dto.video.UpdateVideoAreaDTO;
@@ -62,7 +61,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     @Override
     public void updateVideoAreaById(UpdateVideoAreaDTO dto) {
         VideoArea videoArea = new VideoArea();
-        BeanUtils.copyProperties(dto,videoArea);
+        BeanUtils.copyProperties(dto, videoArea);
         videoAraeMapper.updateById(videoArea);
     }
 
@@ -70,7 +69,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     public VideoAreaVO getVideoAreaById(Long id) {
         VideoArea videoArea = videoAraeMapper.selectById(id);
         VideoAreaVO videoAreaVO = new VideoAreaVO();
-        BeanUtils.copyProperties(videoArea,videoAreaVO);
+        BeanUtils.copyProperties(videoArea, videoAreaVO);
         return videoAreaVO;
     }
 
@@ -80,7 +79,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(VideoArea::getAreaPids, "[" + id + "]");
         List<VideoArea> videoAreaChildren = videoAraeMapper.selectList(queryWrapper);
-        if (videoAreaChildren.size() > 0){
+        if (videoAreaChildren.size() > 0) {
             return "不能删除含有下级安防区域的安防区域";
         }
         videoAraeMapper.deleteById(id);
@@ -89,12 +88,42 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public void moveVideoArea(MoveVideoAreaDTO dto) {
+        // 1.根据上级区域ID，获取上级信息
+        VideoArea parentInfo = videoAraeMapper.selectById(dto.getAreaPid());
+        // 2.根据id，查询当前节点信息
+        VideoArea videoArea = videoAraeMapper.selectById(dto.getId());
+        // 3.根据id，查询当前组织的直接下级组织信息
+        List<VideoArea> childrenList = getChildren(dto.getId());
+        // 4.更新当前节点信息
+        videoArea.setAreaPid(parentInfo.getId());
+        videoArea.setAreaPids(parentInfo.getAreaPids() + "[" + parentInfo.getId() + "]");
+        videoArea.setLevel(parentInfo.getLevel() + 1);
+        videoAraeMapper.updateById(videoArea);
+        // 5.更新子节点信息
+        if (childrenList.size() > 0) {
+            for (VideoArea area : childrenList) {
+                updateChildren(area, childrenList);
+            }
+        }
 
+    }
+
+
+    @Override
+    public List<VideoAreaVO> getVideoAreaList() {
+        List<VideoArea> videoAreaList = videoAraeMapper.selectList(null);
+        return videoAreaList.stream().map(
+                item -> {
+                    VideoAreaVO videoAreaVO = new VideoAreaVO();
+                    BeanUtils.copyProperties(item, videoAreaVO);
+                    return videoAreaVO;
+                }
+        ).collect(Collectors.toList());
     }
 
     @Override
     public List<VideoAreaTree> getTreeList() {
-        QueryWrapper<VideoArea> queryWrapper = new QueryWrapper<>();
+        LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
         List<VideoArea> videoList = videoAraeMapper.selectList(queryWrapper);
         List<VideoAreaTree> videoAreaTreeList = videoList.stream().map(
                 item -> {
@@ -106,5 +135,24 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         return DataTreeUtil.buiidTree(videoAreaTreeList, 1L);
     }
 
+    private void updateChildren(VideoArea area, List<VideoArea> childrenList) {
+        VideoArea parentInfo = videoAraeMapper.selectById(area.getAreaPid());
+        for (VideoArea videoArea : childrenList) {
+            videoArea.setAreaPids(parentInfo.getAreaPids() + "[" + area.getAreaPid() + "]");
+            videoArea.setLevel(parentInfo.getLevel() + 1);
+            videoAraeMapper.updateById(videoArea);
+            List<VideoArea> sunChildrenList = getChildren(videoArea.getId());
+            if (sunChildrenList.size() > 0) {
+                for (VideoArea sun : sunChildrenList) {
+                    updateChildren(sun,sunChildrenList);
+                }
+            }
+        }
+    }
 
+    private List<VideoArea> getChildren(Long id) {
+        LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(VideoArea::getAreaPid, id);
+        return videoAraeMapper.selectList(queryWrapper);
+    }
 }

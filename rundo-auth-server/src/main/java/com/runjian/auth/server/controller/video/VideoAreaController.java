@@ -77,14 +77,8 @@ public class VideoAreaController {
 
     @GetMapping("/getList")
     @ApiOperation("获取安防区域列表")
-    public ResponseResult getList() {
-        return new ResponseResult<>(200, "操作成功", videoAreaSaervice.list());
+    public ResponseResult<List<VideoAreaVO>> getList() {
+        return new ResponseResult<>(200, "操作成功", videoAreaSaervice.getVideoAreaList());
     }
 
-    @GetMapping("/getListByPage")
-    @ApiOperation("分页获取安防区域列表")
-    public ResponseResult getListByPage(@RequestBody Long id) {
-        // TODO 分页获取应用列表
-        return new ResponseResult<>(200, "操作成功", videoAreaSaervice.list());
-    }
 }
