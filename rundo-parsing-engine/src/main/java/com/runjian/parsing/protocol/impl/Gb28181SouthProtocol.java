@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.constant.StandardName;
 import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.entity.ChannelInfo;
@@ -30,13 +31,13 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
     @Autowired
     private ChannelMapper channelMapper;
 
-    private final String IP = "ipAddress";
+    private final static String IP = "ipAddress";
 
-    private final String DEVICE_ONLINE_STATE = "online";
+    private final static String DEVICE_ONLINE_STATE = "online";
 
-    private final String CHANNEL_ONLINE_STATE = "status";
+    private final static String CHANNEL_ONLINE_STATE = "status";
 
-    private final String CHANNEL_NAME = "channelName";
+    private final static String CHANNEL_NAME = "channelName";
 
 
     /**
@@ -72,13 +73,13 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "结果为空");
         }
         JSONObject jsonData = JSON.parseObject(data.toString());
-        JSONArray objects = jsonData.getJSONArray(CHANNEL_SYNC_LIST);
+        JSONArray objects = jsonData.getJSONArray(StandardName.CHANNEL_SYNC_LIST);
         TaskInfo taskInfo = taskService.getTaskValid(taskId, TaskState.RUNNING);
-        jsonData.put(DEVICE_ID, taskInfo.getDeviceId());
+        jsonData.put(StandardName.DEVICE_ID, taskInfo.getDeviceId());
         if (Objects.nonNull(objects) && objects.size() > 0){
             for (int i = 0; i < objects.size(); i++){
                 JSONObject jsonObject = objects.getJSONObject(i);
-                String channelOriginId = jsonObject.getString(CHANNEL_ID);
+                String channelOriginId = jsonObject.getString(StandardName.CHANNEL_ID);
                 // 校验数据是否已存在
                 Optional<ChannelInfo> channelInfoOp = channelMapper.selectByDeviceIdAndOriginId(taskInfo.getDeviceId(), channelOriginId);
                 ChannelInfo channelInfo = channelInfoOp.orElseGet(ChannelInfo::new);
@@ -95,11 +96,11 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
                 int onlineState = jsonObject.getIntValue(this.CHANNEL_ONLINE_STATE);
                 String channelName = jsonObject.getString(this.CHANNEL_NAME);
                 String channelIp = jsonObject.getString(this.IP);
-                jsonObject.put(super.CHANNEL_TYPE, 5);
-                jsonObject.put(super.ONLINE_STATE, onlineState);
-                jsonObject.put(super.CHANNEL_ID, channelInfo.getId());
-                jsonObject.put(super.DEVICE_CHANNEL_NAME, channelName);
-                jsonObject.put(super.IP, channelIp);
+                jsonObject.put(StandardName.CHANNEL_TYPE, 5);
+                jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
+                jsonObject.put(StandardName.CHANNEL_ID, channelInfo.getId());
+                jsonObject.put(StandardName.COM_NAME, channelName);
+                jsonObject.put(StandardName.COM_IP, channelIp);
             }
         }
         taskService.removeDeferredResult(taskId).setResult(CommonResponse.success(jsonData));
@@ -117,7 +118,7 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
         }
         JSONObject jsonObject = JSON.parseObject(data.toString());
         int onlineState = jsonObject.getIntValue(this.DEVICE_ONLINE_STATE);
-        jsonObject.put(super.ONLINE_STATE, onlineState);
+        jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
         return jsonObject;
     }
 }

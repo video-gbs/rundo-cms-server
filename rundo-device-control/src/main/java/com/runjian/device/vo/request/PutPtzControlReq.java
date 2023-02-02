@@ -1,4 +1,4 @@
-package com.runjian.device.vo.feign;
+package com.runjian.device.vo.request;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;

@@ -8,6 +8,7 @@ import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
+import com.runjian.common.constant.StandardName;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.DeviceInfo;
@@ -71,12 +72,12 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         // 发送注册请求，返回数据ID
         DeviceControlReq req = new DeviceControlReq();
         req.setGatewayId(gatewayId);
-        req.putData("deviceId", originId);
-        req.putData("deviceType", deviceType);
-        req.putData("ip", ip);
-        req.putData("port", port);
-        req.putData("username", username);
-        req.putData("password", password);
+        req.putData(StandardName.DEVICE_ID, originId);
+        req.putData(StandardName.DEVICE_TYPE, deviceType);
+        req.putData(StandardName.COM_IP, ip);
+        req.putData(StandardName.COM_PORT, port);
+        req.putData(StandardName.COM_USERNAME, username);
+        req.putData(StandardName.COM_PASSWORD, password);
         CommonResponse<Long> response = parsingEngineApi.deviceAdd(req);
         if (response.getCode() != 0){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备注册失败", response.getData(), response.getMsg());

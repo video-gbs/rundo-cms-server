@@ -8,6 +8,7 @@ import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.utils.DateUtils;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
+import com.runjian.common.constant.StandardName;
 import com.runjian.device.constant.StreamType;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DetailMapper;
@@ -19,12 +20,12 @@ import com.runjian.device.feign.StreamManageApi;
 import com.runjian.device.service.DataBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
-import com.runjian.device.vo.feign.StreamPlayReq;
 import com.runjian.device.vo.response.VideoRecordRsp;
 import com.runjian.device.vo.response.ChannelDetailRsp;
 import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.VideoPlayRsp;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -189,18 +190,14 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 设备点播
-     * @param chId 通道id
+     * @param channelId 通道id
      * @param enableAudio 是否播放音频
      * @param ssrcCheck 是否使用ssrc
      * @return
      */
     @Override
-    public VideoPlayRsp channelPlay(Long chId, Boolean enableAudio, Boolean ssrcCheck) {
-        ChannelInfo channelInfo = dataBaseService.getChannelInfo(chId);
-        // 检测通道是否在线
-        if (channelInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
-            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道处于离线状态");
-        }
+    public VideoPlayRsp channelPlay(Long channelId, Boolean enableAudio, Boolean ssrcCheck) {
+        ChannelInfo channelInfo = getChannelInfoAndValid(channelId);
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
 //        DeviceControlReq streamReq = new DeviceControlReq();
 //        streamReq.setGatewayId(deviceInfo.getGatewayId());
@@ -213,10 +210,10 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 //            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
 //        }
         DeviceControlReq deviceReq = new DeviceControlReq();
-        deviceReq.setChannelId(chId);
-        deviceReq.putData("enableAudio", enableAudio);
-        deviceReq.putData("ssrcCheck", ssrcCheck);
-        deviceReq.putData("streamMode", channelInfo.getStreamMode());
+        deviceReq.setChannelId(channelId);
+        deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
+        deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
+        deviceReq.putData(StandardName.STREAM_MODE, channelInfo.getStreamMode());
         CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlay(deviceReq);
         if (videoPlayRspCommonResponse.getCode() != 0){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
@@ -227,15 +224,11 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     @Override
     public VideoRecordRsp channelRecord(Long chId, LocalDateTime startTime, LocalDateTime endTime) {
-        ChannelInfo channelInfo = dataBaseService.getChannelInfo(chId);
-        // 检测通道是否在线
-        if (channelInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
-            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道处于离线状态");
-        }
+        getChannelInfoAndValid(chId);
         DeviceControlReq deviceReq = new DeviceControlReq();
         deviceReq.setChannelId(chId);
-        deviceReq.putData("startTime", DateUtils.DATE_TIME_FORMATTER.format(startTime));
-        deviceReq.putData("endTime", DateUtils.DATE_TIME_FORMATTER.format(endTime));
+        deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
+        deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         CommonResponse<VideoRecordRsp> response = parsingEngineApi.channelRecord(deviceReq);
         if (response.getCode() != 0){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频录像数据获取失败", response.getData(), response.getMsg());
@@ -255,11 +248,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
      */
     @Override
     public VideoPlayRsp channelPlayback(Long chId, Boolean enableAudio, Boolean ssrcCheck, LocalDateTime startTime, LocalDateTime endTime) {
-        ChannelInfo channelInfo = dataBaseService.getChannelInfo(chId);
-        // 检测通道是否在线
-        if (channelInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
-            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道处于离线状态");
-        }
+        ChannelInfo channelInfo = getChannelInfoAndValid(chId);
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
 //        DeviceControlReq streamReq = new DeviceControlReq();
 //        streamReq.setGatewayId(deviceInfo.getGatewayId());
@@ -273,11 +262,11 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 //        }
         DeviceControlReq deviceReq = new DeviceControlReq();
         deviceReq.setChannelId(chId);
-        deviceReq.putData("enableAudio", enableAudio);
-        deviceReq.putData("ssrcCheck", ssrcCheck);
-        deviceReq.putData("streamMode", channelInfo.getStreamMode());
-        deviceReq.putData("startTime", DateUtils.DATE_TIME_FORMATTER.format(startTime));
-        deviceReq.putData("endTime", DateUtils.DATE_TIME_FORMATTER.format(endTime));
+        deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
+        deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
+        deviceReq.putData(StandardName.STREAM_MODE, channelInfo.getStreamMode());
+        deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
+        deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlayback(deviceReq);
         if (videoPlayRspCommonResponse.getCode() != 0){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频回放失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
@@ -286,9 +275,23 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         return videoPlayRspCommonResponse.getData();
     }
 
+    @NotNull
+    private ChannelInfo getChannelInfoAndValid(Long chId) {
+        ChannelInfo channelInfo = dataBaseService.getChannelInfo(chId);
+        // 检测通道是否在线
+        if (channelInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道处于离线状态");
+        }
+        // 检测通道是否注册成功
+        if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道未注册成功");
+        }
+        return channelInfo;
+    }
+
     /**
      * 云台控制状态
-     * @param chId 通道ID
+     * @param channelId 通道ID
      * @param cmdCode 指令code
      * @param horizonSpeed 水平速度
      * @param verticalSpeed 垂直速度
@@ -296,14 +299,15 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
      * @param totalSpeed 总速度
      */
     @Override
-    public void channelPtzControl(Long chId, Integer cmdCode, Integer horizonSpeed, Integer verticalSpeed, Integer zoomSpeed, Integer totalSpeed) {
+    public void channelPtzControl(Long channelId, Integer cmdCode, Integer horizonSpeed, Integer verticalSpeed, Integer zoomSpeed, Integer totalSpeed) {
+        getChannelInfoAndValid(channelId);
         DeviceControlReq req = new DeviceControlReq();
-        req.setChannelId(chId);
-        req.putData("cmdCode", cmdCode);
-        req.putData("horizonSpeed", horizonSpeed);
-        req.putData("verticalSpeed", verticalSpeed);
-        req.putData("zoomSpeed", zoomSpeed);
-        req.putData("totalSpeed", totalSpeed);
+        req.setChannelId(channelId);
+        req.putData(StandardName.PTZ_CMD_CODE, cmdCode);
+        req.putData(StandardName.PTZ_HORIZON_SPEED, horizonSpeed);
+        req.putData(StandardName.PTZ_VERTICAL_SPEED, verticalSpeed);
+        req.putData(StandardName.PTZ_ZOOM_SPEED, zoomSpeed);
+        req.putData(StandardName.PTZ_TOTAL_SPEED, totalSpeed);
         CommonResponse<Boolean> response = parsingEngineApi.channelPtzControl(req);
         if (response.getCode() != 0){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "云台控制失败", response.getData(), response.getMsg());

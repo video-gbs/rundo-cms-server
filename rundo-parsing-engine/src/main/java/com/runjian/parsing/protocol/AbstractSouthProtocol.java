@@ -7,7 +7,7 @@ package com.runjian.parsing.protocol;
  * @author Miracle
  * @date 2023/1/29 20:27
  */
-public abstract class AbstractSouthProtocol extends StandardName implements SouthProtocol {
+public abstract class AbstractSouthProtocol  implements SouthProtocol {
 
     @Override
     public void channelPtzControl(Long taskId, Object data) {

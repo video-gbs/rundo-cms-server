@@ -11,7 +11,7 @@ import java.util.Map;
  * @author Miracle
  * @date 2023/1/30 14:15
  */
-public abstract class AbstractNorthProtocol extends StandardName implements NorthProtocol {
+public abstract class AbstractNorthProtocol implements NorthProtocol {
 
     @Override
     public void deviceSync(Long deviceId, DeferredResult<CommonResponse<?>> response) {

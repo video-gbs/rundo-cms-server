@@ -3,7 +3,7 @@ package com.runjian.device.controller;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.ChannelNorthService;
-import com.runjian.device.vo.feign.PutPtzControlReq;
+import com.runjian.device.vo.request.PutPtzControlReq;
 import com.runjian.device.vo.response.VideoRecordRsp;
 import com.runjian.device.vo.request.PutChannelPlayReq;
 import com.runjian.device.vo.request.PutChannelPlaybackReq;

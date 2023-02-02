@@ -7,6 +7,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.constant.StandardName;
 import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.dao.DeviceMapper;
@@ -55,7 +56,7 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol  {
     @Override
     public void deviceSignIn(Long gatewayId, Object data) {
         JSONObject jsonObject = JSON.parseObject(data.toString());
-        String deviceOriginId = jsonObject.getString(DEVICE_ID);
+        String deviceOriginId = jsonObject.getString(StandardName.DEVICE_ID);
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
         DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
         if (deviceInfoOp.isEmpty()){
@@ -66,8 +67,8 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol  {
             deviceInfo.setUpdateTime(nowTime);
             deviceMapper.save(deviceInfo);
         }
-        jsonObject.put(DEVICE_ID, deviceInfo.getId());
-        jsonObject.put(GATEWAY_ID, gatewayId);
+        jsonObject.put(StandardName.DEVICE_ID, deviceInfo.getId());
+        jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
         CommonResponse<?> commonResponse = deviceControlApi.deviceSignIn(jsonObject);
         if (commonResponse.getCode() != 0){
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
@@ -86,7 +87,7 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol  {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "同步数据为空");
         }
         JSONObject jsonObject = JSON.parseObject(data.toString());
-        jsonObject.put(DEVICE_ID, taskInfo.getDeviceId());
+        jsonObject.put(StandardName.DEVICE_ID, taskInfo.getDeviceId());
         DeferredResult<CommonResponse<?>> deferredResult = taskService.removeDeferredResult(taskId);
         deferredResult.setResult(CommonResponse.success(jsonObject));
         taskService.taskSuccess(taskId);
@@ -147,12 +148,12 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol  {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "结果为空");
         }
         JSONObject jsonData = JSON.parseObject(data.toString());
-        JSONArray objects = jsonData.getJSONArray(CHANNEL_SYNC_LIST);
+        JSONArray objects = jsonData.getJSONArray(StandardName.CHANNEL_SYNC_LIST);
         TaskInfo taskInfo = taskService.getTaskValid(taskId, TaskState.RUNNING);
         if (Objects.nonNull(objects) && objects.size() > 0){
             for (int i = 0; i < objects.size(); i++){
                 JSONObject jsonObject = objects.getJSONObject(i);
-                String channelOriginId = jsonObject.getString(CHANNEL_ID);
+                String channelOriginId = jsonObject.getString(StandardName.CHANNEL_ID);
                 // 校验数据是否已存在
                 Optional<ChannelInfo> channelInfoOp = channelMapper.selectByDeviceIdAndOriginId(taskInfo.getDeviceId(), channelOriginId);
                 ChannelInfo channelInfo = channelInfoOp.orElseGet(ChannelInfo::new);
@@ -166,8 +167,8 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol  {
                     channelMapper.save(channelInfo);
                 }
                 // 转换数据
-                jsonObject.put(DEVICE_ID, taskInfo.getDeviceId());
-                jsonObject.put(CHANNEL_ID, channelInfo.getId());
+                jsonObject.put(StandardName.DEVICE_ID, taskInfo.getDeviceId());
+                jsonObject.put(StandardName.CHANNEL_ID, channelInfo.getId());
             }
         }
         taskService.removeDeferredResult(taskId).setResult(CommonResponse.success(objects));
@@ -185,19 +186,19 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol  {
         // 尝试进行数据转换
         if (Objects.nonNull(data)){
             jsonData = JSON.parseObject(data.toString());
-            String deviceIdStr = jsonData.getString(DEVICE_ID);
+            String deviceIdStr = jsonData.getString(StandardName.DEVICE_ID);
 
             if (Objects.nonNull(deviceIdStr)){
                 Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceIdStr);
                 if (deviceInfoOp.isPresent()){
                     DeviceInfo deviceInfo = deviceInfoOp.get();
-                    jsonData.put(DEVICE_ID, deviceInfo.getId());
-                    String channelIdStr = jsonData.getString(CHANNEL_ID);
+                    jsonData.put(StandardName.DEVICE_ID, deviceInfo.getId());
+                    String channelIdStr = jsonData.getString(StandardName.CHANNEL_ID);
                     if (Objects.nonNull(channelIdStr)){
                         Optional<ChannelInfo> channelInfoOp = channelMapper.selectByDeviceIdAndOriginId(deviceInfo.getId(), channelIdStr);
                         if (channelInfoOp.isPresent()){
                             ChannelInfo channelInfo = channelInfoOp.get();
-                            jsonData.put(CHANNEL_ID, channelInfo.getId());
+                            jsonData.put(StandardName.CHANNEL_ID, channelInfo.getId());
                         }
                     }
                 }
@@ -205,8 +206,8 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol  {
         }
 
         // 将消息类型数据插入
-        jsonData.put(MSG_TYPE, msgType);
-        jsonData.put(GATEWAY_ID, gatewayId);
+        jsonData.put(StandardName.MSG_TYPE, msgType);
+        jsonData.put(StandardName.GATEWAY_ID, gatewayId);
 
         // 判断是否是北向接口任务
         if (StringUtils.isNumber(msgId)){
