@@ -55,6 +55,7 @@
                        LEFT JOIN sys_org org ON suo.org_id = org.id
                        LEFT JOIN sys_role_user sru ON sru.user_id = userInfo.id
                        LEFT JOIN sys_role_info role ON sru.role_id = role.id
+              WHERE userInfo.delete_flag = 0
               GROUP BY id) r1
                  LEFT JOIN (SELECT org.id                                                   org_id,
                                    org.org_pid,
