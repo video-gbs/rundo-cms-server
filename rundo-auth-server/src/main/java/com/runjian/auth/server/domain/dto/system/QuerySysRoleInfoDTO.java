@@ -1,0 +1,35 @@
+package com.runjian.auth.server.domain.dto.system;
+
+import com.runjian.auth.server.domain.dto.common.CommonPage;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.time.LocalDateTime;
+
+/**
+ * @author Jiang4Yu
+ * @version V1.0.0
+ * @ClassName QuerySysRoleInfoDTO
+ * @Description 角色分页查询
+ * @date 2023-02-02 周四 9:41
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@ApiModel(value = "角色分页查询", description = "角色信息查询条件")
+public class QuerySysRoleInfoDTO extends CommonPage {
+    @ApiModelProperty(value = "角色名称", required = true)
+    private String roleName;
+
+    @ApiModelProperty("创建人")
+    private Long createdBy;
+
+    @ApiModelProperty("创建开始时间")
+    private LocalDateTime createdTimeStart;
+
+    @ApiModelProperty("创建开始时间")
+    private LocalDateTime createdTimeEnd;
+}

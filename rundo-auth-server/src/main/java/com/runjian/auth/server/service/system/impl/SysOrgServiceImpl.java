@@ -43,7 +43,10 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         sysOrg.setOrgPids(orgPids);
         sysOrg.setOrgName(dto.getOrgName());
         sysOrg.setOrgCode(dto.getOrgCode());
-        sysOrg.setOrgSort(dto.getOrgSort());
+        if (null != dto.getOrgSort()) {
+            sysOrg.setOrgSort(dto.getOrgSort());
+        }
+        sysOrg.setOrgSort(100);
         sysOrg.setAdders(dto.getAdders());
         sysOrg.setOrgLeader(dto.getOrgLeader());
         sysOrg.setEmail(dto.getEmail());
@@ -117,8 +120,23 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
 
     @Override
     public void moveSysOrg(MoveSysOrgDTO dto) {
+        //  0-1 禁止本级移动到本级
+        if (dto.getId().equals(dto.getOrgPid())) {
+            return;
+        }
         // 1.根据上级组织ID，查询上级组织ID信息
         SysOrg parentInfo = sysOrgMapper.selectById(dto.getOrgPid());
+        // 1-1 同一节点下的移动判断
+        SysOrg parentInfoId = sysOrgMapper.selectById(dto.getId());
+        if (parentInfoId.getOrgPid().equals(parentInfo.getOrgPid())) {
+            // 切换排序顺序
+            parentInfoId.setOrgSort(parentInfo.getOrgSort());
+            sysOrgMapper.updateById(parentInfo);
+            parentInfo.setOrgSort(parentInfoId.getOrgSort());
+            sysOrgMapper.updateById(parentInfo);
+            return;
+        }
+
         // 2.根据id，查询当前组织的信息
         SysOrg sysOrg = sysOrgMapper.selectById(dto.getId());
         // 3.根据id，查询当前组织的直接下级组织信息
@@ -148,11 +166,11 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         List<SysOrg> sysOrgList = sysOrgMapper.selectBatchIds(ids);
         boolean flag = false;
         for (SysOrg sysOrg : sysOrgList) {
-            if (sysOrg.getOrgPid().equals(0L)){
+            if (sysOrg.getOrgPid().equals(0L)) {
                 flag = true;
             }
         }
-        if (flag){
+        if (flag) {
             return "删除目标中包含系统内置根节点";
         }
         sysOrgMapper.deleteBatchIds(ids);
@@ -163,6 +181,7 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     @Override
     public List<SysOrgTree> getSysOrgTree() {
         LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderBy(true, true, SysOrg::getOrgSort, SysOrg::getUpdatedTime);
         List<SysOrg> sysOrgList = sysOrgMapper.selectList(queryWrapper);
         List<SysOrgTree> sysOrgTreeList = sysOrgList.stream().map(
                 item -> {
@@ -198,6 +217,7 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     private List<SysOrg> getChildren(Long id) {
         LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysOrg::getOrgPid, id);
+        queryWrapper.orderBy(true, true, SysOrg::getOrgSort, SysOrg::getUpdatedTime);
         return sysOrgMapper.selectList(queryWrapper);
     }
 

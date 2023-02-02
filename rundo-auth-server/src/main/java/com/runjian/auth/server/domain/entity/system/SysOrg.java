@@ -47,7 +47,7 @@ public class SysOrg implements Serializable {
 
     @ApiModelProperty("组织机构排序")
     @TableField("org_sort")
-    private String orgSort;
+    private Integer orgSort;
 
     @ApiModelProperty("地址")
     @TableField("adders")

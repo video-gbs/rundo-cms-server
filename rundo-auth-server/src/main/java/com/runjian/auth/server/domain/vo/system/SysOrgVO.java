@@ -37,7 +37,7 @@ public class SysOrgVO {
     private String adders;
 
     @ApiModelProperty("组织机构排序")
-    private String orgSort;
+    private Integer orgSort;
 
     @ApiModelProperty("层级")
     private Integer level;

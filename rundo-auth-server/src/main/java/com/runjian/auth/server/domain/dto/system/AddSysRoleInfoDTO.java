@@ -20,24 +20,37 @@ public class AddSysRoleInfoDTO {
     @ApiModelProperty(value = "角色名称", required = true)
     private String roleName;
 
-    @ApiModelProperty(value = "角色编码", required = true)
-    private String roleCode;
-
-    @ApiModelProperty(value = "角色排序")
-    private Integer roleSort;
-
     @ApiModelProperty("角色描述")
     private String roleDesc;
 
     //////////////////////权限配置//////////////////////
-    // 系统权限
-    // 菜单权限
+    // 1 系统权限
+
+    // 1-1 菜单权限
+
+    // 1-1-1 应用权限
+    @ApiModelProperty("菜单ID列表")
+    List<Long> menuIds;
+
+    // 1-1-2 配置权限
+
+    // 1-1-3 运维权限
+
+    // 1-2 部门管理权限
+
+    // 1-3 安防区域权限
+
+    // 2 资源权限
+
+    // 2-1 视频资源权限
+
+    // 2-2 电视墙权限
+
     // 应用
     @ApiModelProperty("应用ID列表")
     List<Long> appIds;
     // 配置
-    @ApiModelProperty("菜单ID列表")
-    List<Long> menuIds;
+
     // 运维
     @ApiModelProperty("接口ID列表")
     List<Long> apiIds;

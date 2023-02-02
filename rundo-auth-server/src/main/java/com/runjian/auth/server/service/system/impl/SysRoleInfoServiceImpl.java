@@ -1,14 +1,19 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.entity.system.SysRoleInfo;
-import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.domain.dto.system.AddSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateSysRoleInfoDTO;
+import com.runjian.auth.server.domain.entity.system.SysRoleInfo;
+import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
+import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
 import com.runjian.auth.server.util.RundoIdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -33,7 +38,6 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
         role.setId(roleId);
         role.setRoleName(dto.getRoleName());
         role.setRoleCode(roleId.toString());
-        role.setRoleSort(dto.getRoleSort());
         role.setRoleDesc(dto.getRoleDesc());
         // role.setParentRoleId();
         // role.setParentRoleIds();
@@ -90,7 +94,17 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
     }
 
     @Override
-    public ResponseResult updateRole(AddSysRoleInfoDTO dto) {
+    public void updateRole(UpdateSysRoleInfoDTO dto) {
+
+    }
+
+    @Override
+    public Page<SysRoleInfoVO> getSysRoleInfoByPage(QuerySysRoleInfoDTO dto) {
         return null;
+    }
+
+    @Override
+    public void batchRemove(List<Long> ids) {
+
     }
 }
