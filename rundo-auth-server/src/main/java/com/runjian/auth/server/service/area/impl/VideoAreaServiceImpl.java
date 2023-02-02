@@ -95,8 +95,21 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public void moveVideoArea(MoveVideoAreaDTO dto) {
+        //  0-1 禁止本级移动到本级
+        if (dto.getId().equals(dto.getAreaPid())) {
+            return;
+        }
         // 1.根据上级区域ID，获取上级信息
         VideoArea parentInfo = videoAraeMapper.selectById(dto.getAreaPid());
+        VideoArea parentInfoId = videoAraeMapper.selectById(dto.getId());
+        if (parentInfoId.getAreaPid().equals(parentInfo.getAreaPid())){
+            // 切换排序顺序
+            parentInfoId.setAreaSort(parentInfo.getAreaSort());
+            videoAraeMapper.updateById(parentInfo);
+            parentInfo.setAreaSort(parentInfoId.getAreaSort());
+            videoAraeMapper.updateById(parentInfo);
+            return;
+        }
         // 2.根据id，查询当前节点信息
         VideoArea videoArea = videoAraeMapper.selectById(dto.getId());
         // 3.根据id，查询当前组织的直接下级组织信息
@@ -152,6 +165,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     @Override
     public List<VideoAreaTree> getTreeList() {
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderBy(true, true, VideoArea::getAreaSort, VideoArea::getUpdatedTime);
         List<VideoArea> videoList = videoAraeMapper.selectList(queryWrapper);
         List<VideoAreaTree> videoAreaTreeList = videoList.stream().map(
                 item -> {
@@ -181,6 +195,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     private List<VideoArea> getChildren(Long id) {
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(VideoArea::getAreaPid, id);
+        queryWrapper.orderBy(true, true, VideoArea::getAreaSort, VideoArea::getUpdatedTime);
         return videoAraeMapper.selectList(queryWrapper);
     }
 }

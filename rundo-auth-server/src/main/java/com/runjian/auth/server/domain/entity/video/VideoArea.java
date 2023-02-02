@@ -51,6 +51,10 @@ public class VideoArea implements Serializable {
     @TableField("level")
     private Integer level;
 
+    @ApiModelProperty("区域排序")
+    @TableField("area_sort")
+    private Integer areaSort;
+
     @ApiModelProperty("租户号")
     @TableField("tenant_id")
     private Long tenantId;
