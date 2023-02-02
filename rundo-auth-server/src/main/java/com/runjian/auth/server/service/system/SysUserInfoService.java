@@ -10,8 +10,6 @@ import com.runjian.auth.server.domain.dto.system.UpdateSysUserInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
 
-import java.util.List;
-
 /**
  * <p>
  * 用户信息表 服务类
@@ -27,8 +25,6 @@ public interface SysUserInfoService extends IService<SysUserInfo> {
     void updateSysUserInfo(UpdateSysUserInfoDTO dto);
 
     ResponseResult<ListSysUserInfoVO> getUser(Long id);
-
-    ResponseResult<List<ListSysUserInfoVO>> getUserList();
 
     void changeStatus(StatusSysUserInfoDTO dto);
 

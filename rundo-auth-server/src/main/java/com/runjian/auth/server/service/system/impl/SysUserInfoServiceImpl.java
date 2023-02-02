@@ -3,6 +3,7 @@ package com.runjian.auth.server.service.system.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
+import com.runjian.auth.server.domain.dto.page.PageSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.AddSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
@@ -20,7 +21,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -121,17 +121,6 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     }
 
     @Override
-    public ResponseResult<List<ListSysUserInfoVO>> getUserList() {
-        List<SysUserInfo> sysUserInfos = sysUserInfoMapper.selectList(null);
-        List<ListSysUserInfoVO> sysUserVOList = new ArrayList<>();
-        for (SysUserInfo sysUserInfo : sysUserInfos) {
-            ListSysUserInfoVO sysUserInfoVO = getSysUserInfoVO(sysUserInfo);
-            sysUserVOList.add(sysUserInfoVO);
-        }
-        return new ResponseResult<>(200, "操作成功", sysUserVOList);
-    }
-
-    @Override
     public void changeStatus(StatusSysUserInfoDTO dto) {
         SysUserInfo sysUserInfo = sysUserInfoMapper.selectById(dto.getId());
         sysUserInfo.setStatus(dto.getStatus());
@@ -140,7 +129,21 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
 
     @Override
     public Page<ListSysUserInfoVO> getSysUserInfoByPage(QuerySysUserInfoDTO dto) {
-        return null;
+        PageSysUserInfoDTO page = new PageSysUserInfoDTO();
+        page.setOrgId(dto.getOrgId());
+        page.setUserName(dto.getUserName());
+        page.setUserAccount(dto.getUserAccount());
+        if (null != dto.getCurrent() && dto.getCurrent() > 0) {
+            page.setCurrent(dto.getCurrent());
+        } else {
+            page.setCurrent(1);
+        }
+        if (null != dto.getPageSize() && dto.getPageSize() > 0) {
+            page.setSize(dto.getPageSize());
+        } else {
+            page.setSize(20);
+        }
+        return sysUserInfoMapper.MySelectPage(page);
     }
 
     /**

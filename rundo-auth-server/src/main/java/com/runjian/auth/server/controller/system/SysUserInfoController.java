@@ -67,10 +67,9 @@ public class SysUserInfoController {
         return new ResponseResult<>(200, "操作成功");
     }
 
-    @GetMapping("/getListByPage")
-    @ApiOperation("获取用户列表，无分页")
+    @PostMapping("/getListByPage")
+    @ApiOperation("获取用户列表")
     public ResponseResult<IPage<ListSysUserInfoVO>> getSysUserInfoByPage(@RequestBody QuerySysUserInfoDTO dto) {
-
         return new ResponseResult<>(200, "操作成功", sysUserService.getSysUserInfoByPage(dto));
     }
 

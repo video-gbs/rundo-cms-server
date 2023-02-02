@@ -28,4 +28,52 @@
             </if>
         </where>
     </delete>
+
+    <select id="MySelectPage" resultType="com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO">
+        SELECT r1.id,
+               r1.user_account,
+               r1.user_name,
+               r2.org_id,
+               r2.org_name,
+               r1.role_name,
+               r1.job_no,
+               r1.created_time,
+               r1.updated_time,
+               r1.status
+        FROM (SELECT userInfo.id,
+                     userInfo.user_account,
+                     userInfo.user_name,
+                     org.org_name,
+                     GROUP_CONCAT(role.role_name ORDER BY userInfo.id SEPARATOR ' ') role_name,
+                     userInfo.job_no,
+                     userInfo.created_time,
+                     userInfo.updated_time,
+                     userInfo.status,
+                     suo.org_id
+              FROM sys_user_info userInfo
+                       LEFT JOIN sys_user_org suo ON suo.user_id = userInfo.id
+                       LEFT JOIN sys_org org ON suo.org_id = org.id
+                       LEFT JOIN sys_role_user sru ON sru.user_id = userInfo.id
+                       LEFT JOIN sys_role_info role ON sru.role_id = role.id
+              GROUP BY id) r1
+                 LEFT JOIN (SELECT org.id                                                   org_id,
+                                   org.org_pid,
+                                   GROUP_CONCAT(org.org_name ORDER BY org.id SEPARATOR '/') org_name
+                            FROM sys_org org
+                                     JOIN sys_org so ON so.id = org.org_pid
+                                     LEFT JOIN sys_user_org suo ON suo.org_id = org.id
+                            GROUP BY org_pid) r2 ON r2.org_id = r1.org_id
+        <where>
+            <if test="orgId != null and orgId != 0">
+                r2.org_id = #{orgId,jdbcType=BIGINT}
+            </if>
+            <if test="userAccount != null and userAccount != ''">
+                AND r1.user_account = #{userAccount,jdbcType=VARCHAR}
+            </if>
+            <if test="userName != null and userName != ''">
+                AND r1.user_name = #{userName,jdbcType=VARCHAR}
+            </if>
+        </where>
+        ORDER BY r1.id
+    </select>
 </mapper>

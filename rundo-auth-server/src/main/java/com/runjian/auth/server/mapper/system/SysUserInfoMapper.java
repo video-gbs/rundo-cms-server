@@ -1,7 +1,10 @@
 package com.runjian.auth.server.mapper.system;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.runjian.auth.server.domain.dto.page.PageSysUserInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
+import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,4 +28,6 @@ public interface SysUserInfoMapper extends BaseMapper<SysUserInfo> {
     List<Long> selectRoleByUserId(@Param("userId") Long userId);
 
     void deleteUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
+
+    Page<ListSysUserInfoVO> MySelectPage(PageSysUserInfoDTO page);
 }
