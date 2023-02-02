@@ -7,6 +7,7 @@ import com.runjian.auth.server.domain.dto.system.AddSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysUserInfoDTO;
+import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
 import com.runjian.auth.server.service.system.SysUserInfoService;
 import io.swagger.annotations.Api;
@@ -47,6 +48,12 @@ public class SysUserInfoController {
         return new ResponseResult<>(200, "操作成功");
     }
 
+    @PostMapping("/getById/{id}")
+    @ApiOperation("编辑时回显用户信息")
+    public ResponseResult<EditSysUserInfoVO> getUserById(@PathVariable Long id) {
+        return new ResponseResult<>(200, "操作成功", sysUserService.getSysUserInfoById(id));
+    }
+
     @PostMapping("/update")
     @ApiOperation("编辑用户")
     public ResponseResult<?> updateUser(@RequestBody UpdateSysUserInfoDTO dto) {
@@ -67,23 +74,17 @@ public class SysUserInfoController {
         return new ResponseResult<>(200, "操作成功");
     }
 
+    @PostMapping("/remove/{id}")
+    @ApiOperation("删除用户")
+    public ResponseResult<?> removeById(@PathVariable Long id) {
+        sysUserService.removeSysUserInfoById(id);
+        return new ResponseResult<>(200, "操作成功");
+    }
+
     @PostMapping("/getListByPage")
     @ApiOperation("获取用户列表")
     public ResponseResult<IPage<ListSysUserInfoVO>> getSysUserInfoByPage(@RequestBody QuerySysUserInfoDTO dto) {
         return new ResponseResult<>(200, "操作成功", sysUserService.getSysUserInfoByPage(dto));
-    }
-
-
-    // @PostMapping("/getById/{id}")
-    // @ApiOperation("编辑用户查看用户详情")
-    // public ResponseResult<SysUserInfoVO> getUserById(@PathVariable Long id) {
-    //     return sysUserService.getUser(id);
-    // }
-
-    @PostMapping("/getById/{id}")
-    @ApiOperation("关联用户查看用户详情")
-    public ResponseResult<ListSysUserInfoVO> getUserById(@PathVariable Long id) {
-        return sysUserService.getUser(id);
     }
 
 

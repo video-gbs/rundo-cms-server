@@ -8,6 +8,7 @@ import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysUserInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
+import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
 
 /**
@@ -29,4 +30,8 @@ public interface SysUserInfoService extends IService<SysUserInfo> {
     void changeStatus(StatusSysUserInfoDTO dto);
 
     Page<ListSysUserInfoVO> getSysUserInfoByPage(QuerySysUserInfoDTO dto);
+
+    void removeSysUserInfoById(Long id);
+
+    EditSysUserInfoVO getSysUserInfoById(Long id);
 }

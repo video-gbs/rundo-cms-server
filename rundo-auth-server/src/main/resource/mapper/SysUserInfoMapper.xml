@@ -14,6 +14,11 @@
     <select id="selectRoleByUserId" resultType="java.lang.Long">
         SELECT sru.role_id
         FROM sys_role_user sru
+        <where>
+            <if test="userId != null">
+                sru.user_id= #{userId,jdbcType=BIGINT}
+            </if>
+        </where>
     </select>
 
     <delete id="deleteUserRole">
@@ -65,7 +70,7 @@
                                      LEFT JOIN sys_user_org suo ON suo.org_id = org.id
                             GROUP BY org_pid) r2 ON r2.org_id = r1.org_id
         <where>
-            <if test="orgId != null and orgId != 0">
+            <if test="orgId != null">
                 r2.org_id = #{orgId,jdbcType=BIGINT}
             </if>
             <if test="userAccount != null and userAccount != ''">
@@ -76,5 +81,15 @@
             </if>
         </where>
         ORDER BY r1.id
+    </select>
+
+    <select id="selectOrgInfoByUserId" resultType="java.lang.Long">
+        SELECT suo.org_id
+        FROM sys_user_org suo
+        <where>
+            <if test="userId != null">
+                suo.user_id = #{userId,jdbcType=BIGINT}
+            </if>
+        </where>
     </select>
 </mapper>

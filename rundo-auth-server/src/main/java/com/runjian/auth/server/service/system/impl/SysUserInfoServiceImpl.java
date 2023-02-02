@@ -8,11 +8,10 @@ import com.runjian.auth.server.domain.dto.system.AddSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysUserInfoDTO;
-import com.runjian.auth.server.domain.entity.system.SysOrg;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
+import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
-import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.mapper.system.SysUserInfoMapper;
 import com.runjian.auth.server.service.system.SysUserInfoService;
 import com.runjian.auth.server.util.PasswordUtil;
@@ -44,9 +43,6 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     @Autowired
     private SysOrgMapper sysOrgMapper;
 
-    @Autowired
-    private SysRoleInfoMapper sysRoleInfoMapper;
-
     @Override
     public void saveSysUserInfo(AddSysUserInfoDTO dto) {
         // 处理基本信息
@@ -73,6 +69,20 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         }
 
 
+    }
+
+    @Override
+    public EditSysUserInfoVO getSysUserInfoById(Long id) {
+        EditSysUserInfoVO vo = new EditSysUserInfoVO();
+        SysUserInfo sysUserInfo = sysUserInfoMapper.selectById(id);
+        BeanUtils.copyProperties(sysUserInfo,vo);
+        Long orgId = sysUserInfoMapper.selectOrgInfoByUserId(id);
+        List<Long> roleIds = sysUserInfoMapper.selectRoleByUserId(id);
+        vo.setPassword(null);
+        vo.setRePassword(null);
+        vo.setOrgId(orgId);
+        vo.setRoleIds(roleIds);
+        return vo;
     }
 
     @Override
@@ -115,9 +125,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
 
     @Override
     public ResponseResult<ListSysUserInfoVO> getUser(Long id) {
-        SysUserInfo sysUserInfo = sysUserInfoMapper.selectById(id);
-        ListSysUserInfoVO sysUserInfoVO = getSysUserInfoVO(sysUserInfo);
-        return new ResponseResult<>(200, "操作成功", sysUserInfoVO);
+        return null;
     }
 
     @Override
@@ -146,52 +154,11 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         return sysUserInfoMapper.MySelectPage(page);
     }
 
-    /**
-     * 封装处理用户基本信息
-     *
-     * @param sysUserInfo
-     * @return
-     */
-    private ListSysUserInfoVO getSysUserInfoVO(SysUserInfo sysUserInfo) {
-        ListSysUserInfoVO sysUserInfoVO = new ListSysUserInfoVO();
-        sysUserInfoVO.setId(sysUserInfo.getId());
-        sysUserInfoVO.setUserAccount(sysUserInfo.getUserAccount());
-        sysUserInfoVO.setUserName(sysUserInfo.getUserName());
-        // TODO 处理部门ID
-        // SysOrg sysOrg = getByUserId(sysUserInfo.getId());
-        // sysUserInfoVO.setOrgId(sysOrg.getId());
-        // sysUserInfoVO.setOrgName(sysOrg.getOrgName());
-        // TODO 处理角色
-        // Map<Long, String> roleInfo = new HashMap<>();
-        // sysUserInfoVO.setRoleIds(roleInfo);
-        //
-        // sysUserInfoVO.setJobNo(sysUserInfo.getJobNo());
-        // sysUserInfoVO.setCreatedTime(sysUserInfo.getCreatedTime());
-        // sysUserInfoVO.setUpdatedTime(sysUserInfo.getUpdatedTime());
-        // sysUserInfoVO.setDeleteFlag(null);
-        // sysUserInfoVO.setExpiryDateStart(sysUserInfo.getExpiryDateStart());
-        // sysUserInfoVO.setExpiryDateEnd(sysUserInfo.getExpiryDateEnd());
-        // sysUserInfoVO.setPhone(sysUserInfo.getPhone());
-        // sysUserInfoVO.setAddress(sysUserInfo.getAddress());
-        // sysUserInfoVO.setDescription(sysUserInfo.getDescription());
-        return sysUserInfoVO;
+    @Override
+    public void removeSysUserInfoById(Long id) {
+        sysUserInfoMapper.deleteById(id);
     }
 
-    private SysOrg getByUserId(Long userId) {
-        String orgTreeName = "";
-        Long orgId = null;//sysOrgMapper.getByUserId(userId);
-        SysOrg sysOrgInfo = sysOrgMapper.selectById(orgId);
-        String orgPids = sysOrgInfo.getOrgPids();
-
-        List<SysOrg> sysOrgList = sysOrgMapper.selectOrgTree(orgId, null);
-        for (SysOrg sysOrg : sysOrgList) {
-            orgTreeName = orgTreeName.concat("/").concat(sysOrg.getOrgName());
-        }
-        SysOrg sysOrg = new SysOrg();
-        sysOrg.setId(orgId);
-        sysOrg.setOrgName(orgTreeName);
-        return sysOrg;
-    }
 
 
 }
