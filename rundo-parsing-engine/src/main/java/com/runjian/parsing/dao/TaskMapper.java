@@ -20,9 +20,9 @@ public interface TaskMapper {
 
 
     @Insert(" INSERT INTO " + TASK_TABLE_NAME +
-            " (gateway_id, device_id, channel_id, client_msg_id, mq_id, msg_type, state, detail, update_time, create_time) " +
+            " (gateway_id, device_id, channel_id, mq_id, msg_type, state, detail, update_time, create_time) " +
             " VALUES " +
-            " (#{gatewayId}, #{deviceId}, #{channelId}, #{clientMsgId}, #{mqId}, #{msgType}, #{state}, #{detail}, #{updateTime}, #{createTime})")
+            " (#{gatewayId}, #{deviceId}, #{channelId}, #{mqId}, #{msgType}, #{state}, #{detail}, #{updateTime}, #{createTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(TaskInfo taskInfo);
 

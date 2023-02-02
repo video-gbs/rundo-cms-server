@@ -64,7 +64,7 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol  {
             deviceInfo.setOriginId(deviceOriginId);
             deviceInfo.setGatewayId(gatewayId);
             deviceInfo.setUpdateTime(nowTime);
-            deviceInfo.setUpdateTime(nowTime);
+            deviceInfo.setCreateTime(nowTime);
             deviceMapper.save(deviceInfo);
         }
         jsonObject.put(StandardName.DEVICE_ID, deviceInfo.getId());

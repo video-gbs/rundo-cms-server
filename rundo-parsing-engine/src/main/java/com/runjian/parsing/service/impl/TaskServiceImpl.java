@@ -50,7 +50,6 @@ public class TaskServiceImpl implements TaskService {
         taskInfo.setGatewayId(gatewayId);
         taskInfo.setDeviceId(deviceId);
         taskInfo.setChannelId(channelId);
-        taskInfo.setClientMsgId(clientMsgId);
         taskInfo.setMqId(mqId);
         taskInfo.setMsgType(msgType);
         taskInfo.setCreateTime(nowTime);

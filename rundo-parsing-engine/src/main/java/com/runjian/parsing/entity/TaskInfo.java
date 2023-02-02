@@ -34,11 +34,6 @@ public class TaskInfo {
     private Long channelId;
 
     /**
-     * 消息id
-     */
-    private String clientMsgId;
-
-    /**
      * 队列id
      */
     private String mqId;

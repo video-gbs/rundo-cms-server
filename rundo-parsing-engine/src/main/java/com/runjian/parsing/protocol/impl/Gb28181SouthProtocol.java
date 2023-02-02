@@ -93,9 +93,9 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
                     channelMapper.save(channelInfo);
                 }
                 // 转换数据
-                int onlineState = jsonObject.getIntValue(this.CHANNEL_ONLINE_STATE);
-                String channelName = jsonObject.getString(this.CHANNEL_NAME);
-                String channelIp = jsonObject.getString(this.IP);
+                int onlineState = jsonObject.getIntValue(CHANNEL_ONLINE_STATE);
+                String channelName = jsonObject.getString(CHANNEL_NAME);
+                String channelIp = jsonObject.getString(IP);
                 jsonObject.put(StandardName.CHANNEL_TYPE, 5);
                 jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
                 jsonObject.put(StandardName.CHANNEL_ID, channelInfo.getId());
@@ -117,7 +117,7 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "结果为空");
         }
         JSONObject jsonObject = JSON.parseObject(data.toString());
-        int onlineState = jsonObject.getIntValue(this.DEVICE_ONLINE_STATE);
+        int onlineState = jsonObject.getIntValue(DEVICE_ONLINE_STATE);
         jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
         return jsonObject;
     }
