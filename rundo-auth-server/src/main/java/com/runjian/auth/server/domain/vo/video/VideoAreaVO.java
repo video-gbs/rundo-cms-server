@@ -30,4 +30,7 @@ public class VideoAreaVO {
 
     @ApiModelProperty("层级")
     private Integer level;
+
+    @ApiModelProperty("区域排序")
+    private Integer areaSort;
 }

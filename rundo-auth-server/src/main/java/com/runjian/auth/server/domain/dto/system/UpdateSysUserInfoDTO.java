@@ -8,14 +8,14 @@ import lombok.EqualsAndHashCode;
 /**
  * @author Jiang4Yu
  * @version V1.0.0
- * @ClassName UpdateSysAppInfoDTO
- * @Description 更新应用
- * @date 2023-01-30 周一 14:09
+ * @ClassName UpdateSysUserInfoDTO
+ * @Description 更新用户信息
+ * @date 2023-02-02 周四 14:50
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "更新应用", description = "接口信息")
-public class UpdateSysAppInfoDTO extends AddSysAppInfoDTO {
+@ApiModel(value = "更新用户信息", description = "更新用户信息")
+public class UpdateSysUserInfoDTO extends AddSysUserInfoDTO{
     @ApiModelProperty("主键ID")
     private Long id;
 }

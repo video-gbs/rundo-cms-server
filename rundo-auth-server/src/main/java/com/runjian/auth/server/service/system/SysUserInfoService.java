@@ -1,10 +1,14 @@
 package com.runjian.auth.server.service.system;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysUserInfoDTO;
-import com.runjian.auth.server.domain.vo.system.SysUserInfoVO;
+import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateSysUserInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
+import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
 
 import java.util.List;
 
@@ -18,11 +22,15 @@ import java.util.List;
  */
 public interface SysUserInfoService extends IService<SysUserInfo> {
 
-    ResponseResult addUser(AddSysUserInfoDTO dto);
+    void saveSysUserInfo(AddSysUserInfoDTO dto);
 
-    ResponseResult updateUser(AddSysUserInfoDTO dto);
+    void updateSysUserInfo(UpdateSysUserInfoDTO dto);
 
-    ResponseResult<SysUserInfoVO> getUser(Long id);
+    ResponseResult<ListSysUserInfoVO> getUser(Long id);
 
-    ResponseResult<List<SysUserInfoVO>> getUserList();
+    ResponseResult<List<ListSysUserInfoVO>> getUserList();
+
+    void changeStatus(StatusSysUserInfoDTO dto);
+
+    Page<ListSysUserInfoVO> getSysUserInfoByPage(QuerySysUserInfoDTO dto);
 }

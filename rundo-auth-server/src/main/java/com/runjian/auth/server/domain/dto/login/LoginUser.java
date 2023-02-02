@@ -69,13 +69,13 @@ public class LoginUser implements UserDetails {
 
     /**
      * 账号是否没被锁定
-     * 暂时未用到，直接返回true，表示账户未被锁定
      *
      * @return
      */
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        // 状态为非0,就是锁定状态
+        return sysUserInfo.getStatus().equals(0);
     }
 
     /**

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,19 +20,30 @@ import java.util.List;
 public class AddSysUserInfoDTO {
 
     @ApiModelProperty("用户账户")
+    @NotNull
     private String userAccount;
 
     @ApiModelProperty("用户姓名")
     private String userName;
 
     @ApiModelProperty("用户密码")
+    @NotNull
     private String password;
 
-    @ApiModelProperty("邮箱")
-    private String email;
+    @ApiModelProperty("确认密码")
+    @NotNull
+    private String rePassword;
 
-    @ApiModelProperty("电话")
-    private String phone;
+    @ApiModelProperty("有效期起")
+    @NotNull
+    private LocalDateTime expiryDateStart;
+
+    @ApiModelProperty("有效期终")
+    private LocalDateTime expiryDateEnd;
+
+    @ApiModelProperty("所属部门编号")
+    @NotNull
+    private Long orgId;
 
     @ApiModelProperty("工号")
     private String jobNo;
@@ -39,24 +51,15 @@ public class AddSysUserInfoDTO {
     @ApiModelProperty("地址")
     private String address;
 
-    @ApiModelProperty("有效期起")
-    private LocalDateTime expiryDateStart;
+    @ApiModelProperty("邮箱")
+    private String email;
 
-    @ApiModelProperty("有效期终")
-    private LocalDateTime expiryDateEnd;
+    @ApiModelProperty("电话")
+    private String phone;
 
     @ApiModelProperty("描述信息")
     private String description;
 
-    /**
-     * 部门编号
-     */
-    @ApiModelProperty("部门编号")
-    private Long orgId;
-
-    /**
-     * 角色信息
-     */
     @ApiModelProperty("角色编号列表")
     private List<Long> roleIds;
 

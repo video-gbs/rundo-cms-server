@@ -3,6 +3,9 @@ package com.runjian.auth.server.mapper.system;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +18,11 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface SysUserInfoMapper extends BaseMapper<SysUserInfo> {
 
+    void insertUserOrg(@Param("userId") Long userId, @Param("orgId") Long orgId);
+
+    void insertUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
+
+    List<Long> selectRoleByUserId(@Param("userId") Long userId);
+
+    void deleteUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
 }

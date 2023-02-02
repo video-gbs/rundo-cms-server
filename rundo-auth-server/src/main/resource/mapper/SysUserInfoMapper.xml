@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.runjian.auth.server.mapper.system.SysUserInfoMapper">
+    <insert id="insertUserOrg">
+        INSERT INTO sys_user_org(user_id, org_id)
+        VALUES (#{userId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT});
+    </insert>
 
+    <insert id="insertUserRole">
+        INSERT INTO sys_role_user(user_id, role_id)
+        VALUES (#{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT});
+    </insert>
+
+    <select id="selectRoleByUserId" resultType="java.lang.Long">
+        SELECT sru.role_id
+        FROM sys_role_user sru
+    </select>
+
+    <delete id="deleteUserRole">
+        DELETE
+        FROM sys_role_user sru
+        <where>
+            <if test="userId != null">
+                sru.user_id = #{userId,jdbcType=BIGINT}
+            </if>
+            <if test="roleId != null">
+                AND sru.role_id = #{roleId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </delete>
 </mapper>

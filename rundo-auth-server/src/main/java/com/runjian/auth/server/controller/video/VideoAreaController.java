@@ -37,8 +37,7 @@ public class VideoAreaController {
     @ApiOperation("添加安防区域")
     public ResponseResult<VideoAreaVO> save(@RequestBody AddVideoAreaDTO dto) {
         log.info("添加安防区域前端传参信息{}", JSONUtil.toJsonStr(dto));
-        videoAreaSaervice.saveVideoArae(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return new ResponseResult<>(200, "操作成功", videoAreaSaervice.saveVideoArae(dto));
     }
 
     @PostMapping("/remove/{id}")
@@ -50,7 +49,7 @@ public class VideoAreaController {
     @PostMapping("/batchDelete")
     @ApiOperation("批量删除安防区域")
     public ResponseResult<String> batchDelete(@RequestBody List<Long> ids) {
-        return new ResponseResult<>(200, "操作成功",videoAreaSaervice.batchDelete(ids));
+        return new ResponseResult<>(200, "操作成功", videoAreaSaervice.batchDelete(ids));
     }
 
     @PostMapping("/update")
