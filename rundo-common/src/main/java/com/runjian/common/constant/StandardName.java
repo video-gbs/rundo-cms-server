@@ -27,6 +27,11 @@ public class StandardName {
     public static final String DEVICE_ID = "deviceId";
 
     /**
+     * 原始id
+     */
+    public static final String ORIGIN_ID = "originId";
+
+    /**
      * 标准通道Id名称
      */
     public static final String DEVICE_TYPE = "deviceType";

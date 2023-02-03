@@ -33,7 +33,7 @@ public class GatewaySouthServiceImpl implements GatewaySouthService {
     /**
      * 心跳时钟
      */
-    private volatile CircleArray<Long> heartbeatArray = new CircleArray<>(600);
+    private static volatile CircleArray<Long> heartbeatArray = new CircleArray<>(600);
 
     @PostConstruct
     public void init(){

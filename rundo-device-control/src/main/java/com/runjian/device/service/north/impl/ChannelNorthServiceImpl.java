@@ -112,6 +112,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                 Optional<DetailInfo> detailInfoOp = detailMapper.selectByDcIdAndType(rsp.getChannelId(), DetailType.CHANNEL.getCode());
                 DetailInfo detailInfo = detailInfoOp.orElse(new DetailInfo());
                 detailInfo.setDcId(rsp.getChannelId());
+                detailInfo.setOriginId(rsp.getOriginId());
                 detailInfo.setIp(rsp.getIp());
                 detailInfo.setPort(rsp.getPort());
                 detailInfo.setName(rsp.getName());
@@ -283,7 +284,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道处于离线状态");
         }
         // 检测通道是否注册成功
-        if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+        if (!channelInfo.getSignState().equals(SignState.SUCCESS.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道未注册成功");
         }
         return channelInfo;

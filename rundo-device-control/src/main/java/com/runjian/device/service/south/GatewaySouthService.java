@@ -22,6 +22,8 @@ public interface GatewaySouthService {
      */
     void signIn(GatewayInfo gatewayInfo, LocalDateTime outTime);
 
+
+
     /**
      * 网关同步
      * @param gatewayInfo 网关信息

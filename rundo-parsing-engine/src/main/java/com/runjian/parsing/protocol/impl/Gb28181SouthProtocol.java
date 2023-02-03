@@ -101,6 +101,7 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
                 jsonObject.put(StandardName.CHANNEL_ID, channelInfo.getId());
                 jsonObject.put(StandardName.COM_NAME, channelName);
                 jsonObject.put(StandardName.COM_IP, channelIp);
+                jsonObject.put(StandardName.ORIGIN_ID, channelInfo.getOriginId());
             }
         }
         taskService.removeDeferredResult(taskId).setResult(CommonResponse.success(jsonData));

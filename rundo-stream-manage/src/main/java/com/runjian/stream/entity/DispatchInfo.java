@@ -23,6 +23,11 @@ public class DispatchInfo {
     private String serialNum;
 
     /**
+     * 在线状态 0离线 1在线
+     */
+    private Integer onlineState;
+
+    /**
      * 名称
      */
     private String name;

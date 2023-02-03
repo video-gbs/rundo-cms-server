@@ -46,7 +46,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
      * @param port 端口
      */
     @Override
-    public void signIn(Long id, Long gatewayId, Integer onlineState, Integer deviceType, String ip, String port) {
+    public void signIn(Long id, Long gatewayId, String originId, Integer onlineState, Integer deviceType, String ip, String port) {
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
         LocalDateTime nowTime = LocalDateTime.now();
         if (deviceInfoOp.isEmpty()){
@@ -82,6 +82,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         Optional<DetailInfo> detailInfoOp = detailMapper.selectByDcIdAndType(id, DetailType.DEVICE.getCode());
         if (detailInfoOp.isEmpty()){
             DetailInfo detailInfo = new DetailInfo();
+            detailInfo.setOriginId(originId);
             detailInfo.setIp(ip);
             detailInfo.setPort(port);
             detailInfo.setUpdateTime(nowTime);

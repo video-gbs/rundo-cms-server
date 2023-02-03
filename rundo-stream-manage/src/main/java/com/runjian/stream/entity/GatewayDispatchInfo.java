@@ -5,12 +5,12 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 流媒体服务信息
  * @author Miracle
- * @date 2023/2/2 15:49
+ * @date 2023/2/3 10:12
  */
 @Data
-public class MediaInfo {
+public class GatewayDispatchInfo {
+
 
     /**
      * 主键id
@@ -18,16 +18,18 @@ public class MediaInfo {
     private Long id;
 
     /**
+     * 网关id
+     */
+    private Long gatewayId;
+
+    /**
      * 调度服务id
      */
     private Long dispatchId;
 
-    /**
-     * 原始id
-     */
-    private String originId;
-
     private LocalDateTime updateTime;
 
     private LocalDateTime createTime;
+
+
 }

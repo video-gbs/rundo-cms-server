@@ -16,6 +16,11 @@ public class ChannelDetailRsp {
     private Long channelId;
 
     /**
+     * 原始id
+     */
+    private String originId;
+
+    /**
      * 通道类型
      */
     private Integer channelType;
