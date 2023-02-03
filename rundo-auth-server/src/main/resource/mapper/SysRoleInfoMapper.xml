@@ -42,4 +42,14 @@
             LEFT JOIN sys_role_info sri ON sri.id = sra.id
         WHERE sri.role_code = #{roleCode}
     </select>
+
+    <select id="selectEditUserSysRoleInfoPage" resultType="com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO">
+        SELECT sri.id,
+               sri.role_name,
+               sri.role_desc,
+               sri.status,
+               sri.created_by
+        FROM sys_role_info sri
+        WHERE sri.delete_flag = 0
+    </select>
 </mapper>

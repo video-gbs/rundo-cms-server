@@ -17,5 +17,5 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @ApiModel(value = "字典分页查询", description = "应用信息查询条件")
-public class RelationSysUserInfoDTO extends CommonPage {
+public class QueryRelationSysUserInfoDTO extends CommonPage {
 }

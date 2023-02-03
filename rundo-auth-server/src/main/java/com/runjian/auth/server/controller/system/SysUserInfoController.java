@@ -101,7 +101,7 @@ public class SysUserInfoController {
 
     @PostMapping("/getRelationSysUserInfoList")
     @ApiOperation("关联用户用户列表")
-    public ResponseResult<IPage<RelationSysUserInfoVO>> getRelationSysUserInfoList(@RequestBody RelationSysUserInfoDTO dto) {
+    public ResponseResult<IPage<RelationSysUserInfoVO>> getRelationSysUserInfoList(@RequestBody QueryRelationSysUserInfoDTO dto) {
         return new ResponseResult<>(200, "操作成功", sysUserService.getRelationSysUserInfoList(dto));
     }
 

@@ -4,8 +4,10 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QueryEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysRoleInfoDTO;
+import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
 import io.swagger.annotations.Api;
@@ -67,16 +69,18 @@ public class SysRoleInfoController {
         return new ResponseResult<>(200, "操作成功", sysRoleInfoService.getById(id));
     }
 
-    @GetMapping("/getList")
-    @ApiOperation("获取角色列表")
-    public ResponseResult getList() {
-        return new ResponseResult<>(200, "操作成功", sysRoleInfoService.list());
-    }
+
 
     @GetMapping("/getListByPage")
     @ApiOperation("分页获取角色列表")
     public ResponseResult<IPage<SysRoleInfoVO>> getListByPage(@RequestBody QuerySysRoleInfoDTO dto) {
         // TODO 分页获取应用列表
         return new ResponseResult<>(200, "操作成功", sysRoleInfoService.getSysRoleInfoByPage(dto));
+    }
+
+    @GetMapping("/getEditUserSysRoleInfoList")
+    @ApiOperation("新增编辑用户时获取角色分页列表")
+    public ResponseResult<IPage<EditUserSysRoleInfoVO>> getEditUserSysRoleInfoList(@RequestBody QueryEditUserSysRoleInfoDTO dto) {
+        return new ResponseResult<>(200, "操作成功", sysRoleInfoService.getEditUserSysRoleInfoList(dto));
     }
 }

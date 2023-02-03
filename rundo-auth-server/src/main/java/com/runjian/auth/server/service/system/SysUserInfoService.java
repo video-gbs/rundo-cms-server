@@ -36,5 +36,5 @@ public interface SysUserInfoService extends IService<SysUserInfo> {
 
     RelationSysUserInfoVO getRelationSysUserInfoById(Long id);
 
-    Page<RelationSysUserInfoVO> getRelationSysUserInfoList(RelationSysUserInfoDTO dto);
+    Page<RelationSysUserInfoVO> getRelationSysUserInfoList(QueryRelationSysUserInfoDTO dto);
 }

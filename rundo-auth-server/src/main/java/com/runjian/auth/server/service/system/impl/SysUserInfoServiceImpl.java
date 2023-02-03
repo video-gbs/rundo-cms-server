@@ -171,7 +171,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     }
 
     @Override
-    public Page<RelationSysUserInfoVO> getRelationSysUserInfoList(RelationSysUserInfoDTO dto) {
+    public Page<RelationSysUserInfoVO> getRelationSysUserInfoList(QueryRelationSysUserInfoDTO dto) {
         PageRelationSysUserInfoDTO page = new PageRelationSysUserInfoDTO();
         if (null != dto.getCurrent() && dto.getCurrent() > 0) {
             page.setCurrent(dto.getCurrent());

@@ -2,10 +2,13 @@ package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.AddSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QueryEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysRoleInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysRoleInfo;
+import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
@@ -106,5 +109,22 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
     @Override
     public void batchRemove(List<Long> ids) {
 
+    }
+
+    @Override
+    public Page<EditUserSysRoleInfoVO> getEditUserSysRoleInfoList(QueryEditUserSysRoleInfoDTO dto) {
+        PageEditUserSysRoleInfoDTO page = new PageEditUserSysRoleInfoDTO();
+        if (null != dto.getCurrent() && dto.getCurrent() > 0) {
+            page.setCurrent(dto.getCurrent());
+        } else {
+            page.setCurrent(1);
+        }
+        if (null != dto.getPageSize() && dto.getPageSize() > 0) {
+            page.setSize(dto.getPageSize());
+        } else {
+            page.setSize(20);
+        }
+
+        return roleInfoMapper.selectEditUserSysRoleInfoPage(page);
     }
 }
