@@ -1,5 +1,6 @@
 package com.runjian.auth.server.domain.dto.system;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.runjian.auth.server.domain.dto.common.CommonPage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -28,8 +29,10 @@ public class QuerySysRoleInfoDTO extends CommonPage {
     private Long createdBy;
 
     @ApiModelProperty("创建开始时间")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdTimeStart;
 
-    @ApiModelProperty("创建开始时间")
+    @ApiModelProperty("创建时间结束")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdTimeEnd;
 }

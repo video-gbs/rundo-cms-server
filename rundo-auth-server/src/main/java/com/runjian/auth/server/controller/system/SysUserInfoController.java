@@ -81,7 +81,7 @@ public class SysUserInfoController {
     }
 
     @PostMapping("/batchRemove")
-    @ApiOperation("删除用户")
+    @ApiOperation("批量删除用户")
     public ResponseResult<?> removeById(@RequestBody List<Long>  ids) {
         sysUserService.batchRemoveSysUserInfo(ids);
         return new ResponseResult<>(200, "操作成功");

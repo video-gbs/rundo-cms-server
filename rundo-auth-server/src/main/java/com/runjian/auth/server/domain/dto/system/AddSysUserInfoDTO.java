@@ -1,5 +1,6 @@
 package com.runjian.auth.server.domain.dto.system;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -36,9 +37,11 @@ public class AddSysUserInfoDTO {
 
     @ApiModelProperty("有效期起")
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expiryDateStart;
 
     @ApiModelProperty("有效期终")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expiryDateEnd;
 
     @ApiModelProperty("所属部门编号")

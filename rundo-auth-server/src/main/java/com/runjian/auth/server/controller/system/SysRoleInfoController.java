@@ -57,22 +57,16 @@ public class SysRoleInfoController {
         return new ResponseResult<>(200, "操作成功");
     }
 
+    @PostMapping("/batchRemove")
+    @ApiOperation("批量删除角色")
     public ResponseResult<?> batchRemove(@RequestBody List<Long> ids) {
         sysRoleInfoService.batchRemove(ids);
         return new ResponseResult<>(200, "操作成功");
     }
 
 
-    @GetMapping("/getById")
-    @ApiOperation("获取角色信息")
-    public ResponseResult getById(@RequestBody Long id) {
-        return new ResponseResult<>(200, "操作成功", sysRoleInfoService.getById(id));
-    }
-
-
-
     @GetMapping("/getListByPage")
-    @ApiOperation("分页获取角色列表")
+    @ApiOperation("获取角色分页列表")
     public ResponseResult<IPage<SysRoleInfoVO>> getListByPage(@RequestBody QuerySysRoleInfoDTO dto) {
         // TODO 分页获取应用列表
         return new ResponseResult<>(200, "操作成功", sysRoleInfoService.getSysRoleInfoByPage(dto));

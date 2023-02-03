@@ -108,6 +108,7 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
 
     @Override
     public void batchRemove(List<Long> ids) {
+        roleInfoMapper.deleteBatchIds(ids);
 
     }
 
