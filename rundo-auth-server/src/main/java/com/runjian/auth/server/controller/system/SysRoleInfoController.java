@@ -78,7 +78,7 @@ public class SysRoleInfoController {
         return new ResponseResult<>(200, "操作成功", sysRoleInfoService.getSysRoleInfoByPage(dto));
     }
 
-    @GetMapping("/getEditUserSysRoleInfoList")
+    @PostMapping("/getEditUserSysRoleInfoList")
     @ApiOperation("新增编辑用户时获取角色分页列表")
     public ResponseResult<IPage<EditUserSysRoleInfoVO>> getEditUserSysRoleInfoList(@RequestBody QueryEditUserSysRoleInfoDTO dto) {
         return new ResponseResult<>(200, "操作成功", sysRoleInfoService.getEditUserSysRoleInfoList(dto));
