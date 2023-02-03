@@ -2,15 +2,13 @@ package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.common.ResponseResult;
+import com.runjian.auth.server.domain.dto.page.PageRelationSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysUserInfoDTO;
-import com.runjian.auth.server.domain.dto.system.AddSysUserInfoDTO;
-import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
-import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
 import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
+import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.mapper.system.SysUserInfoMapper;
 import com.runjian.auth.server.service.system.SysUserInfoService;
@@ -75,7 +73,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     public EditSysUserInfoVO getSysUserInfoById(Long id) {
         EditSysUserInfoVO vo = new EditSysUserInfoVO();
         SysUserInfo sysUserInfo = sysUserInfoMapper.selectById(id);
-        BeanUtils.copyProperties(sysUserInfo,vo);
+        BeanUtils.copyProperties(sysUserInfo, vo);
         Long orgId = sysUserInfoMapper.selectOrgInfoByUserId(id);
         List<Long> roleIds = sysUserInfoMapper.selectRoleByUserId(id);
         vo.setPassword(null);
@@ -123,10 +121,6 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
 
     }
 
-    @Override
-    public ResponseResult<ListSysUserInfoVO> getUser(Long id) {
-        return null;
-    }
 
     @Override
     public void changeStatus(StatusSysUserInfoDTO dto) {
@@ -137,9 +131,14 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
 
     @Override
     public Page<ListSysUserInfoVO> getSysUserInfoByPage(QuerySysUserInfoDTO dto) {
+        Long zero = 0L;
         PageSysUserInfoDTO page = new PageSysUserInfoDTO();
-        page.setOrgId(dto.getOrgId());
-        page.setUserName(dto.getUserName());
+        if (dto.getOrgId() != null && !zero.equals(dto.getOrgId())) {
+            page.setOrgId(dto.getOrgId());
+        }
+        if (null != dto.getUserName() && "".equals(dto.getUserName())){
+            page.setUserName(dto.getUserName());
+        }
         page.setUserAccount(dto.getUserAccount());
         if (null != dto.getCurrent() && dto.getCurrent() > 0) {
             page.setCurrent(dto.getCurrent());
@@ -159,6 +158,33 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         sysUserInfoMapper.deleteById(id);
     }
 
+    @Override
+    public void batchRemoveSysUserInfo(List<Long> ids) {
+        for (Long id : ids) {
+            sysUserInfoMapper.deleteById(id);
+        }
+    }
+
+    @Override
+    public RelationSysUserInfoVO getRelationSysUserInfoById(Long id) {
+        return sysUserInfoMapper.selectRelationSysUserInfoById(id);
+    }
+
+    @Override
+    public Page<RelationSysUserInfoVO> getRelationSysUserInfoList(RelationSysUserInfoDTO dto) {
+        PageRelationSysUserInfoDTO page = new PageRelationSysUserInfoDTO();
+        if (null != dto.getCurrent() && dto.getCurrent() > 0) {
+            page.setCurrent(dto.getCurrent());
+        } else {
+            page.setCurrent(1);
+        }
+        if (null != dto.getPageSize() && dto.getPageSize() > 0) {
+            page.setSize(dto.getPageSize());
+        } else {
+            page.setSize(20);
+        }
+        return sysUserInfoMapper.relationSysUserInfoPage(page);
+    }
 
 
 }

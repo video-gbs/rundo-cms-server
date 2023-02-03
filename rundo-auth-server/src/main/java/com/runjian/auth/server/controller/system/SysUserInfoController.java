@@ -3,12 +3,10 @@ package com.runjian.auth.server.controller.system;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.dto.system.AddSysUserInfoDTO;
-import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
-import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
+import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.service.system.SysUserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -81,10 +80,29 @@ public class SysUserInfoController {
         return new ResponseResult<>(200, "操作成功");
     }
 
+    @PostMapping("/batchRemove")
+    @ApiOperation("删除用户")
+    public ResponseResult<?> removeById(@RequestBody List<Long>  ids) {
+        sysUserService.batchRemoveSysUserInfo(ids);
+        return new ResponseResult<>(200, "操作成功");
+    }
+
     @PostMapping("/getListByPage")
     @ApiOperation("获取用户列表")
     public ResponseResult<IPage<ListSysUserInfoVO>> getSysUserInfoByPage(@RequestBody QuerySysUserInfoDTO dto) {
         return new ResponseResult<>(200, "操作成功", sysUserService.getSysUserInfoByPage(dto));
+    }
+
+    @PostMapping("/getRelationSysUserInfo/{id}")
+    @ApiOperation("关联用户查看用户下信息")
+    public ResponseResult<RelationSysUserInfoVO> getRelationSysUserInfoById(@PathVariable Long id) {
+        return new ResponseResult<>(200, "操作成功", sysUserService.getRelationSysUserInfoById(id));
+    }
+
+    @PostMapping("/getRelationSysUserInfoList")
+    @ApiOperation("关联用户用户列表")
+    public ResponseResult<IPage<RelationSysUserInfoVO>> getRelationSysUserInfoList(@RequestBody RelationSysUserInfoDTO dto) {
+        return new ResponseResult<>(200, "操作成功", sysUserService.getRelationSysUserInfoList(dto));
     }
 
 

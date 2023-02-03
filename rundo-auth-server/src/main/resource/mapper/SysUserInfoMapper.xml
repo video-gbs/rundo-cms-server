@@ -49,7 +49,7 @@
                      userInfo.user_account,
                      userInfo.user_name,
                      org.org_name,
-                     GROUP_CONCAT(role.role_name ORDER BY userInfo.id SEPARATOR ' ') role_name,
+                     GROUP_CONCAT(role.role_name ORDER BY userInfo.id SEPARATOR '/') role_name,
                      userInfo.job_no,
                      userInfo.created_time,
                      userInfo.updated_time,
@@ -70,7 +70,7 @@
                                      LEFT JOIN sys_user_org suo ON suo.org_id = org.id
                             GROUP BY org_pid) r2 ON r2.org_id = r1.org_id
         <where>
-            <if test="orgId != null">
+            <if test="orgId != null ">
                 r2.org_id = #{orgId,jdbcType=BIGINT}
             </if>
             <if test="userAccount != null and userAccount != ''">
@@ -91,5 +91,66 @@
                 suo.user_id = #{userId,jdbcType=BIGINT}
             </if>
         </where>
+    </select>
+
+    <select id="selectRelationSysUserInfoById" resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
+        SELECT
+            re.*
+        FROM
+            (
+                SELECT
+                    sui.id,
+                    sui.user_account,
+                    sui.user_name,
+                    sui.email,
+                    sui.phone,
+                    sui.job_no,
+                    sui.address,
+                    sui.expiry_date_start,
+                    sui.expiry_date_end,
+                    sui.description,
+                    sui.STATUS,
+                    GROUP_CONCAT( sri.role_name ORDER BY sui.id SEPARATOR ' ' ) role_name,
+                    GROUP_CONCAT( va.area_name ORDER BY sui.id SEPARATOR ' ' ) area_name
+                FROM
+                    sys_user_info sui
+                        LEFT JOIN sys_role_user sru ON sru.user_id = sui.id
+                        LEFT JOIN sys_role_info sri ON sri.id = sru.role_id
+                        LEFT JOIN role_video_area rva ON rva.role_id = sri.id
+                        LEFT JOIN video_area va ON va.id = rva.area_id
+                GROUP BY
+                    sui.id
+            ) re
+        <where>
+            <if test="userId != null">
+                sui.id = #{userId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
+    <select id="relationSysUserInfoPage" resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
+        SELECT
+            sui.id,
+            sui.user_account,
+            sui.user_name,
+            sui.email,
+            sui.phone,
+            sui.job_no,
+            sui.address,
+            sui.expiry_date_start,
+            sui.expiry_date_end,
+            sui.description,
+            sui.STATUS,
+            GROUP_CONCAT( sri.role_name ORDER BY sui.id SEPARATOR '/' ) role_name,
+            GROUP_CONCAT( va.area_name ORDER BY sui.id SEPARATOR '/' ) area_name
+        FROM
+            sys_user_info sui
+                LEFT JOIN sys_role_user sru ON sru.user_id = sui.id
+                LEFT JOIN sys_role_info sri ON sri.id = sru.role_id
+                LEFT JOIN role_video_area rva ON rva.role_id = sri.id
+                LEFT JOIN video_area va ON va.id = rva.area_id
+        GROUP BY
+            sui.id
+        ORDER BY sui.id
     </select>
 </mapper>

@@ -31,7 +31,7 @@ public class ListSysUserInfoVO {
     private String orgName;
 
     @ApiModelProperty("角色")
-    private String roleNameStr;
+    private String roleName;
 
     @ApiModelProperty("工号")
     private String jobNo;
