@@ -1,10 +1,8 @@
-package com.runjian.auth.server.domain.dto.system;
+package com.runjian.auth.server.domain.dto.page;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.runjian.auth.server.domain.dto.common.CommonPage;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -13,21 +11,18 @@ import java.time.LocalDateTime;
 /**
  * @author Jiang4Yu
  * @version V1.0.0
- * @ClassName QuerySysRoleInfoDTO
- * @Description 角色分页查询
- * @date 2023-02-02 周四 9:41
+ * @ClassName PageSysRoleInfoDto
+ * @Description 分页参数
+ * @date 2023-02-06 周一 13:50
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
-@ApiModel(value = "角色分页查询", description = "角色信息查询条件")
-public class QuerySysRoleInfoDTO extends CommonPage {
-    @ApiModelProperty(value = "角色名称", required = true)
+public class PageSysRoleInfoDto extends Page {
+    @ApiModelProperty(value = "角色名称")
     private String roleName;
 
-    @ApiModelProperty("创建人ID")
+    @ApiModelProperty("创建人")
     private Long createdBy;
-
 
     @ApiModelProperty("创建人账户")
     private String userAccount;

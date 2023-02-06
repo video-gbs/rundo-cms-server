@@ -3,6 +3,7 @@ package com.runjian.auth.server.service.system.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.page.PageSysRoleInfoDto;
 import com.runjian.auth.server.domain.dto.system.AddSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QueryEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
@@ -103,7 +104,34 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
 
     @Override
     public Page<SysRoleInfoVO> getSysRoleInfoByPage(QuerySysRoleInfoDTO dto) {
-        return null;
+        PageSysRoleInfoDto page = new PageSysRoleInfoDto();
+        if (dto.getRoleName() != null) {
+            page.setRoleName(dto.getRoleName());
+        }
+        if (dto.getCreatedBy() != null) {
+            page.setCreatedBy(dto.getCreatedBy());
+        }
+        if (dto.getUserAccount() != null) {
+            page.setUserAccount(dto.getUserAccount());
+        }
+        if (dto.getCreatedTimeStart() != null) {
+            page.setCreatedTimeStart(dto.getCreatedTimeStart());
+        }
+        if (dto.getCreatedTimeEnd() != null) {
+            page.setCreatedTimeEnd(dto.getCreatedTimeEnd());
+        }
+        if (null != dto.getCurrent() && dto.getCurrent() > 0) {
+            page.setCurrent(dto.getCurrent());
+        } else {
+            page.setCurrent(1);
+        }
+        if (null != dto.getPageSize() && dto.getPageSize() > 0) {
+            page.setSize(dto.getPageSize());
+        } else {
+            page.setSize(20);
+        }
+
+        return roleInfoMapper.MySelectPage(page);
     }
 
     @Override

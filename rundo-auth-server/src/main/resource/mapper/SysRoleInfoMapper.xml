@@ -52,4 +52,36 @@
         FROM sys_role_info sri
         WHERE sri.delete_flag = 0
     </select>
+
+    <select id="MySelectPage" resultType="com.runjian.auth.server.domain.vo.system.SysRoleInfoVO">
+        SELECT
+            role.id,
+            role.role_name,
+            role.created_by,
+            userInfo.user_account,
+            role.created_time,
+            role.updated_time,
+            role.role_desc,
+            role.status
+        FROM
+            sys_role_info role
+            LEFT JOIN sys_user_info userInfo ON userInfo.id = role.created_by
+        <where>
+            role.delete_flag = 0
+            <if test="userAccount != null and userAccount != ''">
+                <bind name="pattern" value="'%' + userAccount + '%'" />
+             AND userInfo.user_account LIKE #{pattern}
+            </if>
+            <if test="roleName != null and roleName != ''">
+             AND role.role_name = #{roleName,jdbcType=VARCHAR}
+            </if>
+            <if test="createdTimeEnd != null ">
+             AND role.created_time &gt;= #{createdTimeStart,jdbcType=TIMESTAMP}
+            </if>
+            <if test="createdTimeEnd != null ">
+             AND role.created_time &lt;= #{createdTimeEnd,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+
+    </select>
 </mapper>

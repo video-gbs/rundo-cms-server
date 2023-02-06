@@ -65,10 +65,9 @@ public class SysRoleInfoController {
     }
 
 
-    @GetMapping("/getListByPage")
+    @PostMapping("/getListByPage")
     @ApiOperation("获取角色分页列表")
     public ResponseResult<IPage<SysRoleInfoVO>> getListByPage(@RequestBody QuerySysRoleInfoDTO dto) {
-        // TODO 分页获取应用列表
         return new ResponseResult<>(200, "操作成功", sysRoleInfoService.getSysRoleInfoByPage(dto));
     }
 

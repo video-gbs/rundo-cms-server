@@ -3,8 +3,10 @@ package com.runjian.auth.server.mapper.system;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.page.PageSysRoleInfoDto;
 import com.runjian.auth.server.domain.entity.system.SysRoleInfo;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
+import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -55,4 +57,6 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
 
 
     Page<EditUserSysRoleInfoVO> selectEditUserSysRoleInfoPage(PageEditUserSysRoleInfoDTO page);
+
+    Page<SysRoleInfoVO> MySelectPage(PageSysRoleInfoDto page);
 }
