@@ -1,5 +1,7 @@
 package com.runjian.stream.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.CommonEnum;
@@ -8,6 +10,7 @@ import com.runjian.stream.dao.DispatchMapper;
 import com.runjian.stream.entity.DispatchInfo;
 import com.runjian.stream.service.DataBaseService;
 import com.runjian.stream.service.DispatchService;
+import com.runjian.stream.vo.response.GetDispatchRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -53,6 +56,13 @@ public class DispatchServiceImpl implements DispatchService {
     }
 
     @Override
+    public PageInfo<GetDispatchRsp> getDispatchByPage(int page, int num, String name) {
+        PageHelper.startPage(page, num);
+        return new PageInfo<>(dispatchMapper.selectAllByPage(name));
+
+    }
+
+    @Override
     public void signIn(Long dispatchId, String serialNum, String ip, String port, LocalDateTime outTime) {
         Optional<DispatchInfo> gatewayInfoOp = dispatchMapper.selectById(dispatchId);
         DispatchInfo dispatchInfo = gatewayInfoOp.orElse(new DispatchInfo());
@@ -65,6 +75,7 @@ public class DispatchServiceImpl implements DispatchService {
             dispatchInfo.setId(dispatchId);
             dispatchInfo.setSerialNum(serialNum);
             dispatchInfo.setCreateTime(nowTime);
+            dispatchInfo.setUrl("http://" + ip + ":" + port);
             dispatchMapper.save(dispatchInfo);
         }else {
             dispatchMapper.update(dispatchInfo);

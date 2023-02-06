@@ -62,6 +62,7 @@ public class GatewaySouthServiceImpl implements GatewaySouthService {
     public void signIn(GatewayInfo gatewayInfo, LocalDateTime outTime) {
         Optional<GatewayInfo> gatewayInfoOp = gatewayMapper.selectById(gatewayInfo.getId());
         if (gatewayInfoOp.isEmpty()){
+            gatewayInfo.setName(gatewayInfo.getProtocol() + ":" + gatewayInfo.getId());
             gatewayMapper.save(gatewayInfo);
         }
         updateHeartbeat(gatewayInfo.getId(), outTime);

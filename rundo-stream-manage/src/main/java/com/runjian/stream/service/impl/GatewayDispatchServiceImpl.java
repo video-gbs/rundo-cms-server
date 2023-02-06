@@ -34,8 +34,5 @@ public class GatewayDispatchServiceImpl implements GatewayDispatchService {
             gatewayDispatchInfoList.add(gatewayDispatchInfo);
         }
         gatewayDispatchMapper.saveAll(gatewayDispatchInfoList);
-
-
-
     }
 }

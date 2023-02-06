@@ -1,6 +1,7 @@
 package com.runjian.device.service.south.impl;
 
 import com.runjian.common.constant.CommonEnum;
+import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
 import com.runjian.device.dao.ChannelMapper;
@@ -11,6 +12,7 @@ import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.south.DeviceSouthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,6 +37,9 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
 
     @Autowired
     private ChannelNorthService channelNorthService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     /**
      * 设备添加注册
@@ -69,12 +74,18 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
                 if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                    // todo 上锁开始
+                    redisTemplate.opsForHash().put(MarkConstant.REDIS_DEVICE_ONLINE_STATE, deviceInfo.getId(), deviceInfo.getOnlineState());
+                    // todo 上锁结束
                     channelNorthService.channelSync(deviceInfo.getId());
                 }
             } else if (onlineState.equals(CommonEnum.DISABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.ENABLE.getCode())) {
                 // 将通道全部离线
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
+                if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                    redisTemplate.opsForHash().put(MarkConstant.REDIS_DEVICE_ONLINE_STATE, deviceInfo.getId(), deviceInfo.getOnlineState());
+                }
                 channelMapper.updateOnlineStateByDeviceId(id, onlineState, nowTime);
             }
         }

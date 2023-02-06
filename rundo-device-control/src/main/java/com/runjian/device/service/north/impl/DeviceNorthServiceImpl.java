@@ -1,5 +1,7 @@
 package com.runjian.device.service.north.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
@@ -18,6 +20,7 @@ import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.north.DeviceNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.response.DeviceSyncRsp;
+import com.runjian.device.vo.response.GetDevicePageRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +53,12 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Autowired
     private ChannelNorthService channelNorthService;
 
+    @Override
+    public PageInfo<GetDevicePageRsp> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
+        PageHelper.startPage(page, num);
+        return new PageInfo<>(deviceMapper.selectByPage(signState, deviceName, ip));
+    }
+
     /**
      * 设备主动添加
      * @param originId 设备原始ID
@@ -65,7 +74,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deviceAdd(String originId, Long gatewayId, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password) {
+    public Long deviceAdd(String originId, Long gatewayId, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password) {
         LocalDateTime nowTime = LocalDateTime.now();
 
 
@@ -90,11 +99,15 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         if (deviceInfoOp.isPresent()){
             DeviceInfo deviceInfo = deviceInfoOp.get();
             if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "设备已添加");
+                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "设备已添加，请勿重复添加");
+            }
+            if (deviceInfo.getSignState().equals(SignState.TO_BE_ADD.getCode())){
+                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "设备已存在，等待注册中");
             }
             deviceInfo.setSignState(SignState.SUCCESS.getCode());
             deviceInfo.setUpdateTime(nowTime);
             deviceMapper.updateSignState(deviceInfo);
+            return id;
         }
 
         DeviceInfo deviceInfo = new DeviceInfo();
@@ -109,7 +122,9 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         deviceMapper.save(deviceInfo);
         // 保存详细信息
         detailBaseService.saveOrUpdateDetail(id, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime);
+        return id;
     }
+
 
     /**
      * 设备注册成功状态

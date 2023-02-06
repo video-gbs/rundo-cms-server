@@ -1,6 +1,10 @@
 package com.runjian.stream.service;
 
+import com.github.pagehelper.PageInfo;
+import com.runjian.stream.vo.response.GetDispatchRsp;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 调度服务
@@ -13,6 +17,15 @@ public interface DispatchService {
      * 调度服务心跳处理
      */
     void heartbeat();
+
+    /**
+     * 获取调度服务信息
+     * @param page 页码
+     * @param num 每页数量
+     * @param name 名称
+     * @return
+     */
+    PageInfo<GetDispatchRsp> getDispatchByPage(int page, int num, String name);
 
     /**
      * 调度服务注册

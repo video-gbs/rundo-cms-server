@@ -1,5 +1,7 @@
 package com.runjian.stream.entity;
 
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
 /**
@@ -7,6 +9,7 @@ import java.time.LocalDateTime;
  * @author Miracle
  * @date 2023/2/2 15:50
  */
+@Data
 public class StreamInfo {
 
     /**
@@ -23,6 +26,11 @@ public class StreamInfo {
      * 通道id
      */
     private Long channelId;
+
+    /**
+     * 流id
+     */
+    private String streamId;
 
     /**
      * 调度服务id
@@ -43,6 +51,11 @@ public class StreamInfo {
      * 是否无人观看时自动关闭 0-关闭 1-开启
      */
     private Integer autoCloseState;
+
+    /**
+     * 流状态 0-准备中 1-播放中
+     */
+    private Integer streamState;
 
     private LocalDateTime createTime;
 

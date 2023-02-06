@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Miracle
@@ -14,4 +15,6 @@ import java.util.List;
 @Repository
 public interface GatewayDispatchMapper {
     void saveAll(List<GatewayDispatchInfo> gatewayDispatchInfoList);
+
+    Optional<GatewayDispatchInfo> selectByGatewayId(Long gatewayId);
 }

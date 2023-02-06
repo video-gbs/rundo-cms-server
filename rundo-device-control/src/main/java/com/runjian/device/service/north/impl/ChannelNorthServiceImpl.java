@@ -5,6 +5,7 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
+import com.runjian.common.constant.MarkConstant;
 import com.runjian.common.utils.DateUtils;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
@@ -27,16 +28,17 @@ import com.runjian.device.vo.response.VideoPlayRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * 通道北向服务
+ *
  * @author Miracle
  * @date 2023/1/9 10:20
  */
@@ -54,6 +56,9 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     private StreamManageApi streamManageApi;
 
     @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Autowired
     private DetailMapper detailMapper;
 
     @Autowired
@@ -61,6 +66,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 通道同步
+     *
      * @param deviceId 设备ID
      * @return 通道同步信息
      */
@@ -68,47 +74,56 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Transactional(rollbackFor = Exception.class)
     public ChannelSyncRsp channelSync(Long deviceId) {
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(deviceId);
-        if (deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+        if (deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, String.format("设备%s处于离线状态", deviceId));
         }
-        if (!deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+        if (!deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, String.format("设备%s是未注册成功的设备，不允许操作", deviceId));
         }
         CommonResponse<ChannelSyncRsp> response = parsingEngineApi.channelSync(deviceId);
-        if (response.getCode() != 0){
+        if (response.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
         ChannelSyncRsp channelSyncRsp = response.getData();
         channelSyncRsp.setNum(channelSyncRsp.getChannelDetailList().size());
         // 判断是否有通道
-        if (channelSyncRsp.getNum() > 0){
+        if (channelSyncRsp.getNum() > 0) {
             List<ChannelInfo> channelSaveList = new ArrayList<>(channelSyncRsp.getNum());
             List<ChannelInfo> channelUpdateList = new ArrayList<>(channelSyncRsp.getNum());
             List<DetailInfo> detailSaveList = new ArrayList<>(channelSyncRsp.getNum());
             List<DetailInfo> detailUpdateList = new ArrayList<>(channelSyncRsp.getNum());
+            Map<Long, Integer> channelOnlineMap = new HashMap<>(channelSyncRsp.getNum());
+
             LocalDateTime nowTime = LocalDateTime.now();
             // 循环通道进行添加
-            for (ChannelDetailRsp rsp : channelSyncRsp.getChannelDetailList()){
+            for (ChannelDetailRsp rsp : channelSyncRsp.getChannelDetailList()) {
                 Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(rsp.getChannelId());
+                ChannelInfo channelInfo = channelInfoOp.orElse(new ChannelInfo());
                 // 判断通道信息是否已存在
-                if (channelInfoOp.isEmpty()){
-                    ChannelInfo channelInfo = new ChannelInfo();
+                if (channelInfoOp.isEmpty()) {
                     channelInfo.setId(rsp.getChannelId());
                     channelInfo.setChannelType(rsp.getChannelType());
                     channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
-                    channelInfo.setOnlineState(rsp.getOnlineState());
                     channelInfo.setDeviceId(deviceId);
                     channelInfo.setStreamMode(StreamType.UDP.getMsg());
                     channelInfo.setCreateTime(nowTime);
                     channelInfo.setUpdateTime(nowTime);
+                    channelInfo.setOnlineState(CommonEnum.DISABLE.getCode());
                     channelSaveList.add(channelInfo);
                 } else {
-                    ChannelInfo channelInfo = channelInfoOp.get();
-                    channelInfo.setOnlineState(rsp.getOnlineState());
                     channelInfo.setUpdateTime(nowTime);
                     channelUpdateList.add(channelInfo);
                 }
+                // todo 上锁开始
+                // 更新通道在线状态
+                if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode()) && !Objects.equals(rsp.getOnlineState(), channelInfo.getOnlineState())) {
+                    // 对通道在线状态缓存
+                    channelOnlineMap.put(channelInfo.getId(), channelInfo.getOnlineState());
+                }
+                // todo 上锁结束
+                channelInfo.setOnlineState(rsp.getOnlineState());
+
                 Optional<DetailInfo> detailInfoOp = detailMapper.selectByDcIdAndType(rsp.getChannelId(), DetailType.CHANNEL.getCode());
                 DetailInfo detailInfo = detailInfoOp.orElse(new DetailInfo());
                 detailInfo.setDcId(rsp.getChannelId());
@@ -122,7 +137,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                 detailInfo.setPtzType(rsp.getPtzType());
                 detailInfo.setUpdateTime(nowTime);
                 // 判断数据是否为空，根据情况保存或者更新
-                if (detailInfoOp.isEmpty()){
+                if (detailInfoOp.isEmpty()) {
                     detailInfo.setType(DetailType.CHANNEL.getCode());
                     detailInfo.setCreateTime(nowTime);
                     detailSaveList.add(detailInfo);
@@ -130,17 +145,18 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                     detailUpdateList.add(detailInfo);
                 }
             }
+            redisTemplate.opsForHash().putAll(MarkConstant.REDIS_DEVICE_ONLINE_STATE, channelOnlineMap);
             // 对数据进行批量保存
-            if (channelSaveList.size() > 0){
+            if (channelSaveList.size() > 0) {
                 channelMapper.batchSave(channelSaveList);
             }
-            if (channelUpdateList.size() > 0){
+            if (channelUpdateList.size() > 0) {
                 channelMapper.batchUpdateOnlineState(channelUpdateList);
             }
-            if (detailSaveList.size() > 0){
+            if (detailSaveList.size() > 0) {
                 detailMapper.batchSave(detailSaveList);
             }
-            if (detailUpdateList.size() > 0){
+            if (detailUpdateList.size() > 0) {
                 detailMapper.batchUpdate(detailUpdateList);
             }
         }
@@ -149,13 +165,14 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 通道注册状态转为成功
+     *
      * @param channelId 通道Id
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void channelSignSuccess(Long channelId) {
         ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
-        if(channelInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+        if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "该通道的注册状态已是成功状态");
         }
         channelInfo.setSignState(SignState.SUCCESS.getCode());
@@ -168,16 +185,16 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Transactional(rollbackFor = Exception.class)
     public void channelDeleteByDeviceId(Long deviceId, Boolean isDeleteData) {
         List<ChannelInfo> channelInfoList = channelMapper.selectByDeviceId(deviceId);
-        if (channelInfoList.size() == 0){
+        if (channelInfoList.size() == 0) {
             return;
         }
-        if (isDeleteData){
+        if (isDeleteData) {
             List<Long> channelInfoIdList = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
-            if (channelInfoIdList.size() > 0){
+            if (channelInfoIdList.size() > 0) {
                 detailMapper.deleteByDcIdsAndType(channelInfoIdList, DetailType.CHANNEL.getCode());
             }
             channelMapper.deleteByDeviceId(deviceId);
-        }else {
+        } else {
             LocalDateTime nowTime = LocalDateTime.now();
             channelInfoList.forEach(channelInfo -> {
                 channelInfo.setSignState(SignState.DELETED.getCode());
@@ -191,9 +208,10 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 设备点播
-     * @param channelId 通道id
+     *
+     * @param channelId   通道id
      * @param enableAudio 是否播放音频
-     * @param ssrcCheck 是否使用ssrc
+     * @param ssrcCheck   是否使用ssrc
      * @return
      */
     @Override
@@ -216,7 +234,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
         deviceReq.putData(StandardName.STREAM_MODE, channelInfo.getStreamMode());
         CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlay(deviceReq);
-        if (videoPlayRspCommonResponse.getCode() != 0){
+        if (videoPlayRspCommonResponse.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, videoPlayRspCommonResponse.getMsg());
         }
@@ -231,7 +249,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         CommonResponse<VideoRecordRsp> response = parsingEngineApi.channelRecord(deviceReq);
-        if (response.getCode() != 0){
+        if (response.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频录像数据获取失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
@@ -240,11 +258,12 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 视频回放
-     * @param chId 通道id
+     *
+     * @param chId        通道id
      * @param enableAudio 是否播放音频
-     * @param ssrcCheck 是否使用ssrc
-     * @param startTime 开始时间
-     * @param endTime 结束时间
+     * @param ssrcCheck   是否使用ssrc
+     * @param startTime   开始时间
+     * @param endTime     结束时间
      * @return
      */
     @Override
@@ -269,7 +288,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlayback(deviceReq);
-        if (videoPlayRspCommonResponse.getCode() != 0){
+        if (videoPlayRspCommonResponse.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频回放失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, videoPlayRspCommonResponse.getMsg());
         }
@@ -280,11 +299,11 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     private ChannelInfo getChannelInfoAndValid(Long chId) {
         ChannelInfo channelInfo = dataBaseService.getChannelInfo(chId);
         // 检测通道是否在线
-        if (channelInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+        if (channelInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道处于离线状态");
         }
         // 检测通道是否注册成功
-        if (!channelInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+        if (!channelInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道未注册成功");
         }
         return channelInfo;
@@ -292,12 +311,13 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 云台控制状态
-     * @param channelId 通道ID
-     * @param cmdCode 指令code
-     * @param horizonSpeed 水平速度
+     *
+     * @param channelId     通道ID
+     * @param cmdCode       指令code
+     * @param horizonSpeed  水平速度
      * @param verticalSpeed 垂直速度
-     * @param zoomSpeed 缩放速度
-     * @param totalSpeed 总速度
+     * @param zoomSpeed     缩放速度
+     * @param totalSpeed    总速度
      */
     @Override
     public void channelPtzControl(Long channelId, Integer cmdCode, Integer horizonSpeed, Integer verticalSpeed, Integer zoomSpeed, Integer totalSpeed) {
@@ -310,7 +330,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         req.putData(StandardName.PTZ_ZOOM_SPEED, zoomSpeed);
         req.putData(StandardName.PTZ_TOTAL_SPEED, totalSpeed);
         CommonResponse<Boolean> response = parsingEngineApi.channelPtzControl(req);
-        if (response.getCode() != 0){
+        if (response.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "云台控制失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }

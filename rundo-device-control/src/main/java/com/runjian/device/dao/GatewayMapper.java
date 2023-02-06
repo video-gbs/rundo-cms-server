@@ -1,6 +1,7 @@
 package com.runjian.device.dao;
 
 import com.runjian.device.entity.GatewayInfo;
+import com.runjian.device.vo.response.GetGatewayNameRsp;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -8,6 +9,7 @@ import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -63,4 +65,8 @@ public interface GatewayMapper {
             " SET update_time = #{updateTime}, " +
             " online_state = #{onlineState} ")
     void setAllOnlineState(Integer onlineState, LocalDateTime updateTime);
+
+    @Select(" SELECT id, name FROM " + GATEWAY_TABLE_NAME)
+    List<GetGatewayNameRsp> selectAllNameAndId();
+
 }

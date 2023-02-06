@@ -23,6 +23,16 @@ public class MediaInfo {
     private Long dispatchId;
 
     /**
+     * ip
+     */
+    private String ip;
+
+    /**
+     * 端口
+     */
+    private String port;
+
+    /**
      * 原始id
      */
     private String originId;
