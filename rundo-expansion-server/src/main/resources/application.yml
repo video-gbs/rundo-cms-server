@@ -96,6 +96,9 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+response:
+  exclude-url: "/swagger-resources,/doc.html,/v3/api-docs,/api/v1"
+
 springfox:
   documentation:
     auto-startup: true

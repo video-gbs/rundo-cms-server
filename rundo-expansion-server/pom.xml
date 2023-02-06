@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>rundo-expansion-server</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
 
