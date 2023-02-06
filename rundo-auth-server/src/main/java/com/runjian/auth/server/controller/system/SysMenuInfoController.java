@@ -56,10 +56,9 @@ public class SysMenuInfoController {
         return new ResponseResult<>(200, sysMenuInfoService.removeSysMenuInfoById(id));
     }
 
-    @PostMapping("/tree")
+    @GetMapping("/tree")
     @ApiOperation("获取菜单层级树")
     public ResponseResult<List<SysMenuInfoTree>> getSysMenuTree() {
-
         return new ResponseResult<>(200, "操作成", sysMenuInfoService.getSysOrgTree());
     }
 
@@ -79,7 +78,6 @@ public class SysMenuInfoController {
     @GetMapping("/getListByPage")
     @ApiOperation("分页获取菜单列表")
     public ResponseResult getListByPage(@RequestBody Long id) {
-        // TODO 分页获取应用列表
         return new ResponseResult<>(200, "操作成功", sysMenuInfoService.list());
     }
 

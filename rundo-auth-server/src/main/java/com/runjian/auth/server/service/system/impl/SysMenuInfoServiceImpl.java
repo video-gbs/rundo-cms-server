@@ -10,12 +10,14 @@ import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysMenuInfoTree;
 import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
+import com.runjian.auth.server.util.tree.DataTreeUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -85,7 +87,19 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
 
     @Override
     public List<SysMenuInfoTree> getSysOrgTree() {
-        return null;
+        LambdaQueryWrapper<SysMenuInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByAsc(true, SysMenuInfo::getMenuSort);
+        queryWrapper.orderByAsc(true, SysMenuInfo::getUpdatedTime);
+        List<SysMenuInfo> sysMenuInfoList = sysMenuInfoMapper.selectList(queryWrapper);
+        List<SysMenuInfoTree> sysMenuInfoTreeList = sysMenuInfoList.stream().map(
+                item -> {
+                    SysMenuInfoTree bean = new SysMenuInfoTree();
+                    BeanUtils.copyProperties(item, bean);
+                    return bean;
+                }
+        ).collect(Collectors.toList());
+
+        return DataTreeUtil.buildTree(sysMenuInfoTreeList, 1L);
     }
 
     @Override
