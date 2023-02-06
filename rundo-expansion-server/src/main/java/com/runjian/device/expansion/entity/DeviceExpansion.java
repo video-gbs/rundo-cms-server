@@ -21,24 +21,21 @@ public class DeviceExpansion {
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("控制服务id")
-    private Long deviceId;
-
     @ApiModelProperty("设备名称")
-    private String deviceName;
+    private String name;
 
     @ApiModelProperty("设备类型")
-    private String deviceType;
+    private Integer deviceType;
 
     @ApiModelProperty("厂商")
     private String manufacturer;
 
     @ApiModelProperty("设备型号")
-    private String mode;
+    private String model;
 
 
     @ApiModelProperty("用户名")
-    private String account;
+    private String username;
 
 
     @ApiModelProperty("密码")
@@ -60,7 +57,7 @@ public class DeviceExpansion {
 
 
     @ApiModelProperty("设备网关ID")
-    private String gatewayId;
+    private long gatewayId;
 
     @ApiModelProperty("传输协议")
     private String transport;

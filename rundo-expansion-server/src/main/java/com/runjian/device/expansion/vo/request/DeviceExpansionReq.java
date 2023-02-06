@@ -13,21 +13,21 @@ import javax.validation.constraints.NotNull;
 public class DeviceExpansionReq {
     @ApiModelProperty("设备名称")
     @NotNull(message = "设备名称不能为空")
-    private String deviceName;
+    private String name;
 
     @ApiModelProperty("设备类型")
     @NotNull(message = "设备类型不能为空")
-    private String deviceType;
+    private Integer deviceType;
 
     @ApiModelProperty("厂商")
     private String manufacturer;
 
     @ApiModelProperty("mode")
-    private String mode;
+    private String model;
 
 
     @ApiModelProperty("用户名")
-    private String account;
+    private String username;
 
 
     @ApiModelProperty("密码")
@@ -55,7 +55,7 @@ public class DeviceExpansionReq {
 
     @ApiModelProperty("设备网关ID")
     @NotNull(message = "设备网关不得为空")
-    private String gatewayId;
+    private long gatewayId;
 
     @ApiModelProperty("transport")
     @NotNull(message = "传输协议不得为空")
