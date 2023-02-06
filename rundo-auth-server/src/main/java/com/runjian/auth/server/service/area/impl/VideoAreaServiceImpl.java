@@ -174,7 +174,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
                     return bean;
                 }
         ).collect(Collectors.toList());
-        return DataTreeUtil.buiidTree(videoAreaTreeList, 1L);
+        return DataTreeUtil.buildTree(videoAreaTreeList, 1L);
     }
 
     private void updateChildren(VideoArea area, List<VideoArea> childrenList) {

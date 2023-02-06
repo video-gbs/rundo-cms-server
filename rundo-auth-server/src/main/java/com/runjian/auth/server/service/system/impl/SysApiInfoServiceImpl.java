@@ -105,7 +105,7 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
                     return bean;
                 }
         ).collect(Collectors.toList());
-        return DataTreeUtil.buiidTree(sysApiInfoTreeList, 1L);
+        return DataTreeUtil.buildTree(sysApiInfoTreeList, 1L);
 
     }
 

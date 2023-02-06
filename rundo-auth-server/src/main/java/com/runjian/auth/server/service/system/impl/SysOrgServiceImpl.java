@@ -181,7 +181,8 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     @Override
     public List<SysOrgTree> getSysOrgTree() {
         LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.orderBy(true, true, SysOrg::getOrgSort, SysOrg::getUpdatedTime);
+        queryWrapper.orderByAsc(true, SysOrg::getOrgSort);
+        queryWrapper.orderByAsc(true, SysOrg::getUpdatedTime);
         List<SysOrg> sysOrgList = sysOrgMapper.selectList(queryWrapper);
         List<SysOrgTree> sysOrgTreeList = sysOrgList.stream().map(
                 item -> {
@@ -190,7 +191,7 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
                     return bean;
                 }
         ).collect(Collectors.toList());
-        return DataTreeUtil.buiidTree(sysOrgTreeList, 1L);
+        return DataTreeUtil.buildTree(sysOrgTreeList, 1L);
     }
 
     @Override
