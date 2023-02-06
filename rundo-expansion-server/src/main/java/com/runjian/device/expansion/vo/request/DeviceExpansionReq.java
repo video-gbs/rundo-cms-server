@@ -35,7 +35,7 @@ public class DeviceExpansionReq {
 
 
     @ApiModelProperty("国标编码")
-    private String gb28181Code;
+    private String deviceId;
 
 
     @ApiModelProperty("安防区域id")

@@ -1,36 +1,33 @@
-package com.runjian.device.expansion.entity;
+package com.runjian.device.expansion.vo.request;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
 
-import java.util.Date;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author chenjialing
  */
 @Data
-@TableName("rundo_device_expansion")
-@ApiModel(value = "设备信息表", description = "接口信息表")
-public class DeviceExpansion {
-    private static final long serialVersionUID = 1L;
+public class DeviceExpansionEditReq {
 
-    @ApiModelProperty("主键ID")
-    @TableId("id")
+    @ApiModelProperty("设备id")
+    @NotNull(message = "设备id不能为空")
     private Long id;
 
     @ApiModelProperty("设备名称")
+    @NotNull(message = "设备名称不能为空")
     private String name;
 
     @ApiModelProperty("设备类型")
+    @NotNull(message = "设备类型不能为空")
     private Integer deviceType;
 
     @ApiModelProperty("厂商")
     private String manufacturer;
 
-    @ApiModelProperty("设备型号")
+    @ApiModelProperty("mode")
     private String model;
 
 
@@ -47,19 +44,26 @@ public class DeviceExpansion {
 
 
     @ApiModelProperty("安防区域id")
+    @NotNull(message = "安防区域id不能为空")
+    @Range(min = 1, message = "非法安防区域id")
     private Long videoAreaId;
 
     @ApiModelProperty("ip")
+    @NotNull(message = "ip不能为空")
     private String ip;
 
     @ApiModelProperty("端口")
+    @Range(min = 1, message = "非法端口")
+    @NotNull(message = "端口不得为空")
     private int port;
 
 
     @ApiModelProperty("设备网关ID")
+    @NotNull(message = "设备网关不得为空")
     private long gatewayId;
 
-    @ApiModelProperty("传输协议")
+    @ApiModelProperty("transport")
+    @NotNull(message = "传输协议不得为空")
     private String transport;
 
     @ApiModelProperty("状态值")
@@ -70,21 +74,4 @@ public class DeviceExpansion {
 
     @ApiModelProperty("纬度")
     private String latitude;
-
-    @ApiModelProperty("创建时间")
-    private Date createdAt;
-
-    @ApiModelProperty("编辑时间")
-    private Date updatedAt;
-
-    @ApiModelProperty("删除标记")
-    private int deleted;
-
-
-
-
-
-
-
-
 }
