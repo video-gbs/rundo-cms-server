@@ -50,6 +50,16 @@ public class SecurityConfig {
     @Autowired
     private AccessDeniedHandler accessDeniedHandler;
 
+    // @Autowired
+    // private AuthenticationFailureHandler loginFailureHandler;
+    //
+    // @Autowired
+    // private AuthenticationSuccessHandler authenticationSuccessHandler;
+    //
+    // @Autowired
+    // private LogoutSuccessHandler logoutSuccessHandler;
+
+
     /**
      * 过滤器链
      *
@@ -95,12 +105,23 @@ public class SecurityConfig {
 
         // 把token校验过滤器添加到过滤链中
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // http.formLogin()
+        //         .loginProcessingUrl("/user/login")
+        //         .successHandler(authenticationSuccessHandler)
+        //         .failureHandler(loginFailureHandler);
+        // http.logout()
+        //         .logoutUrl("/user/logout")
+        //         .logoutSuccessHandler(logoutSuccessHandler);
+
         // 配置异常处理器
         http.exceptionHandling()
                 // 认证失败处理器
                 .authenticationEntryPoint(authenticationEntryPoint)
+
                 // 权限不足处理器
                 .accessDeniedHandler(accessDeniedHandler);
+
 
 
         // 允许跨域

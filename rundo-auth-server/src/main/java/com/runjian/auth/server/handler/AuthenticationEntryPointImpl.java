@@ -4,7 +4,6 @@ import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.util.WebUtils;
 import com.runjian.common.config.response.CommonResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -18,10 +17,9 @@ import java.io.IOException;
  * @author Jiang4Yu
  * @version V1.0.0
  * @ClassName AuthenticationEntryPointImpl
- * @Description
+ * @Description 用户未登录处理类
  * @date 2023-01-09 周一 16:56
  */
-@Slf4j
 @Component
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     @Override

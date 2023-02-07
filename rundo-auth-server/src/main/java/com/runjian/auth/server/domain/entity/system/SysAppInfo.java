@@ -59,11 +59,11 @@ public class SysAppInfo implements Serializable {
     private Integer deleteFlag;
 
     @ApiModelProperty("创建人")
-    @TableField("created_by")
+    @TableField(value ="created_by", fill = FieldFill.INSERT)
     private Long createdBy;
 
     @ApiModelProperty("更新人")
-    @TableField("updated_by")
+    @TableField(value ="updated_by", fill = FieldFill.INSERT_UPDATE)
     private Long updatedBy;
 
     @ApiModelProperty("创建时间")
