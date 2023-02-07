@@ -3,6 +3,8 @@ package com.runjian.parsing.protocol.impl;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.constant.IdType;
 import com.runjian.parsing.constant.MqConstant;
+import com.runjian.parsing.constant.MsgType;
+import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.ChannelInfo;
 import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.entity.GatewayInfo;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -37,12 +40,26 @@ public class DefaultNorthProtocol extends AbstractNorthProtocol {
     @Autowired
     private DataBaseService dataBaseService;
 
+    @Autowired
+    private DeviceMapper deviceMapper;
+
     @Value("${gateway.default.exchange-id}")
     private String gatewayExchangeId;
+
 
     @Override
     public String getProtocolName() {
         return DEFAULT_PROTOCOL;
+    }
+
+    @Override
+    public  void deviceDelete(Long deviceId, DeferredResult<CommonResponse<?>> response) {
+        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(deviceId);
+        if (deviceInfoOp.isEmpty()){
+            response.setResult(CommonResponse.success(true));
+        }else {
+            super.deviceDelete(deviceId, response);
+        }
     }
 
     @Override

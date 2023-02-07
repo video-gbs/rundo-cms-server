@@ -12,11 +12,6 @@ import lombok.Data;
 public class VideoPlayRsp {
 
     /**
-     * 通道id
-     */
-    private Long chId;
-
-    /**
      * 流id
      */
     private String streamId;

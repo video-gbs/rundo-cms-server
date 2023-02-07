@@ -1,6 +1,7 @@
 package com.runjian.parsing.protocol;
 
 
+import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.constant.IdType;
 
 /**
@@ -94,4 +95,9 @@ public interface SouthProtocol {
      * @param data 数据集合
      */
     void customEvent(Long taskId, Object data);
+
+    /**
+     * 异常处理
+     */
+    void errorEvent(Long taskId, CommonResponse<?> response);
 }

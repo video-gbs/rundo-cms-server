@@ -10,14 +10,11 @@ import com.runjian.parsing.entity.TaskInfo;
 import com.runjian.parsing.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 任务服务
@@ -31,6 +28,8 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskMapper taskMapper;
 
+    private static final String OUT_TIME = "OUT_TIME";
+
 
     @Override
     public Long createAsyncTask(Long gatewayId, Long deviceId, Long channelId, String clientMsgId, String mqId, String msgType, DeferredResult<CommonResponse<?>> deferredResult) {
@@ -39,7 +38,7 @@ public class TaskServiceImpl implements TaskService {
         deferredResult.onTimeout(() -> {
             deferredResult.setResult(CommonResponse.failure(BusinessErrorEnums.FEIGN_REQUEST_TIME_OUT));
             asynReqMap.remove(taskId);
-            taskError(taskId, "OUT_TIME");
+            taskError(taskId, OUT_TIME);
         });
         return taskId;
     }
@@ -51,13 +50,12 @@ public class TaskServiceImpl implements TaskService {
         taskInfo.setGatewayId(gatewayId);
         taskInfo.setDeviceId(deviceId);
         taskInfo.setChannelId(channelId);
-        taskInfo.setClientMsgId(clientMsgId);
         taskInfo.setMqId(mqId);
         taskInfo.setMsgType(msgType);
         taskInfo.setCreateTime(nowTime);
         taskInfo.setUpdateTime(nowTime);
         taskInfo.setState(taskState.getCode());
-        taskInfo.setDesc(desc);
+        taskInfo.setDetail(desc);
         taskMapper.save(taskInfo);
         return taskInfo.getId();
     }
@@ -95,7 +93,7 @@ public class TaskServiceImpl implements TaskService {
         taskInfo.setDeviceId(deviceId);
         taskInfo.setChannelId(channelId);
         taskInfo.setMsgType(msgType.getMsg());
-        taskInfo.setDesc(desc);
+        taskInfo.setDetail(desc);
         taskMapper.update(taskInfo);
     }
 

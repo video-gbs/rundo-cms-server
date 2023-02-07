@@ -1,10 +1,12 @@
 package com.runjian.device.feign;
 
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.feign.StreamPlayReq;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * 流媒体管理中心远程调用
@@ -23,6 +25,6 @@ public interface StreamManageApi {
      * @return
      */
     @PostMapping("/stream/play")
-    CommonResponse<?> applyPlay(StreamPlayReq streamPlayReq);
+    CommonResponse<?> applyPlay(@RequestBody DeviceControlReq req);
 
 }

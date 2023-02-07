@@ -13,7 +13,6 @@ import com.runjian.parsing.mq.config.RabbitMqProperties;
 import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.service.GatewayService;
 import com.runjian.parsing.vo.CommonMqDto;
-import com.runjian.parsing.vo.dto.HeartbeatDto;
 import com.runjian.parsing.vo.request.GatewaySignInReq;
 import com.runjian.parsing.vo.response.GatewaySignInRsp;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +24,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -66,18 +67,25 @@ public class GatewayPublicMsgListener implements ChannelAwareMessageListener {
 
     /**
      * 消息处理
+     *
      * @param message
      * @param channel
      * @throws Exception
      */
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
-        String msgBody = new String(message.getBody());
-        log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册信息监听器", "接收到网关注册信息，执行注册流程", msgBody);
-        CommonMqDto mqRequest = JSONObject.parseObject(msgBody, CommonMqDto.class);
-        // 判断是否是注册信息
-        if (mqRequest.getMsgType().equals(MsgType.GATEWAY_SIGN_IN.getMsg())) {
-            try {
+        String msgBody = null;
+        try {
+            msgBody = new String(message.getBody());
+            CommonMqDto mqRequest = JSONObject.parseObject(msgBody, CommonMqDto.class);
+            // 检测心跳信息是否过期
+            if (mqRequest.getTime().plusMinutes(3).isBefore(LocalDateTime.now())) {
+                log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册或心跳信息监听器", "过期的网关公共消息，进行丢失", msgBody);
+                return;
+            }
+            // 判断是否是注册信息
+            if (mqRequest.getMsgType().equals(MsgType.GATEWAY_SIGN_IN.getMsg())) {
+                log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册或心跳信息监听器", "接收到网关注册信息，执行注册流程", msgBody);
                 // 提取请求体信息
                 GatewaySignInReq req = JSONObject.parseObject(mqRequest.getData().toString(), GatewaySignInReq.class);
                 // 校验请求体
@@ -102,23 +110,14 @@ public class GatewayPublicMsgListener implements ChannelAwareMessageListener {
                 gatewaySignInRsp.setMqExchange(rabbitMqProperties.getExchangeData(queueData.getExchangeId()).getExchange().getName());
                 gatewaySignInRsp.setMqGetQueue(key1);
                 gatewaySignInRsp.setMqSetQueue(key2);
-                CommonMqDto mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success(gatewaySignInRsp));
+                CommonMqDto<?> mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success(gatewaySignInRsp));
                 mqResponse.copyRequest(mqRequest);
                 // 发送消息到公共频道
                 String mqId = UUID.randomUUID().toString().replace("-", "");
                 rabbitMqSender.sendMsgByRoutingKey(queueData.getExchangeId(), queueData.getRoutingKey(), mqId, mqResponse, true);
-            } catch (Exception ex) {
-                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关公共信息监听器", "网关注册信息，处理失败", msgBody, ex.getMessage());
-                ex.printStackTrace();
-            } finally {
-                channel.basicAck(message.getMessageProperties().getDeliveryTag(), true);
-            }
-
-        } else if (mqRequest.getMsgType().equals(MsgType.GATEWAY_HEARTBEAT.getMsg())) {
-            try {
-
+            } else if (mqRequest.getMsgType().equals(MsgType.GATEWAY_HEARTBEAT.getMsg())) {
                 Long gatewayId = gatewayService.heartbeat(mqRequest.getSerialNum(), mqRequest.getData().toString());
-                CommonMqDto mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
+                CommonMqDto<?> mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
                 mqResponse.copyRequest(mqRequest);
                 // 判断设备信息是否存在
                 if (Objects.isNull(gatewayId)) {
@@ -127,11 +126,12 @@ public class GatewayPublicMsgListener implements ChannelAwareMessageListener {
                     String mqId = UUID.randomUUID().toString().replace("-", "");
                     rabbitMqSender.sendMsgByRoutingKey(queueData.getExchangeId(), queueData.getRoutingKey(), mqId, mqResponse, true);
                 }
-            } catch (Exception ex) {
-                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关公共信息监听器", "网关心跳信息，处理失败", msgBody, ex);
-            } finally {
-                channel.basicAck(message.getMessageProperties().getDeliveryTag(), true);
             }
+        } catch (Exception ex) {
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关公共信息监听器", "网关公共信息处理失败", msgBody, ex.getMessage());
+            ex.printStackTrace();
+        } finally {
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), true);
         }
     }
 

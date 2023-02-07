@@ -16,6 +16,11 @@ public class ChannelDetailRsp {
     private Long channelId;
 
     /**
+     * 原始id
+     */
+    private String originId;
+
+    /**
      * 通道类型
      */
     private Integer channelType;
@@ -29,6 +34,11 @@ public class ChannelDetailRsp {
      * 端口
      */
     private String port;
+
+    /**
+     * 在线状态
+     */
+    private Integer onlineState;
 
     /**
      * 名称

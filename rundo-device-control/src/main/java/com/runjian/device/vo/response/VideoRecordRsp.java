@@ -1,5 +1,6 @@
-package com.runjian.device.vo.feign;
+package com.runjian.device.vo.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -20,13 +21,13 @@ public class VideoRecordRsp {
     /**
      * 录像数据数组
      */
-    private List<RecordFile> channelRecordList;
+    private List<RecordData> recordList;
 
     /**
      * 录像文件
      */
     @Data
-    public static class RecordFile{
+    public static class RecordData {
 
         /**
          * 文件名称
@@ -41,11 +42,13 @@ public class VideoRecordRsp {
         /**
          * 开始时间
          */
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
         private LocalDateTime startTime;
 
         /**
          * 结束时间
          */
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
         private LocalDateTime endTime;
 
     }

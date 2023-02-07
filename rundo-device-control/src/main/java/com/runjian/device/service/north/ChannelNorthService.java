@@ -1,6 +1,6 @@
 package com.runjian.device.service.north;
 
-import com.runjian.device.vo.feign.VideoRecordRsp;
+import com.runjian.device.vo.response.VideoRecordRsp;
 import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.VideoPlayRsp;
 

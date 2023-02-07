@@ -34,11 +34,6 @@ public class TaskInfo {
     private Long channelId;
 
     /**
-     * 消息id
-     */
-    private String clientMsgId;
-
-    /**
      * 队列id
      */
     private String mqId;
@@ -56,7 +51,7 @@ public class TaskInfo {
     /**
      * 说明
      */
-    private String desc;
+    private String detail;
 
     private LocalDateTime createTime;
 

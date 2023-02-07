@@ -18,7 +18,7 @@ public class PutChannelPlayReq {
      */
     @NotNull(message = "通道id不能为空")
     @Range(min = 1, message = "非法通道id")
-    private Long chId;
+    private Long channelId;
 
     /**
      * 是否播放音频
