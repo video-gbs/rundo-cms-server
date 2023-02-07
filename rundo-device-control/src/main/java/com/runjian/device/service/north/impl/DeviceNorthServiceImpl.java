@@ -1,5 +1,6 @@
 package com.runjian.device.service.north.impl;
 
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
@@ -15,6 +16,7 @@ import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.feign.ParsingEngineApi;
+import com.runjian.device.service.DataBaseService;
 import com.runjian.device.service.DetailBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.north.DeviceNorthService;
@@ -53,10 +55,13 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Autowired
     private ChannelNorthService channelNorthService;
 
+    @Autowired
+    private DataBaseService dataBaseService;
+
     @Override
     public PageInfo<GetDevicePageRsp> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
         PageHelper.startPage(page, num);
-        return new PageInfo<>(deviceMapper.selectByPage(signState, deviceName, ip));
+        return new PageInfo<>(deviceMapper.selectByPage( signState, deviceName, ip));
     }
 
     /**
@@ -76,7 +81,6 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Transactional(rollbackFor = Exception.class)
     public Long deviceAdd(String originId, Long gatewayId, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password) {
         LocalDateTime nowTime = LocalDateTime.now();
-
 
         // 发送注册请求，返回数据ID
         DeviceControlReq req = new DeviceControlReq();
@@ -132,7 +136,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
      */
     @Override
     public void deviceSignSuccess(Long deviceId) {
-        DeviceInfo deviceInfo = getDeviceInfo(deviceId);
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(deviceId);
         if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "该设备注册状态已是成功状态");
         }
@@ -153,7 +157,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public DeviceSyncRsp deviceSync(Long deviceId) {
-        DeviceInfo deviceInfo = getDeviceInfo(deviceId);
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(deviceId);
         // 判断是否设备在线
         if (deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("设备%s处于离线状态", deviceId));
@@ -174,23 +178,6 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         return data;
     }
 
-
-    /**
-     * 获取设备信息
-     * @param deviceId 设备id
-     * @return
-     */
-    private DeviceInfo getDeviceInfo(Long deviceId) {
-        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(deviceId);
-        // 判断是否存在的数据
-        if (deviceInfoOp.isEmpty()){
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "设备id:" + deviceId);
-        }
-        DeviceInfo deviceInfo = deviceInfoOp.get();
-
-        return deviceInfo;
-    }
-
     /**
      * 删除设备
      * @param deviceId 设备id
@@ -198,7 +185,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deviceDelete(Long deviceId) {
-        DeviceInfo deviceInfo = getDeviceInfo(deviceId);
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(deviceId);
         // 触发删除流程，返回boolean
         CommonResponse<Boolean> response = parsingEngineApi.deviceDelete(deviceId);
         if (response.getCode() != 0){

@@ -10,8 +10,12 @@ public class MarkConstant {
 
     public static final String REDIS_DEVICE_ONLINE_STATE = "DEVICE_ONLINE_STATE";
 
+    public static final String REDIS_DEVICE_ONLINE_STATE_LOCK = "DEVICE_ONLINE_STATE_LOCK";
+
+
     public static final String REDIS_CHANNEL_ONLINE_STATE = "CHANNEL_ONLINE_STATE";
 
+    public static final String REDIS_CHANNEL_ONLINE_STATE_LOCK = "REDIS_CHANNEL_ONLINE_STATE_LOCK";
 
     /*********************************标志位分割符号*******************************************/
 

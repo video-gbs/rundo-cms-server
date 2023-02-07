@@ -25,6 +25,8 @@ spring:
     timeout: 10000
     # [可选] jdbc数据库配置, 项目使用sqlite作为数据库，一般不需要配置
     # mysql数据源
+    redisson:
+      file: classpath:redisson.yml
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver

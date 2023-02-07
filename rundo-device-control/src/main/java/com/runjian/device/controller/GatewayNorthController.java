@@ -5,6 +5,7 @@ import com.runjian.device.service.north.GatewayNorthService;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -13,7 +14,8 @@ import java.util.List;
  * @author Miracle
  * @date 2023/2/6 17:24
  */
-@RestController("/gateway/north")
+@RestController
+@RequestMapping(("/gateway/north"))
 public class GatewayNorthController {
 
     @Autowired

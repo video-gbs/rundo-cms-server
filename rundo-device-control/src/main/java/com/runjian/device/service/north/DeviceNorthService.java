@@ -1,5 +1,8 @@
 package com.runjian.device.service.north;
 
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
