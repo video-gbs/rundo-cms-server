@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysMenuInfo;
 import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
@@ -86,8 +87,14 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
     }
 
     @Override
-    public List<SysMenuInfoTree> getSysOrgTree() {
+    public List<SysMenuInfoTree> getSysOrgTree(QuerySysMenuInfoDTO dto) {
         LambdaQueryWrapper<SysMenuInfo> queryWrapper = new LambdaQueryWrapper<>();
+        if (null != dto.getMenuName()) {
+            queryWrapper.like(SysMenuInfo::getMenuName, dto.getMenuName());
+        }
+        if (null != dto.getUrl()) {
+            queryWrapper.like(SysMenuInfo::getUrl, dto.getUrl());
+        }
         queryWrapper.orderByAsc(true, SysMenuInfo::getMenuSort);
         queryWrapper.orderByAsc(true, SysMenuInfo::getUpdatedTime);
         List<SysMenuInfo> sysMenuInfoList = sysMenuInfoMapper.selectList(queryWrapper);
@@ -99,7 +106,12 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
                 }
         ).collect(Collectors.toList());
 
-        return DataTreeUtil.buildTree(sysMenuInfoTreeList, 1L);
+        if (dto.getMenuType() == null) {
+            return DataTreeUtil.buildTree(sysMenuInfoTreeList, 1L);
+        } else {
+            return DataTreeUtil.buildTree(sysMenuInfoTreeList, dto.getMenuType());
+        }
+
     }
 
     @Override

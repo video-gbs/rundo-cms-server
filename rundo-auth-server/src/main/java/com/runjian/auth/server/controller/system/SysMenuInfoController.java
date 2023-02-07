@@ -3,6 +3,7 @@ package com.runjian.auth.server.controller.system;
 import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
 import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysMenuInfoTree;
@@ -56,10 +57,10 @@ public class SysMenuInfoController {
         return new ResponseResult<>(200, sysMenuInfoService.removeSysMenuInfoById(id));
     }
 
-    @GetMapping("/tree")
+    @PostMapping("/tree")
     @ApiOperation("获取菜单层级树")
-    public ResponseResult<List<SysMenuInfoTree>> getSysMenuTree() {
-        return new ResponseResult<>(200, "操作成", sysMenuInfoService.getSysOrgTree());
+    public ResponseResult<List<SysMenuInfoTree>> getSysMenuTree(@RequestBody QuerySysMenuInfoDTO dto) {
+        return new ResponseResult<>(200, "操作成", sysMenuInfoService.getSysOrgTree(dto));
     }
 
     @GetMapping("/getById")
