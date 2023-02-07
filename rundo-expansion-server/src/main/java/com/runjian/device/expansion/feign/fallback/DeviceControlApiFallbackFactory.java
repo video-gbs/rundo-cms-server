@@ -4,12 +4,10 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.expansion.feign.DeviceControlApi;
-import com.runjian.device.expansion.vo.request.feign.DeviceReq;
+import com.runjian.device.expansion.vo.feign.request.DeviceReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
-
-import javax.validation.Valid;
 
 /**
  * 调用失败处理工厂 熔断

@@ -24,9 +24,17 @@ public class DeviceExpansionListReq {
     private String ip;
 
     @ApiModelProperty("状态值")
-    private int onlineState;
+    private Integer onlineState;
 
+    @ApiModelProperty("安放区域id")
+    private Integer videoAreaId;
 
     @ApiModelProperty("是否包含下级组织")
     private Boolean includeEquipment = false;
+
+    @ApiModelProperty("当前页")
+    private Integer pageNum = 1;
+
+    @ApiModelProperty("总数")
+    private Integer pageSize = 20;
 }

@@ -1,4 +1,4 @@
-package com.runjian.device.expansion.vo.request.feign;
+package com.runjian.device.expansion.vo.feign.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

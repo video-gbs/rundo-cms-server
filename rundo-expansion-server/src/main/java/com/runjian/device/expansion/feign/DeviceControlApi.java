@@ -2,12 +2,10 @@ package com.runjian.device.expansion.feign;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.DeviceControlApiFallbackFactory;
-import com.runjian.device.expansion.vo.request.feign.DeviceReq;
+import com.runjian.device.expansion.vo.feign.request.DeviceReq;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 
 /**
  * 流媒体管理中心远程调用
