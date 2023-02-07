@@ -1,5 +1,7 @@
 package com.runjian.auth.server.domain.vo.system;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -15,6 +17,7 @@ import java.util.List;
  * @date 2023-02-02 周四 21:24
  */
 @Data
+@ApiModel(value = "编辑前用户信息", description = "编辑前的用户信息")
 public class EditSysUserInfoVO {
 
     @ApiModelProperty("主键ID")
@@ -34,14 +37,18 @@ public class EditSysUserInfoVO {
     private String rePassword;
 
     @ApiModelProperty("有效期起")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime expiryDateStart;
 
     @ApiModelProperty("有效期终")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime expiryDateEnd;
 
     @ApiModelProperty("所属部门编号")
-    @NotNull
     private Long orgId;
+
+    @ApiModelProperty("所属部门名称")
+    private String orgName;
 
     @ApiModelProperty("工号")
     private String jobNo;

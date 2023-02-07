@@ -83,8 +83,9 @@
         ORDER BY r1.id
     </select>
 
-    <select id="selectOrgInfoByUserId" resultType="java.lang.Long">
-        SELECT suo.org_id
+    <select id="selectOrgInfoByUserId" resultType="com.runjian.auth.server.domain.vo.system.OrgInfoVO">
+        SELECT
+            suo.org_id,suo.org_name
         FROM sys_user_org suo
         <where>
             <if test="userId != null">

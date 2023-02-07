@@ -2,12 +2,12 @@ package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysDictDTO;
 import com.runjian.auth.server.domain.dto.system.QureySysDictDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysDictDTO;
 import com.runjian.auth.server.domain.vo.system.SysDictVO;
 import com.runjian.auth.server.service.system.SysDictService;
+import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -36,43 +36,43 @@ public class SysDictController {
 
     @PostMapping("/add")
     @ApiOperation("添加数据字典")
-    public ResponseResult<?> save(@RequestBody @Valid AddSysDictDTO dto) {
+    public CommonResponse<?> save(@RequestBody @Valid AddSysDictDTO dto) {
         log.info("添加数据字典前端传参{}", JSONUtil.toJsonStr(dto));
         sysDictService.saveSysDict(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除数据字典")
-    public ResponseResult<?> remove(@PathVariable Long id) {
+    public CommonResponse<?> remove(@PathVariable Long id) {
         log.info("删除数据字典前端传参{}", id);
         sysDictService.removeSysDictById(id);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/update")
     @ApiOperation("修改数据字典")
-    public ResponseResult<?> updateSysDict(@RequestBody UpdateSysDictDTO dto) {
+    public CommonResponse<?> updateSysDict(@RequestBody UpdateSysDictDTO dto) {
         sysDictService.updateSysDictById(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @GetMapping("/getById/{id}")
     @ApiOperation("获取数据字典信息")
-    public ResponseResult<SysDictVO> getById(@PathVariable Long id) {
-        return new ResponseResult<>(200, "操作成功", sysDictService.getSysDictById(id));
+    public CommonResponse<SysDictVO> getById(@PathVariable Long id) {
+        return CommonResponse.create(200, "操作成功", sysDictService.getSysDictById(id));
     }
 
     @GetMapping("/getList")
     @ApiOperation("获取数据字典列表 无分页")
-    public ResponseResult<List<SysDictVO>> getList() {
-        return new ResponseResult<>(200, "操作成功", sysDictService.getSysDictList());
+    public CommonResponse<List<SysDictVO>> getList() {
+        return CommonResponse.create(200, "操作成功", sysDictService.getSysDictList());
     }
 
     @PostMapping("/getListByPage")
     @ApiOperation("分页获取数据字典列表")
-    public ResponseResult<IPage<SysDictVO>> getListByPage(@RequestBody @Valid QureySysDictDTO dto) {
+    public CommonResponse<IPage<SysDictVO>> getListByPage(@RequestBody @Valid QureySysDictDTO dto) {
         // TODO 分页获取数据字典列表
-        return new ResponseResult<>(200, "操作成功", sysDictService.getSysDictByPage(dto));
+        return CommonResponse.create(200, "操作成功", sysDictService.getSysDictByPage(dto));
     }
 }

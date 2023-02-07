@@ -32,7 +32,7 @@ public class UserInfoVo {
     private Date expiryDateEnd;
 
     @ApiModelProperty("直属部门")
-    @JsonFormat(shape =JsonFormat.Shape.STRING )
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long orgId;
 
     @ApiModelProperty("直属部门")

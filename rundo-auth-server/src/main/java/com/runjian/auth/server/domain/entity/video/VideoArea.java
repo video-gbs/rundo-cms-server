@@ -44,6 +44,10 @@ public class VideoArea implements Serializable {
     @TableField("area_pids")
     private String areaPids;
 
+    @ApiModelProperty("安防区域全名")
+    @TableField("area_names")
+    private String areaNames;
+
     @ApiModelProperty("描述信息")
     private String description;
 

@@ -41,7 +41,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         area.setAreaName(dto.getAreaName());
         area.setAreaPid(dto.getAreaPid());
         VideoArea prentInfo = videoAraeMapper.selectById(dto.getAreaPid());
-        String pids = prentInfo.getAreaPids() + ",[" + dto.getAreaPid() + "]";
+        String pids = prentInfo.getAreaPids() + "[" + dto.getAreaPid() + "]";
         area.setAreaPids(pids);
         area.setDescription(dto.getDescription());
         area.setLevel(prentInfo.getLevel() + 1);
@@ -54,7 +54,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         log.info("添加安防区域入库数据信息{}", JSONUtil.toJsonStr(area));
         videoAraeMapper.insert(area);
         VideoAreaVO videoAreaVO = new VideoAreaVO();
-        BeanUtils.copyProperties(area,videoAreaVO);
+        BeanUtils.copyProperties(area, videoAreaVO);
         return videoAreaVO;
     }
 
@@ -77,7 +77,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     public String removeVideoAreaById(Long id) {
         // 1.判断是否为根节点
         VideoArea videoArea = videoAraeMapper.selectById(id);
-        if (videoArea.getAreaPid().equals(0L)){
+        if (videoArea.getAreaPid().equals(0L)) {
             return "系统内置根节点不能删除";
         }
         // 2.确认当前需要删除的安防区域有无下级安防区域
@@ -102,7 +102,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         // 1.根据上级区域ID，获取上级信息
         VideoArea parentInfo = videoAraeMapper.selectById(dto.getAreaPid());
         VideoArea parentInfoId = videoAraeMapper.selectById(dto.getId());
-        if (parentInfoId.getAreaPid().equals(parentInfo.getAreaPid())){
+        if (parentInfoId.getAreaPid().equals(parentInfo.getAreaPid())) {
             // 切换排序顺序
             parentInfoId.setAreaSort(parentInfo.getAreaSort());
             videoAraeMapper.updateById(parentInfo);
@@ -130,15 +130,22 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
 
     @Override
-    public List<VideoAreaVO> getVideoAreaList() {
-        List<VideoArea> videoAreaList = videoAraeMapper.selectList(null);
-        return videoAreaList.stream().map(
+    public List<VideoAreaVO> getVideoAreaList(Long areaId) {
+        VideoArea videoArea = videoAraeMapper.selectById(areaId);
+        LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.likeRight(VideoArea::getAreaPids, videoArea.getAreaPids() + "[" + videoArea.getId() + "]");
+        List<VideoArea> videoAreaList = videoAraeMapper.selectList(queryWrapper);
+        List<VideoAreaVO> videoAreaVOS = videoAreaList.stream().map(
                 item -> {
                     VideoAreaVO videoAreaVO = new VideoAreaVO();
                     BeanUtils.copyProperties(item, videoAreaVO);
                     return videoAreaVO;
                 }
         ).collect(Collectors.toList());
+        VideoAreaVO videoAreaVO = new VideoAreaVO();
+        BeanUtils.copyProperties(videoArea, videoAreaVO);
+        videoAreaVOS.add(videoAreaVO);
+        return videoAreaVOS;
     }
 
     @Override
@@ -151,11 +158,11 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         List<VideoArea> videoAreaList = videoAraeMapper.selectBatchIds(ids);
         boolean flag = false;
         for (VideoArea area : videoAreaList) {
-            if (area.getAreaPid().equals(0L)){
+            if (area.getAreaPid().equals(0L)) {
                 flag = true;
             }
         }
-        if (flag){
+        if (flag) {
             return "删除目标中包含系统内置根节点";
         }
         videoAraeMapper.deleteBatchIds(ids);

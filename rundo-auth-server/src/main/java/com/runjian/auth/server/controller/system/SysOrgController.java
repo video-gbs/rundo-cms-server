@@ -1,13 +1,13 @@
 package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
-import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.service.system.SysOrgService;
+import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -35,61 +35,61 @@ public class SysOrgController {
 
     @PostMapping("/add")
     @ApiOperation("添加部门")
-    public ResponseResult<SysOrgVO> save(@RequestBody AddSysOrgDTO dto) {
+    public CommonResponse<SysOrgVO> save(@RequestBody AddSysOrgDTO dto) {
         log.info("添加部门前端传参信息{}", JSONUtil.toJsonStr(dto));
-        return new ResponseResult<>(200, "操作成功", sysOrgService.saveSysOrg(dto));
+        return CommonResponse.create(200, "操作成功", sysOrgService.saveSysOrg(dto));
     }
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除部门")
-    public ResponseResult<String> delete(@PathVariable Long id) {
-        return new ResponseResult<>(200, "操作成功", sysOrgService.removeSysOrgById(id));
+    public CommonResponse<String> delete(@PathVariable Long id) {
+        return CommonResponse.create(200, "操作成功", sysOrgService.removeSysOrgById(id));
     }
 
     @PostMapping("/batchDelete")
     @ApiOperation("批量删除部门")
-    public ResponseResult<String> batchDelete(@RequestBody List<Long> ids) {
-        return new ResponseResult<>(200, "操作成功",sysOrgService.batchDelete(ids));
+    public CommonResponse<String> batchDelete(@RequestBody List<Long> ids) {
+        return CommonResponse.create(200, "操作成功", sysOrgService.batchDelete(ids));
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑部门信息")
-    public ResponseResult<?> update(@RequestBody UpdateSysOrgDTO dto) {
+    public CommonResponse<?> update(@RequestBody UpdateSysOrgDTO dto) {
         log.info("编辑部门信息前端传参信息{}", JSONUtil.toJsonStr(dto));
         sysOrgService.updateSysOrgById(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/move")
     @ApiOperation("移动部门")
-    public ResponseResult<?> move(@RequestBody MoveSysOrgDTO dto) {
+    public CommonResponse<?> move(@RequestBody MoveSysOrgDTO dto) {
         sysOrgService.moveSysOrg(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @GetMapping("/tree")
     @ApiOperation("获取组织机构层级树")
-    public ResponseResult<List<SysOrgTree>> getSysOrgById() {
-        return new ResponseResult<>(200, "操作成", sysOrgService.getSysOrgTree());
+    public CommonResponse<List<SysOrgTree>> getSysOrgById() {
+        return CommonResponse.create(200, "操作成", sysOrgService.getSysOrgTree());
     }
 
     @GetMapping("/getById/{id}")
     @ApiOperation("获取部门信息")
-    public ResponseResult<SysOrgVO> getById(@PathVariable Long id) {
-        return new ResponseResult<>(200, "操作成功", sysOrgService.getSysOrgById(id));
+    public CommonResponse<SysOrgVO> getById(@PathVariable Long id) {
+        return CommonResponse.create(200, "操作成功", sysOrgService.getSysOrgById(id));
     }
 
     @GetMapping("/getList")
     @ApiOperation("获取部门列表")
-    public ResponseResult<List<SysOrgVO>> getList() {
-        return new ResponseResult<>(200, "操作成功", sysOrgService.getSysOrgList());
+    public CommonResponse<List<SysOrgVO>> getList() {
+        return CommonResponse.create(200, "操作成功", sysOrgService.getSysOrgList());
     }
 
     // @GetMapping("/getListByPage")
     // @ApiOperation("分页获取部门列表")
-    // public ResponseResult<IPage<SysOrgVO>> getListByPage() {
+    // public CommonResponse<IPage<SysOrgVO>> getListByPage() {
     //     // TODO 分页获取应用列表
-    //     return new ResponseResult<>(200, "操作成功", sysOrgService.getListByPage(pageNum, pageSize));
+    //     return CommonResponse.create(200, "操作成功", sysOrgService.getListByPage(pageNum, pageSize));
     // }
 
 

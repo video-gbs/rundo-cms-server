@@ -2,7 +2,6 @@ package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
@@ -10,6 +9,7 @@ import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysApiInfoTree;
 import com.runjian.auth.server.service.system.SysApiInfoService;
+import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -37,54 +37,54 @@ public class SysApiInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加接口")
-    public ResponseResult<?> save(@RequestBody AddSysApiInfoDTO dto) {
+    public CommonResponse<?> save(@RequestBody AddSysApiInfoDTO dto) {
         log.info("添加接口信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysApiInfoService.saveSysApiInfo(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑接口")
-    public ResponseResult<?> updateSysDict(@RequestBody UpdateSysApiInfoDTO dto) {
+    public CommonResponse<?> updateSysDict(@RequestBody UpdateSysApiInfoDTO dto) {
         log.info("添加接口信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysApiInfoService.updateSysApiInfoById(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/status/change")
     @ApiOperation("接口状态切换")
-    public ResponseResult<?> changeStatus(@RequestBody StatusSysApiInfoDTO dto) {
+    public CommonResponse<?> changeStatus(@RequestBody StatusSysApiInfoDTO dto) {
         log.info("接口状态切换前端传参{}", JSONUtil.toJsonStr(dto));
         sysApiInfoService.changeStatus(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
 
     @GetMapping("/getById/{id}")
     @ApiOperation("获取接口信息")
-    public ResponseResult<SysApiInfoVO> getById(@PathVariable Long id) {
-        return new ResponseResult<>(200, "操作成功", sysApiInfoService.getSysApiInfoById(id));
+    public CommonResponse<SysApiInfoVO> getById(@PathVariable Long id) {
+        return CommonResponse.create(200, "操作成功", sysApiInfoService.getSysApiInfoById(id));
     }
 
     @PostMapping("/tree")
     @ApiOperation("获取接口层级树")
-    public ResponseResult<List<SysApiInfoTree>> getApiInfoTree(@RequestBody QuerySysApiInfoDTO dto) {
+    public CommonResponse<List<SysApiInfoTree>> getApiInfoTree(@RequestBody QuerySysApiInfoDTO dto) {
         log.info("获取接口层级树，前端查询条件:{}", JSONUtil.toJsonStr(dto));
-        return new ResponseResult<>(200, "操作成功", sysApiInfoService.getSysApiInfoTree(dto));
+        return CommonResponse.create(200, "操作成功", sysApiInfoService.getSysApiInfoTree(dto));
     }
 
     @GetMapping("/getList")
     @ApiOperation("获取接口列表 无分页")
-    public ResponseResult<List<SysApiInfoVO>> getList() {
-        return new ResponseResult<>(200, "操作成功", sysApiInfoService.getSysApiInfoList());
+    public CommonResponse<List<SysApiInfoVO>> getList() {
+        return CommonResponse.create(200, "操作成功", sysApiInfoService.getSysApiInfoList());
     }
 
     @GetMapping("/getListByPage")
     @ApiOperation("获取接口列表 分页")
-    public ResponseResult<IPage<SysApiInfoVO>> getListByPage(@RequestParam(value = "pageNum", defaultValue = "1")
+    public CommonResponse<IPage<SysApiInfoVO>> getListByPage(@RequestParam(value = "pageNum", defaultValue = "1")
                                                              Integer pageNum,
                                                              @RequestParam(value = "pageSize", defaultValue = "20")
                                                              Integer pageSize) {
-        return new ResponseResult<>(200, "操作成功", sysApiInfoService.getSysApiInfoByPage(pageNum, pageSize));
+        return CommonResponse.create(200, "操作成功", sysApiInfoService.getSysApiInfoByPage(pageNum, pageSize));
     }
 }

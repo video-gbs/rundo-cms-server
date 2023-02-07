@@ -13,16 +13,19 @@ import lombok.Data;
  * @date 2023-02-01 周三 14:07
  */
 @Data
-@ApiModel(value = "VideoArea对象", description = "安保区域")
+@ApiModel(value = "VideoAreaVO对象", description = "安防区域响应实体")
 public class VideoAreaVO {
     @ApiModelProperty("主键ID")
-    @JsonFormat(shape =JsonFormat.Shape.STRING )
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long id;
     @ApiModelProperty("安防区域名称")
     private String areaName;
 
+    @ApiModelProperty("安防区域全名")
+    private String areaNames;
+
     @ApiModelProperty("直接上级")
-    @JsonFormat(shape =JsonFormat.Shape.STRING )
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long areaPid;
 
     @ApiModelProperty("描述信息")

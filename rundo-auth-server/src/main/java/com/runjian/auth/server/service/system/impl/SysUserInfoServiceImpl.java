@@ -8,6 +8,7 @@ import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
 import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
+import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.mapper.system.SysUserInfoMapper;
@@ -74,11 +75,12 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         EditSysUserInfoVO vo = new EditSysUserInfoVO();
         SysUserInfo sysUserInfo = sysUserInfoMapper.selectById(id);
         BeanUtils.copyProperties(sysUserInfo, vo);
-        Long orgId = sysUserInfoMapper.selectOrgInfoByUserId(id);
+        OrgInfoVO orgInfoVO = sysUserInfoMapper.selectOrgInfoByUserId(id);
         List<Long> roleIds = sysUserInfoMapper.selectRoleByUserId(id);
         vo.setPassword(null);
         vo.setRePassword(null);
-        vo.setOrgId(orgId);
+        vo.setOrgId(orgInfoVO.getOrgId());
+        vo.setOrgName(orgInfoVO.getOrgName());
         vo.setRoleIds(roleIds);
         return vo;
     }
@@ -136,7 +138,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         if (dto.getOrgId() != null && !zero.equals(dto.getOrgId())) {
             page.setOrgId(dto.getOrgId());
         }
-        if (null != dto.getUserName() && "".equals(dto.getUserName())){
+        if (null != dto.getUserName() && "".equals(dto.getUserName())) {
             page.setUserName(dto.getUserName());
         }
         page.setUserAccount(dto.getUserAccount());
