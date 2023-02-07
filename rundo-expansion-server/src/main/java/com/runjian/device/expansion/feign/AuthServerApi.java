@@ -5,6 +5,8 @@ import com.runjian.device.expansion.feign.fallback.AuthServerApiFallbackFactory;
 import com.runjian.device.expansion.feign.fallback.DeviceControlApiFallbackFactory;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -25,13 +27,13 @@ public interface AuthServerApi {
      * @return
      */
     @PostMapping(value = "/rundoAuthServer/videoArae/getList")
-    CommonResponse<List<VideoAreaResp>> getVideoAraeList(@RequestParam Integer areaId);
+    CommonResponse<List<VideoAreaResp>> getVideoAraeList(@RequestParam(value = "areaId",required = false) Integer areaId);
 
     /**
      * 控制服务 设备添加
-     * @param areaId
+     * @param id
      * @return
      */
-    @PostMapping(value = "/rundoAuthServer/videoArae/getById")
-    CommonResponse<VideoAreaResp> getVideoAraeInfo(@RequestParam Integer areaId);
+    @GetMapping(value = "/rundoAuthServer/videoArae/getById/{id}")
+    CommonResponse<VideoAreaResp> getVideoAraeInfo(@PathVariable(value = "id") Integer id);
 }
