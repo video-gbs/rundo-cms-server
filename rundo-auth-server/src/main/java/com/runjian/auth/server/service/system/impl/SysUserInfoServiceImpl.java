@@ -92,9 +92,15 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         // 根据id查取角色信息
         List<Long> oldRoleIds = sysUserInfoMapper.selectRoleByUserId(dto.getId());
         // 处理信息
+
+        if (!"".equals(dto.getPassword())) {
+            String password = passwordUtil.encode(dto.getPassword());
+            dto.setPassword(password);
+        } else {
+            dto.setPassword(sysUserInfo.getPassword());
+        }
+
         BeanUtils.copyProperties(dto, sysUserInfo);
-        String password = passwordUtil.encode(dto.getPassword());
-        sysUserInfo.setPassword(password);
         sysUserInfoMapper.updateById(sysUserInfo);
         // 原始关联角色为空 则提交关联角色为新增
         List<Long> newRoleIds = dto.getRoleIds();

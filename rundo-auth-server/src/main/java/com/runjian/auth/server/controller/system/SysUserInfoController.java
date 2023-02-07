@@ -2,12 +2,12 @@ package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.service.system.SysUserInfoService;
+import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -37,72 +37,75 @@ public class SysUserInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加用户")
-    public ResponseResult<?> addUser(@RequestBody @Valid AddSysUserInfoDTO dto) {
+    public CommonResponse<?> addUser(@RequestBody @Valid AddSysUserInfoDTO dto) {
         log.info("添加用户前端传参{}", JSONUtil.toJsonStr(dto));
         if (Objects.equals(dto.getPassword(), dto.getPassword())) {
             sysUserService.saveSysUserInfo(dto);
         } else {
-            return new ResponseResult<>(200, "两次密码不一致");
+            return CommonResponse.create(200, "两次密码不一致", null);
         }
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/getById/{id}")
     @ApiOperation("编辑时回显用户信息")
-    public ResponseResult<EditSysUserInfoVO> getUserById(@PathVariable Long id) {
-        return new ResponseResult<>(200, "操作成功", sysUserService.getSysUserInfoById(id));
+    public CommonResponse<EditSysUserInfoVO> getUserById(@PathVariable Long id) {
+        return CommonResponse.create(200, "操作成功", sysUserService.getSysUserInfoById(id));
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑用户")
-    public ResponseResult<?> updateUser(@RequestBody UpdateSysUserInfoDTO dto) {
+    public CommonResponse<?> updateUser(@RequestBody UpdateSysUserInfoDTO dto) {
         log.info("编辑用户前端传参{}", JSONUtil.toJsonStr(dto));
-        if (Objects.equals(dto.getPassword(), dto.getPassword())) {
+        if (null != dto.getPassword() && null != dto.getRePassword()) {
+            if (!Objects.equals(dto.getPassword(), dto.getRePassword())) {
+                return CommonResponse.create(200, "两次密码不一致", null);
+            }
             sysUserService.updateSysUserInfo(dto);
         } else {
-            return new ResponseResult<>(200, "两次密码不一致");
+            sysUserService.updateSysUserInfo(dto);
         }
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/status/change")
     @ApiOperation("用户状态切换")
-    public ResponseResult<?> changeStatus(@RequestBody StatusSysUserInfoDTO dto) {
+    public CommonResponse<?> changeStatus(@RequestBody StatusSysUserInfoDTO dto) {
         log.info("应用状态切换前端传参{}", JSONUtil.toJsonStr(dto));
         sysUserService.changeStatus(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除用户")
-    public ResponseResult<?> removeById(@PathVariable Long id) {
+    public CommonResponse<?> removeById(@PathVariable Long id) {
         sysUserService.removeSysUserInfoById(id);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/batchRemove")
     @ApiOperation("批量删除用户")
-    public ResponseResult<?> removeById(@RequestBody List<Long>  ids) {
+    public CommonResponse<?> removeById(@RequestBody List<Long> ids) {
         sysUserService.batchRemoveSysUserInfo(ids);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/getListByPage")
     @ApiOperation("获取用户列表")
-    public ResponseResult<IPage<ListSysUserInfoVO>> getSysUserInfoByPage(@RequestBody QuerySysUserInfoDTO dto) {
-        return new ResponseResult<>(200, "操作成功", sysUserService.getSysUserInfoByPage(dto));
+    public CommonResponse<IPage<ListSysUserInfoVO>> getSysUserInfoByPage(@RequestBody QuerySysUserInfoDTO dto) {
+        return CommonResponse.create(200, "操作成功", sysUserService.getSysUserInfoByPage(dto));
     }
 
     @PostMapping("/getRelationSysUserInfo/{id}")
     @ApiOperation("关联用户查看用户下信息")
-    public ResponseResult<RelationSysUserInfoVO> getRelationSysUserInfoById(@PathVariable Long id) {
-        return new ResponseResult<>(200, "操作成功", sysUserService.getRelationSysUserInfoById(id));
+    public CommonResponse<RelationSysUserInfoVO> getRelationSysUserInfoById(@PathVariable Long id) {
+        return CommonResponse.create(200, "操作成功", sysUserService.getRelationSysUserInfoById(id));
     }
 
     @PostMapping("/getRelationSysUserInfoList")
     @ApiOperation("关联用户用户列表")
-    public ResponseResult<IPage<RelationSysUserInfoVO>> getRelationSysUserInfoList(@RequestBody QueryRelationSysUserInfoDTO dto) {
-        return new ResponseResult<>(200, "操作成功", sysUserService.getRelationSysUserInfoList(dto));
+    public CommonResponse<IPage<RelationSysUserInfoVO>> getRelationSysUserInfoList(@RequestBody QueryRelationSysUserInfoDTO dto) {
+        return CommonResponse.create(200, "操作成功", sysUserService.getRelationSysUserInfoList(dto));
     }
 
 
