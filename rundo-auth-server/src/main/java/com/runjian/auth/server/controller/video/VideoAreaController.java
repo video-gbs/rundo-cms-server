@@ -80,9 +80,9 @@ public class VideoAreaController {
     }
 
 
-    @PostMapping("/getList/{areaId}")
+    @PostMapping("/getList")
     @ApiOperation("获取安防区域列表")
-    public ResponseResult<List<VideoAreaVO>> getList(@PathVariable Long areaId) {
+    public ResponseResult<List<VideoAreaVO>> getList(@RequestParam(value = "areaId", required = false) Long areaId) {
         return new ResponseResult<>(200, "操作成功", videoAreaSaervice.getVideoAreaList(areaId));
     }
 
