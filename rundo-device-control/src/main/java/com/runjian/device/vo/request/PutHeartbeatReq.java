@@ -1,6 +1,7 @@
 package com.runjian.device.vo.request;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -18,7 +19,7 @@ public class PutHeartbeatReq {
      * 网关ID
      */
     @NotNull(message = "网关ID不能为空")
-    @Size(min = 1, message = "非法网关ID")
+    @Range(min = 1, message = "非法网关ID")
     private Long gatewayId;
 
     /**

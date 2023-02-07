@@ -13,22 +13,12 @@ public class DeviceSyncRsp {
     /**
      * 主键id
      */
-    private Long id;
-
-    /**
-     * 设备类型 1-设备 2-NVR 3-DVR 4-CVR
-     */
-    private Integer deviceType;
+    private Long deviceId;
 
     /**
      * 在线状态 0-离线 1-在线
      */
     private Integer onlineState;
-
-    /**
-     * 类型 1-通道 2-设备
-     */
-    private Integer type;
 
     /**
      * ip地址

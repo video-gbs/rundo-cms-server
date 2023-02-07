@@ -5,6 +5,7 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.dao.GatewayMapper;
+import com.runjian.parsing.dao.TaskMapper;
 import com.runjian.parsing.entity.ChannelInfo;
 import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.entity.GatewayInfo;

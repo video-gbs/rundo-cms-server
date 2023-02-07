@@ -23,6 +23,7 @@
         <module>rundo-auth-gateway</module>
         <module>rundo-auth-server</module>
         <module>rundo-generator</module>
+        <module>rundo-expansion-server</module>
     </modules>
 
 

@@ -2,7 +2,6 @@ package com.runjian.device.controller;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
-import com.runjian.device.service.north.DeviceNorthService;
 import com.runjian.device.service.south.DeviceSouthService;
 import com.runjian.device.vo.request.PostDeviceSignInReq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +31,10 @@ public class DeviceSouthController {
      * @param req 设备注册请求体
      * @return
      */
-    @PostMapping("sign-in")
+    @PostMapping("/sign-in")
     public CommonResponse signIn(@RequestBody PostDeviceSignInReq req){
         validatorService.validateRequest(req);
-        deviceSouthService.signIn(req.getId(), req.getGatewayId(), req.getOnline(), req.getDeviceType(), req.getIp(), req.getPort());
+        deviceSouthService.signIn(req.getId(), req.getGatewayId(), req.getOnlineState(), req.getDeviceType(), req.getIp(), req.getPort());
         return CommonResponse.success();
     }
 }

@@ -23,7 +23,7 @@ public class PostGatewaySignInReq {
      */
     @NotNull(message = "主键id不能为空")
     @Range(min = 1, message = "非法主键Id")
-    private Long id;
+    private Long gatewayId;
 
     /**
      * 网关唯一序列号 网关ID
@@ -48,7 +48,7 @@ public class PostGatewaySignInReq {
      * 网关类型
      */
     @NotNull(message = "网关类型不能为空")
-    @Range(min = 1, max = 2, message = "非法网关类型")
+    @Range(min = 1, max = 5, message = "非法网关类型")
     private Integer gatewayType;
 
     /**
@@ -86,6 +86,7 @@ public class PostGatewaySignInReq {
         GatewayInfo gatewayInfo = new GatewayInfo();
         LocalDateTime nowTime = LocalDateTime.now();
         BeanUtils.copyProperties(this, gatewayInfo);
+        gatewayInfo.setId(this.gatewayId);
         gatewayInfo.setOnlineState(CommonEnum.ENABLE.getCode());
         gatewayInfo.setCreateTime(nowTime);
         gatewayInfo.setUpdateTime(nowTime);

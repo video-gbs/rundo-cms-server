@@ -46,8 +46,8 @@ public class MqListenerConfig {
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(rabbitMqProperties.getQueueData(publicGetQueue).getQueueName());
         container.setMessageListener(gatewayPublicMsgListener);
-        container.setConcurrentConsumers(1);
-        container.setMaxConcurrentConsumers(1);
+        container.setConcurrentConsumers(10);
+        container.setMaxConcurrentConsumers(10);
         container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         containerMap.put("PUBLIC", container);
         return container;
@@ -64,8 +64,8 @@ public class MqListenerConfig {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setMessageListener(dispatchMsgListener);
-        container.setConcurrentConsumers(1);
-        container.setMaxConcurrentConsumers(1);
+        container.setConcurrentConsumers(10);
+        container.setMaxConcurrentConsumers(10);
         container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         containerMap.put("DISPATCH", container);
         return container;

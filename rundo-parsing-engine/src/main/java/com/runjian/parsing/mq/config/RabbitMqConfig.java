@@ -61,6 +61,8 @@ public class RabbitMqConfig {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ消息发送确认回调服务", "消息发送到Queue失败", message, "routingKey:" + routingKey + " exchange:" + exchange + " replyCode:" + replyCode + " replyText:" + replyText );
         });
 
+        createExchangeQueue();
+
     }
 
     public void addQueue(Queue queue, Binding binding){
@@ -75,7 +77,6 @@ public class RabbitMqConfig {
     /**
      * 创建exchange、queue、binding
      */
-    @Bean
     public void createExchangeQueue() throws BusinessException {
         List<RabbitMqProperties.ExchangeData> exchangeDataList = rabbitMqProperties.getExchangeDataList();
         if (exchangeDataList.size() > 0){

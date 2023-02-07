@@ -3,13 +3,16 @@ package com.runjian.device.service.south.impl;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.CommonEnum;
-import com.runjian.device.utils.CircleArray;
+import com.runjian.device.expansion.utils.CircleArray;
 import com.runjian.device.dao.GatewayMapper;
 import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.service.south.GatewaySouthService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -20,6 +23,7 @@ import java.util.Set;
  * @author Miracle
  * @date 2023/01/06 16:56
  */
+@Slf4j
 @Service
 public class GatewaySouthServiceImpl implements GatewaySouthService {
 
@@ -31,18 +35,23 @@ public class GatewaySouthServiceImpl implements GatewaySouthService {
      */
     private volatile CircleArray<Long> heartbeatArray = new CircleArray<>(600);
 
+    @PostConstruct
+    public void init(){
+        // 将所有的网关设置为离线状态
+        gatewayMapper.setAllOnlineState(CommonEnum.DISABLE.getCode(), LocalDateTime.now());
+    }
 
     /**
      * 定时任务-网关心跳处理
      */
     @Override
-    @Scheduled(cron = "*/1 * * * * ?")
+    @Scheduled(fixedRate = 1000)
     public void heartbeat() {
         Set<Long> gatewayIds = heartbeatArray.pullAndNext();
         if (gatewayIds.isEmpty()){
             return;
         }
-        gatewayMapper.batchUpdateOnlineState(gatewayIds, CommonEnum.DISABLE.getCode());
+        gatewayMapper.batchUpdateOnlineState(gatewayIds, CommonEnum.DISABLE.getCode(), LocalDateTime.now());
     }
 
     /**
@@ -91,6 +100,6 @@ public class GatewaySouthServiceImpl implements GatewaySouthService {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("网关过期时间过长，范围1~%s", heartbeatArray.getCircleSize()));
         }
         heartbeatArray.addOrUpdateTime(gatewayId, betweenSecond);
-        gatewayMapper.updateOnlineState(gatewayId, CommonEnum.ENABLE.getCode());
+        gatewayMapper.updateOnlineState(gatewayId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
     }
 }

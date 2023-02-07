@@ -24,10 +24,9 @@ public interface NorthProtocol {
     /**
      * 规范化：设备同步
      * @param deviceId 设备id
-     * @param dataMap 数据结合
      * @param response 请求返回体
      */
-    void deviceSync(Long deviceId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response);
+    void deviceSync(Long deviceId, DeferredResult<CommonResponse<?>> response);
 
     /**
      * 规范化：主动添加设备
@@ -41,13 +40,21 @@ public interface NorthProtocol {
      * 规范化：删除设备
      * @param deviceId 设备id
      */
-    void deviceDelete(Long deviceId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response);
+    void deviceDelete(Long deviceId, DeferredResult<CommonResponse<?>> response);
 
     /**
      * 规范化：通道同步
      * @param deviceId 设备id
      */
-    void channelSync(Long deviceId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response);
+    void channelSync(Long deviceId,  DeferredResult<CommonResponse<?>> response);
+
+    /**
+     * 规范化：通道控制
+     * @param channelId 通道id
+     * @param dataMap 数据集合
+     * @param response 异步返回体
+     */
+    void channelPtzControl(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response);
 
     /**
      * 规范化：通道播放
@@ -63,7 +70,7 @@ public interface NorthProtocol {
      * @param dataMap 数据集合
      * @param response 异步返回体
      */
-    void getChannelRecord(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response);
+    void channelRecord(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response);
 
     /**
      * 规范化：通道回放
