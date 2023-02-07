@@ -56,7 +56,7 @@ public class DeviceExpansionController {
     }
 
     @DeleteMapping(value = "/batchDelete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation("删除")
+    @ApiOperation("批量删除")
     public CommonResponse<Boolean> batchDelete(@RequestBody List<Long> idList) {
        return deviceExpansionService.removeBatch(idList);
     }

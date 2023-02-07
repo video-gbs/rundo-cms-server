@@ -1,6 +1,7 @@
 package com.runjian.device.expansion.feign;
 
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.device.expansion.feign.fallback.AuthServerApiFallbackFactory;
 import com.runjian.device.expansion.feign.fallback.DeviceControlApiFallbackFactory;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -14,7 +15,7 @@ import java.util.List;
  * @author Miracle
  * @date 2023/1/11 10:32
  */
-@FeignClient(value = "rundo-auth-server",fallbackFactory= DeviceControlApiFallbackFactory.class)
+@FeignClient(value = "rundo-auth-server",fallbackFactory= AuthServerApiFallbackFactory.class)
 public interface AuthServerApi {
 
 

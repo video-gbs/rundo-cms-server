@@ -50,16 +50,16 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         DeviceReq deviceReq = new DeviceReq();
         BeanUtil.copyProperties(deviceExpansionReq,deviceReq);
 
-        CommonResponse<Long> longCommonResponse = deviceControlApi.deviceAdd(deviceReq);
-        if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-            //调用失败
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",deviceReq, longCommonResponse);
-            return longCommonResponse;
-        }
+//        CommonResponse<Long> longCommonResponse = deviceControlApi.deviceAdd(deviceReq);
+//        if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+//            //调用失败
+//            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",deviceReq, longCommonResponse);
+//            return longCommonResponse;
+//        }
         DeviceExpansion deviceExpansion = new DeviceExpansion();
         BeanUtil.copyProperties(deviceExpansionReq,deviceExpansion);
 
-        deviceExpansion.setId(longCommonResponse.getData());
+//        deviceExpansion.setId(longCommonResponse.getData());
         deviceExpansionMapper.insert(deviceExpansion);
         return CommonResponse.success();
     }
