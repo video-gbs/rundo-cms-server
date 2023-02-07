@@ -1,10 +1,10 @@
 package com.runjian.auth.server.controller.system;
 
-import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysConfigDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysConfigDTO;
 import com.runjian.auth.server.domain.vo.system.SysConfigVO;
 import com.runjian.auth.server.service.system.SysConfigService;
+import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,35 +30,35 @@ public class SysConfigController {
 
     @PostMapping("/add")
     @ApiOperation("添加系统参数配置")
-    public ResponseResult<?> add(@RequestBody AddSysConfigDTO dto) {
+    public CommonResponse<?> add(@RequestBody AddSysConfigDTO dto) {
         sysConfigService.saveSysConfig(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑系统参数配置")
-    public ResponseResult<?> update(@RequestBody UpdateSysConfigDTO dto) {
+    public CommonResponse<?> update(@RequestBody UpdateSysConfigDTO dto) {
         sysConfigService.updateSysConfigById(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @GetMapping("/getById")
     @ApiOperation("获取编辑系统参数配置信息")
-    public ResponseResult<SysConfigVO> getById(@RequestParam Long id) {
-        return new ResponseResult<>(200, "操作成功", sysConfigService.getSysConfigById(id));
+    public CommonResponse<SysConfigVO> getById(@RequestParam Long id) {
+        return CommonResponse.create(200, "操作成功", sysConfigService.getSysConfigById(id));
     }
 
     @GetMapping("/getList")
     @ApiOperation("获取系统参数配置列表 无分页")
-    public ResponseResult<List<SysConfigVO>> getList() {
-        return new ResponseResult<>(200, "操作成功", sysConfigService.getSysConfigList());
+    public CommonResponse<List<SysConfigVO>> getList() {
+        return CommonResponse.create(200, "操作成功", sysConfigService.getSysConfigList());
     }
 
     @GetMapping("/getListByPage")
     @ApiOperation("获取系统参数配置列表 含分页")
-    public ResponseResult getListByPage(@RequestBody Long id) {
+    public CommonResponse getListByPage(@RequestBody Long id) {
         // TODO 分页获取系统参数配置列表
-        return new ResponseResult<>(200, "操作成功", sysConfigService.list());
+        return CommonResponse.create(200, "操作成功", sysConfigService.list());
     }
 
 }

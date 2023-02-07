@@ -8,6 +8,7 @@ import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
 import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
+import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.mapper.system.SysUserInfoMapper;
@@ -74,11 +75,12 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         EditSysUserInfoVO vo = new EditSysUserInfoVO();
         SysUserInfo sysUserInfo = sysUserInfoMapper.selectById(id);
         BeanUtils.copyProperties(sysUserInfo, vo);
-        Long orgId = sysUserInfoMapper.selectOrgInfoByUserId(id);
+        OrgInfoVO orgInfoVO = sysUserInfoMapper.selectOrgInfoByUserId(id);
         List<Long> roleIds = sysUserInfoMapper.selectRoleByUserId(id);
         vo.setPassword(null);
         vo.setRePassword(null);
-        vo.setOrgId(orgId);
+        vo.setOrgId(orgInfoVO.getOrgId());
+        vo.setOrgName(orgInfoVO.getOrgName());
         vo.setRoleIds(roleIds);
         return vo;
     }
@@ -90,9 +92,15 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         // 根据id查取角色信息
         List<Long> oldRoleIds = sysUserInfoMapper.selectRoleByUserId(dto.getId());
         // 处理信息
+
+        if (!"".equals(dto.getPassword())) {
+            String password = passwordUtil.encode(dto.getPassword());
+            dto.setPassword(password);
+        } else {
+            dto.setPassword(sysUserInfo.getPassword());
+        }
+
         BeanUtils.copyProperties(dto, sysUserInfo);
-        String password = passwordUtil.encode(dto.getPassword());
-        sysUserInfo.setPassword(password);
         sysUserInfoMapper.updateById(sysUserInfo);
         // 原始关联角色为空 则提交关联角色为新增
         List<Long> newRoleIds = dto.getRoleIds();
@@ -136,7 +144,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         if (dto.getOrgId() != null && !zero.equals(dto.getOrgId())) {
             page.setOrgId(dto.getOrgId());
         }
-        if (null != dto.getUserName() && "".equals(dto.getUserName())){
+        if (null != dto.getUserName() && "".equals(dto.getUserName())) {
             page.setUserName(dto.getUserName());
         }
         page.setUserAccount(dto.getUserAccount());

@@ -4,18 +4,21 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysMenuInfo;
 import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysMenuInfoTree;
 import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
+import com.runjian.auth.server.util.tree.DataTreeUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -84,8 +87,31 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
     }
 
     @Override
-    public List<SysMenuInfoTree> getSysOrgTree() {
-        return null;
+    public List<SysMenuInfoTree> getSysOrgTree(QuerySysMenuInfoDTO dto) {
+        LambdaQueryWrapper<SysMenuInfo> queryWrapper = new LambdaQueryWrapper<>();
+        if (null != dto.getMenuName()) {
+            queryWrapper.like(SysMenuInfo::getMenuName, dto.getMenuName());
+        }
+        if (null != dto.getUrl()) {
+            queryWrapper.like(SysMenuInfo::getUrl, dto.getUrl());
+        }
+        queryWrapper.orderByAsc(true, SysMenuInfo::getMenuSort);
+        queryWrapper.orderByAsc(true, SysMenuInfo::getUpdatedTime);
+        List<SysMenuInfo> sysMenuInfoList = sysMenuInfoMapper.selectList(queryWrapper);
+        List<SysMenuInfoTree> sysMenuInfoTreeList = sysMenuInfoList.stream().map(
+                item -> {
+                    SysMenuInfoTree bean = new SysMenuInfoTree();
+                    BeanUtils.copyProperties(item, bean);
+                    return bean;
+                }
+        ).collect(Collectors.toList());
+
+        if (dto.getMenuType() == null) {
+            return DataTreeUtil.buildTree(sysMenuInfoTreeList, 1L);
+        } else {
+            return DataTreeUtil.buildTree(sysMenuInfoTreeList, dto.getMenuType());
+        }
+
     }
 
     @Override

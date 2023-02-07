@@ -1,7 +1,8 @@
 package com.runjian.auth.server.service.login;
 
-import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.login.UserInfoDTO;
+
+import java.util.Map;
 
 /**
  * @author Jiang4Yu
@@ -11,8 +12,8 @@ import com.runjian.auth.server.domain.dto.login.UserInfoDTO;
  * @date 2023-01-05 周四 17:12
  */
 public interface LoginService {
-    ResponseResult login(UserInfoDTO dto);
+    Map login(UserInfoDTO dto);
 
-    ResponseResult  logout();
+    void logout();
 
 }

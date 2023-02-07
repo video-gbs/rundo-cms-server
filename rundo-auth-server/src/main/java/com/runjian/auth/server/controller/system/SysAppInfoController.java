@@ -2,13 +2,13 @@ package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.service.system.SysAppInfoService;
+import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -35,52 +35,52 @@ public class SysAppInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加应用")
-    public ResponseResult<?> save(@RequestBody AddSysAppInfoDTO dto) {
+    public CommonResponse<?> save(@RequestBody AddSysAppInfoDTO dto) {
         log.info("添加应用信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysAppInfoService.saveSysAppInfo(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑应用")
-    public ResponseResult<?> modify(@RequestBody UpdateSysAppInfoDTO dto) {
+    public CommonResponse<?> modify(@RequestBody UpdateSysAppInfoDTO dto) {
         log.info("编辑应用信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysAppInfoService.updateSysAppInfoById(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除应用")
-    public ResponseResult<?> remove(@PathVariable Long id) {
+    public CommonResponse<?> remove(@PathVariable Long id) {
         log.info("删除应用信息前端传参{}", id);
         sysAppInfoService.removeSysAppInfoById(id);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @PostMapping("/status/change")
     @ApiOperation("应用状态切换")
-    public ResponseResult<?> changeStatus(@RequestBody StatusSysAppInfoDTO dto) {
+    public CommonResponse<?> changeStatus(@RequestBody StatusSysAppInfoDTO dto) {
         log.info("应用状态切换前端传参{}", JSONUtil.toJsonStr(dto));
         sysAppInfoService.changeStatus(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.create(200, "操作成功", null);
     }
 
     @GetMapping("/getById/{id}")
     @ApiOperation("获取应用信息")
-    public ResponseResult<SysAppInfoVO> getById(@PathVariable Long id) {
-        return new ResponseResult<>(200, "操作成功", sysAppInfoService.getSysAppInfoById(id));
+    public CommonResponse<SysAppInfoVO> getById(@PathVariable Long id) {
+        return CommonResponse.create(200, "操作成功", sysAppInfoService.getSysAppInfoById(id));
     }
 
     @GetMapping("/getList")
     @ApiOperation("获取应用列表 无分页")
-    public ResponseResult<List<SysAppInfoVO>> getList() {
-        return new ResponseResult<>(200, "操作成功", sysAppInfoService.getSysAppInfoList());
+    public CommonResponse<List<SysAppInfoVO>> getList() {
+        return CommonResponse.create(200, "操作成功", sysAppInfoService.getSysAppInfoList());
     }
 
     @PostMapping("/getListByPage")
     @ApiOperation("获取应用列表 分页")
-    public ResponseResult<IPage<SysAppInfoVO>> getListByPage(@RequestBody QuerySysAppInfoDTO dto) {
-        return new ResponseResult<>(200, "操作成功", sysAppInfoService.getSysAppInfoByPage(dto));
+    public CommonResponse<IPage<SysAppInfoVO>> getListByPage(@RequestBody QuerySysAppInfoDTO dto) {
+        return CommonResponse.create(200, "操作成功", sysAppInfoService.getSysAppInfoByPage(dto));
     }
 
 

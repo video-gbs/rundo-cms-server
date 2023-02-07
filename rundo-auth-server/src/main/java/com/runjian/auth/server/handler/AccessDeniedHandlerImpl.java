@@ -2,8 +2,8 @@ package com.runjian.auth.server.handler;
 
 import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
-import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.util.WebUtils;
+import com.runjian.common.config.response.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -26,7 +26,7 @@ import java.io.IOException;
 public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        ResponseResult result = new ResponseResult(HttpStatus.HTTP_FORBIDDEN, accessDeniedException.getMessage(), null);
+        CommonResponse result = CommonResponse.create(HttpStatus.HTTP_FORBIDDEN, accessDeniedException.getMessage(), null);
         String json = JSONUtil.toJsonStr(result);
         WebUtils.renderString(response, json);
     }

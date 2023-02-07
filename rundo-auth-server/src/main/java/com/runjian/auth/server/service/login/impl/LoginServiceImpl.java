@@ -1,11 +1,11 @@
 package com.runjian.auth.server.service.login.impl;
 
-import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.login.LoginUser;
 import com.runjian.auth.server.domain.dto.login.UserInfoDTO;
 import com.runjian.auth.server.service.login.LoginService;
 import com.runjian.auth.server.util.JwtUtil;
 import com.runjian.auth.server.util.RedisCache;
+import com.runjian.common.config.response.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,7 +36,7 @@ public class LoginServiceImpl implements LoginService {
     private RedisCache redisCache;
 
     @Override
-    public ResponseResult login(UserInfoDTO user) {
+    public Map login(UserInfoDTO user) {
         // 调用AuthenticationManager authenticate进行用户认证
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
@@ -63,18 +63,17 @@ public class LoginServiceImpl implements LoginService {
 
         // 把完整的用户信息放入redis中，userId 作为key
         redisCache.setCacheObject("login:" + userid, loginUser);
-        return new ResponseResult(200, "登陆成功", map);
+        return map;
     }
 
     @Override
-    public ResponseResult logout() {
+    public void logout() {
         // 获取SecurityContextHolder中的用户ID
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         Long userid = loginUser.getSysUserInfo().getId();
         // 删除redis中的UserID
         redisCache.deleteObject("login:" + userid);
-        return new ResponseResult(200, "注销成功");
     }
 
 }
