@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysAppInfoDTO;
+import com.runjian.auth.server.domain.dto.system.StatusSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysAppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
@@ -52,19 +53,27 @@ public class SysAppInfoServiceImpl extends ServiceImpl<SysAppInfoMapper, SysAppI
 
     @Override
     public Page<SysAppInfoVO> getSysAppInfoByPage(QuerySysAppInfoDTO dto) {
-        PageSysAppInfoDTO pageSysAppInfoDTO = new PageSysAppInfoDTO();
-        pageSysAppInfoDTO.setAppName(dto.getAppName());
-        pageSysAppInfoDTO.setAppIp(dto.getAppIp());
-        boolean pageSize = null != dto.getPageSize() && dto.getPageSize() >= 0;
-        boolean pageCurrent = null != dto.getCurrent() && dto.getCurrent() >= 0;
-        if (pageSize && pageCurrent) {
-            pageSysAppInfoDTO.setCurrent(dto.getCurrent());
-            pageSysAppInfoDTO.setSize(dto.getPageSize());
+        PageSysAppInfoDTO page = new PageSysAppInfoDTO();
+        page.setAppName(dto.getAppName());
+        page.setAppIp(dto.getAppIp());
+        if (null != dto.getCurrent() && dto.getCurrent() > 0) {
+            page.setCurrent(dto.getCurrent());
         } else {
-            pageSysAppInfoDTO.setCurrent(1);
-            pageSysAppInfoDTO.setSize(20);
+            page.setCurrent(1);
         }
-        return sysAppInfoMapper.MySelectPage(pageSysAppInfoDTO);
+        if (null != dto.getPageSize() && dto.getPageSize() > 0){
+            page.setSize(dto.getPageSize());
+        }else {
+            page.setSize(20);
+        }
+        return sysAppInfoMapper.MySelectPage(page);
+    }
+
+    @Override
+    public void changeStatus(StatusSysAppInfoDTO dto) {
+        SysAppInfo sysAppInfo = sysAppInfoMapper.selectById(dto.getId());
+        sysAppInfo.setStatus(dto.getStatus());
+        sysAppInfoMapper.updateById(sysAppInfo);
     }
 
     @Override

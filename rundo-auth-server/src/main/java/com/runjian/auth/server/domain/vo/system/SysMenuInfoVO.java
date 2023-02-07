@@ -1,5 +1,6 @@
 package com.runjian.auth.server.domain.vo.system;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -13,7 +14,12 @@ import lombok.Data;
 @Data
 public class SysMenuInfoVO {
     @ApiModelProperty("主键ID")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
+
+    @ApiModelProperty("直接父级菜单ID")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
+    private Long menuPid;
 
     @ApiModelProperty("图标")
     private String icon;

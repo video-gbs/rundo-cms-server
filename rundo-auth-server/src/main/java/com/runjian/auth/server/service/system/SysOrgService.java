@@ -3,7 +3,10 @@ package com.runjian.auth.server.service.system;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
-import com.runjian.auth.server.domain.vo.system.SysOrgNode;
+import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
+import com.runjian.auth.server.domain.vo.system.SysOrgVO;
+import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.domain.entity.system.SysOrg;
 
 import java.util.List;
@@ -18,9 +21,21 @@ import java.util.List;
  */
 public interface SysOrgService extends IService<SysOrg> {
 
-    List<SysOrgNode> getSysOrgTree(Long id, String orgName);
+    List<SysOrgTree> getSysOrgTree();
 
     IPage<SysOrg> getListByPage(Integer pageNum, Integer pageSize);
 
-    void saveSysOrg(AddSysOrgDTO dto);
+    SysOrgVO saveSysOrg(AddSysOrgDTO dto);
+
+    String removeSysOrgById(Long id);
+
+    void updateSysOrgById(UpdateSysOrgDTO dto);
+
+    SysOrgVO getSysOrgById(Long id);
+
+    List<SysOrgVO> getSysOrgList();
+
+    void moveSysOrg(MoveSysOrgDTO dto);
+
+    String batchDelete(List<Long> ids);
 }

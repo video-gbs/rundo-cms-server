@@ -1,6 +1,6 @@
-package com.runjian.auth.server.domain.vo.system;
+package com.runjian.auth.server.domain.vo.tree;
 
-import com.runjian.auth.server.domain.entity.system.SysOrg;
+import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.util.tree.DataTree;
 
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.List;
  * @Description 树形
  * @date 2023-01-12 周四 11:46
  */
-public class SysOrgNode extends SysOrg implements DataTree<SysOrgNode> {
+public class SysOrgTree extends SysOrgVO implements DataTree<SysOrgTree> {
 
-    private List<SysOrgNode> children;
+    private List<SysOrgTree> children;
 
     @Override
     public Long getParentId() {
@@ -22,12 +22,12 @@ public class SysOrgNode extends SysOrg implements DataTree<SysOrgNode> {
     }
 
     @Override
-    public void setChildren(List<SysOrgNode> children) {
+    public void setChildren(List<SysOrgTree> children) {
         this.children = children;
     }
 
     @Override
-    public List<SysOrgNode> getChildren() {
+    public List<SysOrgTree> getChildren() {
         return this.children;
     }
 }

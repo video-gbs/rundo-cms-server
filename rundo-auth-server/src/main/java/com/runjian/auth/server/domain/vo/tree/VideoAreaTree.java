@@ -1,6 +1,6 @@
-package com.runjian.auth.server.domain.vo.video;
+package com.runjian.auth.server.domain.vo.tree;
 
-import com.runjian.auth.server.domain.entity.video.VideoArea;
+import com.runjian.auth.server.domain.vo.video.VideoAreaVO;
 import com.runjian.auth.server.util.tree.DataTree;
 
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.List;
  * @Description 安保区域树形
  * @date 2023-01-13 周五 9:54
  */
-public class AreaNode extends VideoArea implements DataTree<AreaNode> {
+public class VideoAreaTree extends VideoAreaVO implements DataTree<VideoAreaTree> {
 
-    private List<AreaNode> children;
+    private List<VideoAreaTree> children;
 
     @Override
     public Long getParentId() {
@@ -22,12 +22,12 @@ public class AreaNode extends VideoArea implements DataTree<AreaNode> {
     }
 
     @Override
-    public void setChildren(List<AreaNode> children) {
+    public void setChildren(List<VideoAreaTree> children) {
         this.children = children;
     }
 
     @Override
-    public List<AreaNode> getChildren() {
+    public List<VideoAreaTree> getChildren() {
         return this.children;
     }
 }

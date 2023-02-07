@@ -20,4 +20,24 @@
         WHERE
             sai.delete_flag = 0
     </select>
+
+    <!--<select id="selectSysApiInfoTree" resultType="com.runjian.auth.server.domain.vo.tree.SysApiInfoTree">
+        SELECT sai.id,
+               sai.api_pid,
+               sai.api_name,
+               sai.api_sort,
+               sai.url,
+               sai.level
+        FROM sys_api_info sai
+        <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
+            AND (sai.api_pids like CONCAT('%[', #{id,jdbcType=BIGINT}, ']%') OR sai.id = #{id,jdbcType=BIGINT}
+            <if test="apiName != null and apiName != ''">
+                AND api_name LIKE like CONCAT('%', #{apiName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="url != null and url != ''">
+                AND sai.url = #{url,jdbcType=VARCHAR}
+            </if>
+        </trim>
+        ORDER BY sai.level, sai.api_sort
+    </select>-->
 </mapper>

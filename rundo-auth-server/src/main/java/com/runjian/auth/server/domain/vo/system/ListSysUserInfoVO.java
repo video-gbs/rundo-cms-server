@@ -1,11 +1,11 @@
 package com.runjian.auth.server.domain.vo.system;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * @author Jiang4Yu
@@ -16,9 +16,10 @@ import java.util.Map;
  */
 @Data
 @ApiModel(value = "新建用户", description = "用户信息")
-public class SysUserInfoVO {
+public class ListSysUserInfoVO {
 
     @ApiModelProperty("用户编号")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
     @ApiModelProperty("用户账户")
     private String userAccount;
@@ -26,39 +27,22 @@ public class SysUserInfoVO {
     @ApiModelProperty("用户姓名")
     private String userName;
 
+    @ApiModelProperty("所属部门名称")
+    private String orgName;
+
+    @ApiModelProperty("角色")
+    private String roleName;
+
     @ApiModelProperty("工号")
     private String jobNo;
+
+    @ApiModelProperty(value = "禁用状态", notes = "0正常，1禁用")
+    private Integer status;
 
     @ApiModelProperty("创建时间")
     private LocalDateTime createdTime;
 
     @ApiModelProperty("更新时间")
     private LocalDateTime updatedTime;
-    @ApiModelProperty("逻辑删除")
-    private String deleteFlag;
-
-    @ApiModelProperty("有效期起")
-    private LocalDateTime expiryDateStart;
-    @ApiModelProperty("有效期止")
-    private LocalDateTime expiryDateEnd;
-
-    @ApiModelProperty("电话")
-    private String phone;
-
-    @ApiModelProperty("地址")
-    private String address;
-
-    @ApiModelProperty("描述")
-    private String description;
-
-    @ApiModelProperty("所属部门ID")
-    private Long orgId;
-
-    @ApiModelProperty("所属部门名称")
-    private String orgName;
-
-    @ApiModelProperty("角色ID列表")
-    Map<Long, String> roleIds;
-
 
 }

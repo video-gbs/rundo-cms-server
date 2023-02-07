@@ -4,8 +4,11 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysApiInfoDTO;
+import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
+import com.runjian.auth.server.domain.vo.tree.SysApiInfoTree;
 import com.runjian.auth.server.service.system.SysApiInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -48,17 +51,26 @@ public class SysApiInfoController {
         return new ResponseResult<>(200, "操作成功");
     }
 
-    @GetMapping("/getById")
+    @PostMapping("/status/change")
+    @ApiOperation("接口状态切换")
+    public ResponseResult<?> changeStatus(@RequestBody StatusSysApiInfoDTO dto) {
+        log.info("接口状态切换前端传参{}", JSONUtil.toJsonStr(dto));
+        sysApiInfoService.changeStatus(dto);
+        return new ResponseResult<>(200, "操作成功");
+    }
+
+
+    @GetMapping("/getById/{id}")
     @ApiOperation("获取接口信息")
-    public ResponseResult<SysApiInfoVO> getById(@RequestParam Long id) {
+    public ResponseResult<SysApiInfoVO> getById(@PathVariable Long id) {
         return new ResponseResult<>(200, "操作成功", sysApiInfoService.getSysApiInfoById(id));
     }
 
     @PostMapping("/tree")
-    @ApiOperation("获取菜单层级树")
-    public ResponseResult<?> getApiInfoTree() {
-
-        return null;
+    @ApiOperation("获取接口层级树")
+    public ResponseResult<List<SysApiInfoTree>> getApiInfoTree(@RequestBody QuerySysApiInfoDTO dto) {
+        log.info("获取接口层级树，前端查询条件:{}", JSONUtil.toJsonStr(dto));
+        return new ResponseResult<>(200, "操作成功", sysApiInfoService.getSysApiInfoTree(dto));
     }
 
     @GetMapping("/getList")

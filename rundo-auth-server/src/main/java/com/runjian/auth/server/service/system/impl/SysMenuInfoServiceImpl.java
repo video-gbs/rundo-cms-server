@@ -1,12 +1,14 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.entity.system.SysMenuInfo;
-import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
 import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
+import com.runjian.auth.server.domain.entity.system.SysMenuInfo;
 import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
+import com.runjian.auth.server.domain.vo.tree.SysMenuInfoTree;
+import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,8 +68,24 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
     }
 
     @Override
-    public void removeSysMenuInfoById(Long id) {
+    public String removeSysMenuInfoById(Long id) {
+        // 1.确认当前需要删除的菜单有无下级菜单
+        LambdaQueryWrapper<SysMenuInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(SysMenuInfo::getMenuPids, "[" + id + "]");
+        List<SysMenuInfo> menuInfoChild = sysMenuInfoMapper.selectList(queryWrapper);
+        if (menuInfoChild.size() > 0) {
+            // 1.1 有下级菜单不允许删除
+            return "不能删除含有下级菜单的菜单";
+        }
+        // 1.2 无下级菜单才可以删除
+        sysMenuInfoMapper.deleteById(id);
+        return "删除菜单，操作成功!";
 
+    }
+
+    @Override
+    public List<SysMenuInfoTree> getSysOrgTree() {
+        return null;
     }
 
     @Override
@@ -97,7 +115,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
     public SysMenuInfoVO getSysMenuInfoById(Long id) {
         SysMenuInfo menuInfo = sysMenuInfoMapper.selectById(id);
         SysMenuInfoVO sysMenuInfoVO = new SysMenuInfoVO();
-        BeanUtils.copyProperties(menuInfo,sysMenuInfoVO);
+        BeanUtils.copyProperties(menuInfo, sysMenuInfoVO);
         return sysMenuInfoVO;
     }
 

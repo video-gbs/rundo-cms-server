@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class DataTreeUtil {
 
-    public static <T extends DataTree<T>> List<T> buiidTree(List<T> paramList, Long rootNodeId) {
+    public static <T extends DataTree<T>> List<T> buildTree(List<T> paramList, Long rootNodeId) {
         List<T> returnList = new ArrayList<T>();
         for (T node : paramList) {//查找根节点
             if (node.getId().equals(rootNodeId)) {

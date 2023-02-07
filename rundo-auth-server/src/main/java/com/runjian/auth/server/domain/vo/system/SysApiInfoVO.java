@@ -1,5 +1,6 @@
 package com.runjian.auth.server.domain.vo.system;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -13,16 +14,18 @@ import lombok.Data;
 @Data
 public class SysApiInfoVO {
     @ApiModelProperty("主键ID")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
 
     @ApiModelProperty("接口直接父ID")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long apiPid;
 
     @ApiModelProperty("接口名称")
     private String apiName;
 
     @ApiModelProperty("排序")
-    private String apiSort;
+    private Integer apiSort;
 
     @ApiModelProperty("跳转链接")
     private String url;

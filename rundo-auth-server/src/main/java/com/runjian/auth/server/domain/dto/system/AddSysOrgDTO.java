@@ -25,7 +25,7 @@ public class AddSysOrgDTO {
     private String orgCode;
 
     @ApiModelProperty("排序")
-    private String orgSort;
+    private Integer orgSort;
 
     @ApiModelProperty(value = "部门负责人")
     private String orgLeader;

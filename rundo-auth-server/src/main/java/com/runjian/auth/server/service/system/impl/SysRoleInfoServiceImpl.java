@@ -1,14 +1,23 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.common.ResponseResult;
-import com.runjian.auth.server.domain.entity.system.SysRoleInfo;
-import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
+import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.page.PageSysRoleInfoDto;
 import com.runjian.auth.server.domain.dto.system.AddSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QueryEditUserSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateSysRoleInfoDTO;
+import com.runjian.auth.server.domain.entity.system.SysRoleInfo;
+import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
+import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
+import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
 import com.runjian.auth.server.util.RundoIdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -33,7 +42,6 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
         role.setId(roleId);
         role.setRoleName(dto.getRoleName());
         role.setRoleCode(roleId.toString());
-        role.setRoleSort(dto.getRoleSort());
         role.setRoleDesc(dto.getRoleDesc());
         // role.setParentRoleId();
         // role.setParentRoleIds();
@@ -90,7 +98,62 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
     }
 
     @Override
-    public ResponseResult updateRole(AddSysRoleInfoDTO dto) {
-        return null;
+    public void updateRole(UpdateSysRoleInfoDTO dto) {
+
+    }
+
+    @Override
+    public Page<SysRoleInfoVO> getSysRoleInfoByPage(QuerySysRoleInfoDTO dto) {
+        PageSysRoleInfoDto page = new PageSysRoleInfoDto();
+        if (dto.getRoleName() != null) {
+            page.setRoleName(dto.getRoleName());
+        }
+        if (dto.getCreatedBy() != null) {
+            page.setCreatedBy(dto.getCreatedBy());
+        }
+        if (dto.getUserAccount() != null) {
+            page.setUserAccount(dto.getUserAccount());
+        }
+        if (dto.getCreatedTimeStart() != null) {
+            page.setCreatedTimeStart(dto.getCreatedTimeStart());
+        }
+        if (dto.getCreatedTimeEnd() != null) {
+            page.setCreatedTimeEnd(dto.getCreatedTimeEnd());
+        }
+        if (null != dto.getCurrent() && dto.getCurrent() > 0) {
+            page.setCurrent(dto.getCurrent());
+        } else {
+            page.setCurrent(1);
+        }
+        if (null != dto.getPageSize() && dto.getPageSize() > 0) {
+            page.setSize(dto.getPageSize());
+        } else {
+            page.setSize(20);
+        }
+
+        return roleInfoMapper.MySelectPage(page);
+    }
+
+    @Override
+    public void batchRemove(List<Long> ids) {
+        roleInfoMapper.deleteBatchIds(ids);
+
+    }
+
+    @Override
+    public Page<EditUserSysRoleInfoVO> getEditUserSysRoleInfoList(QueryEditUserSysRoleInfoDTO dto) {
+        PageEditUserSysRoleInfoDTO page = new PageEditUserSysRoleInfoDTO();
+        if (null != dto.getCurrent() && dto.getCurrent() > 0) {
+            page.setCurrent(dto.getCurrent());
+        } else {
+            page.setCurrent(1);
+        }
+        if (null != dto.getPageSize() && dto.getPageSize() > 0) {
+            page.setSize(dto.getPageSize());
+        } else {
+            page.setSize(20);
+        }
+
+        return roleInfoMapper.selectEditUserSysRoleInfoPage(page);
     }
 }

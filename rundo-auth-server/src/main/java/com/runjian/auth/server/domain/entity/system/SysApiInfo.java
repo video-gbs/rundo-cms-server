@@ -42,7 +42,7 @@ public class SysApiInfo implements Serializable {
 
     @ApiModelProperty("接口排序")
     @TableField("api_sort")
-    private String apiSort;
+    private Integer apiSort;
 
     @ApiModelProperty("接口层级")
     @TableField("level")

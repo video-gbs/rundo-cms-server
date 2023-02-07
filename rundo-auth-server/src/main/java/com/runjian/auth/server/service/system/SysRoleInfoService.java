@@ -1,9 +1,16 @@
 package com.runjian.auth.server.service.system;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.system.AddSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QueryEditUserSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateSysRoleInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysRoleInfo;
+import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
+import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,5 +24,11 @@ public interface SysRoleInfoService extends IService<SysRoleInfo> {
 
     void addRole(AddSysRoleInfoDTO dto);
 
-    ResponseResult updateRole(AddSysRoleInfoDTO dto);
+    void updateRole(UpdateSysRoleInfoDTO dto);
+
+    Page<SysRoleInfoVO> getSysRoleInfoByPage(QuerySysRoleInfoDTO dto);
+
+    void batchRemove(List<Long> ids);
+
+    Page<EditUserSysRoleInfoVO> getEditUserSysRoleInfoList(QueryEditUserSysRoleInfoDTO dto);
 }

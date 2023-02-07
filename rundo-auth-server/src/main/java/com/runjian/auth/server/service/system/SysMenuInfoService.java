@@ -6,6 +6,7 @@ import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
 import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.domain.entity.system.SysMenuInfo;
+import com.runjian.auth.server.domain.vo.tree.SysMenuInfoTree;
 
 import java.util.List;
 
@@ -31,5 +32,7 @@ public interface SysMenuInfoService extends IService<SysMenuInfo> {
 
     List<SysMenuInfoVO> getSysMenuInfoList();
 
-    void removeSysMenuInfoById(Long id);
+    String removeSysMenuInfoById(Long id);
+
+    List<SysMenuInfoTree> getSysOrgTree();
 }

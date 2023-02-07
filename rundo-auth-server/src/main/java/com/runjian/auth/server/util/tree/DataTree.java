@@ -1,5 +1,7 @@
 package com.runjian.auth.server.util.tree;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.List;
 
 /**
@@ -19,6 +21,7 @@ public interface DataTree<T> {
     /**
      * 维护树形关系：元素二 父id
      */
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     Long getParentId();
 
 

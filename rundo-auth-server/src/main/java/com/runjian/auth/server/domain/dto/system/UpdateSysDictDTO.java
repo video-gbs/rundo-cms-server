@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Jiang4Yu
  * @version V1.0.0
@@ -15,5 +17,6 @@ import lombok.Data;
 @ApiModel(value = "更新数据字典", description = "接口信息")
 public class UpdateSysDictDTO extends AddSysDictDTO {
     @ApiModelProperty("主键ID")
+    @NotNull
     private Long id;
 }
