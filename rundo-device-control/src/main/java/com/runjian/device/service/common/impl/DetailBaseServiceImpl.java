@@ -1,15 +1,13 @@
-package com.runjian.device.service.impl;
+package com.runjian.device.service.common.impl;
 
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.entity.DetailInfo;
-import com.runjian.device.service.DetailBaseService;
+import com.runjian.device.service.common.DetailBaseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -37,7 +35,7 @@ public class DetailBaseServiceImpl implements DetailBaseService {
      * @param nowTime 更新时间
      */
     @Override
-    public void saveOrUpdateDetail(Long id, Integer type, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, LocalDateTime nowTime) {
+    public void saveOrUpdateDetail(Long id, String originId, Integer type, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, LocalDateTime nowTime) {
         Optional<DetailInfo> detailInfoOp = detailMapper.selectByDcIdAndType(id, type);
         DetailInfo detailInfo = new DetailInfo();
         detailInfo.setIp(ip);
@@ -51,6 +49,7 @@ public class DetailBaseServiceImpl implements DetailBaseService {
         // 判断数据是否为空，根据情况保存或者更新
         if (detailInfoOp.isEmpty()){
             detailInfo.setDcId(id);
+            detailInfo.setOriginId(originId);
             detailInfo.setType(type);
             detailInfo.setCreateTime(nowTime);
             detailMapper.save(detailInfo);

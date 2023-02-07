@@ -18,7 +18,7 @@ import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.feign.StreamManageApi;
-import com.runjian.device.service.DataBaseService;
+import com.runjian.device.service.common.DataBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.response.VideoRecordRsp;

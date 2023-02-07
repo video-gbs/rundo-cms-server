@@ -14,7 +14,7 @@ public enum PlayType {
     LIVE(1, "LIVE"),
     RECORD(2, "RECORD"),
     ALARM(3, "ALARM"),
-    DOWNLOAD(3, "DOWNLOAD");
+    DOWNLOAD(4, "DOWNLOAD");
 
     private Integer code;
     private String msg;

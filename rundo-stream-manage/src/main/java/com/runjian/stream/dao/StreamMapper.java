@@ -25,4 +25,6 @@ public interface StreamMapper {
     void save(StreamInfo streamInfo);
 
     List<StreamInfo> selectByChannelId(Long channelId);
+
+    void updateRecordState(StreamInfo streamInfo);
 }

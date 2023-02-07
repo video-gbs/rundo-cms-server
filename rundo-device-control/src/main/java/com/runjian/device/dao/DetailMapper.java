@@ -19,9 +19,9 @@ public interface DetailMapper {
     String DETAIL_TABLE_NAME = "rundo_detail";
 
     @Insert(" INSERT INTO " + DETAIL_TABLE_NAME +
-            " (dc_id, type, ip, port, name, manufacturer, model, firmware, ptz_type, username, password, update_time, create_time) " +
+            " (dc_id, origin_id, type, ip, port, name, manufacturer, model, firmware, ptz_type, username, password, update_time, create_time) " +
             " VALUES " +
-            " (#{dcId}, #{type}, #{ip}, #{port}, #{name}, #{manufacturer}, #{model}, #{firmware}, #{ptzType}, #{username}, #{password}, #{updateTime}, #{createTime})")
+            " (#{dcId}, #{originId}, #{type}, #{ip}, #{port}, #{name}, #{manufacturer}, #{model}, #{firmware}, #{ptzType}, #{username}, #{password}, #{updateTime}, #{createTime})")
     void save(DetailInfo detailInfo);
 
     @Select(" SELECT * FROM " + DETAIL_TABLE_NAME +

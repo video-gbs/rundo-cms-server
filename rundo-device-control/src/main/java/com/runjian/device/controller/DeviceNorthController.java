@@ -51,8 +51,7 @@ public class DeviceNorthController {
     @PostMapping("/add")
     public CommonResponse<Long> deviceAdd(@RequestBody PostDeviceAddReq req){
         validatorService.validateRequest(req);
-        deviceNorthService.deviceAdd(req.getDeviceId(), req.getGatewayId(), req.getDeviceType(), req.getIp(), req.getPort(), req.getName(), req.getManufacturer(), req.getModel(), req.getFirmware(), req.getPtzType(), req.getUsername(), req.getPassword());
-        return CommonResponse.success();
+        return CommonResponse.success(deviceNorthService.deviceAdd(req.getDeviceId(), req.getGatewayId(), req.getDeviceType(), req.getIp(), req.getPort(), req.getName(), req.getManufacturer(), req.getModel(), req.getFirmware(), req.getPtzType(), req.getUsername(), req.getPassword()));
     }
 
     /**

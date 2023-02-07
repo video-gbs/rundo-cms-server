@@ -1,8 +1,8 @@
-package com.runjian.stream.service.impl;
+package com.runjian.stream.service.north.impl;
 
 import com.runjian.stream.dao.GatewayDispatchMapper;
 import com.runjian.stream.entity.GatewayDispatchInfo;
-import com.runjian.stream.service.GatewayDispatchService;
+import com.runjian.stream.service.north.GatewayDispatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -32,11 +32,6 @@ public class PostGatewaySignInReq {
     private String serialNum;
 
     /**
-     * 网关名称
-     */
-    private String name;
-
-    /**
      * 注册类型 1-MQ  2-RETFUL
      */
     private Integer signType;

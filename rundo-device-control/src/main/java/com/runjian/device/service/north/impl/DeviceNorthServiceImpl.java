@@ -16,8 +16,8 @@ import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.feign.ParsingEngineApi;
-import com.runjian.device.service.DataBaseService;
-import com.runjian.device.service.DetailBaseService;
+import com.runjian.device.service.common.DataBaseService;
+import com.runjian.device.service.common.DetailBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.north.DeviceNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
@@ -125,7 +125,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         deviceInfo.setSignState(SignState.TO_BE_SIGN_IN.getCode());
         deviceMapper.save(deviceInfo);
         // 保存详细信息
-        detailBaseService.saveOrUpdateDetail(id, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime);
+        detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime);
         return id;
     }
 
@@ -174,7 +174,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         }
         DeviceSyncRsp data = response.getData();
         LocalDateTime nowTime = LocalDateTime.now();
-        detailBaseService.saveOrUpdateDetail(deviceId, DetailType.DEVICE.getCode(), data.getIp(), data.getPort(), data.getName(), data.getManufacturer(), data.getModel(), data.getFirmware(), data.getPtzType(), nowTime);
+        detailBaseService.saveOrUpdateDetail(deviceId, null,  DetailType.DEVICE.getCode(), data.getIp(), data.getPort(), data.getName(), data.getManufacturer(), data.getModel(), data.getFirmware(), data.getPtzType(), nowTime);
         return data;
     }
 

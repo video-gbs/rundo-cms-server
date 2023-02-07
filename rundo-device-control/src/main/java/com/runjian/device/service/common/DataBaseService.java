@@ -1,4 +1,4 @@
-package com.runjian.device.service;
+package com.runjian.device.service.common;
 
 
 import com.runjian.device.entity.ChannelInfo;
