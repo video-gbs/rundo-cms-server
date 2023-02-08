@@ -59,4 +59,14 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
     Page<EditUserSysRoleInfoVO> selectEditUserSysRoleInfoPage(PageEditUserSysRoleInfoDTO page);
 
     Page<SysRoleInfoVO> MySelectPage(PageSysRoleInfoDto page);
+
+    void insertRoleApp(@Param("roleId")Long roleId, @Param("appId")Long appId);
+
+    void insertRoleMenu(@Param("roleId")Long roleId, @Param("menuId")Long menuId);
+
+    void insertRoleApi(@Param("roleId")Long roleId, @Param("apiId")Long apiId);
+
+    void insertRoleOrg(@Param("roleId")Long roleId, @Param("orgId")Long orgId);
+
+    void insertRoleArea(@Param("roleId")Long roleId, @Param("areaId")Long areaId);
 }

@@ -84,4 +84,29 @@
         </where>
 
     </select>
+
+    <insert id="insertRoleApp">
+        INSERT INTO sys_role_app (role_id, app_id)
+        VALUES (#{roleId,jdbcType=BIGINT}, #{appId,jdbcType=BIGINT});
+    </insert>
+
+    <insert id="insertRoleMenu">
+        INSERT INTO sys_role_menu (role_id, menu_id)
+        VALUES (#{roleId,jdbcType=BIGINT}, #{menuId,jdbcType=BIGINT});
+    </insert>
+
+    <insert id="insertRoleApi">
+        INSERT INTO sys_role_api (role_id, api_id)
+        VALUES (#{roleId,jdbcType=BIGINT}, #{apiId,jdbcType=BIGINT});
+    </insert>
+
+    <insert id="insertRoleOrg">
+        INSERT INTO sys_role_org (role_id, org_id)
+        VALUES (#{roleId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT});
+    </insert>
+
+    <insert id="insertRoleArea">
+        INSERT INTO role_video_area (role_id, area_id)
+        VALUES (#{roleId,jdbcType=BIGINT}, #{areaId,jdbcType=BIGINT});
+    </insert>
 </mapper>

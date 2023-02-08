@@ -22,5 +22,4 @@ public interface SysApiInfoMapper extends BaseMapper<SysApiInfo> {
 
     Page<SysApiInfoVO> MySelectPage(Page<SysApiInfoVO> page);
 
-    // List<SysApiInfoVO> selectSysApiInfoTree(@Param("id") Long id,@Param("apiName") String apiName, @Param("url") String url);
 }

@@ -1,5 +1,7 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
@@ -17,6 +19,7 @@ import com.runjian.auth.server.util.RundoIdUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,48 +51,58 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
         // role.setParentRoleIds();
         // role.setTenantId();
         roleInfoMapper.insert(role);
-        // 处理应用ID
-        // List<Long> appIds = dto.getAppIds();
-        // if (Objects.nonNull(appIds)){
-        //     for (Long id : appIds) {
-        //         roleInfoMapper.saveRoleApp(roleId, id);
-        //     }
-        // }
-        // // 处理 菜单ID
-        // List<Long> menuIds = dto.getMenuIds();
-        // if (Objects.nonNull(appIds)){
-        //     for (Long id : appIds) {
-        //         roleInfoMapper.saveRoleMenu(roleId, id);
-        //     }
-        // }
-        // // 处理 部门ID
-        // List<Long> orgIds = dto.getOrgIds();
-        // if (Objects.nonNull(orgIds)){
-        //     for (Long id : orgIds) {
-        //         roleInfoMapper.saveRoleOrg(roleId, id);
-        //     }
-        // }
-        // //处理 安防区域ID
-        // List<Long> areaIds = dto.getAreaIds();
-        // if (Objects.nonNull(areaIds)){
-        //     for (Long id : areaIds) {
-        //         roleInfoMapper.saveRoleArea(roleId, id);
-        //     }
-        // }
-        // // 处理视频通道资源
-        // List<Long> channelIds = dto.getAreaIds();
-        // if (Objects.nonNull(channelIds)){
-        //     for (Long id : channelIds) {
-        //         roleInfoMapper.saveRoleChannel(roleId, id);
-        //     }
-        // }
-        // // 处理视频通道操作
-        // List<Long> operationIds = dto.getAreaIds();
-        // if (Objects.nonNull(operationIds)){
-        //     for (Long id : operationIds) {
-        //         roleInfoMapper.saveRoleChannelOperation(roleId, id);
-        //     }
-        // }
+        List<String> appIds = dto.getAppIds();
+        List<String> configIds = dto.getConfigIds();
+        List<String> devopsIds = dto.getDevopsIds();
+        List<Long> orgIds = dto.getOrgIds();
+        List<Long> areaIds = dto.getAreaIds();
+
+        List<Long> appIdList = new ArrayList<>();
+        appIdList.addAll(getAppIds(appIds));
+        appIdList.addAll(getAppIds(configIds));
+        appIdList.addAll(getAppIds(devopsIds));
+
+        List<Long> menuIdList = new ArrayList<>();
+        menuIdList.addAll(getMenuIds(appIds));
+        menuIdList.addAll(getMenuIds(configIds));
+        menuIdList.addAll(getMenuIds(devopsIds));
+
+        List<Long> apiIdList = new ArrayList<>();
+        apiIdList.addAll(getApiIds(appIds));
+        apiIdList.addAll(getApiIds(configIds));
+        apiIdList.addAll(getApiIds(devopsIds));
+
+        // TODO 下面的操作后期要优化为批量接口
+        if (CollUtil.isNotEmpty(appIdList)) {
+            for (Long appId : appIdList) {
+                roleInfoMapper.insertRoleApp(roleId, appId);
+            }
+        }
+
+        if (CollUtil.isNotEmpty(menuIdList)) {
+            for (Long menuId : menuIdList) {
+                roleInfoMapper.insertRoleMenu(roleId, menuId);
+            }
+        }
+
+        if (CollUtil.isNotEmpty(apiIdList)) {
+            for (Long apiId : apiIdList) {
+                roleInfoMapper.insertRoleApi(roleId, apiId);
+            }
+        }
+
+        if (CollUtil.isNotEmpty(orgIds)) {
+            for (Long orgId : orgIds) {
+                roleInfoMapper.insertRoleOrg(roleId, orgId);
+            }
+        }
+
+        if (CollUtil.isNotEmpty(areaIds)) {
+            for (Long areaId : areaIds) {
+                roleInfoMapper.insertRoleArea(roleId, areaId);
+            }
+        }
+
 
     }
 
@@ -151,5 +164,62 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
         }
 
         return roleInfoMapper.selectEditUserSysRoleInfoPage(page);
+    }
+
+    /**
+     * 分拣后获取应用ID
+     *
+     * @param stringList
+     * @return
+     */
+    private List<Long> getAppIds(List<String> stringList) {
+        List<Long> appIds = new ArrayList<>();
+        if (CollUtil.isNotEmpty(stringList)) {
+            for (String str : stringList) {
+                if (str.startsWith("a_")) {
+                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "a_"));
+                    appIds.add(menuId);
+                }
+            }
+        }
+        return appIds;
+    }
+
+    /**
+     * 分拣后获取菜单ID
+     *
+     * @param stringList
+     * @return
+     */
+    private List<Long> getMenuIds(List<String> stringList) {
+        List<Long> menuIds = new ArrayList<>();
+        if (CollUtil.isNotEmpty(stringList)) {
+            for (String str : stringList) {
+                if (str.startsWith("m_")) {
+                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "m_"));
+                    menuIds.add(menuId);
+                }
+            }
+        }
+        return menuIds;
+    }
+
+    /**
+     * 分拣后获取功能接口ID
+     *
+     * @param stringList
+     * @return
+     */
+    private List<Long> getApiIds(List<String> stringList) {
+        List<Long> apiIds = new ArrayList<>();
+        if (CollUtil.isNotEmpty(stringList)) {
+            for (String str : stringList) {
+                if (str.startsWith("u_")) {
+                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "u_"));
+                    apiIds.add(menuId);
+                }
+            }
+        }
+        return apiIds;
     }
 }
