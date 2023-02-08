@@ -86,7 +86,9 @@
     <select id="selectOrgInfoByUserId" resultType="com.runjian.auth.server.domain.vo.system.OrgInfoVO">
         SELECT
             suo.org_id,suo.org_name
-        FROM sys_user_org suo
+        FROM
+            sys_user_org suo
+            LEFT JOIN sys_org so ON so.id = suo.org_id
         <where>
             <if test="userId != null">
                 suo.user_id = #{userId,jdbcType=BIGINT}

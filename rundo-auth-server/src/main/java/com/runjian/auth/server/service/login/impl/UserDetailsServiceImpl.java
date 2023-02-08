@@ -1,12 +1,8 @@
 package com.runjian.auth.server.service.login.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.runjian.auth.server.domain.dto.login.LoginUser;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
-import com.runjian.auth.server.mapper.system.*;
-import com.runjian.auth.server.mapper.video.ChannelOperationMapper;
-import com.runjian.auth.server.mapper.video.VideoAraeMapper;
-import com.runjian.auth.server.mapper.video.VideoChannelMapper;
+import com.runjian.auth.server.service.MyRBACService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -30,81 +26,23 @@ import java.util.Objects;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    /**
-     * 用户
-     */
     @Autowired
-    private SysUserInfoMapper sysUserInfoMapper;
-
-    /**
-     * 角色
-     */
-    @Autowired
-    private SysRoleInfoMapper roleInfoMapper;
-
-    /**
-     * 应用
-     */
-    @Autowired
-    private SysAppInfoMapper appInfoMapper;
-    /**
-     * 菜单
-     */
-    @Autowired
-    private SysMenuInfoMapper menuInfoMapper;
-    /**
-     * 接口
-     */
-    @Autowired
-    private SysApiInfoMapper apiInfoMapper;
-
-    /**
-     * 安全区划
-     */
-    @Autowired
-    private VideoAraeMapper videoAraeMapper;
-
-    /**
-     * 安全通道
-     */
-    @Autowired
-    private VideoChannelMapper videoChannelMapper;
-
-    /**
-     * 通道操作
-     */
-    @Autowired
-    private ChannelOperationMapper channelOperationMapper;
-
-
+    MyRBACService myRBACService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // 1.加载用户信息
-        LambdaQueryWrapper<SysUserInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUserInfo::getUserAccount, username);
-        SysUserInfo sysUserInfo = sysUserInfoMapper.selectOne(queryWrapper);
+        // 1.加载用户基础信息
+        SysUserInfo sysUserInfo = myRBACService.findUserInfoByUserAccount(username);
         // 如果查询不到数据就通过抛出异常来给出提示
         if (Objects.isNull(sysUserInfo)) {
-            throw new UsernameNotFoundException("用户名或者密码错误");
+            throw new UsernameNotFoundException("用户账户不能存在");
         }
         // TODO 根据用户ID查询权限信息 添加到LoginUser中
         // 2.加载用户角色列表
-        List<String> roleCodes = roleInfoMapper.selectRoleByUserId(sysUserInfo.getId());
+        List<String> roleCodes = myRBACService.findRoleInfoByUserAccount(sysUserInfo.getId());
         // 3. 通过用户角色列表加载用户的资源权限列表
         List<String> authorities = new ArrayList<>();
         for (String roleCode : roleCodes) {
-            // 3.1 应用权限
-            // List<String> appInfoList = roleInfoMapper.findAppByRoleCode(roleCode);
-            // 3.2 菜单权限
-            // List<String> menuInfoList = roleInfoMapper.findMenuByRoleCode(roleCode);
-            // 3.3 接口权限
-            authorities.addAll(roleInfoMapper.findApiByRoleCode(roleCode));
-            // 3.4 安全区划权限
-
-            // 3.5 通道权限
-
-            // 3.6 通道操作权限
-
+            authorities.addAll(myRBACService.findApiInfoByRoleCode(roleCode));
         }
         // 角色是一个特殊的权限，ROLE_前缀 用来满足Spring Security规范
         authorities.addAll(roleCodes);

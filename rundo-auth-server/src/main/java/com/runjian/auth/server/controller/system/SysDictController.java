@@ -63,6 +63,12 @@ public class SysDictController {
         return CommonResponse.success(sysDictService.getSysDictById(id));
     }
 
+    @PostMapping("/getByGroupCode")
+    @ApiOperation("通过字典分组获取字典信息")
+    public CommonResponse<List<SysDictVO>> getByGroupCode(@RequestParam("groupCode") String groupCode){
+        return CommonResponse.success(sysDictService.getByGroupCode(groupCode));
+    }
+
     @GetMapping("/getList")
     @ApiOperation("获取数据字典列表 无分页")
     public CommonResponse<List<SysDictVO>> getList() {

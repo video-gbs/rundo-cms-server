@@ -13,6 +13,7 @@ import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.service.system.SysOrgService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
+import com.runjian.common.config.exception.BusinessException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,7 +72,7 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         // 1.判断是否为根节点
         SysOrg sysOrg = sysOrgMapper.selectById(id);
         if (sysOrg.getOrgPid().equals(0L)) {
-            return "系统内置根节点不能删除";
+            throw new BusinessException("系统内置根节点不能删除");
         }
         // 2.查取该节点的所有子代节点
         LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();

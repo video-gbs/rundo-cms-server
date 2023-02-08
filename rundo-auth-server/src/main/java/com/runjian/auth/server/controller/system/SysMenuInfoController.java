@@ -34,6 +34,13 @@ public class SysMenuInfoController {
     @Autowired
     private SysMenuInfoService sysMenuInfoService;
 
+    @PostMapping("/tree")
+    @ApiOperation("获取菜单层级树")
+    public CommonResponse<List<SysMenuInfoTree>> getSysMenuTree(@RequestBody QuerySysMenuInfoDTO dto) {
+        return CommonResponse.success(sysMenuInfoService.getSysMenuTree(dto));
+    }
+
+
     @PostMapping("/add")
     @ApiOperation("添加菜单")
     public CommonResponse<?> addSysMenu(@RequestBody @Valid AddSysMenuInfoDTO dto) {
@@ -54,14 +61,11 @@ public class SysMenuInfoController {
     @ApiOperation("删除菜单")
     public CommonResponse<String> removeSysMenu(@PathVariable Long id) {
         log.info("删除菜单前端传参信息{}", id);
-        return CommonResponse.success(sysMenuInfoService.removeSysMenuInfoById(id));
+        sysMenuInfoService.removeSysMenuInfoById(id);
+        return CommonResponse.success();
     }
 
-    @PostMapping("/tree")
-    @ApiOperation("获取菜单层级树")
-    public CommonResponse<List<SysMenuInfoTree>> getSysMenuTree(@RequestBody QuerySysMenuInfoDTO dto) {
-        return CommonResponse.success(sysMenuInfoService.getSysOrgTree(dto));
-    }
+
 
     @GetMapping("/getById")
     @ApiOperation("通过ID获取菜单详情")
@@ -76,10 +80,5 @@ public class SysMenuInfoController {
         return CommonResponse.success(sysMenuInfoService.getSysMenuInfoList());
     }
 
-    @GetMapping("/getListByPage")
-    @ApiOperation("分页获取菜单列表")
-    public CommonResponse getListByPage(@RequestBody Long id) {
-        return CommonResponse.success(sysMenuInfoService.list());
-    }
 
 }

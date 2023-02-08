@@ -12,6 +12,7 @@ import com.runjian.auth.server.domain.vo.video.VideoAreaVO;
 import com.runjian.auth.server.mapper.video.VideoAraeMapper;
 import com.runjian.auth.server.service.area.VideoAreaSaervice;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
+import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         // 1.判断是否为根节点
         VideoArea videoArea = videoAraeMapper.selectById(id);
         if (videoArea.getAreaPid().equals(0L)) {
-            return "系统内置根节点不能删除";
+            throw new BusinessException("系统内置根节点不能删除");
         }
         // 2.确认当前需要删除的安防区域有无下级安防区域
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();

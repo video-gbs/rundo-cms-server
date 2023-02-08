@@ -31,4 +31,6 @@ public interface SysDictService extends IService<SysDict> {
     Page<SysDictVO> getSysDictByPage(QureySysDictDTO dto);
 
     void removeSysDictById(Long id);
+
+    List<SysDictVO> getByGroupCode(String groupCode);
 }

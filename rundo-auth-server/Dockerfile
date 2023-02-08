@@ -6,6 +6,7 @@ MAINTAINER JiangYu 105194@runjian.com
 EXPOSE 7821
 #将target目录下的 jar 包复制到docker容器的 /home/
 ADD ./target/rundo-auth-server.jar /home/rundo/rundo-auth-server.jar
+VOLUME ["/tmp"]
 
 # 执行命令
 CMD ["java","-jar","/home/rundo/rundo-auth-server.jar"]

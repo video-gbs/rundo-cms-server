@@ -1,8 +1,10 @@
 package com.runjian.auth.server.controller.system;
 
+import com.runjian.auth.server.service.system.HomeSevice;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,8 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/home")
 public class IndexController {
 
-    public CommonResponse<?> index(){
+    @Autowired
+    private HomeSevice homeSevice;
 
+    @RequestMapping
+    public CommonResponse<?> index(){
+        homeSevice.getIndex();
         return CommonResponse.success(null);
     }
 }

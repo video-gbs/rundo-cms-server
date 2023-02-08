@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageSysDictDTO;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -86,5 +88,19 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, SysDict> impl
     @Override
     public void removeSysDictById(Long id) {
         sysDictMapper.deleteById(id);
+    }
+
+    @Override
+    public List<SysDictVO> getByGroupCode(String groupCode) {
+        LambdaQueryWrapper<SysDict> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysDict::getGroupCode, groupCode);
+        List<SysDict> sysDictList = sysDictMapper.selectList(queryWrapper);
+        return sysDictList.stream().map(
+                item -> {
+                    SysDictVO sysDictVO = new SysDictVO();
+                    BeanUtils.copyProperties(item, sysDictVO);
+                    return sysDictVO;
+                }
+        ).collect(Collectors.toList());
     }
 }
