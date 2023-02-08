@@ -17,7 +17,7 @@ public interface DeviceMapper {
     String DEVICE_TABLE_NAME = "rundo_device";
 
     @Select(" SELECT * FROM " + DEVICE_TABLE_NAME +
-            " WHERE device_id = #{deviceId} ")
+            " WHERE id = #{deviceId} ")
     Optional<DeviceInfo> selectById(Long deviceId);
 
     @Insert(" INSERT INTO " + DEVICE_TABLE_NAME +

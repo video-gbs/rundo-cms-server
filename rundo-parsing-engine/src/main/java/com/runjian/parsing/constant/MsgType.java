@@ -20,12 +20,18 @@ public enum MsgType {
     GATEWAY_RE_SIGN_IN("GATEWAY_RE_SIGN_IN"),
     GATEWAY_HEARTBEAT("GATEWAY_HEARTBEAT"),
 
+    /****************** 调度相关消息 ******************/
+
+    DISPATCH_SIGN_IN("DISPATCH_SIGN_IN"),
+
+    DISPATCH_RE_SIGN_IN("DISPATCH_RE_SIGN_IN"),
+
+    DISPATCH_HEARTBEAT("DISPATCH_HEARTBEAT"),
+
     /****************** 设备相关消息 ******************/
     DEVICE_SIGN_IN("DEVICE_SIGN_IN"),
     DEVICE_SYNC("DEVICE_SYNC"),
-
     DEVICE_DELETE("DEVICE_DELETE"),
-
     DEVICE_ADD("DEVICE_ADD"),
 
     /****************** 通道相关消息 ******************/
@@ -34,7 +40,7 @@ public enum MsgType {
     CHANNEL_PLAYBACK("CHANNEL_PLAYBACK"),
     CHANNEL_STOP_PLAY("CHANNEL_STOP_PLAY"),
     CHANNEL_PTZ_CONTROL("CHANNEL_PTZ_CONTROL"),
-    CHANNEL_RECORD("CHANNEL_RECORD"),
+    CHANNEL_RECORD_INFO("CHANNEL_RECORD_INFO"),
 
     /****************** 流媒体管理服务相关消息 ******************/
     STREAM_SIGN_IN("STREAM_SIGN_IN"),

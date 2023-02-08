@@ -1,6 +1,6 @@
 package com.runjian.parsing.service;
 
-import com.runjian.parsing.vo.response.GatewaySignInRsp;
+import com.runjian.parsing.vo.response.SignInRsp;
 
 public interface GatewayService {
 
@@ -14,7 +14,7 @@ public interface GatewayService {
      * @param port 端口
      * @param outTime 心跳过期时间
      */
-    GatewaySignInRsp signIn(String serialNum, Integer signType, Integer gatewayType, String protocol, String ip, String port, String outTime);
+    SignInRsp signIn(String serialNum, Integer signType, Integer gatewayType, String protocol, String ip, String port, String outTime);
 
 
      /**

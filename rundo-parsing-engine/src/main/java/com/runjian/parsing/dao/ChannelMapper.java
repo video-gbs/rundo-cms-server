@@ -17,8 +17,8 @@ public interface ChannelMapper {
     String CHANNEL_TABLE_NAME = "rundo_channel";
 
     @Select(" SELECT * FROM " + CHANNEL_TABLE_NAME +
-            " WHERE device_id = #{deviceId} ")
-    Optional<ChannelInfo> selectById(Long id);
+            " WHERE id = #{channelId} ")
+    Optional<ChannelInfo> selectById(Long channelId);
 
     @Delete(" DELETE FROM " + CHANNEL_TABLE_NAME +
             " WHERE device_id = #{deviceId} ")

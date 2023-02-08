@@ -1,12 +1,18 @@
 package com.runjian.device.controller;
 
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.DeviceNorthService;
 import com.runjian.device.vo.request.PostDeviceAddReq;
 import com.runjian.device.vo.request.PutDeviceSignSuccessReq;
 import com.runjian.device.vo.response.DeviceSyncRsp;
+import com.runjian.device.vo.response.GetDevicePageRsp;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -24,15 +30,28 @@ public class DeviceNorthController {
     private ValidatorService validatorService;
 
     /**
+     * 设备分页获取
+     * @param page 页码
+     * @param num 每页数据量
+     * @param signState 注册状态
+     * @param deviceName 设备名称
+     * @param ip ip地址
+     * @return
+     */
+    @GetMapping("/page")
+    public CommonResponse<PageInfo<GetDevicePageRsp>> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Integer signState, String deviceName, String ip){
+        return CommonResponse.success(deviceNorthService.getDeviceByPage(page, num, signState, deviceName, ip));
+    }
+
+    /**
      * 设备添加
      * @param req 设备添加请求体
      * @return
      */
     @PostMapping("/add")
-    public CommonResponse<?> deviceAdd(@RequestBody PostDeviceAddReq req){
+    public CommonResponse<Long> deviceAdd(@RequestBody PostDeviceAddReq req){
         validatorService.validateRequest(req);
-        deviceNorthService.deviceAdd(req.getDeviceId(), req.getGatewayId(), req.getDeviceType(), req.getIp(), req.getPort(), req.getName(), req.getManufacturer(), req.getModel(), req.getFirmware(), req.getPtzType(), req.getUsername(), req.getPassword());
-        return CommonResponse.success();
+        return CommonResponse.success(deviceNorthService.deviceAdd(req.getDeviceId(), req.getGatewayId(), req.getDeviceType(), req.getIp(), req.getPort(), req.getName(), req.getManufacturer(), req.getModel(), req.getFirmware(), req.getPtzType(), req.getUsername(), req.getPassword()));
     }
 
     /**

@@ -9,6 +9,7 @@ import com.runjian.parsing.service.ProtocolService;
 import com.runjian.parsing.vo.request.DeviceControlReq;
 import com.runjian.parsing.vo.request.DeviceCustomEventReq;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -86,7 +87,7 @@ public class DeviceController {
      * @param req 设备请求体
      * @return
      */
-    @PostMapping("/channel/ptz/control")
+    @PutMapping("/channel/ptz/control")
     public DeferredResult<CommonResponse<?>> channelPtzControl(@RequestBody DeviceControlReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);

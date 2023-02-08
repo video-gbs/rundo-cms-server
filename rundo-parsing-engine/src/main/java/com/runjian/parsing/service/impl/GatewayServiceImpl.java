@@ -12,11 +12,10 @@ import com.runjian.parsing.feign.DeviceControlApi;
 import com.runjian.parsing.feign.request.PostGatewaySignInReq;
 import com.runjian.parsing.service.GatewayService;
 import com.runjian.parsing.vo.request.PutGatewayHeartbeatReq;
-import com.runjian.parsing.vo.response.GatewaySignInRsp;
+import com.runjian.parsing.vo.response.SignInRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -46,9 +45,9 @@ public class GatewayServiceImpl implements GatewayService {
      * @return
      */
     @Override
-    public GatewaySignInRsp signIn(String serialNum, Integer signType, Integer gatewayType, String protocol, String ip, String port, String outTime) {
+    public SignInRsp signIn(String serialNum, Integer signType, Integer gatewayType, String protocol, String ip, String port, String outTime) {
         Optional<GatewayInfo> gatewayInfoOp = gatewayMapper.selectBySerialNum(serialNum);
-        GatewaySignInRsp gatewaySignInRsp = new GatewaySignInRsp();
+        SignInRsp signInRsp = new SignInRsp();
         GatewayInfo gatewayInfo = gatewayInfoOp.orElse(new GatewayInfo());
         if (gatewayInfoOp.isEmpty()){
             LocalDateTime nowTime = LocalDateTime.now();
@@ -61,21 +60,18 @@ public class GatewayServiceImpl implements GatewayService {
             gatewayInfo.setCreateTime(nowTime);
             gatewayInfo.setUpdateTime(nowTime);
             gatewayMapper.save(gatewayInfo);
-            gatewaySignInRsp.setIsFirstSignIn(true);
-            gatewaySignInRsp.setGatewayId(gatewayInfo.getId());
+            signInRsp.setIsFirstSignIn(true);
         }else {
-            gatewayInfo = gatewayInfoOp.get();
-            gatewaySignInRsp.setIsFirstSignIn(false);
-            gatewaySignInRsp.setGatewayId(gatewayInfoOp.get().getId());
+            signInRsp.setIsFirstSignIn(false);
         }
+        signInRsp.setGatewayId(gatewayInfo.getId());
         // todo 对请求失败做处理
         PostGatewaySignInReq req = new PostGatewaySignInReq(gatewayInfo, Instant.ofEpochMilli(Long.parseLong(outTime)).atZone(ZoneId.systemDefault()).toLocalDateTime());
         CommonResponse<?> response = deviceControlApi.gatewaySignIn(req);
         if (response.getCode() == 0){
             log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册服务", "网关注册成功", gatewayInfo.getId());
         }
-        gatewaySignInRsp.setSignType(SignType.MQ.getMsg());
-        return gatewaySignInRsp;
+        return signInRsp;
     }
 
     /**

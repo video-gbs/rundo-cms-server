@@ -15,7 +15,7 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
 
     @Override
     public void deviceSync(Long deviceId, DeferredResult<CommonResponse<?>> response) {
-        customEvent(deviceId, IdType.DEVICE, MsgType.CHANNEL_RECORD.getMsg(), null, response);
+        customEvent(deviceId, IdType.DEVICE, MsgType.DEVICE_SYNC.getMsg(), null, response);
     }
 
     @Override
@@ -25,7 +25,7 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
 
     @Override
     public  void deviceDelete(Long deviceId, DeferredResult<CommonResponse<?>> response) {
-        customEvent(deviceId, IdType.DEVICE, MsgType.CHANNEL_RECORD.getMsg(), null, response);
+        customEvent(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE.getMsg(), null, response);
     }
 
     @Override
@@ -35,7 +35,7 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
 
     @Override
     public void channelPtzControl(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_CONTROL.getMsg(), null, response);
+        customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_CONTROL.getMsg(), dataMap, response);
     }
 
     @Override
@@ -45,7 +45,7 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
 
     @Override
     public void channelRecord(Long channelId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_RECORD.getMsg(), dataMap, response);
+        customEvent(channelId, IdType.CHANNEL, MsgType.CHANNEL_RECORD_INFO.getMsg(), dataMap, response);
     }
 
     @Override

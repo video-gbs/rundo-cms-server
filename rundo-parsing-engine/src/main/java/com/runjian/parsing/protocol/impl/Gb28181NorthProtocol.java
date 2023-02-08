@@ -1,9 +1,12 @@
 package com.runjian.parsing.protocol.impl;
 
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.constant.StandardName;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.DeviceInfo;
-import com.runjian.parsing.protocol.AbstractSouthProtocol;
+import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.service.DataBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +14,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -33,10 +37,16 @@ public class Gb28181NorthProtocol extends DefaultNorthProtocol {
 
     @Override
     public void deviceAdd(Long gatewayId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        dataBaseService.getGatewayInfo(gatewayId);
+        GatewayInfo gatewayInfo = dataBaseService.getGatewayInfo(gatewayId);
+        String originId = dataMap.get(StandardName.DEVICE_ID).toString();
+        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, originId);
+        if (deviceInfoOp.isPresent()){
+            response.setResult(CommonResponse.failure(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, String.format("设备'%s'在网关'%s:%s'上已存在", originId, gatewayInfo.getProtocol(), gatewayInfo.getId())));
+            return;
+        }
         DeviceInfo deviceInfo = new DeviceInfo();
         LocalDateTime nowTime = LocalDateTime.now();
-        deviceInfo.setOriginId(dataMap.get("deviceId").toString());
+        deviceInfo.setOriginId(originId);
         deviceInfo.setGatewayId(gatewayId);
         deviceInfo.setCreateTime(nowTime);
         deviceInfo.setUpdateTime(nowTime);

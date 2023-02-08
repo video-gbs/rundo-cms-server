@@ -23,6 +23,11 @@ public class DetailInfo {
     private Long dcId;
 
     /**
+     * 原始id
+     */
+    private String originId;
+
+    /**
      * 类型 1-通道 2-设备 {@link com.runjian.device.constant.DetailType}
      */
     private Integer type;
