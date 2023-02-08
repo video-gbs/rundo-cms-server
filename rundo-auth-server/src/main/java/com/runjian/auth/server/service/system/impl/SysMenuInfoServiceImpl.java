@@ -114,6 +114,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
     @Override
     public void addSysMenu(AddSysMenuInfoDTO dto) {
         SysMenuInfo sysMenuInfo = new SysMenuInfo();
+        sysMenuInfo.setAppId(dto.getAppId());
         sysMenuInfo.setMenuPid(dto.getMenuPid());
         SysMenuInfo parentInfo = sysMenuInfoMapper.selectById(dto.getMenuPid());
         String menuPids = parentInfo.getMenuPids() + "[" + dto.getMenuPid() + "]";

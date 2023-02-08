@@ -7,6 +7,7 @@ import com.runjian.auth.server.domain.dto.system.QueryEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysRoleInfoDTO;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
+import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.tree.AppIdTree;
 import com.runjian.auth.server.domain.vo.tree.ConfigIdTree;
@@ -46,12 +47,11 @@ public class SysRoleInfoController {
         return CommonResponse.success();
     }
 
-    // @PostMapping("/getRoleDetail/{id}")
-    // @ApiOperation("编辑时回显角色详细信息")
-    // public CommonResponse<> getRoleDetailById(@PathVariable Long id){
-    //     sysRoleInfoService.getRoleDetailById(id);
-    //     return CommonResponse.success();
-    // }
+    @PostMapping("/getRoleDetail/{id}")
+    @ApiOperation("编辑时回显角色详细信息")
+    public CommonResponse<RoleDetailVO> getRoleDetailById(@PathVariable Long id){
+        return CommonResponse.success(sysRoleInfoService.getRoleDetailById(id));
+    }
 
 
     @PostMapping("/update")

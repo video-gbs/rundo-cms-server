@@ -4,9 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysRoleInfoDto;
-import com.runjian.auth.server.domain.entity.system.SysAppInfo;
-import com.runjian.auth.server.domain.entity.system.SysMenuInfo;
-import com.runjian.auth.server.domain.entity.system.SysRoleInfo;
+import com.runjian.auth.server.domain.entity.system.*;
+import com.runjian.auth.server.domain.entity.video.VideoArea;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -57,17 +56,25 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      */
     List<String> findApiByRoleCode(@Param("roleCode") String roleCode);
 
+    List<SysApiInfo> findApiInfoByRoleCode(@Param("roleCode") String roleCode);
+
+    List<SysOrg> findOrgInfoByRoleCode(@Param("roleCode") String roleCode);
+
+    List<VideoArea> findVideoAreaByRoleCode(@Param("roleCode") String roleCode);
+
     Page<EditUserSysRoleInfoVO> selectEditUserSysRoleInfoPage(PageEditUserSysRoleInfoDTO page);
 
     Page<SysRoleInfoVO> MySelectPage(PageSysRoleInfoDto page);
 
-    void insertRoleApp(@Param("roleId")Long roleId, @Param("appId")Long appId);
+    void insertRoleApp(@Param("roleId") Long roleId, @Param("appId") Long appId);
 
-    void insertRoleMenu(@Param("roleId")Long roleId, @Param("menuId")Long menuId);
+    void insertRoleMenu(@Param("roleId") Long roleId, @Param("menuId") Long menuId);
 
-    void insertRoleApi(@Param("roleId")Long roleId, @Param("apiId")Long apiId);
+    void insertRoleApi(@Param("roleId") Long roleId, @Param("apiId") Long apiId);
 
-    void insertRoleOrg(@Param("roleId")Long roleId, @Param("orgId")Long orgId);
+    void insertRoleOrg(@Param("roleId") Long roleId, @Param("orgId") Long orgId);
 
-    void insertRoleArea(@Param("roleId")Long roleId, @Param("areaId")Long areaId);
+    void insertRoleArea(@Param("roleId") Long roleId, @Param("areaId") Long areaId);
+
+
 }

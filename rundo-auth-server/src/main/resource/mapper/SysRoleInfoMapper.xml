@@ -45,6 +45,39 @@
             sri.role_code = #{roleCode}
     </select>
 
+    <select id="findApiInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.system.SysApiInfo">
+        SELECT
+            sai.*
+        FROM
+            sys_api_info sai
+            LEFT JOIN sys_role_api sra ON sra.api_id = sai.id
+            LEFT JOIN sys_role_info sri ON sri.id = sra.role_id
+        WHERE
+            sri.role_code = #{roleCode}
+    </select>
+
+    <select id="findOrgInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.system.SysOrg">
+        SELECT
+            org.*
+        FROM
+            sys_org org
+            LEFT JOIN sys_role_org sro ON sro.org_id = org.id
+            LEFT JOIN sys_role_info sri ON sri.id = sra.role_id
+        WHERE
+            sri.role_code = #{roleCode}
+    </select>
+
+    <select id="findVideoAreaByRoleCode" resultType="com.runjian.auth.server.domain.entity.video.VideoArea">
+        SELECT
+            area.*
+        FROM
+            video_area area
+            LEFT JOIN role_video_area rva ON rva.area_id = area.id
+            LEFT JOIN sys_role_info sri ON sri.id = sra.role_id
+        WHERE
+            sri.role_code = #{roleCode}
+    </select>
+
     <select id="selectEditUserSysRoleInfoPage" resultType="com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO">
         SELECT sri.id,
                sri.role_name,
@@ -111,4 +144,6 @@
         INSERT INTO role_video_area (role_id, area_id)
         VALUES (#{roleId,jdbcType=BIGINT}, #{areaId,jdbcType=BIGINT});
     </insert>
+
+
 </mapper>

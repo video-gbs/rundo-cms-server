@@ -10,8 +10,10 @@ import com.runjian.auth.server.domain.dto.system.AddSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QueryEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysRoleInfoDTO;
-import com.runjian.auth.server.domain.entity.system.SysRoleInfo;
+import com.runjian.auth.server.domain.entity.system.*;
+import com.runjian.auth.server.domain.entity.video.VideoArea;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
+import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -167,19 +170,48 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
     }
 
     @Override
-    public void getRoleDetailById(Long id) {
+    public RoleDetailVO getRoleDetailById(Long id) {
         SysRoleInfo sysRoleInfo = roleInfoMapper.selectById(id);
         // 查询该角色已授权的应用列表
-
+        List<SysAppInfo> appInfoList = roleInfoMapper.findAppByRoleCode(sysRoleInfo.getRoleCode());
         // 查询该角色已授权的菜单列表
+        List<SysMenuInfo> menuInfoList = roleInfoMapper.findMenuByRoleCode(sysRoleInfo.getRoleCode());
         // 查询该角色已授权的接口列表
-
+        List<SysApiInfo> apiInfoList = roleInfoMapper.findApiInfoByRoleCode(sysRoleInfo.getRoleCode());
         // 查询该角色已授权的部门列表
+        List<SysOrg> orgList = roleInfoMapper.findOrgInfoByRoleCode(sysRoleInfo.getRoleCode());
+        List<Long> orgIds = orgList.stream().map(
+                item -> {
+                    Long orgId = item.getId();
+                    return orgId;
+                }
+        ).collect(Collectors.toList());
         // 查询该角色已授权的安防区域
-
+        List<VideoArea> areaList = roleInfoMapper.findVideoAreaByRoleCode(sysRoleInfo.getRoleCode());
+        List<Long> areaIds = areaList.stream().map(
+                item -> {
+                    Long areaId = item.getId();
+                    return areaId;
+                }
+        ).collect(Collectors.toList());
         // 查询该角色已授权的通道
 
+        RoleDetailVO roleDetailVO = new RoleDetailVO();
+        roleDetailVO.setId(sysRoleInfo.getId());
+        roleDetailVO.setRoleName(sysRoleInfo.getRoleName());
+        roleDetailVO.setRoleDesc(sysRoleInfo.getRoleDesc());
+        List<String> appIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 1);
+        roleDetailVO.setAppIds(appIds);
+        List<String> configIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 2);
+        roleDetailVO.setConfigIds(configIds);
+        List<String> devopsIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 3);
+        roleDetailVO.setDevopsIds(devopsIds);
+        roleDetailVO.setOrgIds(orgIds);
+        roleDetailVO.setAreaIds(areaIds);
+        roleDetailVO.setChannelIds(null);
+        roleDetailVO.setOperationIds(null);
 
+        return roleDetailVO;
     }
 
     /**
@@ -237,5 +269,45 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
             }
         }
         return apiIds;
+    }
+
+    private List<String> getAppMenuApi(List<SysAppInfo> appInfoList,
+                                       List<SysMenuInfo> menuInfoList,
+                                       List<SysApiInfo> apiInfoList,
+                                       Integer appType
+    ) {
+        // 4.拼接返回结果
+        List<String> resultList = new ArrayList<>();
+
+        // 1.先根据appType选出目标分类的应用
+        for (SysAppInfo sysAppInfo : appInfoList) {
+            if (!appType.equals(sysAppInfo.getAppType())) {
+                appInfoList.remove(sysAppInfo);
+            } else {
+                resultList.add("a_" + sysAppInfo.getId());
+            }
+        }
+        // 2.根据目标分类的结果过滤掉不属于这个应用分类的菜单
+        for (SysMenuInfo sysMenuInfo : menuInfoList) {
+            for (SysAppInfo sysAppInfo : appInfoList) {
+                if (!sysMenuInfo.getAppId().equals(sysAppInfo.getId())) {
+                    menuInfoList.remove(sysMenuInfo);
+                } else {
+                    resultList.add("m_" + sysAppInfo.getId());
+                }
+            }
+        }
+        // 3.根据目标分类的结果过滤掉不属于这个应用分类的接口
+        for (SysApiInfo sysApiInfo : apiInfoList) {
+            for (SysAppInfo sysAppInfo : appInfoList) {
+                if (!sysApiInfo.getAppId().equals(sysAppInfo.getId())) {
+                    apiInfoList.remove(sysApiInfo);
+                } else {
+                    resultList.add("u_" + sysAppInfo.getId());
+                }
+            }
+        }
+
+        return resultList;
     }
 }

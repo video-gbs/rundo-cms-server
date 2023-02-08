@@ -29,6 +29,10 @@ public class SysApiInfo implements Serializable {
     private Long id;
 
     @ApiModelProperty("接口直接父ID")
+    @TableField("app_id")
+    private Long appId;
+
+    @ApiModelProperty("接口直接父ID")
     @TableField("api_pid")
     private Long apiPid;
 

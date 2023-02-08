@@ -30,6 +30,10 @@ public class SysMenuInfo implements Serializable {
     private Long id;
 
     @ApiModelProperty("直接父级菜单ID")
+    @TableField("app_pid")
+    private Long appId;
+
+    @ApiModelProperty("直接父级菜单ID")
     @TableField("menu_pid")
     private Long menuPid;
 

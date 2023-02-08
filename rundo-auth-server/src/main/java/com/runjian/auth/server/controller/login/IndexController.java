@@ -1,4 +1,4 @@
-package com.runjian.auth.server.controller.system;
+package com.runjian.auth.server.controller.login;
 
 import com.runjian.auth.server.service.system.HomeSevice;
 import com.runjian.common.config.response.CommonResponse;

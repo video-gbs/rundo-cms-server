@@ -8,6 +8,7 @@ import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysRoleInfoDTO;
 import com.runjian.auth.server.domain.entity.system.SysRoleInfo;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
+import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 
 import java.util.List;
@@ -32,5 +33,5 @@ public interface SysRoleInfoService extends IService<SysRoleInfo> {
 
     Page<EditUserSysRoleInfoVO> getEditUserSysRoleInfoList(QueryEditUserSysRoleInfoDTO dto);
 
-    void getRoleDetailById(Long id);
+    RoleDetailVO getRoleDetailById(Long id);
 }

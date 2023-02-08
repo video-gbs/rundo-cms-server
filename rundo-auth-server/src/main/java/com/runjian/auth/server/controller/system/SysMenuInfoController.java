@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -43,7 +42,7 @@ public class SysMenuInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加菜单")
-    public CommonResponse<?> addSysMenu(@RequestBody @Valid AddSysMenuInfoDTO dto) {
+    public CommonResponse<?> addSysMenu(@RequestBody AddSysMenuInfoDTO dto) {
         log.info("添加菜单前端传参信息{}", JSONUtil.toJsonStr(dto));
         sysMenuInfoService.addSysMenu(dto);
         return CommonResponse.success();
@@ -64,7 +63,6 @@ public class SysMenuInfoController {
         sysMenuInfoService.removeSysMenuInfoById(id);
         return CommonResponse.success();
     }
-
 
 
     @GetMapping("/getById")
