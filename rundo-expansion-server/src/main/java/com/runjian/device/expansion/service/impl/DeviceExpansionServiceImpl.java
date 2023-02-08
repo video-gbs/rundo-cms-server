@@ -18,9 +18,9 @@ import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import com.runjian.device.expansion.vo.request.DeviceExpansionEditReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
-import com.runjian.device.expansion.vo.request.DeviceExpansionMoveReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionReq;
 import com.runjian.device.expansion.vo.feign.request.DeviceReq;
+import com.runjian.device.expansion.vo.request.MoveReq;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
@@ -184,7 +184,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     }
 
     @Override
-    public Boolean move(DeviceExpansionMoveReq deviceExpansionMoveReq) {
+    public Boolean move(MoveReq deviceExpansionMoveReq) {
         DeviceExpansion deviceExpansion = new DeviceExpansion();
         deviceExpansionMoveReq.getIdList().forEach(id->{
             deviceExpansion.setVideoAreaId(deviceExpansionMoveReq.getVideoAreaId());

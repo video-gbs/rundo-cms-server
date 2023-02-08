@@ -11,7 +11,7 @@ import java.util.List;
  * @author chenjialing
  */
 @Data
-public class DeviceExpansionMoveReq {
+public class FindChannelListReq {
 
 
 
@@ -20,7 +20,7 @@ public class DeviceExpansionMoveReq {
     @Range(min = 1, message = "非法安防区域id")
     private Long videoAreaId;
 
-    @ApiModelProperty("编码器id")
-    @NotNull(message = "编码器id参数不得为空")
-    private List<Long> idList;
+    @ApiModelProperty("通道信息列表数据")
+    @NotNull(message = "通道信息列表数据不得为空")
+    private List<DeviceChannelExpansionAddReq> channelList;
 }

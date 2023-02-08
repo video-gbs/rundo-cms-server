@@ -6,8 +6,8 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.vo.request.DeviceExpansionEditReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
-import com.runjian.device.expansion.vo.request.DeviceExpansionMoveReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionReq;
+import com.runjian.device.expansion.vo.request.MoveReq;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
 
@@ -57,6 +57,6 @@ public interface IDeviceExpansionService extends IService<DeviceExpansion> {
      * @param deviceExpansionMoveReq
      * @return
      */
-    Boolean move(DeviceExpansionMoveReq deviceExpansionMoveReq);
+    Boolean move(MoveReq deviceExpansionMoveReq);
 
 }
