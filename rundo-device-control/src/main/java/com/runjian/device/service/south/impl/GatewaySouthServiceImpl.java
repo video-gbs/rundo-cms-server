@@ -3,7 +3,7 @@ package com.runjian.device.service.south.impl;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.CommonEnum;
-import com.runjian.device.expansion.utils.CircleArray;
+import com.runjian.common.utils.CircleArray;
 import com.runjian.device.dao.GatewayMapper;
 import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.service.south.GatewaySouthService;

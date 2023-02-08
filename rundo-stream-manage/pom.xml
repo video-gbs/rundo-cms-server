@@ -25,7 +25,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.rundo</groupId>
+            <groupId>com.runjian</groupId>
             <artifactId>rundo-common</artifactId>
         </dependency>
 
