@@ -1,5 +1,7 @@
 package com.runjian.device.service.north.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
@@ -13,6 +15,7 @@ import com.runjian.common.constant.StandardName;
 import com.runjian.device.constant.StreamType;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DetailMapper;
+import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.ChannelInfo;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
@@ -21,10 +24,7 @@ import com.runjian.device.feign.StreamManageApi;
 import com.runjian.device.service.common.DataBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
-import com.runjian.device.vo.response.VideoRecordRsp;
-import com.runjian.device.vo.response.ChannelDetailRsp;
-import com.runjian.device.vo.response.ChannelSyncRsp;
-import com.runjian.device.vo.response.VideoPlayRsp;
+import com.runjian.device.vo.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.redisson.api.RLock;
@@ -53,13 +53,13 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     private ChannelMapper channelMapper;
 
     @Autowired
+    private DeviceMapper deviceMapper;
+
+    @Autowired
     private ParsingEngineApi parsingEngineApi;
 
     @Autowired
     private StreamManageApi streamManageApi;
-
-    @Autowired
-    private StringRedisTemplate redisTemplate;
 
     @Autowired
     private DetailMapper detailMapper;
@@ -69,6 +69,16 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Override
+    public PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String name) {
+        List<Long> deviceIds = deviceMapper.selectIdBySignState(SignState.SUCCESS.getCode());
+        if (deviceIds.size() == 0){
+            return new PageInfo<>(Collections.EMPTY_LIST);
+        }
+        PageHelper.startPage(page, num);
+        return new PageInfo<>(channelMapper.selectByPage(deviceIds, name));
+    }
 
     /**
      * 通道同步
@@ -179,22 +189,33 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 通道注册状态转为成功
-     *
-     * @param channelId 通道Id
+     * @param channelIdList 通道Id
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void channelSignSuccess(Long channelId) {
-        ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
-        if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
-            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "该通道的注册状态已是成功状态");
+    public void channelSignSuccess(List<Long> channelIdList) {
+        List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIdList);
+        if (channelInfoList.size() > channelIdList.size()){
+            List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("缺失的数据%s", collect));
         }
-        channelInfo.setSignState(SignState.SUCCESS.getCode());
-        channelInfo.setUpdateTime(LocalDateTime.now());
-        channelMapper.updateSignState(channelInfo);
+
+        for (ChannelInfo channelInfo : channelInfoList){
+            if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
+                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "该通道的注册状态已是成功状态");
+            }
+            channelInfo.setSignState(SignState.SUCCESS.getCode());
+            channelInfo.setUpdateTime(LocalDateTime.now());
+        }
+        channelMapper.batchUpdateSignState(channelInfoList);
 
     }
 
+    /**
+     * 根据设备id删除通道
+     * @param deviceId 设备id
+     * @param isDeleteData 是否删除数据
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void channelDeleteByDeviceId(Long deviceId, Boolean isDeleteData) {
@@ -211,7 +232,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         } else {
             LocalDateTime nowTime = LocalDateTime.now();
             channelInfoList.forEach(channelInfo -> {
-                channelInfo.setSignState(SignState.DELETED.getCode());
+                channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
                 channelInfo.setUpdateTime(nowTime);
             });
             channelMapper.batchUpdateSignState(channelInfoList);

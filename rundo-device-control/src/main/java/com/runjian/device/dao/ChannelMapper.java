@@ -1,6 +1,7 @@
 package com.runjian.device.dao;
 
 import com.runjian.device.entity.ChannelInfo;
+import com.runjian.device.vo.response.GetChannelByPageRsp;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -68,4 +69,24 @@ public interface ChannelMapper {
             " </foreach> " +
             " </script> ")
     void batchUpdateOnlineState(List<ChannelInfo> channelInfoList);
+
+    @Select(value = {" <script> " +
+            " SELECT ch.id AS channelId, ch.device_id, dt.name AS channelName, ch.sign_state, ch.online_state, ch.create_time, " +
+            " dt.origin_id, dt.ip, dt.port, dt.manufacturer, dt.model, dt.firmware, dt.ptzType, dt.username, dt.password  FROM " + CHANNEL_TABLE_NAME + " ch " +
+            " LEFT JOIN " + DetailMapper.DETAIL_TABLE_NAME + " dt ON ch.id = dt.dc_id AND type = 2 " +
+            " WHERE de.sign_state == 1 AND ch.device_id IN "  +
+            " <foreach collection='deviceIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " <if test=\"nameOrOriginId != null\" >  AND (dt.name LIKE CONCAT('%', #{nameOrOriginId}, '%')  OR dt.origin_id LIKE CONCAT('%', #{nameOrOriginId}, '%')) </if> " +
+            " ORDER BY ch.create_time desc " +
+            " </script> "})
+    List<GetChannelByPageRsp> selectByPage(List<Long> deviceIds, String nameOrOriginId);
+
+
+    @Select(" <script> " +
+            " SELECT id FROM " + CHANNEL_TABLE_NAME +
+            " WHERE id IN " +
+            " <foreach collection='channelIdList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    List<ChannelInfo> selectByIds(List<Long> channelIdList);
+
 }

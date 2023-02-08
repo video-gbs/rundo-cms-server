@@ -1,9 +1,11 @@
 package com.runjian.device.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.request.PutPtzControlReq;
+import com.runjian.device.vo.response.GetChannelByPageRsp;
 import com.runjian.device.vo.response.VideoRecordRsp;
 import com.runjian.device.vo.request.PutChannelPlayReq;
 import com.runjian.device.vo.request.PutChannelPlaybackReq;
@@ -32,6 +34,18 @@ public class ChannelNorthController {
     private ChannelNorthService channelNorthService;
 
     /**
+     * 分页获取待添加的通道信息
+     * @param page 页码
+     * @param num 每页数量
+     * @param nameOrOriginId 名字或数据id查询
+     * @return
+     */
+    @GetMapping("/page")
+    public CommonResponse<PageInfo<GetChannelByPageRsp>> getChannelByPage(@RequestParam(defaultValue = "1")int page, @RequestParam(defaultValue = "10") int num, String nameOrOriginId){
+        return CommonResponse.success(channelNorthService.getChannelByPage(page, num, nameOrOriginId));
+    }
+
+    /**
      * 通道同步
      * @param deviceId 设备ID
      * @return ChannelSyncRsp
@@ -48,7 +62,7 @@ public class ChannelNorthController {
     @PutMapping("/sign/success")
     public CommonResponse channelSignSuccess(@RequestBody PutChannelSignSuccessReq request){
         validatorService.validateRequest(request);
-        channelNorthService.channelSignSuccess(request.getChannelId());
+        channelNorthService.channelSignSuccess(request.getChannelIdList());
         return CommonResponse.success();
     }
 

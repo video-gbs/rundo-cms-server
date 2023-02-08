@@ -3,6 +3,7 @@ package com.runjian.device.dao;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
+import com.runjian.device.constant.SignState;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.vo.response.GetDevicePageRsp;
 import org.apache.ibatis.annotations.*;
@@ -53,14 +54,19 @@ public interface DeviceMapper {
     void updateSignState(DeviceInfo deviceInfo);
 
     @Select(value = {" <script> " +
-            " SELECT de.id AS deviceId, ga.id AS gatewayId, dt.name AS deviceName, ga.name AS gatewayName, de.sign_state, de.online_state, de.create_time  FROM " + DEVICE_TABLE_NAME + " de " +
+            " SELECT de.id AS deviceId, ga.id AS gatewayId, dt.name AS deviceName, ga.name AS gatewayName, de.sign_state, de.online_state, de.create_time, " +
+            " dt.origin_id, dt.ip, dt.port, dt.manufacturer, dt.model, dt.firmware, dt.ptzType, dt.username, dt.password  FROM " + DEVICE_TABLE_NAME + " de " +
             " LEFT JOIN " + DetailMapper.DETAIL_TABLE_NAME + " dt ON de.id = dt.dc_id AND type = 1 " +
             " LEFT JOIN " + GatewayMapper.GATEWAY_TABLE_NAME + " ga ON ga.id = de.gateway_id " +
-            " WHERE 1=1 " +
+            " WHERE de.sign_state != 0 "  +
             " <if test=\"signState != null\" >  AND de.sign_state = #{signState} </if> " +
             " <if test=\"deviceName != null\" >  AND de.name LIKE CONCAT('%', #{deviceName}, '%')  </if> " +
             " <if test=\"ip != null\" >  AND de.ip LIKE CONCAT('%', #{ip}, '%')  </if> " +
             " ORDER BY de.create_time desc " +
             " </script> "})
     List<GetDevicePageRsp> selectByPage( Integer signState, String deviceName, String ip);
+
+    @Select(" SELECT id FROM " + DEVICE_TABLE_NAME +
+            " WHERE sign_state = #{signState} ")
+    List<Long> selectIdBySignState(Integer signState);
 }
