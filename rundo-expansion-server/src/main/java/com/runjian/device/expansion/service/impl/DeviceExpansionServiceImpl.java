@@ -117,6 +117,9 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             videoAreaRespList = videoAraeList.getData();
             areaIdsArr = videoAreaRespList.stream().map(VideoAreaResp::getId).collect(Collectors.toList());
         }else {
+            if(ObjectUtils.isEmpty(deviceExpansionListReq.getVideoAreaId())){
+                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
+            }
             CommonResponse<VideoAreaResp> videoAraeInfo = authServerApi.getVideoAraeInfo(deviceExpansionListReq.getVideoAreaId());
             if(ObjectUtils.isEmpty(videoAraeInfo.getData())){
                 throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
