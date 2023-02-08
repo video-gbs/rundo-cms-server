@@ -38,12 +38,13 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
     @Override
     public void saveSysApiInfo(AddSysApiInfoDTO dto) {
         SysApiInfo sysApiInfo = new SysApiInfo();
+        // 减少表操作此处代表菜单页面的ID
         sysApiInfo.setApiPid(dto.getApiPid());
-        SysApiInfo parentApiInfo = sysApiInfoMapper.selectById(dto.getApiPid());
-        sysApiInfo.setApiPids(parentApiInfo.getApiPids() + ",[" + dto.getApiPid() + "]");
+        // SysApiInfo parentApiInfo = sysApiInfoMapper.selectById(dto.getApiPid());
+        // sysApiInfo.setApiPids(parentApiInfo.getApiPids() + ",[" + dto.getApiPid() + "]");
         sysApiInfo.setApiName(dto.getApiName());
         sysApiInfo.setApiSort(dto.getApiSort());
-        sysApiInfo.setLevel(parentApiInfo.getLevel() + 1);
+        // sysApiInfo.setLevel(parentApiInfo.getLevel() + 1);
         sysApiInfo.setUrl(dto.getUrl());
         sysApiInfo.setLeaf(0);
         sysApiInfo.setStatus(dto.getStatus());

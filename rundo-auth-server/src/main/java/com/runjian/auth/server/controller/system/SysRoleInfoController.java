@@ -8,6 +8,9 @@ import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysRoleInfoDTO;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
+import com.runjian.auth.server.domain.vo.tree.AppIdTree;
+import com.runjian.auth.server.domain.vo.tree.ConfigIdTree;
+import com.runjian.auth.server.domain.vo.tree.DevopsIdTree;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
@@ -75,5 +78,23 @@ public class SysRoleInfoController {
     @ApiOperation("新增编辑用户时获取角色分页列表")
     public CommonResponse<IPage<EditUserSysRoleInfoVO>> getEditUserSysRoleInfoList(@RequestBody QueryEditUserSysRoleInfoDTO dto) {
         return CommonResponse.success(sysRoleInfoService.getEditUserSysRoleInfoList(dto));
+    }
+
+    @PostMapping("/getAppIdTree")
+    @ApiOperation("新建角色时获取应用类相关ID列表")
+    public CommonResponse<List<AppIdTree>> getAppIdTree(){
+        return null;
+    }
+
+    @PostMapping("/getConfigIdTree")
+    @ApiOperation("新建角色时获取配置类的相关ID的树")
+    public CommonResponse<List<ConfigIdTree>> getConfigIdTree(){
+        return null;
+    }
+
+    @PostMapping("/getDevopsIdTree")
+    @ApiOperation("新建角色时获取运维类的相关ID的树")
+    public CommonResponse<List<DevopsIdTree>> getDevopsIdTree(){
+        return null;
     }
 }
