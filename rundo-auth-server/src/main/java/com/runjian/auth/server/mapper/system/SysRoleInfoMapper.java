@@ -94,5 +94,15 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
 
     void insertRoleArea(@Param("roleId") Long roleId, @Param("areaId") Long areaId);
 
+    void removeRoleApp(@Param("roleId") Long roleId, @Param("appId") Long appId);
+
+    void removeRoleMenu(@Param("roleId") Long roleId, @Param("menuId") Long menuId);
+
+    void removeRoleApi(@Param("roleId") Long roleId, @Param("apiId") Long apiId);
+
+    void removeRoleOrg(@Param("roleId") Long roleId, @Param("orgId") Long orgId);
+
+    void removeRoleArea(@Param("roleId") Long roleId, @Param("areaId") Long areaId);
+
 
 }

@@ -145,5 +145,33 @@
         VALUES (#{roleId,jdbcType=BIGINT}, #{areaId,jdbcType=BIGINT});
     </insert>
 
+    <delete id="removeRoleApp">
+        DELETE FROM sys_role_app t
+        WHERE t.role_id = #{roleId,jdbcType=BIGINT}
+        AND t.app_id = #{appId,jdbcType=BIGINT}
+    </delete>
 
+    <delete id="removeRoleMenu">
+        DELETE FROM sys_role_menu t
+        WHERE t.role_id = #{roleId,jdbcType=BIGINT}
+        AND t.menu_id = #{menuId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="removeRoleApi">
+        DELETE FROM sys_role_api t
+        WHERE t.role_id = #{roleId,jdbcType=BIGINT}
+        AND t.api_id = #{apiId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="removeRoleOrg">
+        DELETE FROM sys_role_org t
+        WHERE t.role_id = #{roleId,jdbcType=BIGINT}
+        AND t.org_id = #{orgId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="removeRoleArea">
+        DELETE FROM role_video_area t
+        WHERE t.role_id = #{roleId,jdbcType=BIGINT}
+        AND t.area_id = #{areaId,jdbcType=BIGINT}
+    </delete>
 </mapper>

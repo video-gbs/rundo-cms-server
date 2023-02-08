@@ -85,4 +85,25 @@ public interface MyRBACService {
      * @return
      */
     List<String> findChannelByRoleCode(String roleCode);
+
+
+    void insertRoleApp(Long roleId, Long appId);
+
+    void insertRoleMenu(Long roleId, Long menuId);
+
+    void insertRoleApi(Long roleId, Long apiId);
+
+    void insertRoleOrg(Long roleId, Long orgId);
+
+    void insertRoleArea(Long roleId, Long areaId);
+
+    void removeRoleApp(Long roleId, Long appId);
+
+    void removeRoleMenu(Long roleId, Long menuId);
+
+    void removeRoleApi(Long roleId, Long apiId);
+
+    void removeRoleOrg(Long roleId, Long orgId);
+
+    void removeRoleArea(Long roleId, Long areaId);
 }
