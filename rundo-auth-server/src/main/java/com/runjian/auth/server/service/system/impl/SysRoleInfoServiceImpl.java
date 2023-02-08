@@ -6,10 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysRoleInfoDto;
-import com.runjian.auth.server.domain.dto.system.AddSysRoleInfoDTO;
-import com.runjian.auth.server.domain.dto.system.QueryEditUserSysRoleInfoDTO;
-import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.system.*;
 import com.runjian.auth.server.domain.entity.video.VideoArea;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
@@ -153,6 +150,13 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
     }
 
     @Override
+    public void changeStatus(StatusSysRoleInfoDTO dto) {
+        SysRoleInfo sysRoleInfo = roleInfoMapper.selectById(dto.getId());
+        sysRoleInfo.setStatus(dto.getStatus());
+        roleInfoMapper.updateById(sysRoleInfo);
+    }
+
+    @Override
     public Page<EditUserSysRoleInfoVO> getEditUserSysRoleInfoList(QueryEditUserSysRoleInfoDTO dto) {
         PageEditUserSysRoleInfoDTO page = new PageEditUserSysRoleInfoDTO();
         if (null != dto.getCurrent() && dto.getCurrent() > 0) {
@@ -203,6 +207,8 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
 
         return roleDetailVO;
     }
+
+
 
     /**
      * 分拣后获取应用ID

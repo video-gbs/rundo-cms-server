@@ -2,10 +2,7 @@ package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.runjian.auth.server.domain.dto.system.AddSysRoleInfoDTO;
-import com.runjian.auth.server.domain.dto.system.QueryEditUserSysRoleInfoDTO;
-import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
@@ -72,6 +69,14 @@ public class SysRoleInfoController {
     @ApiOperation("批量删除角色")
     public CommonResponse<?> batchRemove(@RequestBody List<Long> ids) {
         sysRoleInfoService.batchRemove(ids);
+        return CommonResponse.success();
+    }
+
+    @PostMapping("/status/change")
+    @ApiOperation("接口状态切换")
+    public CommonResponse<?> changeStatus(@RequestBody StatusSysRoleInfoDTO dto) {
+        log.info("接口状态切换前端传参{}", JSONUtil.toJsonStr(dto));
+        sysRoleInfoService.changeStatus(dto);
         return CommonResponse.success();
     }
 
