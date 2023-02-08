@@ -1,6 +1,8 @@
 package com.runjian.auth.server.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.runjian.auth.server.domain.entity.system.SysAppInfo;
+import com.runjian.auth.server.domain.entity.system.SysMenuInfo;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
 import com.runjian.auth.server.mapper.system.*;
 import com.runjian.auth.server.mapper.video.ChannelOperationMapper;
@@ -97,7 +99,7 @@ public class MyRBACService {
      * @param roleCode
      * @return
      */
-    public List<String> findAppInfoByRoleCode(String roleCode) {
+    public List<SysAppInfo> findAppIdByRoleCode(String roleCode) {
         return roleInfoMapper.findAppByRoleCode(roleCode);
     }
 
@@ -107,7 +109,7 @@ public class MyRBACService {
      * @param roleCode
      * @return
      */
-    public List<String> findMenuInfoByRoleCode(String roleCode) {
+    public List<SysMenuInfo> findMenuInfoByRoleCode(String roleCode) {
         return roleInfoMapper.findMenuByRoleCode(roleCode);
     }
 

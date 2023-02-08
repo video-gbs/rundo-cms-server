@@ -13,6 +13,27 @@
             sui.id = #{userId,jdbcType=BIGINT}
     </select>
 
+    <select id="findAppByRoleCode" resultType="com.runjian.auth.server.domain.entity.system.SysAppInfo">
+        SELECT sai.*
+        FROM sys_app_info sai
+                 LEFT JOIN sys_role_app sra ON sra.app_id = sai.id
+                 LEFT JOIN sys_role_info sri ON sri.id = sra.role_id
+        WHERE sri.role_code = #{roleCode}
+          AND sai.delete_flag = 0
+          AND sai.status = 0
+    </select>
+
+    <select id="findMenuByRoleCode" resultType="com.runjian.auth.server.domain.entity.system.SysMenuInfo">
+        SELECT
+            smi.*
+        FROM
+            sys_menu_info smi
+        LEFT JOIN sys_role_menu srm ON srm.menu_id = smi.id
+        LEFT JOIN sys_role_info sri ON sri.id = srm.role_id
+        WHERE
+            sri.role_code = #{roleCode}
+    </select>
+
     <select id="findApiByRoleCode" resultType="java.lang.String">
         SELECT
             sai.url
@@ -22,25 +43,6 @@
             LEFT JOIN sys_role_info sri ON sri.id = sra.role_id
         WHERE
             sri.role_code = #{roleCode}
-    </select>
-
-    <select id="findMenuByRoleCode" resultType="java.lang.String">
-        SELECT
-            sai.url
-        FROM
-            sys_api_info sai
-            LEFT JOIN sys_role_api sra ON sai.id = sra.id
-            LEFT JOIN sys_role_info sri ON sri.id = sra.id
-        WHERE
-            sri.role_code = #{roleCode}
-    </select>
-
-    <select id="findAppByRoleCode" resultType="java.lang.String">
-        SELECT
-        FROM sys_api_info sai
-            LEFT JOIN sys_role_api sra ON sai.id = sra.id
-            LEFT JOIN sys_role_info sri ON sri.id = sra.id
-        WHERE sri.role_code = #{roleCode}
     </select>
 
     <select id="selectEditUserSysRoleInfoPage" resultType="com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO">

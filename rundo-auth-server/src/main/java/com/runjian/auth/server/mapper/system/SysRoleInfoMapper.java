@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysRoleInfoDto;
+import com.runjian.auth.server.domain.entity.system.SysAppInfo;
+import com.runjian.auth.server.domain.entity.system.SysMenuInfo;
 import com.runjian.auth.server.domain.entity.system.SysRoleInfo;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
@@ -32,12 +34,12 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
     List<String> selectRoleByUserId(@Param("userId") Long userId);
 
     /**
-     * 根据角色编码查询接口权限
+     * 根据角色编码查询应用权限
      *
      * @param roleCode
      * @return
      */
-    List<String> findApiByRoleCode(@Param("roleCode") String roleCode);
+    List<SysAppInfo> findAppByRoleCode(@Param("roleCode") String roleCode);
 
     /**
      * 根据角色编码查询菜单权限
@@ -45,16 +47,15 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      * @param roleCode
      * @return
      */
-    List<String> findMenuByRoleCode(@Param("roleCode") String roleCode);
+    List<SysMenuInfo> findMenuByRoleCode(@Param("roleCode") String roleCode);
 
     /**
-     * 根据角色编码查询应用权限
+     * 根据角色编码查询接口权限
      *
      * @param roleCode
      * @return
      */
-    List<String> findAppByRoleCode(@Param("roleCode") String roleCode);
-
+    List<String> findApiByRoleCode(@Param("roleCode") String roleCode);
 
     Page<EditUserSysRoleInfoVO> selectEditUserSysRoleInfoPage(PageEditUserSysRoleInfoDTO page);
 

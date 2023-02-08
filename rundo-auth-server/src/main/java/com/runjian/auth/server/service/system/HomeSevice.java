@@ -1,5 +1,7 @@
 package com.runjian.auth.server.service.system;
 
+import com.runjian.auth.server.domain.vo.system.HomeVO;
+
 /**
  * @author Jiang4Yu
  * @version V1.0.0
@@ -8,5 +10,5 @@ package com.runjian.auth.server.service.system;
  * @date 2023-02-08 周三 11:51
  */
 public interface HomeSevice {
-    void getIndex();
+    HomeVO getIndex();
 }

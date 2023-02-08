@@ -46,6 +46,14 @@ public class SysRoleInfoController {
         return CommonResponse.success();
     }
 
+    // @PostMapping("/getRoleDetail/{id}")
+    // @ApiOperation("编辑时回显角色详细信息")
+    // public CommonResponse<> getRoleDetailById(@PathVariable Long id){
+    //     sysRoleInfoService.getRoleDetailById(id);
+    //     return CommonResponse.success();
+    // }
+
+
     @PostMapping("/update")
     @ApiOperation("编辑角色")
     public CommonResponse<?> updateRole(@RequestBody UpdateSysRoleInfoDTO dto) {

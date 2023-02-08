@@ -31,4 +31,6 @@ public interface SysRoleInfoService extends IService<SysRoleInfo> {
     void batchRemove(List<Long> ids);
 
     Page<EditUserSysRoleInfoVO> getEditUserSysRoleInfoList(QueryEditUserSysRoleInfoDTO dto);
+
+    void getRoleDetailById(Long id);
 }

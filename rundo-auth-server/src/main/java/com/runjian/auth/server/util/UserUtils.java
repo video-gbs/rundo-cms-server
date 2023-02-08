@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 public class UserUtils {
     public SysUserInfo getSysUserInfo() {
         LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
         return loginUser.getSysUserInfo();
     }
+
 
 }

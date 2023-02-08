@@ -33,6 +33,10 @@ public class SysAppInfo implements Serializable {
     @TableField("app_name")
     private String appName;
 
+    @ApiModelProperty("应用类别")
+    @TableField("app_type")
+    private Integer appType;
+
     @ApiModelProperty("应用所在IP")
     @TableField("app_ip")
     private String appIp;

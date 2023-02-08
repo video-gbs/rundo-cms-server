@@ -3,8 +3,10 @@ package com.runjian.auth.server.controller.system;
 import com.runjian.auth.server.service.system.HomeSevice;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description 门户首页
  * @date 2023-02-07 周二 16:27
  */
-@Api(tags = "接口管理")
+@Api(tags = "门户首页")
 @Slf4j
 @RestController
 @RequestMapping("/home")
@@ -24,9 +26,9 @@ public class IndexController {
     @Autowired
     private HomeSevice homeSevice;
 
-    @RequestMapping
+    @GetMapping("/index")
+    @ApiOperation("获取应用分类")
     public CommonResponse<?> index(){
-        homeSevice.getIndex();
-        return CommonResponse.success(null);
+        return CommonResponse.success(homeSevice.getIndex());
     }
 }

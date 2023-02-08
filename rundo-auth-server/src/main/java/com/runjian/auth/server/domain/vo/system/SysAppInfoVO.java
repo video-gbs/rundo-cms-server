@@ -21,6 +21,9 @@ public class SysAppInfoVO {
     @ApiModelProperty(value = "应用名称")
     private String appName;
 
+    @ApiModelProperty(value = "应用分类")
+    private Integer appType;
+
     @ApiModelProperty("应用所在IP")
     private String appIp;
 

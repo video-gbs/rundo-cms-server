@@ -166,6 +166,22 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
         return roleInfoMapper.selectEditUserSysRoleInfoPage(page);
     }
 
+    @Override
+    public void getRoleDetailById(Long id) {
+        SysRoleInfo sysRoleInfo = roleInfoMapper.selectById(id);
+        // 查询该角色已授权的应用列表
+
+        // 查询该角色已授权的菜单列表
+        // 查询该角色已授权的接口列表
+
+        // 查询该角色已授权的部门列表
+        // 查询该角色已授权的安防区域
+
+        // 查询该角色已授权的通道
+
+
+    }
+
     /**
      * 分拣后获取应用ID
      *
