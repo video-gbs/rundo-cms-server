@@ -30,14 +30,14 @@ public class LoginController {
     @ApiOperation(value = "登录接口")
     @PostMapping("/user/login")
     public CommonResponse<?> login(@RequestBody UserInfoDTO userInfoDTO) {
-        return CommonResponse.create(200, "操作成功", loginService.login(userInfoDTO));
+        return CommonResponse.success(loginService.login(userInfoDTO));
     }
 
     @ApiOperation(value = "登出接口")
     @PostMapping("/user/logout")
     public CommonResponse<?> logout() {
         loginService.logout();
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
 }

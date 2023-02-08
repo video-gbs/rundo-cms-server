@@ -25,6 +25,8 @@ public class HomeServiceImpl implements HomeSevice {
         Long userId = sysUserInfo.getId();
         // 通过登录的用户查取该用户已授权的应用信息
 
+        //
+
 
     }
 }
