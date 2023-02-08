@@ -35,6 +35,9 @@ public class DeviceChannelExpansionAddReq {
     @NotNull(message = "通道编码不能为空")
     private String channelCode;
 
+    @ApiModelProperty("通道在离线状态")
+    @NotNull(message = "通道在离线状态不得为空")
+    private Integer onlineState;
 
 
 }

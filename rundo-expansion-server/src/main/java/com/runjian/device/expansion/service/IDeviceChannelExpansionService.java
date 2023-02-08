@@ -18,7 +18,7 @@ import java.util.List;
 public interface IDeviceChannelExpansionService extends IService<DeviceChannelExpansion> {
     /**
      * 设备通道信息添加
-     * @param channelIdList
+     * @param findChannelListReq
      * @return
      */
     CommonResponse<Boolean> add(FindChannelListReq findChannelListReq);
