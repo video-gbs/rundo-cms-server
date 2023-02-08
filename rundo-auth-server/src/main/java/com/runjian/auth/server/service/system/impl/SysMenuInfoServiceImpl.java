@@ -53,11 +53,6 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
         sysMenuInfo.setViewImport(dto.getViewImport());
         // TODO 处理租客信息
         // sysMenuInfo.setTenantId();
-        // sysMenuInfo.setDeleteFlag();
-        // sysMenuInfo.setCreatedBy();
-        // sysMenuInfo.setUpdatedBy();
-        // sysMenuInfo.setCreatedTime();
-        // sysMenuInfo.setUpdatedTime();
         sysMenuInfoMapper.insert(sysMenuInfo);
         // 处理应用菜单映射管理
         Long menuId = sysMenuInfo.getId();

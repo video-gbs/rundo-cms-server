@@ -1,13 +1,13 @@
 package com.runjian.auth.server.controller.video;
 
 import cn.hutool.json.JSONUtil;
-import com.runjian.auth.server.common.ResponseResult;
 import com.runjian.auth.server.domain.dto.video.AddVideoAreaDTO;
 import com.runjian.auth.server.domain.dto.video.UpdateVideoAreaDTO;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.domain.vo.video.MoveVideoAreaDTO;
 import com.runjian.auth.server.domain.vo.video.VideoAreaVO;
 import com.runjian.auth.server.service.area.VideoAreaSaervice;
+import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -35,55 +35,55 @@ public class VideoAreaController {
 
     @PostMapping("/add")
     @ApiOperation("添加安防区域")
-    public ResponseResult<VideoAreaVO> save(@RequestBody AddVideoAreaDTO dto) {
+    public CommonResponse<VideoAreaVO> save(@RequestBody AddVideoAreaDTO dto) {
         log.info("添加安防区域前端传参信息{}", JSONUtil.toJsonStr(dto));
-        return new ResponseResult<>(200, "操作成功", videoAreaSaervice.saveVideoArae(dto));
+        return CommonResponse.success(videoAreaSaervice.saveVideoArae(dto));
     }
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除安防区域")
-    public ResponseResult<String> delete(@PathVariable Long id) {
-        return new ResponseResult<>(200, "操作成功", videoAreaSaervice.removeVideoAreaById(id));
+    public CommonResponse<String> delete(@PathVariable Long id) {
+        return CommonResponse.success(videoAreaSaervice.removeVideoAreaById(id));
     }
 
     @PostMapping("/batchDelete")
     @ApiOperation("批量删除安防区域")
-    public ResponseResult<String> batchDelete(@RequestBody List<Long> ids) {
-        return new ResponseResult<>(200, "操作成功", videoAreaSaervice.batchDelete(ids));
+    public CommonResponse<String> batchDelete(@RequestBody List<Long> ids) {
+        return CommonResponse.success(videoAreaSaervice.batchDelete(ids));
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑安防区域")
-    public ResponseResult<?> update(@RequestBody UpdateVideoAreaDTO dto) {
+    public CommonResponse<?> update(@RequestBody UpdateVideoAreaDTO dto) {
         videoAreaSaervice.updateVideoAreaById(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.success();
     }
 
     @PostMapping("/move")
     @ApiOperation("移动安防区域")
-    public ResponseResult<?> move(@RequestBody MoveVideoAreaDTO dto) {
+    public CommonResponse<?> move(@RequestBody MoveVideoAreaDTO dto) {
         videoAreaSaervice.moveVideoArea(dto);
-        return new ResponseResult<>(200, "操作成功");
+        return CommonResponse.success();
     }
 
 
     @GetMapping("/getById/{id}")
     @ApiOperation("获取安防区域信息")
-    public ResponseResult<VideoAreaVO> getById(@PathVariable Long id) {
-        return new ResponseResult<>(200, "操作成功", videoAreaSaervice.getVideoAreaById(id));
+    public CommonResponse<VideoAreaVO> getById(@PathVariable Long id) {
+        return CommonResponse.success(videoAreaSaervice.getVideoAreaById(id));
     }
 
     @GetMapping("/tree")
     @ApiOperation("获取安防区域层级树")
-    public ResponseResult<List<VideoAreaTree>> getTreeList() {
-        return new ResponseResult<>(200, "操作成功", videoAreaSaervice.getTreeList());
+    public CommonResponse<List<VideoAreaTree>> getTreeList() {
+        return CommonResponse.success(videoAreaSaervice.getTreeList());
     }
 
 
     @PostMapping("/getList")
     @ApiOperation("获取安防区域列表")
-    public ResponseResult<List<VideoAreaVO>> getList(@RequestParam(value = "areaId", required = false) Long areaId) {
-        return new ResponseResult<>(200, "操作成功", videoAreaSaervice.getVideoAreaList(areaId));
+    public CommonResponse<List<VideoAreaVO>> getList(@RequestParam(value = "areaId", required = false) Long areaId) {
+        return CommonResponse.success(videoAreaSaervice.getVideoAreaList(areaId));
     }
 
 }

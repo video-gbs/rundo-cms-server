@@ -41,7 +41,7 @@ public class SysApiInfoController {
     public CommonResponse<?> save(@RequestBody AddSysApiInfoDTO dto) {
         log.info("添加接口信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysApiInfoService.saveSysApiInfo(dto);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/update")
@@ -49,7 +49,7 @@ public class SysApiInfoController {
     public CommonResponse<?> updateSysDict(@RequestBody UpdateSysApiInfoDTO dto) {
         log.info("添加接口信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysApiInfoService.updateSysApiInfoById(dto);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/status/change")
@@ -57,27 +57,27 @@ public class SysApiInfoController {
     public CommonResponse<?> changeStatus(@RequestBody StatusSysApiInfoDTO dto) {
         log.info("接口状态切换前端传参{}", JSONUtil.toJsonStr(dto));
         sysApiInfoService.changeStatus(dto);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
 
     @GetMapping("/getById/{id}")
     @ApiOperation("获取接口信息")
     public CommonResponse<SysApiInfoVO> getById(@PathVariable Long id) {
-        return CommonResponse.create(200, "操作成功", sysApiInfoService.getSysApiInfoById(id));
+        return CommonResponse.success(sysApiInfoService.getSysApiInfoById(id));
     }
 
     @PostMapping("/tree")
     @ApiOperation("获取接口层级树")
     public CommonResponse<List<SysApiInfoTree>> getApiInfoTree(@RequestBody QuerySysApiInfoDTO dto) {
         log.info("获取接口层级树，前端查询条件:{}", JSONUtil.toJsonStr(dto));
-        return CommonResponse.create(200, "操作成功", sysApiInfoService.getSysApiInfoTree(dto));
+        return CommonResponse.success(sysApiInfoService.getSysApiInfoTree(dto));
     }
 
     @GetMapping("/getList")
     @ApiOperation("获取接口列表 无分页")
     public CommonResponse<List<SysApiInfoVO>> getList() {
-        return CommonResponse.create(200, "操作成功", sysApiInfoService.getSysApiInfoList());
+        return CommonResponse.success(sysApiInfoService.getSysApiInfoList());
     }
 
     @GetMapping("/getListByPage")
@@ -86,6 +86,6 @@ public class SysApiInfoController {
                                                              Integer pageNum,
                                                              @RequestParam(value = "pageSize", defaultValue = "20")
                                                              Integer pageSize) {
-        return CommonResponse.create(200, "操作成功", sysApiInfoService.getSysApiInfoByPage(pageNum, pageSize));
+        return CommonResponse.success(sysApiInfoService.getSysApiInfoByPage(pageNum, pageSize));
     }
 }

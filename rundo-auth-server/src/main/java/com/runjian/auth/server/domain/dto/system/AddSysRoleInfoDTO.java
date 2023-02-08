@@ -26,41 +26,30 @@ public class AddSysRoleInfoDTO {
     //////////////////////权限配置//////////////////////
     // 1 系统权限
 
-    // 1-1 菜单权限
+    // 1-1 应用权限
+    @ApiModelProperty("应用菜单列表")
+    List<Long> appIds;
 
-    // 1-1-1 应用权限
-    @ApiModelProperty("菜单ID列表")
+    // 1-2 配置菜单列表
+    @ApiModelProperty("配置菜单列表")
     List<Long> menuIds;
 
-    // 1-1-2 配置权限
+    // 1-3 配置菜单列表
+    @ApiModelProperty("运维菜单列表")
+    List<Long> configIds;
 
-    // 1-1-3 运维权限
-
-    // 1-2 部门管理权限
-
-    // 1-3 安防区域权限
-
-    // 2 资源权限
-
-    // 2-1 视频资源权限
-
-    // 2-2 电视墙权限
-
-    // 应用
-    @ApiModelProperty("应用ID列表")
-    List<Long> appIds;
-    // 配置
-
-    // 运维
     @ApiModelProperty("接口ID列表")
     List<Long> apiIds;
-    // 部门管理权限
+
+    // 1-4 部门管理权限
     @ApiModelProperty("部门ID列表")
     List<Long> orgIds;
 
-    // 安防区域权限
+    // 1-5 安防区域权限
     @ApiModelProperty("安防区域ID列表")
     List<Long> areaIds;
+
+    // 2 资源权限
 
     // 资源权限
     // 视频通道资源
@@ -70,5 +59,7 @@ public class AddSysRoleInfoDTO {
     List<Long> operationIds;
     // 电视墙
     // 。。。。
+
+
 
 }

@@ -39,7 +39,7 @@ public class SysMenuInfoController {
     public CommonResponse<?> addSysMenu(@RequestBody @Valid AddSysMenuInfoDTO dto) {
         log.info("添加菜单前端传参信息{}", JSONUtil.toJsonStr(dto));
         sysMenuInfoService.addSysMenu(dto);
-        return CommonResponse.create(200, "新增菜单项成功!", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/update")
@@ -47,39 +47,39 @@ public class SysMenuInfoController {
     public CommonResponse<?> updateSysMenu(@RequestBody UpdateSysMenuInfoDTO dto) {
         log.info("编辑菜单前端传参信息{}", JSONUtil.toJsonStr(dto));
         sysMenuInfoService.updateSysMenuInfoById(dto);
-        return CommonResponse.create(200, "更新菜单项成功!", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除菜单")
     public CommonResponse<String> removeSysMenu(@PathVariable Long id) {
         log.info("删除菜单前端传参信息{}", id);
-        return CommonResponse.create(200, sysMenuInfoService.removeSysMenuInfoById(id), null);
+        return CommonResponse.success(sysMenuInfoService.removeSysMenuInfoById(id));
     }
 
     @PostMapping("/tree")
     @ApiOperation("获取菜单层级树")
     public CommonResponse<List<SysMenuInfoTree>> getSysMenuTree(@RequestBody QuerySysMenuInfoDTO dto) {
-        return CommonResponse.create(200, "操作成", sysMenuInfoService.getSysOrgTree(dto));
+        return CommonResponse.success(sysMenuInfoService.getSysOrgTree(dto));
     }
 
     @GetMapping("/getById")
     @ApiOperation("通过ID获取菜单详情")
     public CommonResponse<SysMenuInfoVO> getById(@RequestParam Long id) {
-        return CommonResponse.create(200, "操作成功", sysMenuInfoService.getSysMenuInfoById(id));
+        return CommonResponse.success(sysMenuInfoService.getSysMenuInfoById(id));
     }
 
 
     @GetMapping("/getList")
     @ApiOperation("获取菜单列表 无分页")
     public CommonResponse<List<SysMenuInfoVO>> getList() {
-        return CommonResponse.create(200, "操作成功", sysMenuInfoService.getSysMenuInfoList());
+        return CommonResponse.success(sysMenuInfoService.getSysMenuInfoList());
     }
 
     @GetMapping("/getListByPage")
     @ApiOperation("分页获取菜单列表")
     public CommonResponse getListByPage(@RequestBody Long id) {
-        return CommonResponse.create(200, "操作成功", sysMenuInfoService.list());
+        return CommonResponse.success(sysMenuInfoService.list());
     }
 
 }

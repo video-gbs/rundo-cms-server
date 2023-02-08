@@ -37,19 +37,19 @@ public class SysOrgController {
     @ApiOperation("添加部门")
     public CommonResponse<SysOrgVO> save(@RequestBody AddSysOrgDTO dto) {
         log.info("添加部门前端传参信息{}", JSONUtil.toJsonStr(dto));
-        return CommonResponse.create(200, "操作成功", sysOrgService.saveSysOrg(dto));
+        return CommonResponse.success(sysOrgService.saveSysOrg(dto));
     }
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除部门")
     public CommonResponse<String> delete(@PathVariable Long id) {
-        return CommonResponse.create(200, "操作成功", sysOrgService.removeSysOrgById(id));
+        return CommonResponse.success(sysOrgService.removeSysOrgById(id));
     }
 
     @PostMapping("/batchDelete")
     @ApiOperation("批量删除部门")
     public CommonResponse<String> batchDelete(@RequestBody List<Long> ids) {
-        return CommonResponse.create(200, "操作成功", sysOrgService.batchDelete(ids));
+        return CommonResponse.success(sysOrgService.batchDelete(ids));
     }
 
     @PostMapping("/update")
@@ -57,32 +57,32 @@ public class SysOrgController {
     public CommonResponse<?> update(@RequestBody UpdateSysOrgDTO dto) {
         log.info("编辑部门信息前端传参信息{}", JSONUtil.toJsonStr(dto));
         sysOrgService.updateSysOrgById(dto);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/move")
     @ApiOperation("移动部门")
     public CommonResponse<?> move(@RequestBody MoveSysOrgDTO dto) {
         sysOrgService.moveSysOrg(dto);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @GetMapping("/tree")
     @ApiOperation("获取组织机构层级树")
     public CommonResponse<List<SysOrgTree>> getSysOrgById() {
-        return CommonResponse.create(200, "操作成", sysOrgService.getSysOrgTree());
+        return CommonResponse.success(sysOrgService.getSysOrgTree());
     }
 
     @GetMapping("/getById/{id}")
     @ApiOperation("获取部门信息")
     public CommonResponse<SysOrgVO> getById(@PathVariable Long id) {
-        return CommonResponse.create(200, "操作成功", sysOrgService.getSysOrgById(id));
+        return CommonResponse.success(sysOrgService.getSysOrgById(id));
     }
 
     @GetMapping("/getList")
     @ApiOperation("获取部门列表")
     public CommonResponse<List<SysOrgVO>> getList() {
-        return CommonResponse.create(200, "操作成功", sysOrgService.getSysOrgList());
+        return CommonResponse.success(sysOrgService.getSysOrgList());
     }
 
     // @GetMapping("/getListByPage")

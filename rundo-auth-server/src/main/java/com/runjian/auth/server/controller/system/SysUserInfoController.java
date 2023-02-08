@@ -44,13 +44,13 @@ public class SysUserInfoController {
         } else {
             return CommonResponse.create(200, "两次密码不一致", null);
         }
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/getById/{id}")
     @ApiOperation("编辑时回显用户信息")
     public CommonResponse<EditSysUserInfoVO> getUserById(@PathVariable Long id) {
-        return CommonResponse.create(200, "操作成功", sysUserService.getSysUserInfoById(id));
+        return CommonResponse.success(sysUserService.getSysUserInfoById(id));
     }
 
     @PostMapping("/update")
@@ -65,7 +65,7 @@ public class SysUserInfoController {
         } else {
             sysUserService.updateSysUserInfo(dto);
         }
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/status/change")
@@ -73,39 +73,39 @@ public class SysUserInfoController {
     public CommonResponse<?> changeStatus(@RequestBody StatusSysUserInfoDTO dto) {
         log.info("应用状态切换前端传参{}", JSONUtil.toJsonStr(dto));
         sysUserService.changeStatus(dto);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除用户")
     public CommonResponse<?> removeById(@PathVariable Long id) {
         sysUserService.removeSysUserInfoById(id);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/batchRemove")
     @ApiOperation("批量删除用户")
     public CommonResponse<?> removeById(@RequestBody List<Long> ids) {
         sysUserService.batchRemoveSysUserInfo(ids);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/getListByPage")
     @ApiOperation("获取用户列表")
     public CommonResponse<IPage<ListSysUserInfoVO>> getSysUserInfoByPage(@RequestBody QuerySysUserInfoDTO dto) {
-        return CommonResponse.create(200, "操作成功", sysUserService.getSysUserInfoByPage(dto));
+        return CommonResponse.success(sysUserService.getSysUserInfoByPage(dto));
     }
 
     @PostMapping("/getRelationSysUserInfo/{id}")
     @ApiOperation("关联用户查看用户下信息")
     public CommonResponse<RelationSysUserInfoVO> getRelationSysUserInfoById(@PathVariable Long id) {
-        return CommonResponse.create(200, "操作成功", sysUserService.getRelationSysUserInfoById(id));
+        return CommonResponse.success(sysUserService.getRelationSysUserInfoById(id));
     }
 
     @PostMapping("/getRelationSysUserInfoList")
     @ApiOperation("关联用户用户列表")
     public CommonResponse<IPage<RelationSysUserInfoVO>> getRelationSysUserInfoList(@RequestBody QueryRelationSysUserInfoDTO dto) {
-        return CommonResponse.create(200, "操作成功", sysUserService.getRelationSysUserInfoList(dto));
+        return CommonResponse.success(sysUserService.getRelationSysUserInfoList(dto));
     }
 
 

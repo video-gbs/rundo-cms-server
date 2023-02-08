@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author Jiang4Yu
@@ -108,9 +107,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         }
         // 角色是一个特殊的权限，ROLE_前缀 用来满足Spring Security规范
-        roleCodes = roleCodes.stream()
-                .map(rc -> "ROLE_" + rc)
-                .collect(Collectors.toList());
         authorities.addAll(roleCodes);
 
         // 4.把数据封装为 UserDetails 返回

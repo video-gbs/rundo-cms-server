@@ -48,11 +48,6 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
         sysApiInfo.setLeaf(0);
         sysApiInfo.setStatus(dto.getStatus());
         // sysApiInfo.setTenantId();
-        // sysApiInfo.setDeleteFlag();
-        // sysApiInfo.setCreatedBy();
-        // sysApiInfo.setUpdatedBy();
-        // sysApiInfo.setCreatedTime();
-        // sysApiInfo.setUpdatedTime();
         sysApiInfoMapper.insert(sysApiInfo);
         Long apiId = sysApiInfo.getId();
         Long appId = dto.getAppId();

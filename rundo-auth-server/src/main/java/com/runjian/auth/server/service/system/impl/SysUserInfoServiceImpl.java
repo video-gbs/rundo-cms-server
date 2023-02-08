@@ -51,11 +51,6 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         String password = passwordUtil.encode(dto.getPassword());
         sysUserInfo.setPassword(password);
         // sysUserInfo.setTenantId();
-        // sysUserInfo.setDeleteFlag();
-        // sysUserInfo.setCreatedBy();
-        // sysUserInfo.setUpdatedBy();
-        // sysUserInfo.setCreatedTime();
-        // sysUserInfo.setUpdatedTime();
         sysUserInfoMapper.insert(sysUserInfo);
         // 处理部门信息
         sysUserInfoMapper.insertUserOrg(sysUserInfo.getId(), dto.getOrgId());

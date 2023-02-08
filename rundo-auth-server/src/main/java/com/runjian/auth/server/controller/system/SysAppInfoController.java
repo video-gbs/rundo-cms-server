@@ -38,7 +38,7 @@ public class SysAppInfoController {
     public CommonResponse<?> save(@RequestBody AddSysAppInfoDTO dto) {
         log.info("添加应用信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysAppInfoService.saveSysAppInfo(dto);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/update")
@@ -46,7 +46,7 @@ public class SysAppInfoController {
     public CommonResponse<?> modify(@RequestBody UpdateSysAppInfoDTO dto) {
         log.info("编辑应用信息前端传参{}", JSONUtil.toJsonStr(dto));
         sysAppInfoService.updateSysAppInfoById(dto);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/remove/{id}")
@@ -54,7 +54,7 @@ public class SysAppInfoController {
     public CommonResponse<?> remove(@PathVariable Long id) {
         log.info("删除应用信息前端传参{}", id);
         sysAppInfoService.removeSysAppInfoById(id);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/status/change")
@@ -62,25 +62,25 @@ public class SysAppInfoController {
     public CommonResponse<?> changeStatus(@RequestBody StatusSysAppInfoDTO dto) {
         log.info("应用状态切换前端传参{}", JSONUtil.toJsonStr(dto));
         sysAppInfoService.changeStatus(dto);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @GetMapping("/getById/{id}")
     @ApiOperation("获取应用信息")
     public CommonResponse<SysAppInfoVO> getById(@PathVariable Long id) {
-        return CommonResponse.create(200, "操作成功", sysAppInfoService.getSysAppInfoById(id));
+        return CommonResponse.success(sysAppInfoService.getSysAppInfoById(id));
     }
 
     @GetMapping("/getList")
     @ApiOperation("获取应用列表 无分页")
     public CommonResponse<List<SysAppInfoVO>> getList() {
-        return CommonResponse.create(200, "操作成功", sysAppInfoService.getSysAppInfoList());
+        return CommonResponse.success(sysAppInfoService.getSysAppInfoList());
     }
 
     @PostMapping("/getListByPage")
     @ApiOperation("获取应用列表 分页")
     public CommonResponse<IPage<SysAppInfoVO>> getListByPage(@RequestBody QuerySysAppInfoDTO dto) {
-        return CommonResponse.create(200, "操作成功", sysAppInfoService.getSysAppInfoByPage(dto));
+        return CommonResponse.success(sysAppInfoService.getSysAppInfoByPage(dto));
     }
 
 

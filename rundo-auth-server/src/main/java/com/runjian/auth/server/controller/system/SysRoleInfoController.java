@@ -9,7 +9,6 @@ import com.runjian.auth.server.domain.dto.system.UpdateSysRoleInfoDTO;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
-import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,40 +40,40 @@ public class SysRoleInfoController {
     public CommonResponse<?> addRole(@RequestBody AddSysRoleInfoDTO dto) {
         log.info("新建角色前端传参{}", JSONUtil.toJsonStr(dto));
         sysRoleInfoService.addRole(dto);
-        return CommonResponse.create(BusinessErrorEnums.SUCCESS.getErrCode(), "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑角色")
     public CommonResponse<?> updateRole(@RequestBody UpdateSysRoleInfoDTO dto) {
         sysRoleInfoService.updateRole(dto);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除角色")
     public CommonResponse<?> remove(@PathVariable Long id) {
         sysRoleInfoService.removeById(id);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
     @PostMapping("/batchRemove")
     @ApiOperation("批量删除角色")
     public CommonResponse<?> batchRemove(@RequestBody List<Long> ids) {
         sysRoleInfoService.batchRemove(ids);
-        return CommonResponse.create(200, "操作成功", null);
+        return CommonResponse.success();
     }
 
 
     @PostMapping("/getListByPage")
     @ApiOperation("获取角色分页列表")
     public CommonResponse<IPage<SysRoleInfoVO>> getListByPage(@RequestBody QuerySysRoleInfoDTO dto) {
-        return CommonResponse.create(200, "操作成功", sysRoleInfoService.getSysRoleInfoByPage(dto));
+        return CommonResponse.success(sysRoleInfoService.getSysRoleInfoByPage(dto));
     }
 
     @PostMapping("/getEditUserSysRoleInfoList")
     @ApiOperation("新增编辑用户时获取角色分页列表")
     public CommonResponse<IPage<EditUserSysRoleInfoVO>> getEditUserSysRoleInfoList(@RequestBody QueryEditUserSysRoleInfoDTO dto) {
-        return CommonResponse.create(200, "操作成功", sysRoleInfoService.getEditUserSysRoleInfoList(dto));
+        return CommonResponse.success(sysRoleInfoService.getEditUserSysRoleInfoList(dto));
     }
 }

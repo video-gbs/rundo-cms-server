@@ -41,16 +41,12 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
         Long roleId = idUtil.nextId();
         role.setId(roleId);
         role.setRoleName(dto.getRoleName());
-        role.setRoleCode(roleId.toString());
+        // 角色是一个特殊的权限，ROLE_前缀 用来满足Spring Security规范
+        role.setRoleCode("ROLE_" + roleId.toString());
         role.setRoleDesc(dto.getRoleDesc());
         // role.setParentRoleId();
         // role.setParentRoleIds();
         // role.setTenantId();
-        // role.setDeleteFlag();
-        // role.setCreatedBy();
-        // role.setUpdatedBy();
-        // role.setCreatedTime();
-        // role.setUpdatedTime();
         roleInfoMapper.insert(role);
         // 处理应用ID
         // List<Long> appIds = dto.getAppIds();

@@ -57,11 +57,6 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         sysOrg.setStatus(0);
 
         // sysOrg.setTenantId();
-        // sysOrg.setDeleteFlag();
-        // sysOrg.setCreatedBy();
-        // sysOrg.setUpdatedBy();
-        // sysOrg.setCreatedTime();
-        // sysOrg.setUpdatedTime();
 
         sysOrgMapper.insert(sysOrg);
 
