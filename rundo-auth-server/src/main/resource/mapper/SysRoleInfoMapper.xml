@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.runjian.auth.server.mapper.system.SysRoleInfoMapper">
 
-    <select id="selectRoleByUserId" resultType="java.lang.String">
+    <select id="selectRoleCodeByUserId" resultType="java.lang.String">
         SELECT
             sri.role_code
         FROM
@@ -34,7 +34,7 @@
             sri.role_code = #{roleCode}
     </select>
 
-    <select id="findApiByRoleCode" resultType="java.lang.String">
+    <select id="findApiUrlByRoleCode" resultType="java.lang.String">
         SELECT
             sai.url
         FROM

@@ -1,0 +1,88 @@
+package com.runjian.auth.server.service.login;
+
+import com.runjian.auth.server.domain.entity.system.*;
+import com.runjian.auth.server.domain.entity.video.VideoArea;
+
+import java.util.List;
+
+/**
+ * @author Jiang4Yu
+ * @version V1.0.0
+ * @ClassName MyRBACService
+ * @Description
+ * @date 2023-02-09 周四 5:17
+ */
+public interface MyRBACService {
+
+    /**
+     * 通过用户账户，查取用户信息
+     *
+     * @param userName
+     * @return
+     */
+    SysUserInfo findUserInfoByUserAccount(String userName);
+
+    /**
+     * 通过用户编号，查取用户所有的角色信息
+     *
+     * @param id
+     * @return
+     */
+    List<String> findRoleInfoByUserAccount(Long id);
+
+    /**
+     * 通过角色编码，查取角色已有的应用信息
+     *
+     * @param roleCode
+     * @return
+     */
+    List<SysAppInfo> findAppIdByRoleCode(String roleCode);
+
+    /**
+     * 通过角色编码，查取角色已有的菜单信息
+     *
+     * @param roleCode
+     * @return
+     */
+    List<SysMenuInfo> findMenuInfoByRoleCode(String roleCode);
+
+    /**
+     * 通过角色编码，查取角色已有的API URL
+     *
+     * @param roleCode
+     * @return
+     */
+    List<String> findApiUrlByRoleCode(String roleCode);
+
+    /**
+     * 通过角色编码，查取角色已有的角色
+     *
+     * @param roleCode
+     * @return
+     */
+    List<SysApiInfo> findApiInfoByRoleCode(String roleCode);
+
+    /**
+     * 通过角色编码，查取角色已有部门信息
+     *
+     * @param roleCode
+     * @return
+     */
+    List<SysOrg> findSysOrgByRoleCode(String roleCode);
+
+    /**
+     * 通过角色编码，查取角色已有的安防区域信息
+     *
+     * @param roleCode
+     * @return
+     */
+    List<VideoArea> findAreaByRoleCode(String roleCode);
+
+    /**
+     * 通过角色编码，查取角色已有的视频通道信息
+     *
+     * @param roleCode
+     * @return
+     */
+    List<String> findChannelByRoleCode(String roleCode);
+}

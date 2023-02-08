@@ -30,7 +30,7 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      * @param userId
      * @return
      */
-    List<String> selectRoleByUserId(@Param("userId") Long userId);
+    List<String> selectRoleCodeByUserId(@Param("userId") Long userId);
 
     /**
      * 根据角色编码查询应用权限
@@ -49,17 +49,35 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
     List<SysMenuInfo> findMenuByRoleCode(@Param("roleCode") String roleCode);
 
     /**
-     * 根据角色编码查询接口权限
+     * 通过角色编码，查取角色已有的API URL
      *
      * @param roleCode
      * @return
      */
-    List<String> findApiByRoleCode(@Param("roleCode") String roleCode);
+    List<String> findApiUrlByRoleCode(@Param("roleCode") String roleCode);
 
+    /**
+     * 通过角色编码，查取角色已有的角色
+     *
+     * @param roleCode
+     * @return
+     */
     List<SysApiInfo> findApiInfoByRoleCode(@Param("roleCode") String roleCode);
 
+    /**
+     * 通过角色编码，查取角色已有部门信息
+     *
+     * @param roleCode
+     * @return
+     */
     List<SysOrg> findOrgInfoByRoleCode(@Param("roleCode") String roleCode);
 
+    /**
+     * 通过角色编码，查取角色已有的安防区域信息
+     *
+     * @param roleCode
+     * @return
+     */
     List<VideoArea> findVideoAreaByRoleCode(@Param("roleCode") String roleCode);
 
     Page<EditUserSysRoleInfoVO> selectEditUserSysRoleInfoPage(PageEditUserSysRoleInfoDTO page);

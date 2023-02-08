@@ -1,6 +1,6 @@
 package com.runjian.auth.server.controller.login;
 
-import com.runjian.auth.server.service.system.HomeSevice;
+import com.runjian.auth.server.service.login.HomeSevice;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

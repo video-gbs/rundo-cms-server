@@ -11,7 +11,7 @@ import com.runjian.auth.server.domain.entity.system.SysMenuInfo;
 import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysMenuInfoTree;
 import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
-import com.runjian.auth.server.service.MyRBACService;
+import com.runjian.auth.server.service.login.MyRBACService;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
 import com.runjian.auth.server.util.UserUtils;
 import com.runjian.common.config.exception.BusinessException;

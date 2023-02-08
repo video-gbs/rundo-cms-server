@@ -1,12 +1,12 @@
-package com.runjian.auth.server.service.system.impl;
+package com.runjian.auth.server.service.login.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.runjian.auth.server.domain.entity.system.SysAppInfo;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
 import com.runjian.auth.server.domain.vo.system.HomeVO;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
-import com.runjian.auth.server.service.MyRBACService;
-import com.runjian.auth.server.service.system.HomeSevice;
+import com.runjian.auth.server.service.login.HomeSevice;
+import com.runjian.auth.server.service.login.MyRBACService;
 import com.runjian.auth.server.util.UserUtils;
 import com.runjian.common.config.exception.BusinessException;
 import org.springframework.beans.BeanUtils;
@@ -27,7 +27,7 @@ import java.util.List;
 public class HomeServiceImpl implements HomeSevice {
 
     @Autowired
-    MyRBACService myRBACService;
+    private MyRBACService myRBACService;
 
     @Autowired
     private UserUtils userUtils;

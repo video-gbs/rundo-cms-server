@@ -1,4 +1,4 @@
-package com.runjian.auth.server.service.system;
+package com.runjian.auth.server.service.login;
 
 import com.runjian.auth.server.domain.vo.system.HomeVO;
 

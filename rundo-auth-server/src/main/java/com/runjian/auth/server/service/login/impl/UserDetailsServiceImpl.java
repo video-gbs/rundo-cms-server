@@ -2,7 +2,7 @@ package com.runjian.auth.server.service.login.impl;
 
 import com.runjian.auth.server.domain.dto.login.LoginUser;
 import com.runjian.auth.server.domain.entity.system.SysUserInfo;
-import com.runjian.auth.server.service.MyRBACService;
+import com.runjian.auth.server.service.login.MyRBACService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -27,7 +27,7 @@ import java.util.Objects;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    MyRBACService myRBACService;
+    private MyRBACService myRBACService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 1.加载用户基础信息
@@ -42,7 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // 3. 通过用户角色列表加载用户的资源权限列表
         List<String> authorities = new ArrayList<>();
         for (String roleCode : roleCodes) {
-            authorities.addAll(myRBACService.findApiInfoByRoleCode(roleCode));
+            authorities.addAll(myRBACService.findApiUrlByRoleCode(roleCode));
         }
         // 角色是一个特殊的权限，ROLE_前缀 用来满足Spring Security规范
         authorities.addAll(roleCodes);

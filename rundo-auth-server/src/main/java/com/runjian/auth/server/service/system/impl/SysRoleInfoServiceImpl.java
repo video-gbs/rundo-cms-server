@@ -180,20 +180,10 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
         List<SysApiInfo> apiInfoList = roleInfoMapper.findApiInfoByRoleCode(sysRoleInfo.getRoleCode());
         // 查询该角色已授权的部门列表
         List<SysOrg> orgList = roleInfoMapper.findOrgInfoByRoleCode(sysRoleInfo.getRoleCode());
-        List<Long> orgIds = orgList.stream().map(
-                item -> {
-                    Long orgId = item.getId();
-                    return orgId;
-                }
-        ).collect(Collectors.toList());
+        List<Long> orgIds = orgList.stream().map(SysOrg::getId).collect(Collectors.toList());
         // 查询该角色已授权的安防区域
         List<VideoArea> areaList = roleInfoMapper.findVideoAreaByRoleCode(sysRoleInfo.getRoleCode());
-        List<Long> areaIds = areaList.stream().map(
-                item -> {
-                    Long areaId = item.getId();
-                    return areaId;
-                }
-        ).collect(Collectors.toList());
+        List<Long> areaIds = areaList.stream().map(VideoArea::getId).collect(Collectors.toList());
         // 查询该角色已授权的通道
 
         RoleDetailVO roleDetailVO = new RoleDetailVO();
