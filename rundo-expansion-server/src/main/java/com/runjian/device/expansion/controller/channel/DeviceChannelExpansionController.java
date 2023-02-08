@@ -24,7 +24,7 @@ import java.util.List;
 @Slf4j
 @RestController
 //@CrossOrigin
-@RequestMapping("/expansion/device")
+@RequestMapping("/expansion/channel")
 public class DeviceChannelExpansionController {
     @Autowired
     private ValidatorService validatorService;

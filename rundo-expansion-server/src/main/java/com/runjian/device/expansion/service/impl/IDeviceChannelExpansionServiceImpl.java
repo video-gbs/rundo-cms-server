@@ -8,8 +8,10 @@ import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 
@@ -19,6 +21,8 @@ import java.util.List;
 /**
  * @author chenjialing
  */
+@Service
+@Slf4j
 public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChannelExpansionMapper, DeviceChannelExpansion> implements IDeviceChannelExpansionService {
     @Autowired
     DataSourceTransactionManager dataSourceTransactionManager;

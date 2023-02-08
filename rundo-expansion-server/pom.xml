@@ -90,6 +90,12 @@
             <version>3.0.3</version>
         </dependency>
         <!--API接口文档-->
+
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+        </dependency>
     </dependencies>
 
 
