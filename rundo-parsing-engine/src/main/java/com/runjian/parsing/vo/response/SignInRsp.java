@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 @Data
-public class GatewaySignInRsp {
+public class SignInRsp {
 
     /**
      * 是否第一次注册
@@ -17,6 +17,12 @@ public class GatewaySignInRsp {
      */
     @JsonIgnore
     private Long gatewayId;
+
+    /**
+     * 调度服务id
+     */
+    @JsonIgnore
+    private Long dispatchId;
 
     /**
      * 注册类型 MQ RESTFUL

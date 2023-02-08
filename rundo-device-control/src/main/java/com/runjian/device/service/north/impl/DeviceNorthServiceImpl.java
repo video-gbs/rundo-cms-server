@@ -1,5 +1,6 @@
 package com.runjian.device.service.north.impl;
 
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
@@ -15,7 +16,8 @@ import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.feign.ParsingEngineApi;
-import com.runjian.device.service.DetailBaseService;
+import com.runjian.device.service.common.DataBaseService;
+import com.runjian.device.service.common.DetailBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.north.DeviceNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
@@ -53,10 +55,13 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Autowired
     private ChannelNorthService channelNorthService;
 
+    @Autowired
+    private DataBaseService dataBaseService;
+
     @Override
     public PageInfo<GetDevicePageRsp> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
         PageHelper.startPage(page, num);
-        return new PageInfo<>(deviceMapper.selectByPage(signState, deviceName, ip));
+        return new PageInfo<>(deviceMapper.selectByPage( signState, deviceName, ip));
     }
 
     /**
@@ -76,7 +81,6 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Transactional(rollbackFor = Exception.class)
     public Long deviceAdd(String originId, Long gatewayId, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password) {
         LocalDateTime nowTime = LocalDateTime.now();
-
 
         // 发送注册请求，返回数据ID
         DeviceControlReq req = new DeviceControlReq();
@@ -121,7 +125,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         deviceInfo.setSignState(SignState.TO_BE_SIGN_IN.getCode());
         deviceMapper.save(deviceInfo);
         // 保存详细信息
-        detailBaseService.saveOrUpdateDetail(id, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime);
+        detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime);
         return id;
     }
 
@@ -132,7 +136,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
      */
     @Override
     public void deviceSignSuccess(Long deviceId) {
-        DeviceInfo deviceInfo = getDeviceInfo(deviceId);
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(deviceId);
         if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "该设备注册状态已是成功状态");
         }
@@ -153,7 +157,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public DeviceSyncRsp deviceSync(Long deviceId) {
-        DeviceInfo deviceInfo = getDeviceInfo(deviceId);
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(deviceId);
         // 判断是否设备在线
         if (deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("设备%s处于离线状态", deviceId));
@@ -170,25 +174,8 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         }
         DeviceSyncRsp data = response.getData();
         LocalDateTime nowTime = LocalDateTime.now();
-        detailBaseService.saveOrUpdateDetail(deviceId, DetailType.DEVICE.getCode(), data.getIp(), data.getPort(), data.getName(), data.getManufacturer(), data.getModel(), data.getFirmware(), data.getPtzType(), nowTime);
+        detailBaseService.saveOrUpdateDetail(deviceId, null,  DetailType.DEVICE.getCode(), data.getIp(), data.getPort(), data.getName(), data.getManufacturer(), data.getModel(), data.getFirmware(), data.getPtzType(), nowTime);
         return data;
-    }
-
-
-    /**
-     * 获取设备信息
-     * @param deviceId 设备id
-     * @return
-     */
-    private DeviceInfo getDeviceInfo(Long deviceId) {
-        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(deviceId);
-        // 判断是否存在的数据
-        if (deviceInfoOp.isEmpty()){
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "设备id:" + deviceId);
-        }
-        DeviceInfo deviceInfo = deviceInfoOp.get();
-
-        return deviceInfo;
     }
 
     /**
@@ -198,7 +185,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deviceDelete(Long deviceId) {
-        DeviceInfo deviceInfo = getDeviceInfo(deviceId);
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(deviceId);
         // 触发删除流程，返回boolean
         CommonResponse<Boolean> response = parsingEngineApi.deviceDelete(deviceId);
         if (response.getCode() != 0){

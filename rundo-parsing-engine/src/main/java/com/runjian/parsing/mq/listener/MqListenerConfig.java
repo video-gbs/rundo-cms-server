@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ import java.util.Objects;
 public class MqListenerConfig {
 
     @Autowired
-    private GatewayPublicMsgListener gatewayPublicMsgListener;
+    private PublicMsgListener publicMsgListener;
 
     @Autowired
     private DispatchMsgListener dispatchMsgListener;
@@ -63,7 +62,7 @@ public class MqListenerConfig {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(rabbitMqProperties.getQueueData(publicGetQueue).getQueueName());
-        container.setMessageListener(gatewayPublicMsgListener);
+        container.setMessageListener(publicMsgListener);
         container.setConcurrentConsumers(10);
         container.setMaxConcurrentConsumers(10);
         container.setAcknowledgeMode(AcknowledgeMode.MANUAL);

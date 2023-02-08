@@ -1,5 +1,7 @@
 package com.runjian.device.service.south.impl;
 
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.constant.DetailType;
@@ -11,12 +13,15 @@ import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.south.DeviceSouthService;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 设备南向服务
@@ -40,6 +45,9 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     /**
      * 设备添加注册
@@ -74,9 +82,16 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
                 if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                    // todo 上锁开始
-                    redisTemplate.opsForHash().put(MarkConstant.REDIS_DEVICE_ONLINE_STATE, deviceInfo.getId(), deviceInfo.getOnlineState());
-                    // todo 上锁结束
+                    RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_ONLINE_STATE_LOCK);
+                    try{
+                        lock.lock(3, TimeUnit.SECONDS);
+                        redissonClient.getMap(MarkConstant.REDIS_DEVICE_ONLINE_STATE).put(deviceInfo.getId(), deviceInfo.getOnlineState());
+                    } catch (Exception ex){
+                        ex.printStackTrace();
+                        throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
+                    }finally {
+                        lock.unlock();
+                    }
                     channelNorthService.channelSync(deviceInfo.getId());
                 }
             } else if (onlineState.equals(CommonEnum.DISABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.ENABLE.getCode())) {

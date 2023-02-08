@@ -1,16 +1,13 @@
-package com.runjian.stream.service.impl;
+package com.runjian.stream.service.south.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.utils.CircleArray;
 import com.runjian.stream.dao.DispatchMapper;
 import com.runjian.stream.entity.DispatchInfo;
-import com.runjian.stream.service.DataBaseService;
-import com.runjian.stream.service.DispatchService;
-import com.runjian.stream.vo.response.GetDispatchRsp;
+import com.runjian.stream.service.common.DataBaseService;
+import com.runjian.stream.service.south.DispatchSouthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -27,13 +24,10 @@ import java.util.Set;
  * @date 2023/2/3 14:22
  */
 @Service
-public class DispatchServiceImpl implements DispatchService {
+public class DispatchSouthServiceImpl implements DispatchSouthService {
 
     @Autowired
     private DispatchMapper dispatchMapper;
-
-    @Autowired
-    private DataBaseService dataBaseService;
 
     /**
      * 心跳时钟
@@ -55,12 +49,7 @@ public class DispatchServiceImpl implements DispatchService {
         dispatchMapper.batchUpdateOnlineState(gatewayIds, CommonEnum.DISABLE.getCode(), LocalDateTime.now());
     }
 
-    @Override
-    public PageInfo<GetDispatchRsp> getDispatchByPage(int page, int num, String name) {
-        PageHelper.startPage(page, num);
-        return new PageInfo<>(dispatchMapper.selectAllByPage(name));
 
-    }
 
     @Override
     public void signIn(Long dispatchId, String serialNum, String ip, String port, LocalDateTime outTime) {
@@ -83,14 +72,7 @@ public class DispatchServiceImpl implements DispatchService {
         updateHeartbeat(dispatchInfo.getId(), outTime);
     }
 
-    @Override
-    public void updateExtraData(Long dispatchId, String name, String url) {
-        DispatchInfo dispatchInfo = dataBaseService.getDispatchInfo(dispatchId);
-        dispatchInfo.setName(name);
-        dispatchInfo.setUrl(url);
-        dispatchInfo.setUpdateTime(LocalDateTime.now());
-        dispatchMapper.update(dispatchInfo);
-    }
+
 
     @Override
     public void updateHeartbeat(Long dispatchId, LocalDateTime outTime) {

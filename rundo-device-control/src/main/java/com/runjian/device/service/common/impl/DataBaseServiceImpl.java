@@ -1,4 +1,4 @@
-package com.runjian.device.service.impl;
+package com.runjian.device.service.common.impl;
 
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
@@ -9,7 +9,7 @@ import com.runjian.device.dao.GatewayMapper;
 import com.runjian.device.entity.ChannelInfo;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.entity.GatewayInfo;
-import com.runjian.device.service.DataBaseService;
+import com.runjian.device.service.common.DataBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

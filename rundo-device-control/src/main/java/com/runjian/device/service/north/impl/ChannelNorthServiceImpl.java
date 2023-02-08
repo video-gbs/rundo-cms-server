@@ -18,7 +18,7 @@ import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.feign.StreamManageApi;
-import com.runjian.device.service.DataBaseService;
+import com.runjian.device.service.common.DataBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.response.VideoRecordRsp;
@@ -27,6 +27,8 @@ import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.VideoPlayRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -63,6 +66,9 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     @Autowired
     private DataBaseService dataBaseService;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     /**
      * 通道同步
@@ -115,13 +121,11 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                     channelInfo.setUpdateTime(nowTime);
                     channelUpdateList.add(channelInfo);
                 }
-                // todo 上锁开始
                 // 更新通道在线状态
                 if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode()) && !Objects.equals(rsp.getOnlineState(), channelInfo.getOnlineState())) {
                     // 对通道在线状态缓存
                     channelOnlineMap.put(channelInfo.getId(), channelInfo.getOnlineState());
                 }
-                // todo 上锁结束
                 channelInfo.setOnlineState(rsp.getOnlineState());
 
                 Optional<DetailInfo> detailInfoOp = detailMapper.selectByDcIdAndType(rsp.getChannelId(), DetailType.CHANNEL.getCode());
@@ -145,7 +149,17 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                     detailUpdateList.add(detailInfo);
                 }
             }
-            redisTemplate.opsForHash().putAll(MarkConstant.REDIS_DEVICE_ONLINE_STATE, channelOnlineMap);
+            RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_ONLINE_STATE_LOCK);
+            try {
+                lock.lock(3, TimeUnit.SECONDS);
+                redissonClient.getMap(MarkConstant.REDIS_DEVICE_ONLINE_STATE).putAll(channelOnlineMap);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
+            } finally {
+                lock.unlock();
+            }
+
             // 对数据进行批量保存
             if (channelSaveList.size() > 0) {
                 channelMapper.batchSave(channelSaveList);
