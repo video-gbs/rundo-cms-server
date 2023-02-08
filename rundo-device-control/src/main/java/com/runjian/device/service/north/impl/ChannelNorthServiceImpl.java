@@ -310,7 +310,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     /**
      * 视频回放
      *
-     * @param chId        通道id
+     * @param channelId        通道id
      * @param enableAudio 是否播放音频
      * @param ssrcCheck   是否使用ssrc
      * @param startTime   开始时间
