@@ -15,17 +15,22 @@ public class StreamPlayReq {
     private Long gatewayId;
 
     /**
-     * 设备id
-     */
-    private Long deviceId;
-
-    /**
      * 通道id
      */
     private Long channelId;
 
     /**
-     * 是否是回放
+     * 播放模式 {@link com.runjian.common.constant.PlayType}
      */
-    private Boolean isPlayback;
+    private Integer playType;
+
+    /**
+     * 录像状态
+     */
+    private Integer recordState;
+
+    /**
+     * 自动关闭状态
+     */
+    private Integer autoCloseState;
 }

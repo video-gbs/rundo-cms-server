@@ -5,6 +5,7 @@ import com.runjian.common.validator.ValidatorService;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.request.PostStreamApplyStreamReq;
 import com.runjian.stream.vo.request.PutStreamOperationReq;
+import com.runjian.stream.vo.response.PostApplyStreamRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class StreamNorthController {
      * @return
      */
     @PostMapping("/play/apply")
-    public CommonResponse<String> applyStreamId(@RequestBody PostStreamApplyStreamReq req){
+    public CommonResponse<PostApplyStreamRsp> applyStreamId(@RequestBody PostStreamApplyStreamReq req){
         validatorService.validateRequest(req);
         return CommonResponse.success(streamNorthService.applyStreamId(req.getGatewayId(), req.getChannelId(), req.getPlayType(), req.getRecordState(), req.getAutoCloseState()));
     }

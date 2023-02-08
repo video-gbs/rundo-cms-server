@@ -1,6 +1,8 @@
 package com.runjian.stream.service.north;
 
 
+import com.runjian.stream.vo.response.PostApplyStreamRsp;
+
 /**
  * 流
  * @author Miracle
@@ -11,7 +13,7 @@ public interface StreamNorthService {
     /**
      * 申请流
      */
-    String applyStreamId(Long gatewayId, Long channelId, Integer playType, Integer recordState, Integer autoCloseState);
+    PostApplyStreamRsp applyStreamId(Long gatewayId, Long channelId, Integer playType, Integer recordState, Integer autoCloseState);
 
     /**
      * 停止播放

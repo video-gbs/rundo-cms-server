@@ -4,14 +4,16 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
-import com.runjian.stream.constant.PlayType;
+import com.runjian.common.constant.PlayType;
 import com.runjian.stream.dao.GatewayDispatchMapper;
 import com.runjian.stream.dao.StreamMapper;
+import com.runjian.stream.entity.DispatchInfo;
 import com.runjian.stream.entity.GatewayDispatchInfo;
 import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.feign.ParsingEngineApi;
 import com.runjian.stream.service.common.DataBaseService;
 import com.runjian.stream.service.north.StreamNorthService;
+import com.runjian.stream.vo.response.PostApplyStreamRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,41 +45,46 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     private static final int CHANNEL_MAX_PLAY_NUM = 3;
 
     @Override
-    public String applyStreamId(Long gatewayId, Long channelId, Integer playType, Integer recordState, Integer autoCloseState) {
+    public PostApplyStreamRsp applyStreamId(Long gatewayId, Long channelId, Integer playType, Integer recordState, Integer autoCloseState) {
+        Optional<GatewayDispatchInfo> dispatchIdOp = gatewayDispatchMapper.selectByGatewayId(gatewayId);
+        if (dispatchIdOp.isEmpty()) {
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("该网关模块%s未绑定流媒体模块，无法播放", gatewayId));
+        }
+        DispatchInfo dispatchInfo = dataBaseService.getDispatchInfo(dispatchIdOp.get().getDispatchId());
+        PostApplyStreamRsp res = new PostApplyStreamRsp();
+        res.setDispatchUrl(dispatchInfo.getUrl());
+        res.setRecordState(recordState);
+        StreamInfo streamInfo = null;
         if (playType.equals(PlayType.LIVE.getCode())) {
             String streamId = PlayType.getMsgByCode(playType) + "_" + channelId;
             Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
             if (streamInfoOp.isEmpty()) {
-                saveStream(gatewayId, channelId, playType, recordState, autoCloseState, streamId);
+                streamInfo = saveStream(gatewayId, channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
             } else {
-                StreamInfo streamInfo = streamInfoOp.get();
+                streamInfo = streamInfoOp.get();
                 // 判断是否需要开启录像
                 if (!streamInfo.getRecordState().equals(recordState) || recordState.equals(CommonEnum.ENABLE.getCode())) {
                     startRecord(streamId);
                 }
             }
-            return streamId;
         } else {
             List<StreamInfo> streamInfoList = streamMapper.selectByChannelId(channelId);
             if (streamInfoList.size() >= CHANNEL_MAX_PLAY_NUM) {
                 throw new BusinessException(BusinessErrorEnums.VALID_REPETITIVE_OPERATION_ERROR, String.format("设备%s已达到并发播放数上限,请稍后重试", channelId));
             }
             String streamId = PlayType.getMsgByCode(playType) + "_" + channelId + "_" + System.currentTimeMillis() + new Random().nextInt(100);
-            saveStream(gatewayId, channelId, playType, recordState, autoCloseState, streamId);
-            return streamId;
+            streamInfo = saveStream(gatewayId, channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
         }
+        res.setStreamId(streamInfo.getStreamId());
+        return res;
     }
 
-    private StreamInfo saveStream(Long gatewayId, Long channelId, Integer playType, Integer recordState, Integer autoCloseState, String streamId) {
-        Optional<GatewayDispatchInfo> dispatchIdOp = gatewayDispatchMapper.selectByGatewayId(gatewayId);
-        if (dispatchIdOp.isEmpty()) {
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("该网关模块%s未绑定流媒体模块，无法播放", gatewayId));
-        }
+    private StreamInfo saveStream(Long gatewayId, Long channelId, Long dispatchId, Integer playType, Integer recordState, Integer autoCloseState, String streamId) {
         LocalDateTime nowTime = LocalDateTime.now();
         StreamInfo streamInfo = new StreamInfo();
         streamInfo.setChannelId(channelId);
         streamInfo.setGatewayId(gatewayId);
-        streamInfo.setDispatchId(dispatchIdOp.get().getDispatchId());
+        streamInfo.setDispatchId(dispatchId);
         streamInfo.setRecordState(recordState);
         streamInfo.setAutoCloseState(autoCloseState);
         streamInfo.setStreamState(CommonEnum.DISABLE.getCode());
