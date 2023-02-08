@@ -1,5 +1,6 @@
 package com.runjian.device.expansion.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.entity.DeviceExpansion;
@@ -8,6 +9,7 @@ import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionMoveReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionReq;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
+import com.runjian.device.expansion.vo.response.PageResp;
 
 import java.util.List;
 
@@ -48,7 +50,7 @@ public interface IDeviceExpansionService extends IService<DeviceExpansion> {
      * @param deviceExpansionListReq
      * @return
      */
-    List<DeviceExpansionResp> list(DeviceExpansionListReq deviceExpansionListReq);
+    PageResp<DeviceExpansionResp> list(DeviceExpansionListReq deviceExpansionListReq);
 
     /**
      * 移动

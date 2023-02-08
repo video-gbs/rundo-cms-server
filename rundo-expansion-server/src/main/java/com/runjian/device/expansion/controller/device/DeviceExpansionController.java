@@ -1,5 +1,6 @@
 package com.runjian.device.expansion.controller.device;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
@@ -7,6 +8,7 @@ import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
+import com.runjian.device.expansion.vo.response.PageResp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,6 +26,7 @@ import java.util.List;
 @Api(tags = "编码器管理")
 @Slf4j
 @RestController
+//@CrossOrigin
 @RequestMapping("/expansion/device")
 public class DeviceExpansionController {
     @Autowired
@@ -63,7 +66,7 @@ public class DeviceExpansionController {
 
     @PostMapping(value = "/list", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("列表")
-    public CommonResponse<List<DeviceExpansionResp>> list(@RequestBody DeviceExpansionListReq deviceExpansionListReq) {
+    public CommonResponse<PageResp<DeviceExpansionResp>> list(@RequestBody DeviceExpansionListReq deviceExpansionListReq) {
 
         return CommonResponse.success(deviceExpansionService.list(deviceExpansionListReq));
     }

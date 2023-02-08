@@ -3,6 +3,7 @@ package com.runjian.device.expansion.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.common.config.exception.BusinessErrorEnums;
@@ -21,6 +22,7 @@ import com.runjian.device.expansion.vo.request.DeviceExpansionMoveReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionReq;
 import com.runjian.device.expansion.vo.feign.request.DeviceReq;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
+import com.runjian.device.expansion.vo.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,7 +101,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     }
 
     @Override
-    public List<DeviceExpansionResp> list(DeviceExpansionListReq deviceExpansionListReq) {
+    public  PageResp<DeviceExpansionResp> list(DeviceExpansionListReq deviceExpansionListReq) {
         //远程调用获取当前全部的节点信息
         //安防区域的节点id
         List<Long> areaIdsArr = new ArrayList<>();
@@ -106,12 +109,10 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         List<VideoAreaResp> videoAreaRespList = new ArrayList<>();
         if(deviceExpansionListReq.getIncludeEquipment()){
             //安防区域不得为空
-            if(ObjectUtils.isEmpty(deviceExpansionListReq.getVideoAreaId())){
-                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
-            }
+
             CommonResponse<List<VideoAreaResp>> videoAraeList = authServerApi.getVideoAraeList(deviceExpansionListReq.getVideoAreaId());
             if(CollectionUtils.isEmpty(videoAraeList.getData())){
-                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
+                throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH);
 
             }
             videoAreaRespList = videoAraeList.getData();
@@ -122,7 +123,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             }
             CommonResponse<VideoAreaResp> videoAraeInfo = authServerApi.getVideoAraeInfo(deviceExpansionListReq.getVideoAreaId());
             if(ObjectUtils.isEmpty(videoAraeInfo.getData())){
-                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
+                throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH);
 
             }
             videoAreaData = videoAraeInfo.getData();
@@ -147,8 +148,9 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         queryWrapper.orderByDesc(DeviceExpansion::getCreatedAt);
         Page<DeviceExpansion> page = new Page<>(deviceExpansionListReq.getPageNum(), deviceExpansionListReq.getPageSize());
         Page<DeviceExpansion> deviceExpansionPage = deviceExpansionMapper.selectPage(page, queryWrapper);
+
         List<DeviceExpansion> records = deviceExpansionPage.getRecords();
-        ArrayList<DeviceExpansionResp> deviceExpansionRespList = new ArrayList<>();
+        List<DeviceExpansionResp> deviceExpansionRespList = new ArrayList<>();
         if(!CollectionUtils.isEmpty(records)){
             //拼接所属区域
             DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
@@ -173,7 +175,12 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             }
 
         }
-        return deviceExpansionRespList;
+        PageResp<DeviceExpansionResp> listPageResp = new PageResp<>();
+        listPageResp.setCurrent(deviceExpansionPage.getCurrent());
+        listPageResp.setSize(deviceExpansionPage.getSize());
+        listPageResp.setTotal(deviceExpansionPage.getTotal());
+        listPageResp.setRecords(deviceExpansionRespList);
+        return listPageResp;
     }
 
     @Override

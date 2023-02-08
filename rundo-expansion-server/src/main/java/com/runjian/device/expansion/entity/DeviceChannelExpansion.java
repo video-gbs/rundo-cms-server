@@ -23,7 +23,6 @@ public class DeviceChannelExpansion {
     private Long id;
 
     @ApiModelProperty("编码器ID")
-    @TableId("id")
     private Long deviceExpansionId;
 
     @ApiModelProperty("通道名称")

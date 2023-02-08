@@ -8,5 +8,5 @@ public class CommonConstant {
 
     /*********************************系统服务相关*******************************************/
 
-    public static final String AUTHORIZATION = "Authorization";
+    public static final String AUTHORIZATION = "authorization";
 }

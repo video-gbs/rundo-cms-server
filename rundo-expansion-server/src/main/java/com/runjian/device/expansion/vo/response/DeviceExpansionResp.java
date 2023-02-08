@@ -12,6 +12,9 @@ import java.util.Date;
  */
 @Data
 public class DeviceExpansionResp {
+    @ApiModelProperty("id")
+    private Long id;
+
     @ApiModelProperty("设备名称")
     private String name;
 
@@ -40,7 +43,7 @@ public class DeviceExpansionResp {
     @ApiModelProperty("安防区域id")
     private Long videoAreaId;
 
-    @ApiModelProperty("安防区域id")
+    @ApiModelProperty("所属区域")
     private String areaNames;
 
     @ApiModelProperty("ip")
