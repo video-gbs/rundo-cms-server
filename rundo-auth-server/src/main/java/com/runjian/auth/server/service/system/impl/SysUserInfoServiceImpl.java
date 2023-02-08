@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageRelationSysUserInfoDTO;
@@ -10,7 +11,6 @@ import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
-import com.runjian.auth.server.mapper.system.SysOrgMapper;
 import com.runjian.auth.server.mapper.system.SysUserInfoMapper;
 import com.runjian.auth.server.service.system.SysUserInfoService;
 import com.runjian.auth.server.util.PasswordUtil;
@@ -38,9 +38,6 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
 
     @Autowired
     private SysUserInfoMapper sysUserInfoMapper;
-
-    @Autowired
-    private SysOrgMapper sysOrgMapper;
 
     @Override
     public void saveSysUserInfo(AddSysUserInfoDTO dto) {
@@ -99,13 +96,13 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         sysUserInfoMapper.updateById(sysUserInfo);
         // 原始关联角色为空 则提交关联角色为新增
         List<Long> newRoleIds = dto.getRoleIds();
-        if (oldRoleIds == null || oldRoleIds.isEmpty()) {
+        if (CollUtil.isEmpty(oldRoleIds)) {
             for (Long roleId : newRoleIds) {
                 sysUserInfoMapper.insertUserRole(sysUserInfo.getId(), roleId);
             }
         }
         // 如果提交的角色为空，则删除所有的角色关联
-        if (null == newRoleIds || newRoleIds.isEmpty()) {
+        if (CollUtil.isEmpty(newRoleIds)) {
             sysUserInfoMapper.deleteUserRole(sysUserInfo.getId(), null);
         }
         // 提交的角色与原始的角色均不为空
