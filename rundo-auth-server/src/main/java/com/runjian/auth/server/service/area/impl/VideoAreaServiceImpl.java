@@ -131,9 +131,12 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public List<VideoAreaVO> getVideoAreaList(Long areaId) {
-        VideoArea videoArea = videoAraeMapper.selectById(areaId);
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.likeRight(VideoArea::getAreaPids, videoArea.getAreaPids() + "[" + videoArea.getId() + "]");
+        VideoArea videoArea = new VideoArea();
+        if (areaId != null) {
+            videoArea = videoAraeMapper.selectById(areaId);
+            queryWrapper.likeRight(VideoArea::getAreaPids, videoArea.getAreaPids() + "[" + videoArea.getId() + "]");
+        }
         List<VideoArea> videoAreaList = videoAraeMapper.selectList(queryWrapper);
         List<VideoAreaVO> videoAreaVOS = videoAreaList.stream().map(
                 item -> {
