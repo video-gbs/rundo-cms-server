@@ -5,31 +5,53 @@ import com.alibaba.fastjson2.JSON;
 import com.rabbitmq.client.Channel;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
+import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.parsing.constant.IdType;
 import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.dao.GatewayMapper;
 import com.runjian.parsing.entity.GatewayInfo;
+import com.runjian.parsing.mq.config.RabbitMqProperties;
+import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.service.ProtocolService;
 import com.runjian.parsing.vo.CommonMqDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
-public class DispatchMsgListener implements ChannelAwareMessageListener {
+public class GatewayMsgListener implements ChannelAwareMessageListener {
 
     @Autowired
     private ProtocolService protocolService;
 
     @Autowired
     private GatewayMapper gatewayMapper;
+
+    @Autowired
+    private RabbitMqSender rabbitMqSender;
+
+    @Autowired
+    private RabbitMqProperties rabbitMqProperties;
+
+    @Value("${gateway.public.queue-id-set}")
+    private String signInQueueId;
+
+    private RabbitMqProperties.QueueData queueData;
+
+    @PostConstruct
+    public void init() {
+        queueData = rabbitMqProperties.getQueueData(signInQueueId);
+    }
 
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
@@ -38,7 +60,12 @@ public class DispatchMsgListener implements ChannelAwareMessageListener {
             CommonMqDto<?> mqRequest = JSON.parseObject(new String(message.getBody()), CommonMqDto.class);
             Optional<GatewayInfo> gatewayInfoOp = gatewayMapper.selectBySerialNum(mqRequest.getSerialNum());
             if (gatewayInfoOp.isEmpty()) {
-                throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("网关不存在，网关序列号：%s", mqRequest.getSerialNum()));
+                CommonMqDto<?> mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
+                mqResponse.copyRequest(mqRequest);
+                // 发送重新注册命令
+                mqResponse.setMsgType(MsgType.GATEWAY_RE_SIGN_IN.getMsg());
+                String mqId = UUID.randomUUID().toString().replace("-", "");
+                rabbitMqSender.sendMsgByRoutingKey(queueData.getExchangeId(), queueData.getRoutingKey(), mqId, mqResponse, true);
             }
             GatewayInfo gatewayInfo = gatewayInfoOp.get();
 

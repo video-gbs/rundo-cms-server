@@ -195,13 +195,11 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIdList);
         if (channelInfoList.size() > channelIdList.size()){
             List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
-            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("缺失的数据%s", collect));
+            channelIdList.removeAll(collect);
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("缺失的数据%s", channelIdList));
         }
 
         for (ChannelInfo channelInfo : channelInfoList){
-            if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
-                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "该通道的注册状态已是成功状态");
-            }
             channelInfo.setSignState(SignState.SUCCESS.getCode());
             channelInfo.setUpdateTime(LocalDateTime.now());
         }
@@ -211,14 +209,21 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 通道删除
-     * @param channelId 通道id
+     * @param channelIds 通道id
      */
     @Override
-    public void channelDeleteByChannelId(Long channelId) {
-        ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
-        channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
-        channelInfo.setUpdateTime(LocalDateTime.now());
-        channelMapper.updateSignState(channelInfo);
+    public void channelDeleteByChannelId(List<Long> channelIds) {
+        List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIds);
+        if (channelIds.size() > channelInfoList.size()){
+            List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
+            channelIds.removeAll(collect);
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("缺失的数据%s", channelIds));
+        }
+        for (ChannelInfo channelInfo : channelInfoList){
+            channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
+            channelInfo.setUpdateTime(LocalDateTime.now());
+        }
+        channelMapper.batchUpdateSignState(channelInfoList);
     }
 
     /**

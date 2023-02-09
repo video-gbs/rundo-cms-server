@@ -38,7 +38,7 @@ public class StreamSouthController {
      * @return 是否关闭
      */
     @GetMapping("/close")
-    public CommonResponse<?> autoCloseHandle(@RequestParam String streamId){
+    public CommonResponse<Boolean> autoCloseHandle(@RequestParam String streamId){
         return CommonResponse.success(streamSouthService.autoCloseHandle(streamId));
     }
 }

@@ -1,7 +1,7 @@
 package com.runjian.parsing.feign;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.parsing.vo.feign.PutStreamReceiveResultReq;
 import com.runjian.parsing.vo.request.PostDispatchSignInReq;
 import com.runjian.parsing.vo.request.PutDispatchHeartbeatReq;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -24,7 +24,7 @@ public interface StreamManageApi {
     CommonResponse<?> dispatchSignIn(PostDispatchSignInReq req);
 
     @PutMapping("/stream/south/result")
-    CommonResponse<?> streamReceiveResult(JSONObject req);
+    CommonResponse<?> streamReceiveResult(PutStreamReceiveResultReq req);
 
     @GetMapping("/stream/south/close")
     CommonResponse<?> streamCloseHandle(@RequestParam String streamId);

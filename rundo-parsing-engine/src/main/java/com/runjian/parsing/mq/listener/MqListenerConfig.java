@@ -3,7 +3,9 @@ package com.runjian.parsing.mq.listener;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.parsing.constant.MqConstant;
+import com.runjian.parsing.dao.DispatchMapper;
 import com.runjian.parsing.dao.GatewayMapper;
+import com.runjian.parsing.entity.DispatchInfo;
 import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.mq.config.RabbitMqConfig;
 import com.runjian.parsing.mq.config.RabbitMqProperties;
@@ -31,13 +33,19 @@ public class MqListenerConfig {
     private PublicMsgListener publicMsgListener;
 
     @Autowired
-    private DispatchMsgListener dispatchMsgListener;
+    private GatewayMsgListener gatewayMsgListener;
+
+    @Autowired
+    private StreamMsgListener streamMsgListener;
 
     @Autowired
     private RabbitMqProperties rabbitMqProperties;
 
     @Autowired
     private GatewayMapper gatewayMapper;
+
+    @Autowired
+    private DispatchMapper dispatchMapper;
 
     @Autowired
     private RabbitMqConfig rabbitMqConfig;
@@ -66,30 +74,54 @@ public class MqListenerConfig {
         container.setConcurrentConsumers(10);
         container.setMaxConcurrentConsumers(10);
         container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
-        containerMap.put("PUBLIC", container);
+        containerMap.put(MqConstant.PUBLIC_PREFIX, container);
         return container;
     }
 
     /**
-     * 配置私有消息监听器
+     * 配置网关私有消息监听器
      * @param connectionFactory
      * @return
      * @throws BusinessException
      */
-    @Bean("dispatchMsgListenerContainer")
+    @Bean("gatewayMsgListenerContainer")
     public SimpleMessageListenerContainer dispatchMsgListenerContainer(ConnectionFactory connectionFactory) throws BusinessException {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setMessageListener(dispatchMsgListener);
+        container.setMessageListener(gatewayMsgListener);
         container.setConcurrentConsumers(10);
         container.setMaxConcurrentConsumers(10);
         container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
-        containerMap.put("DISPATCH", container);
+        containerMap.put(MqConstant.GATEWAY_PREFIX, container);
         // 将全部网关加载
         RabbitMqProperties.QueueData queueData = rabbitMqProperties.getQueueData(signInQueueId);
         List<GatewayInfo> gatewayInfoList = gatewayMapper.selectAll();
         for (GatewayInfo gatewayInfo : gatewayInfoList){
-            addQueue("DISPATCH", queueData.getExchangeId(), MqConstant.GATEWAY_PREFIX + MqConstant.SET_GET_PREFIX + gatewayInfo.getId());
+            addQueue(MqConstant.GATEWAY_PREFIX, queueData.getExchangeId(), MqConstant.GATEWAY_PREFIX + MqConstant.SET_GET_PREFIX + gatewayInfo.getId());
+        }
+        return container;
+    }
+
+    /**
+     * 配置流媒体管理服务私有消息监听器
+     * @param connectionFactory
+     * @return
+     * @throws BusinessException
+     */
+    @Bean("streamMsgListenerContainer")
+    public SimpleMessageListenerContainer streamMsgListenerContainer(ConnectionFactory connectionFactory) throws BusinessException {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setMessageListener(streamMsgListener);
+        container.setConcurrentConsumers(10);
+        container.setMaxConcurrentConsumers(10);
+        container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        containerMap.put(MqConstant.STREAM_PREFIX, container);
+        // 将全部网关加载
+        RabbitMqProperties.QueueData queueData = rabbitMqProperties.getQueueData(signInQueueId);
+        List<DispatchInfo> dispatchInfoList = dispatchMapper.selectAll();
+        for (DispatchInfo dispatchInfo : dispatchInfoList){
+            addQueue(MqConstant.STREAM_PREFIX, queueData.getExchangeId(), MqConstant.STREAM_PREFIX + MqConstant.SET_GET_PREFIX + dispatchInfo.getId());
         }
         return container;
     }

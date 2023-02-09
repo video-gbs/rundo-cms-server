@@ -128,7 +128,7 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                     addQueue(key1, queueData.getExchangeId());
                     Queue queue = addQueue(key2, queueData.getExchangeId());
                     // 添加监听队列
-                    SimpleMessageListenerContainer dispatch = MqListenerConfig.containerMap.get("DISPATCH");
+                    SimpleMessageListenerContainer dispatch = MqListenerConfig.containerMap.get(MqConstant.GATEWAY_PREFIX);
                     if (Objects.isNull(dispatch)) {
                         throw new BusinessException(BusinessErrorEnums.MQ_CONTAINER_NOT_FOUND);
                     }
@@ -148,15 +148,15 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                 validatorService.validateRequest(req);
                 SignInRsp signInRsp = dispatchService.signIn(mqRequest.getSerialNum(), SignType.MQ.getCode(), req.getIp(), req.getPort(), req.getOutTime());
                 signInRsp.setSignType(SignType.MQ.getMsg());
-                String key1 = MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + signInRsp.getDispatchId();
-                String key2 = MqConstant.GATEWAY_PREFIX + MqConstant.SET_GET_PREFIX + signInRsp.getDispatchId();
+                String key1 = MqConstant.STREAM_PREFIX + MqConstant.GET_SET_PREFIX + signInRsp.getDispatchId();
+                String key2 = MqConstant.STREAM_PREFIX + MqConstant.SET_GET_PREFIX + signInRsp.getDispatchId();
                 // 判断是否是第一次注册
                 if (signInRsp.getIsFirstSignIn()) {
                     // 生成消息通讯队列
                     addQueue(key1, queueData.getExchangeId());
                     Queue queue = addQueue(key2, queueData.getExchangeId());
                     // 添加监听队列
-                    SimpleMessageListenerContainer dispatch = MqListenerConfig.containerMap.get("DISPATCH");
+                    SimpleMessageListenerContainer dispatch = MqListenerConfig.containerMap.get(MqConstant.STREAM_PREFIX);
                     if (Objects.isNull(dispatch)) {
                         throw new BusinessException(BusinessErrorEnums.MQ_CONTAINER_NOT_FOUND);
                     }

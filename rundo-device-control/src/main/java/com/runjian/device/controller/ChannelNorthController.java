@@ -17,6 +17,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 通道北向控制器
@@ -57,12 +59,12 @@ public class ChannelNorthController {
 
     /**
      * 通道删除
-     * @param channelId 通道id
+     * @param channelIds 通道id
      * @return
      */
     @DeleteMapping("/delete")
-    public CommonResponse<?> channelDelete(@RequestParam Long channelId){
-        channelNorthService.channelDeleteByChannelId(channelId);
+    public CommonResponse<?> channelDelete(@RequestParam(value = "channelIds[]") List<Long> channelIds){
+        channelNorthService.channelDeleteByChannelId(channelIds);
         return CommonResponse.success();
     }
 

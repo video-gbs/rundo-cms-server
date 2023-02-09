@@ -40,7 +40,7 @@ DROP TABLE IF EXISTS `rundo_detail`;
 CREATE TABLE `rundo_detail`  (
   `id` bigint(0) NOT NULL,
   `dc_id` bigint(0) NOT NULL,
-  `origin_id` varchar(0) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `origin_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `type` tinyint(1) NOT NULL,
   `ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `port` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE `rundo_device`  (
 DROP TABLE IF EXISTS `rundo_gateway`;
 CREATE TABLE `rundo_gateway`  (
   `id` bigint(0) NOT NULL,
-  `serial_num` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `serial_num` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `sign_type` tinyint(0) NOT NULL,
   `gateway_type` tinyint(0) NOT NULL,

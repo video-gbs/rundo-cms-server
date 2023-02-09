@@ -52,7 +52,7 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
     public void dispatchBindingGateway(Long dispatchId, Set<Long> gatewayIds) {
         dataBaseService.getDispatchInfo(dispatchId);
         // 删除已去掉的数据
-        gatewayDispatchMapper.deleteByDispatchIdAndNotInGatewayIds(gatewayIds);
+        gatewayDispatchMapper.deleteByDispatchIdAndNotInGatewayIds(dispatchId, gatewayIds);
         List<GatewayDispatchInfo> gatewayDispatchInfoList = gatewayDispatchMapper.selectByGatewayIds(gatewayIds);
         LocalDateTime nowTime = LocalDateTime.now();
         // 判断数据是否已经存在

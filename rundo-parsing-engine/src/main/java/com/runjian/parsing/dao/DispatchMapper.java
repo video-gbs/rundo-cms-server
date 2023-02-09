@@ -4,6 +4,7 @@ import com.runjian.parsing.entity.DispatchInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,7 +14,10 @@ import java.util.Optional;
 @Mapper
 @Repository
 public interface DispatchMapper {
+
     Optional<DispatchInfo> selectBySerialNum(String serialNum);
 
     void save(DispatchInfo dispatchInfo);
+
+    List<DispatchInfo> selectAll();
 }

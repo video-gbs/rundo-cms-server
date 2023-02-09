@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
  * @author Miracle
  * @date 2023/2/6 15:27
  */
-@FeignClient
+@FeignClient(value = "parsing-engine")
 public interface ParsingEngineApi {
 
     /**
