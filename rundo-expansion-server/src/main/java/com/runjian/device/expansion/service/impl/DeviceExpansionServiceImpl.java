@@ -153,14 +153,15 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         List<DeviceExpansionResp> deviceExpansionRespList = new ArrayList<>();
         if(!CollectionUtils.isEmpty(records)){
             //拼接所属区域
-            DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
             if(deviceExpansionListReq.getIncludeEquipment()){
 
                 for (DeviceExpansion deviceExpansion: records){
+                    DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
                     BeanUtil.copyProperties(deviceExpansion,deviceExpansionResp);
                     for (VideoAreaResp videoAreaResp: videoAreaRespList){
                         if(videoAreaResp.getId().equals(deviceExpansion.getVideoAreaId())){
                             deviceExpansionResp.setAreaNames(videoAreaResp.getAreaNames());
+
                         }
                     }
                     deviceExpansionRespList.add(deviceExpansionResp);
@@ -168,6 +169,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
             }else {
                 for (DeviceExpansion deviceExpansion: records){
+                    DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
                     BeanUtil.copyProperties(deviceExpansion,deviceExpansionResp);
                     deviceExpansionResp.setAreaNames(videoAreaData.getAreaNames());
                     deviceExpansionRespList.add(deviceExpansionResp);
