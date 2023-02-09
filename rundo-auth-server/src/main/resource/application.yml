@@ -108,7 +108,8 @@ logging:
     org.springframework.security.web.FilterChainProxy: trace
     # 异常处理
     org.springframework.security.web.access.ExceptionTranslationFilter: trace
-
+response:
+  exclude-url: "/rundoAuthServer/swagger-ui,/rundoAuthServer/swagger-resources,/rundoAuthServer/profile,/rundoAuthServer/v2,/rundoAuthServer/v3,/rundoAuthServer/doc.html,/rundoAuthServer/webjars,/rundoAuthServer/druid,/rundoAuthServer/api/v1"
 springfox:
   documentation:
     auto-startup: true
