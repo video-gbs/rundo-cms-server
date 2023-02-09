@@ -63,7 +63,7 @@ public class ChannelNorthController {
      * @return
      */
     @DeleteMapping("/delete")
-    public CommonResponse<?> channelDelete(@RequestParam(value = "channelIds[]") List<Long> channelIds){
+    public CommonResponse<?> channelDelete(@RequestParam(value = "channelIds") List<Long> channelIds){
         channelNorthService.channelDeleteByChannelId(channelIds);
         return CommonResponse.success();
     }

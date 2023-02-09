@@ -21,6 +21,7 @@ import java.util.Objects;
  * @date 2023/1/12 10:00
  */
 @RestController
+@RequestMapping("/device-control")
 public class DeviceController {
 
     private static final long OUT_TIME = 10000L;

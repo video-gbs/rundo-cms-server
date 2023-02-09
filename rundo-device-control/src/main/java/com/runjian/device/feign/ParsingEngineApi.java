@@ -24,7 +24,7 @@ public interface ParsingEngineApi {
      * @param deviceId 设备id
      * @return 设备同步消息体
      */
-    @GetMapping("/device/sync")
+    @GetMapping("/device-control/device/sync")
     CommonResponse<DeviceSyncRsp> deviceSync(@RequestParam Long deviceId);
 
     /**
@@ -32,7 +32,7 @@ public interface ParsingEngineApi {
      * @param req 设备请求体
      * @return 设备id
      */
-    @PostMapping("/device/add")
+    @PostMapping("/device-control/device/add")
     CommonResponse<Long> deviceAdd(@RequestBody DeviceControlReq req);
 
     /**
@@ -40,7 +40,7 @@ public interface ParsingEngineApi {
      * @param deviceId 设备id
      * @return 删除结果
      */
-    @DeleteMapping("/device/delete")
+    @DeleteMapping("/device-control/device/delete")
     CommonResponse<Boolean> deviceDelete(@RequestParam Long deviceId);
 
     /**
@@ -48,7 +48,7 @@ public interface ParsingEngineApi {
      * @param deviceId 通道id
      * @return 通道同步结果返回体
      */
-    @GetMapping("/channel/sync")
+    @GetMapping("/device-control/channel/sync")
     CommonResponse<ChannelSyncRsp> channelSync(@RequestParam Long deviceId);
 
     /**
@@ -56,7 +56,7 @@ public interface ParsingEngineApi {
      * @param req 云台控制请求体
      * @return 是否成功
      */
-    @PutMapping("/channel/ptz/control")
+    @PutMapping("/device-control/channel/ptz/control")
     CommonResponse<Boolean> channelPtzControl(@RequestBody DeviceControlReq req);
 
     /**
@@ -64,7 +64,7 @@ public interface ParsingEngineApi {
      * @param req 设备请求体
      * @return
      */
-    @PostMapping("/channel/video/play")
+    @PostMapping("/device-control/channel/video/play")
     CommonResponse<VideoPlayRsp> channelPlay(@RequestBody DeviceControlReq req);
 
     /**
@@ -72,7 +72,7 @@ public interface ParsingEngineApi {
      * @param req 设备请求体
      * @return
      */
-    @PostMapping("/channel/video/record")
+    @PostMapping("/device-control/channel/video/record")
     CommonResponse<VideoRecordRsp> channelRecord(@RequestBody DeviceControlReq req);
 
     /**
@@ -80,6 +80,6 @@ public interface ParsingEngineApi {
      * @param req 设备请求体
      * @return
      */
-    @PostMapping("/channel/video/playback")
+    @PostMapping("/device-control/channel/video/playback")
     CommonResponse<VideoPlayRsp> channelPlayback(@RequestBody DeviceControlReq req);
 }

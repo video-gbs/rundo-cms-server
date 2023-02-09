@@ -7,6 +7,7 @@ import com.runjian.parsing.service.StreamManageService;
 import com.runjian.parsing.vo.feign.PutStreamReceiveResultReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.async.DeferredResult;
 
 /**
  * @author Miracle
@@ -19,7 +20,7 @@ public class StreamManageServiceImpl implements StreamManageService {
     private StreamManageApi streamManageApi;
 
     @Override
-    public void streamPlayResult(String streamId, Object data) {
+    public void streamSouthPlayResult(String streamId, Object data) {
         PutStreamReceiveResultReq req = new PutStreamReceiveResultReq();
         req.setStreamId(streamId);
         req.setIsSuccess((Boolean) data);
@@ -28,8 +29,38 @@ public class StreamManageServiceImpl implements StreamManageService {
     }
 
     @Override
-    public void streamClose(String streamId) {
+    public void streamSouthClose(String streamId) {
         CommonResponse<?> commonResponse = streamManageApi.streamCloseHandle(streamId);
         commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+    }
+
+    @Override
+    public void streamNorthStopPlay(String streamId, DeferredResult<CommonResponse<?>> response) {
+        // todo
+    }
+
+    @Override
+    public void streamSouthStopPlay(Long taskId, Object data) {
+// todo
+    }
+
+    @Override
+    public void streamNorthStartRecord(String streamId, DeferredResult<CommonResponse<?>> response) {
+// todo
+    }
+
+    @Override
+    public void streamSouthStartRecord(Long taskId, Object data) {
+// todo
+    }
+
+    @Override
+    public void streamNorthStopRecord(String streamId, DeferredResult<CommonResponse<?>> response) {
+// todo
+    }
+
+    @Override
+    public void streamSouthStopRecord(Long taskId, Object data) {
+// todo
     }
 }

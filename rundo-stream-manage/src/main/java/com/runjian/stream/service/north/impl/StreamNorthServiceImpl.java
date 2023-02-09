@@ -107,6 +107,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (commonResponse.getCode() != 0){
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
         }
+
     }
 
     @Override

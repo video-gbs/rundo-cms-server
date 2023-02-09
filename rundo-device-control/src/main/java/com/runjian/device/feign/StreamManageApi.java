@@ -22,12 +22,10 @@ public interface StreamManageApi {
 
     /**
      * 申请播放
-     * @param channelId 通道id
-     * @param gatewayId 网关id
-     * @param isPlayback 是否是回播
+     * @param req 流播放申请请求体
      * @return
      */
-    @PostMapping("/stream/play")
+    @PostMapping("/stream/north/play/apply")
     CommonResponse<Map<String, Object>> applyPlay(@RequestBody StreamPlayReq req);
 
 }

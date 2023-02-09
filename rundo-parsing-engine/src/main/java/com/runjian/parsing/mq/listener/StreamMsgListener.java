@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -71,11 +72,20 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
             }
             StreamConvertDto streamConvertDto = JSONObject.parseObject(new String(message.getBody()), StreamConvertDto.class);
 
-            if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_RESULT.getMsg())){
-                streamManageService.streamPlayResult(streamConvertDto.getStreamId(), streamConvertDto.getDataMap());
-            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CLOSE.getMsg())) {
+            // todo 增加错误信息返回
 
-                streamManageService.streamClose(streamConvertDto.getStreamId());
+            if (mqRequest.getTime().plusSeconds(10).isBefore(LocalDateTime.now())){
+                // 超时的消息不再处理
+            }else if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_RESULT.getMsg())){
+                streamManageService.streamSouthPlayResult(streamConvertDto.getStreamId(), streamConvertDto.getDataMap());
+            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CLOSE.getMsg())) {
+                streamManageService.streamSouthClose(streamConvertDto.getStreamId());
+            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_STOP_PLAY.getMsg())) {
+                streamManageService.streamSouthStopPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_START_RECORD.getMsg())) {
+                streamManageService.streamSouthStartRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_STOP_RECORD.getMsg())) {
+                streamManageService.streamSouthStopRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
             }
 
         } catch (Exception ex) {

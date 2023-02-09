@@ -45,6 +45,9 @@ public enum MsgType {
     /****************** 流媒体管理服务相关消息 ******************/
     STREAM_PLAY_RESULT("STREAM_PLAY_RESULT"),
     STREAM_CLOSE("STREAM_CLOSE"),
+    STREAM_STOP_PLAY("STREAM_STOP_PLAY"),
+    STREAM_START_RECORD("STREAM_START_RECORD"),
+    STREAM_STOP_RECORD("STREAM_STOP_RECORD"),
 
     /****************** 其他 ******************/
     ERROR("ERROR"),
