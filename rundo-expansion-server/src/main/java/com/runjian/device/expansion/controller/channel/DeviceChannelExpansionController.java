@@ -4,6 +4,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.vo.request.*;
+import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
@@ -50,12 +51,12 @@ public class DeviceChannelExpansionController {
 
     @DeleteMapping(value = "/delete",produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("删除")
-    public CommonResponse<Long> delete(@RequestParam Long id) {
+    public CommonResponse<Boolean> delete(@RequestParam Long id) {
 
         return deviceChannelExpansionService.remove(id);
     }
 
-    @DeleteMapping(value = "/batchDelete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/batchDelete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("批量删除")
     public CommonResponse<Boolean> batchDelete(@RequestBody List<Long> idList) {
        return deviceChannelExpansionService.removeBatch(idList);
@@ -68,11 +69,11 @@ public class DeviceChannelExpansionController {
         return CommonResponse.success(deviceChannelExpansionService.list(request));
     }
 
-    @PostMapping(value = "/findList", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/findList",  produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("发现通道列表")
-    public CommonResponse<PageResp<DeviceChannelExpansionResp>> findList() {
+    public CommonResponse<PageResp<ChannelExpansionFindlistRsp>> findList(@RequestParam(defaultValue = "1")int page, @RequestParam(defaultValue = "10") int num, String nameOrOriginId) {
 
-        return CommonResponse.success(deviceChannelExpansionService.findList());
+        return CommonResponse.success(deviceChannelExpansionService.findList(page,num, nameOrOriginId));
     }
 
     @PostMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

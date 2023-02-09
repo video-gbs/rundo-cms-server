@@ -1,12 +1,27 @@
 package com.runjian.device.expansion.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
+import com.runjian.device.expansion.entity.DeviceExpansion;
+import com.runjian.device.expansion.feign.AuthServerApi;
+import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
+import com.runjian.device.expansion.service.IDeviceExpansionService;
+import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
+import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import com.runjian.device.expansion.vo.request.*;
+import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
+import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +29,12 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author chenjialing
@@ -33,12 +51,21 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     @Autowired
     DeviceChannelExpansionMapper deviceChannelExpansionMapper;
 
+    @Autowired
+    IDeviceExpansionService deviceExpansionService;
+
+    @Autowired
+    DeviceControlApi channelControlApi;
+
+    @Autowired
+    AuthServerApi authServerApi;
+
     @Override
     public CommonResponse<Boolean> add(FindChannelListReq findChannelListReq) {
         //进行添加
         DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
         List<DeviceChannelExpansion> channelList = new ArrayList<>();
-        ArrayList<Long> Ids = new ArrayList<>();
+        ArrayList<Long> ids = new ArrayList<>();
         for (DeviceChannelExpansionAddReq deviceChannelExpansionAddReq : findChannelListReq.getChannelList()){
             deviceChannelExpansion.setId(deviceChannelExpansionAddReq.getId());
             deviceChannelExpansion.setDeviceExpansionId(deviceChannelExpansionAddReq.getDeviceExpansionId());
@@ -47,43 +74,177 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             deviceChannelExpansion.setOnlineState(deviceChannelExpansionAddReq.getOnlineState());
             deviceChannelExpansion.setVideoAreaId(findChannelListReq.getVideoAreaId());
             channelList.add(deviceChannelExpansion);
-            Ids.add(deviceChannelExpansionAddReq.getId());
+            ids.add(deviceChannelExpansionAddReq.getId());
         }
         TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
         this.saveBatch(channelList);
         //通知控制服务修改添加状态
-
-
-        return null;
+        CommonResponse<Boolean> longCommonResponse = channelControlApi.channelSignSuccess(ids);
+        if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            dataSourceTransactionManager.rollback(transactionStatus);
+            //调用失败
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",findChannelListReq, longCommonResponse);
+            return longCommonResponse;
+        }
+        dataSourceTransactionManager.commit(transactionStatus);
+        return CommonResponse.success();
     }
 
     @Override
     public CommonResponse<Boolean> edit(DeviceChannelExpansionReq deviceChannelExpansionReq) {
-        return null;
+        DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
+        BeanUtil.copyProperties(deviceChannelExpansionReq,deviceChannelExpansion);
+        deviceChannelExpansionMapper.updateById(deviceChannelExpansion);
+        return CommonResponse.success();
     }
 
     @Override
-    public CommonResponse remove(Long id) {
+    public CommonResponse<Boolean> remove(Long id) {
+        deviceChannelExpansionMapper.deleteById(id);
+        //通知控制服务修改添加状态 删除接口待定义
+
         return null;
     }
 
     @Override
     public CommonResponse<Boolean> removeBatch(List<Long> idList) {
+        deviceChannelExpansionMapper.deleteBatchIds(idList);
+        //通知控制服务修改添加状态 删除接口待定义
         return null;
     }
 
     @Override
     public PageResp<DeviceChannelExpansionResp> list(DeviceChannelExpansionListReq deviceChannelExpansionListReq) {
-        return null;
+        //安防区域的节点id
+        List<Long> areaIdsArr = new ArrayList<>();
+        VideoAreaResp videoAreaData = new VideoAreaResp();
+        List<VideoAreaResp> videoAreaRespList = new ArrayList<>();
+        if(deviceChannelExpansionListReq.getIncludeEquipment()){
+            //安防区域不得为空
+
+            CommonResponse<List<VideoAreaResp>> videoAraeList = authServerApi.getVideoAraeList(deviceChannelExpansionListReq.getVideoAreaId());
+            if(CollectionUtils.isEmpty(videoAraeList.getData())){
+                throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH);
+
+            }
+            videoAreaRespList = videoAraeList.getData();
+            areaIdsArr = videoAreaRespList.stream().map(VideoAreaResp::getId).collect(Collectors.toList());
+        }else {
+            if(ObjectUtils.isEmpty(deviceChannelExpansionListReq.getVideoAreaId())){
+                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
+            }
+            CommonResponse<VideoAreaResp> videoAraeInfo = authServerApi.getVideoAraeInfo(deviceChannelExpansionListReq.getVideoAreaId());
+            if(ObjectUtils.isEmpty(videoAraeInfo.getData())){
+                throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH);
+
+            }
+            videoAreaData = videoAraeInfo.getData();
+            areaIdsArr.add(videoAreaData.getId());
+        }
+
+        LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
+        if(!ObjectUtils.isEmpty(deviceChannelExpansionListReq.getName())){
+            queryWrapper.like(DeviceChannelExpansion::getChannelName,deviceChannelExpansionListReq.getName());
+        }
+        if(!ObjectUtils.isEmpty(deviceChannelExpansionListReq.getPtzType())){
+            queryWrapper.eq(DeviceChannelExpansion::getPtzType,deviceChannelExpansionListReq.getPtzType());
+        }
+        if(!ObjectUtils.isEmpty(deviceChannelExpansionListReq.getIp())){
+            queryWrapper.like(DeviceChannelExpansion::getIp,deviceChannelExpansionListReq.getIp());
+        }
+        if(!ObjectUtils.isEmpty(deviceChannelExpansionListReq.getOnlineState())){
+            queryWrapper.eq(DeviceChannelExpansion::getOnlineState,deviceChannelExpansionListReq.getOnlineState());
+        }
+        queryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
+        queryWrapper.in(DeviceChannelExpansion::getVideoAreaId,areaIdsArr);
+        queryWrapper.orderByDesc(DeviceChannelExpansion::getCreatedAt);
+        Page<DeviceChannelExpansion> page = new Page<>(deviceChannelExpansionListReq.getPageNum(), deviceChannelExpansionListReq.getPageSize());
+        Page<DeviceChannelExpansion> channelExpansionPage = deviceChannelExpansionMapper.selectPage(page, queryWrapper);
+
+        List<DeviceChannelExpansion> records = channelExpansionPage.getRecords();
+        List<DeviceChannelExpansionResp> channelRespList = new ArrayList<>();
+        if(!CollectionUtils.isEmpty(records)){
+            //拼接所属区域
+            if(deviceChannelExpansionListReq.getIncludeEquipment()){
+
+                for (DeviceChannelExpansion channelExpansion: records){
+                    DeviceChannelExpansionResp channelExpansionResp = new DeviceChannelExpansionResp();
+                    BeanUtil.copyProperties(channelExpansion,channelExpansionResp);
+                    for (VideoAreaResp videoAreaResp: videoAreaRespList){
+                        if(videoAreaResp.getId().equals(channelExpansion.getVideoAreaId())){
+                            channelExpansionResp.setAreaNames(videoAreaResp.getAreaNames());
+
+                        }
+                    }
+                    channelRespList.add(channelExpansionResp);
+                }
+
+            }else {
+                for (DeviceChannelExpansion channelExpansion: records){
+                    DeviceChannelExpansionResp channelExpansionResp = new DeviceChannelExpansionResp();
+                    BeanUtil.copyProperties(channelExpansion,channelExpansionResp);
+                    channelExpansionResp.setAreaNames(videoAreaData.getAreaNames());
+                    channelRespList.add(channelExpansionResp);
+                }
+            }
+
+        }
+        PageResp<DeviceChannelExpansionResp> listPageResp = new PageResp<>();
+        listPageResp.setCurrent(channelExpansionPage.getCurrent());
+        listPageResp.setSize(channelExpansionPage.getSize());
+        listPageResp.setTotal(channelExpansionPage.getTotal());
+        listPageResp.setRecords(channelRespList);
+        return listPageResp;
     }
 
     @Override
-    public PageResp<DeviceChannelExpansionResp> findList() {
-        return null;
+    public PageResp<ChannelExpansionFindlistRsp> findList(int page, int num, String originName) {
+        //获取控制服务的添加通道列表
+        CommonResponse<IPage<GetChannelByPageRsp>> channelByPage = channelControlApi.getChannelByPage(page, num, originName);
+        //封装返回目前数据库中的编码器名称
+        if(channelByPage.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--待添加的通道列表获取失败",originName, channelByPage);
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+        }
+        PageResp<ChannelExpansionFindlistRsp> listPageResp = new PageResp<>();
+        IPage<GetChannelByPageRsp> originPage = channelByPage.getData();
+        List<GetChannelByPageRsp> records = originPage.getRecords();
+        List<ChannelExpansionFindlistRsp> channelExpansionFindlistRsps = new ArrayList<>();
+
+        if(!CollectionUtils.isEmpty(records)){
+            List<Long> deviceExpansionIds = records.stream().map(GetChannelByPageRsp::getDeviceId).collect(Collectors.toList());
+            List<DeviceExpansion> deviceExpansionList = deviceExpansionService.listByIds(deviceExpansionIds);
+
+            for(GetChannelByPageRsp getChannelByPageRsp : records){
+                for(DeviceExpansion deviceExpansion : deviceExpansionList){
+                    if(getChannelByPageRsp.getDeviceId().equals(deviceExpansion.getId())){
+                        ChannelExpansionFindlistRsp channelExpansionFindlistRsp = new ChannelExpansionFindlistRsp();
+
+                        BeanUtil.copyProperties(getChannelByPageRsp,channelExpansionFindlistRsp);
+                        channelExpansionFindlistRsp.setDeviceExpansionName(deviceExpansion.getName());
+                        channelExpansionFindlistRsps.add(channelExpansionFindlistRsp);
+                    }
+
+                }
+                
+            }
+        }
+        listPageResp.setCurrent(originPage.getCurrent());
+        listPageResp.setSize(originPage.getSize());
+        listPageResp.setTotal(originPage.getTotal());
+        listPageResp.setRecords(channelExpansionFindlistRsps);
+        return listPageResp;
     }
 
     @Override
     public Boolean move(MoveReq moveReq) {
-        return null;
+        DeviceChannelExpansion deviceExpansion = new DeviceChannelExpansion();
+        moveReq.getIdList().forEach(id->{
+            deviceExpansion.setVideoAreaId(moveReq.getVideoAreaId());
+            deviceExpansion.setId(id);
+            deviceChannelExpansionMapper.updateById(deviceExpansion);
+        });
+
+        return true;
     }
 }

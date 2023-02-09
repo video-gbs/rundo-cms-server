@@ -5,6 +5,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.vo.request.*;
+import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
@@ -35,7 +36,7 @@ public interface IDeviceChannelExpansionService extends IService<DeviceChannelEx
      * @param id
      * @return
      */
-    CommonResponse remove(Long id);
+    CommonResponse<Boolean> remove(Long id);
 
     /**
      * 设备通道删除
@@ -55,7 +56,7 @@ public interface IDeviceChannelExpansionService extends IService<DeviceChannelEx
      * @param
      * @return
      */
-    PageResp<DeviceChannelExpansionResp> findList();
+    PageResp<ChannelExpansionFindlistRsp> findList(int page, int num, String originName);
 
     /**
      * 移动

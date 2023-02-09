@@ -35,6 +35,11 @@ public class DeviceChannelExpansion {
     private Integer onlineState;
 
 
+    @ApiModelProperty("ip")
+    private String ip;
+
+    @ApiModelProperty("端口")
+    private int port;
 
     @ApiModelProperty("通道编码")
     private String channelCode;
