@@ -43,7 +43,7 @@ public class GatewayDispatchNorthController {
      * @param req 流媒体服务绑定网关请求体
      * @return
      */
-    @PostMapping("/gateway/binding")
+    @PostMapping("/dispatch/binding")
     public CommonResponse<?> dispatchBindingGateway(@RequestBody PostDispatchBindingGatewayReq req){
         validatorService.validateRequest(req);
         gatewayDispatchNorthService.dispatchBindingGateway(req.getDispatchId(), req.getGatewayIds());

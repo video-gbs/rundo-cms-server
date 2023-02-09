@@ -31,8 +31,7 @@ public interface DispatchMapper {
 
     @Update(" UPDATE " + DISPATCH_TABLE_NAME +
             " SET update_time = #{updateTime}  " +
-            " , online_state = #{onlineState} " +
-            " WHERE id = #{id} ")
+            " , online_state = #{onlineState} ")
     void setAllOnlineState(Integer onlineState, LocalDateTime updateTime);
 
     @Update(" <script> " +

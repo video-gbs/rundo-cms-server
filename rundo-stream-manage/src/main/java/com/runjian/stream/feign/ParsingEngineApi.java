@@ -2,6 +2,7 @@ package com.runjian.stream.feign;
 
 import com.runjian.common.config.response.CommonResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * @author Miracle
@@ -15,6 +16,7 @@ public interface ParsingEngineApi {
      * @param streamId 流id
      * @return
      */
+    @GetMapping("/channel/stream/stop")
     CommonResponse<?> channelStopPlay(String streamId);
 
     /**
@@ -22,6 +24,7 @@ public interface ParsingEngineApi {
      * @param streamId 流id
      * @return
      */
+    @GetMapping("/channel/stream/record/start")
     CommonResponse<Boolean> channelStartRecord(String streamId);
 
     /**
@@ -29,5 +32,6 @@ public interface ParsingEngineApi {
      * @param streamId 流id
      * @return
      */
+    @GetMapping("/channel/stream/record/stop")
     CommonResponse<Boolean> channelStopRecord(String streamId);
 }
