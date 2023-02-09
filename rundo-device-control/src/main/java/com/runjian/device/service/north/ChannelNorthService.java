@@ -34,6 +34,12 @@ public interface ChannelNorthService {
     void channelSignSuccess(List<Long> channelId);
 
     /**
+     * 通道删除
+     * @param channelId 通道id
+     */
+    void channelDeleteByChannelId(Long channelId);
+
+    /**
      * 删除设备Id
      * @param deviceId 设备id
      */
@@ -73,4 +79,6 @@ public interface ChannelNorthService {
      * @param zoomSpeed 缩放速度
      */
     void channelPtzControl(Long chId, Integer commandCode, Integer horizonSpeed, Integer verticalSpeed, Integer zoomSpeed, Integer totalSpeed);
+
+
 }

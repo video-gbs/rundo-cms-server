@@ -56,11 +56,22 @@ public class ChannelNorthController {
     }
 
     /**
+     * 通道删除
+     * @param channelId 通道id
+     * @return
+     */
+    @DeleteMapping("/delete")
+    public CommonResponse<?> channelDelete(@RequestParam Long channelId){
+        channelNorthService.channelDeleteByChannelId(channelId);
+        return CommonResponse.success();
+    }
+
+    /**
      * 通道注册状态转为成功
      * @param request 通道注册状态转为成功请求体
      */
     @PutMapping("/sign/success")
-    public CommonResponse channelSignSuccess(@RequestBody PutChannelSignSuccessReq request){
+    public CommonResponse<?> channelSignSuccess(@RequestBody PutChannelSignSuccessReq request){
         validatorService.validateRequest(request);
         channelNorthService.channelSignSuccess(request.getChannelIdList());
         return CommonResponse.success();

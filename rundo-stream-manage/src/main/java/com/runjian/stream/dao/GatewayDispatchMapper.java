@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -17,4 +18,16 @@ public interface GatewayDispatchMapper {
     void saveAll(List<GatewayDispatchInfo> gatewayDispatchInfoList);
 
     Optional<GatewayDispatchInfo> selectByGatewayId(Long gatewayId);
+
+    void save(GatewayDispatchInfo gatewayDispatchInfo);
+
+    void update(GatewayDispatchInfo gatewayDispatchInfo);
+
+    List<GatewayDispatchInfo> selectByGatewayIds(Set<Long> gatewayIds);
+
+    void updateAll(List<GatewayDispatchInfo> gatewayDispatchInfoList);
+
+    void deleteByGatewayId(Long gatewayId);
+
+    void deleteByDispatchIdAndNotInGatewayIds(Set<Long> gatewayIds);
 }

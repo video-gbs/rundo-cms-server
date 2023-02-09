@@ -210,6 +210,18 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     }
 
     /**
+     * 通道删除
+     * @param channelId 通道id
+     */
+    @Override
+    public void channelDeleteByChannelId(Long channelId) {
+        ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
+        channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
+        channelInfo.setUpdateTime(LocalDateTime.now());
+        channelMapper.updateSignState(channelInfo);
+    }
+
+    /**
      * 根据设备id删除通道
      * @param deviceId 设备id
      * @param isDeleteData 是否删除数据

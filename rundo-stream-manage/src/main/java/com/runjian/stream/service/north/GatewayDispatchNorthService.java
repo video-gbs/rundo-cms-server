@@ -10,5 +10,18 @@ import java.util.Set;
  */
 public interface GatewayDispatchNorthService {
 
-    void Binding(Long gatewayId, Set<Long> dispatchIds);
+    /**
+     * 网关绑定流媒体
+     * @param gatewayId 网关id
+     * @param dispatchId 调度服务id
+     */
+    void gatewayBindingDispatch(Long gatewayId, Long dispatchId);
+
+
+    /**
+     * 流媒体绑定网关
+     * @param dispatchId 调度服务id
+     * @param gatewayIds 网关id
+     */
+    void dispatchBindingGateway(Long dispatchId, Set<Long> gatewayIds);
 }
