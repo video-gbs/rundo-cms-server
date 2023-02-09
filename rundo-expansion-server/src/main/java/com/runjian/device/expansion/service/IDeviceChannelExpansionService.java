@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.entity.DeviceExpansion;
+import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
@@ -64,5 +65,12 @@ public interface IDeviceChannelExpansionService extends IService<DeviceChannelEx
      * @return
      */
     Boolean move(MoveReq moveReq);
+
+    /**
+     * 通道同步
+     * @param deviceId
+     * @return
+     */
+    CommonResponse<ChannelSyncRsp> channelSync(Long deviceId);
 
 }

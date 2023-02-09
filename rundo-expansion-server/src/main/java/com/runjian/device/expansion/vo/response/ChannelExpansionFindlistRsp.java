@@ -1,5 +1,6 @@
 package com.runjian.device.expansion.vo.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -40,8 +41,8 @@ public class ChannelExpansionFindlistRsp {
     /**
      * 原始id
      */
-    @ApiModelProperty("原始id")
-    private String originId;
+    @ApiModelProperty("通道编码")
+    private String channelCode;
 
     /**
      * 注册状态
@@ -107,5 +108,6 @@ public class ChannelExpansionFindlistRsp {
      * 创建时间
      */
     @ApiModelProperty("创建时间")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 }

@@ -3,6 +3,7 @@ package com.runjian.device.expansion.controller.channel;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
+import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
@@ -83,5 +84,11 @@ public class DeviceChannelExpansionController {
         return CommonResponse.success(deviceChannelExpansionService.move(moveReq));
     }
 
+    @DeleteMapping(value = "/channelSync",produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation("设备通道同步")
+    public CommonResponse<ChannelSyncRsp> channelSync(@RequestParam Long deviceId) {
+
+        return deviceChannelExpansionService.channelSync(deviceId);
+    }
 
 }

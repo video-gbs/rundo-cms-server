@@ -16,6 +16,7 @@ import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
+import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import com.runjian.device.expansion.vo.request.*;
@@ -246,5 +247,11 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         });
 
         return true;
+    }
+
+    @Override
+    public CommonResponse<ChannelSyncRsp> channelSync(Long deviceId) {
+
+        return channelControlApi.channelSync(deviceId);
     }
 }

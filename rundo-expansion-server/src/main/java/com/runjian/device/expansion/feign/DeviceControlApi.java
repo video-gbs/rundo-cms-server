@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.DeviceControlApiFallbackFactory;
 import com.runjian.device.expansion.vo.feign.request.DeviceReq;
+import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -52,8 +53,17 @@ public interface DeviceControlApi {
      * @param nameOrOriginId
      * @return
      */
-    @GetMapping(value = "/channel/north/page",produces = MediaType.APPLICATION_JSON_VALUE)
-    CommonResponse<IPage<GetChannelByPageRsp>> getChannelByPage(@RequestParam(defaultValue = "1")int page, @RequestParam(defaultValue = "10") int num, String nameOrOriginId);
+    @GetMapping(value = "/channel/north/page")
+    CommonResponse<IPage<GetChannelByPageRsp>> getChannelByPage(@RequestParam(defaultValue = "1")int page, @RequestParam(defaultValue = "10") int num, @RequestParam(required = false) String nameOrOriginId);
+
+
+    /**
+     * 控制服务 通道同步
+     * @param deviceId
+     * @return
+     */
+    @GetMapping(value = "/channel/north/sync")
+    CommonResponse<ChannelSyncRsp> channelSync(@RequestParam Long deviceId);
 
 
 }

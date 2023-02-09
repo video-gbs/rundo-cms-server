@@ -76,12 +76,9 @@ server:
   port: 8090
 
 feign:
-  hystrix:
-    enabled: true #服务降级
-    circuitbreaker:
-      enabled: true # 上面无效 使用下面 服务降级
-    sentinel:
-      enabled: true # 上面无效 使用下面 服务降级
+  circuitbreaker:
+    enabled: true # 上面无效 使用下面 服务降级
+
 
   client:
     config:
