@@ -3,6 +3,7 @@ package com.runjian.stream.service.south.impl;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.CommonEnum;
+import com.runjian.common.constant.MarkConstant;
 import com.runjian.common.utils.CircleArray;
 import com.runjian.stream.dao.DispatchMapper;
 import com.runjian.stream.entity.DispatchInfo;
@@ -65,6 +66,7 @@ public class DispatchSouthServiceImpl implements DispatchSouthService {
             dispatchInfo.setSerialNum(serialNum);
             dispatchInfo.setCreateTime(nowTime);
             dispatchInfo.setUrl("http://" + ip + ":" + port);
+            dispatchInfo.setName(ip + MarkConstant.MARK_SPLIT_RAIL + port + MarkConstant.MARK_SPLIT_SEMICOLON + dispatchId);
             dispatchMapper.save(dispatchInfo);
         }else {
             dispatchMapper.update(dispatchInfo);

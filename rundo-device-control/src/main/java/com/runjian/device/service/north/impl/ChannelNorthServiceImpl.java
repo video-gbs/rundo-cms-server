@@ -1,18 +1,18 @@
 package com.runjian.device.service.north.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.common.constant.CommonEnum;
-import com.runjian.common.constant.LogTemplate;
-import com.runjian.common.constant.MarkConstant;
+import com.runjian.common.constant.*;
 import com.runjian.common.utils.DateUtils;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
-import com.runjian.common.constant.StandardName;
 import com.runjian.device.constant.StreamType;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DetailMapper;
+import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.ChannelInfo;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
@@ -21,10 +21,8 @@ import com.runjian.device.feign.StreamManageApi;
 import com.runjian.device.service.common.DataBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
-import com.runjian.device.vo.response.VideoRecordRsp;
-import com.runjian.device.vo.response.ChannelDetailRsp;
-import com.runjian.device.vo.response.ChannelSyncRsp;
-import com.runjian.device.vo.response.VideoPlayRsp;
+import com.runjian.device.vo.feign.StreamPlayReq;
+import com.runjian.device.vo.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.redisson.api.RLock;
@@ -53,13 +51,13 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     private ChannelMapper channelMapper;
 
     @Autowired
+    private DeviceMapper deviceMapper;
+
+    @Autowired
     private ParsingEngineApi parsingEngineApi;
 
     @Autowired
     private StreamManageApi streamManageApi;
-
-    @Autowired
-    private StringRedisTemplate redisTemplate;
 
     @Autowired
     private DetailMapper detailMapper;
@@ -69,6 +67,16 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Override
+    public PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String name) {
+        List<Long> deviceIds = deviceMapper.selectIdBySignState(SignState.SUCCESS.getCode());
+        if (deviceIds.size() == 0){
+            return new PageInfo<>(Collections.EMPTY_LIST);
+        }
+        PageHelper.startPage(page, num);
+        return new PageInfo<>(channelMapper.selectByPage(deviceIds, name));
+    }
 
     /**
      * 通道同步
@@ -179,22 +187,33 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 通道注册状态转为成功
-     *
-     * @param channelId 通道Id
+     * @param channelIdList 通道Id
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void channelSignSuccess(Long channelId) {
-        ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
-        if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
-            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "该通道的注册状态已是成功状态");
+    public void channelSignSuccess(List<Long> channelIdList) {
+        List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIdList);
+        if (channelInfoList.size() > channelIdList.size()){
+            List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("缺失的数据%s", collect));
         }
-        channelInfo.setSignState(SignState.SUCCESS.getCode());
-        channelInfo.setUpdateTime(LocalDateTime.now());
-        channelMapper.updateSignState(channelInfo);
+
+        for (ChannelInfo channelInfo : channelInfoList){
+            if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
+                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "该通道的注册状态已是成功状态");
+            }
+            channelInfo.setSignState(SignState.SUCCESS.getCode());
+            channelInfo.setUpdateTime(LocalDateTime.now());
+        }
+        channelMapper.batchUpdateSignState(channelInfoList);
 
     }
 
+    /**
+     * 根据设备id删除通道
+     * @param deviceId 设备id
+     * @param isDeleteData 是否删除数据
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void channelDeleteByDeviceId(Long deviceId, Boolean isDeleteData) {
@@ -211,7 +230,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         } else {
             LocalDateTime nowTime = LocalDateTime.now();
             channelInfoList.forEach(channelInfo -> {
-                channelInfo.setSignState(SignState.DELETED.getCode());
+                channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
                 channelInfo.setUpdateTime(nowTime);
             });
             channelMapper.batchUpdateSignState(channelInfoList);
@@ -222,7 +241,6 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 设备点播
-     *
      * @param channelId   通道id
      * @param enableAudio 是否播放音频
      * @param ssrcCheck   是否使用ssrc
@@ -232,27 +250,46 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     public VideoPlayRsp channelPlay(Long channelId, Boolean enableAudio, Boolean ssrcCheck) {
         ChannelInfo channelInfo = getChannelInfoAndValid(channelId);
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
-//        DeviceControlReq streamReq = new DeviceControlReq();
-//        streamReq.setGatewayId(deviceInfo.getGatewayId());
-//        streamReq.setDeviceId(deviceInfo.getId());
-//        streamReq.setChannelId(channelInfo.getId());
-//        streamReq.putData("isPlayback", false);
-//        CommonResponse<?> response = streamManageApi.applyPlay(streamReq);
-//        if (response.getCode() != 0){
-//            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", response.getData(), response.getMsg());
-//            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
-//        }
+        Map<String, Object> responseMapData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.LIVE, CommonEnum.DISABLE.getCode(), CommonEnum.ENABLE.getCode());
+
         DeviceControlReq deviceReq = new DeviceControlReq();
         deviceReq.setChannelId(channelId);
         deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
         deviceReq.putData(StandardName.STREAM_MODE, channelInfo.getStreamMode());
+        deviceReq.putAllData(responseMapData);
+
         CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlay(deviceReq);
         if (videoPlayRspCommonResponse.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, videoPlayRspCommonResponse.getMsg());
         }
         return videoPlayRspCommonResponse.getData();
+    }
+
+    /**
+     * 获取流信息
+     * @param channelId
+     * @param gatewayId
+     * @param playType
+     * @param recordState
+     * @param autoCloseState
+     * @return
+     */
+    private Map<String, Object> getStreamData(Long channelId, Long gatewayId, PlayType playType, Integer recordState, Integer autoCloseState) {
+        StreamPlayReq streamReq = new StreamPlayReq();
+        streamReq.setChannelId(channelId);
+        streamReq.setGatewayId(gatewayId);
+        streamReq.setPlayType(playType.getCode());
+        streamReq.setRecordState(recordState);
+        streamReq.setAutoCloseState(autoCloseState);
+
+        CommonResponse<Map<String, Object>> response = streamManageApi.applyPlay(streamReq);
+        if (response.getCode() != 0){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", response.getData(), response.getMsg());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
+        }
+        return response.getData();
     }
 
     @Override
@@ -273,7 +310,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     /**
      * 视频回放
      *
-     * @param chId        通道id
+     * @param channelId        通道id
      * @param enableAudio 是否播放音频
      * @param ssrcCheck   是否使用ssrc
      * @param startTime   开始时间
@@ -281,26 +318,18 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
      * @return
      */
     @Override
-    public VideoPlayRsp channelPlayback(Long chId, Boolean enableAudio, Boolean ssrcCheck, LocalDateTime startTime, LocalDateTime endTime) {
-        ChannelInfo channelInfo = getChannelInfoAndValid(chId);
+    public VideoPlayRsp channelPlayback(Long channelId, Boolean enableAudio, Boolean ssrcCheck, LocalDateTime startTime, LocalDateTime endTime) {
+        ChannelInfo channelInfo = getChannelInfoAndValid(channelId);
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
-//        DeviceControlReq streamReq = new DeviceControlReq();
-//        streamReq.setGatewayId(deviceInfo.getGatewayId());
-//        streamReq.setDeviceId(deviceInfo.getId());
-//        streamReq.setChannelId(channelInfo.getId());
-//        streamReq.putData("isPlayback", true);
-//        CommonResponse<?> response = streamManageApi.applyPlay(streamReq);
-//        if (response.getCode() != 0){
-//            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频回放失败", response.getData(), response.getMsg());
-//            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
-//        }
+        Map<String, Object> streamData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.RECORD, CommonEnum.DISABLE.getCode(), CommonEnum.DISABLE.getCode());
         DeviceControlReq deviceReq = new DeviceControlReq();
-        deviceReq.setChannelId(chId);
+        deviceReq.setChannelId(channelId);
         deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
         deviceReq.putData(StandardName.STREAM_MODE, channelInfo.getStreamMode());
         deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
+        deviceReq.putAllData(streamData);
         CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlayback(deviceReq);
         if (videoPlayRspCommonResponse.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频回放失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());

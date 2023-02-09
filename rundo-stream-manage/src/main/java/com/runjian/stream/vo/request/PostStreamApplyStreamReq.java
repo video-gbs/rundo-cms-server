@@ -1,5 +1,6 @@
 package com.runjian.stream.vo.request;
 
+import com.runjian.common.constant.PlayType;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
@@ -28,7 +29,7 @@ public class PostStreamApplyStreamReq {
     private Long channelId;
 
     /**
-     * 播放模式 {@link com.runjian.stream.constant.PlayType}
+     * 播放模式 {@link PlayType}
      */
     @NotNull(message = "播放模式不能为空")
     @Range( min = 1, max = 4, message = "非法播放模式")

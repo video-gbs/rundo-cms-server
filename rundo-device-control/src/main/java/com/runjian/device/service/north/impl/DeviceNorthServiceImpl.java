@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -61,6 +62,9 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Override
     public PageInfo<GetDevicePageRsp> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
         PageHelper.startPage(page, num);
+        if (Objects.nonNull(signState) && signState.equals(SignState.SUCCESS.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "注册状态不能为已成功");
+        }
         return new PageInfo<>(deviceMapper.selectByPage( signState, deviceName, ip));
     }
 

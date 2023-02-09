@@ -2,7 +2,7 @@ package com.runjian.stream.service.north.impl;
 
 import com.runjian.stream.dao.GatewayDispatchMapper;
 import com.runjian.stream.entity.GatewayDispatchInfo;
-import com.runjian.stream.service.north.GatewayDispatchService;
+import com.runjian.stream.service.north.GatewayDispatchNorthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.Set;
  * @date 2023/2/3 15:13
  */
 @Service
-public class GatewayDispatchServiceImpl implements GatewayDispatchService {
+public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthService {
 
     @Autowired
     private GatewayDispatchMapper gatewayDispatchMapper;

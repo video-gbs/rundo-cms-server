@@ -43,4 +43,8 @@ public class DeviceControlReq {
         dataMap.put(key, value);
     }
 
+    public void putAllData(Map<String, Object> mapData){
+        dataMap.putAll(mapData);
+    }
+
 }

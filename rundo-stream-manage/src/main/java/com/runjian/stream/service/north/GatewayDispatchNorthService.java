@@ -8,7 +8,7 @@ import java.util.Set;
  * @author Miracle
  * @date 2023/2/3 10:34
  */
-public interface GatewayDispatchService {
+public interface GatewayDispatchNorthService {
 
     void Binding(Long gatewayId, Set<Long> dispatchIds);
 }

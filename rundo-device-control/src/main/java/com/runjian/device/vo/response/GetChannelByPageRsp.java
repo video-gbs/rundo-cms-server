@@ -4,12 +4,13 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/**
- * @author Miracle
- * @date 2023/2/6 16:19
- */
 @Data
-public class GetDevicePageRsp {
+public class GetChannelByPageRsp {
+
+    /**
+     * 通道id
+     */
+    private Long channelId;
 
     /**
      * 设备id
@@ -17,24 +18,14 @@ public class GetDevicePageRsp {
     private Long deviceId;
 
     /**
-     * 网关id
+     * 通道名称
      */
-    private Long gatewayId;
+    private String channelName;
 
     /**
      * 原始id
      */
     private String originId;
-
-    /**
-     * 设备名称
-     */
-    private String deviceName;
-
-    /**
-     * 网关名称
-     */
-    private String gatewayName;
 
     /**
      * 注册状态
@@ -90,5 +81,4 @@ public class GetDevicePageRsp {
      * 创建时间
      */
     private LocalDateTime createTime;
-
 }

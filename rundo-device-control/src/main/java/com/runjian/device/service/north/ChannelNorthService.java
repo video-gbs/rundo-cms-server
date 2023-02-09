@@ -1,16 +1,24 @@
 package com.runjian.device.service.north;
 
+import com.github.pagehelper.PageInfo;
+import com.runjian.device.vo.response.GetChannelByPageRsp;
 import com.runjian.device.vo.response.VideoRecordRsp;
 import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.VideoPlayRsp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Miracle
  * @date 2023/1/9 9:53
  */
 public interface ChannelNorthService {
+
+    /**
+     * 获取成功注册的设备的通道
+     */
+    PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String nameOrOriginId);
 
     /**
      * 通道同步
@@ -23,7 +31,7 @@ public interface ChannelNorthService {
      * 通道注册状态转为成功
      * @param channelId 通道Id
      */
-    void channelSignSuccess(Long channelId);
+    void channelSignSuccess(List<Long> channelId);
 
     /**
      * 删除设备Id
