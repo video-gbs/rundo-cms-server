@@ -8,6 +8,7 @@ import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.service.login.HomeSevice;
 import com.runjian.auth.server.service.login.MyRBACService;
 import com.runjian.auth.server.util.UserUtils;
+import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class HomeServiceImpl implements HomeSevice {
         Long userId = sysUserInfo.getId();
         // 通过登录的用户查取该用户已授权的角色信息
         List<String> roleCodeList = myRBACService.findRoleInfoByUserAccount(userId);
+        if (CollUtil.isEmpty(roleCodeList)) {
+            throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH, "未对用户进行角色授权");
+        }
         // 查取角色已经授权的应用
         List<SysAppInfo> roleAppInfoList = new ArrayList<>();
         for (String roleCode : roleCodeList) {

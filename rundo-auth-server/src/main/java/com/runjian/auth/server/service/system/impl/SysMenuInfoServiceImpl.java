@@ -14,6 +14,7 @@ import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
 import com.runjian.auth.server.service.login.MyRBACService;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
 import com.runjian.auth.server.util.UserUtils;
+import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -59,8 +60,8 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
         for (String roleCode : roleCodeList) {
             appInfoList.addAll(myRBACService.findAppIdByRoleCode(roleCode));
         }
-        if (CollUtil.isEmpty(appInfoList)){
-            throw new BusinessException("未对用户进行应用授权");
+        if (CollUtil.isEmpty(appInfoList)) {
+            throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH, "未对用户进行应用授权");
         }
         // 判断所访问的应用是否已经授权
         List<Long> appIdList = new ArrayList<>();
@@ -68,7 +69,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, SysMe
             appIdList.add(sysAppInfo.getId());
         }
         if (!appIdList.contains(dto.getAppId())) {
-            throw new BusinessException("所访问应用未授权");
+            throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH, "所访问应用未授权");
         }
         // 通过应用表获取角色的菜单表(未删除、未禁用、未隐藏的菜单)
         List<SysMenuInfo> roleMenuList = new ArrayList<>();

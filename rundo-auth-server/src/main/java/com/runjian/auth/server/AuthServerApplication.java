@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * @author Jiang4Yu
@@ -16,6 +17,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 // 开启服务注册功能配置功能
 @EnableDiscoveryClient
 @MapperScan(basePackages = "com.runjian.**.mapper")
+@ComponentScan(value = {"com.runjian.*"})
 public class AuthServerApplication {
     public static void main(String[] args) {
         SpringApplication.run(AuthServerApplication.class, args);
