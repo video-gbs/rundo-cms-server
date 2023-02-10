@@ -33,6 +33,7 @@ import java.util.List;
 @RequestMapping("/sysRoleInfo")
 public class SysRoleInfoController {
 
+
     @Autowired
     private SysRoleInfoService sysRoleInfoService;
 
@@ -96,18 +97,25 @@ public class SysRoleInfoController {
     @PostMapping("/getAppIdTree")
     @ApiOperation("新建角色时获取应用类相关ID列表")
     public CommonResponse<List<AppIdTree>> getAppIdTree(){
+        Integer appType = 1;
+        sysRoleInfoService.getAppIdTree(appType);
+
         return null;
     }
 
     @PostMapping("/getConfigIdTree")
     @ApiOperation("新建角色时获取配置类的相关ID的树")
     public CommonResponse<List<ConfigIdTree>> getConfigIdTree(){
+        Integer appType = 2;
+        sysRoleInfoService.getAppIdTree(appType);
         return null;
     }
 
     @PostMapping("/getDevopsIdTree")
     @ApiOperation("新建角色时获取运维类的相关ID的树")
     public CommonResponse<List<DevopsIdTree>> getDevopsIdTree(){
+        Integer appType = 3;
+        sysRoleInfoService.getAppIdTree(appType);
         return null;
     }
 }

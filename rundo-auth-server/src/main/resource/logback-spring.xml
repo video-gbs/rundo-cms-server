@@ -6,7 +6,7 @@
 
     <contextName>logback</contextName>
     <springProperty scop="context" name="app_name" source="spring.application.name" defaultValue="app"/>
-    <property name="log.path" value="./logs"/>
+    <property name="log.path" value="logs"/>
     <property name="app.name" value="${app_name}"/>
     <!-- 日志最大的历史 文件数量-1 -->
     <property name="maxHistory" value="30" />

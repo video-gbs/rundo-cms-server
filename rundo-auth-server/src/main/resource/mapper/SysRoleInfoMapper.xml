@@ -13,7 +13,7 @@
             sui.id = #{userId,jdbcType=BIGINT}
     </select>
 
-    <select id="findAppByRoleCode" resultType="com.runjian.auth.server.domain.entity.system.SysAppInfo">
+    <select id="selectAppByRoleCode" resultType="com.runjian.auth.server.domain.entity.system.SysAppInfo">
         SELECT sai.*
         FROM sys_app_info sai
                  LEFT JOIN sys_role_app sra ON sra.app_id = sai.id
@@ -23,7 +23,7 @@
           AND sai.status = 0
     </select>
 
-    <select id="findMenuByRoleCode" resultType="com.runjian.auth.server.domain.entity.system.SysMenuInfo">
+    <select id="selectMenuByRoleCode" resultType="com.runjian.auth.server.domain.entity.system.SysMenuInfo">
         SELECT
             smi.*
         FROM
@@ -34,7 +34,7 @@
             sri.role_code = #{roleCode}
     </select>
 
-    <select id="findApiUrlByRoleCode" resultType="java.lang.String">
+    <select id="selectApiUrlByRoleCode" resultType="java.lang.String">
         SELECT
             sai.url
         FROM
@@ -45,7 +45,7 @@
             sri.role_code = #{roleCode}
     </select>
 
-    <select id="findApiInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.system.SysApiInfo">
+    <select id="selectApiInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.system.SysApiInfo">
         SELECT
             sai.*
         FROM
@@ -56,7 +56,7 @@
             sri.role_code = #{roleCode}
     </select>
 
-    <select id="findOrgInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.system.SysOrg">
+    <select id="selectOrgInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.system.SysOrg">
         SELECT
             org.*
         FROM
@@ -67,7 +67,7 @@
             sri.role_code = #{roleCode}
     </select>
 
-    <select id="findVideoAreaByRoleCode" resultType="com.runjian.auth.server.domain.entity.video.VideoArea">
+    <select id="selectVideoAreaByRoleCode" resultType="com.runjian.auth.server.domain.entity.video.VideoArea">
         SELECT
             area.*
         FROM

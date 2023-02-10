@@ -38,7 +38,7 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      * @param roleCode
      * @return
      */
-    List<SysAppInfo> findAppByRoleCode(@Param("roleCode") String roleCode);
+    List<SysAppInfo> selectAppByRoleCode(@Param("roleCode") String roleCode);
 
     /**
      * 根据角色编码查询菜单权限
@@ -46,7 +46,7 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      * @param roleCode
      * @return
      */
-    List<SysMenuInfo> findMenuByRoleCode(@Param("roleCode") String roleCode);
+    List<SysMenuInfo> selectMenuByRoleCode(@Param("roleCode") String roleCode);
 
     /**
      * 通过角色编码，查取角色已有的API URL
@@ -54,7 +54,7 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      * @param roleCode
      * @return
      */
-    List<String> findApiUrlByRoleCode(@Param("roleCode") String roleCode);
+    List<String> selectApiUrlByRoleCode(@Param("roleCode") String roleCode);
 
     /**
      * 通过角色编码，查取角色已有的角色
@@ -62,7 +62,7 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      * @param roleCode
      * @return
      */
-    List<SysApiInfo> findApiInfoByRoleCode(@Param("roleCode") String roleCode);
+    List<SysApiInfo> selectApiInfoByRoleCode(@Param("roleCode") String roleCode);
 
     /**
      * 通过角色编码，查取角色已有部门信息
@@ -70,7 +70,7 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      * @param roleCode
      * @return
      */
-    List<SysOrg> findOrgInfoByRoleCode(@Param("roleCode") String roleCode);
+    List<SysOrg> selectOrgInfoByRoleCode(@Param("roleCode") String roleCode);
 
     /**
      * 通过角色编码，查取角色已有的安防区域信息
@@ -78,7 +78,7 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      * @param roleCode
      * @return
      */
-    List<VideoArea> findVideoAreaByRoleCode(@Param("roleCode") String roleCode);
+    List<VideoArea> selectVideoAreaByRoleCode(@Param("roleCode") String roleCode);
 
     Page<EditUserSysRoleInfoVO> selectEditUserSysRoleInfoPage(PageEditUserSysRoleInfoDTO page);
 

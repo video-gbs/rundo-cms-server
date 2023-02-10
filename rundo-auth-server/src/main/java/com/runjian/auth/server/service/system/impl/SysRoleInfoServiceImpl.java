@@ -12,9 +12,11 @@ import com.runjian.auth.server.domain.entity.video.VideoArea;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
+import com.runjian.auth.server.domain.vo.tree.AppIdTree;
 import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
 import com.runjian.auth.server.util.RundoIdUtil;
+import com.runjian.auth.server.util.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +38,10 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
     @Autowired
     private RundoIdUtil idUtil;
     @Autowired
-    private SysRoleInfoMapper roleInfoMapper;
+    private SysRoleInfoMapper sysRoleInfoMapper;
+
+    @Autowired
+    private UserUtils userUtils;
 
     @Override
     public void addRole(AddSysRoleInfoDTO dto) {
@@ -50,7 +55,7 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
         // role.setParentRoleId();
         // role.setParentRoleIds();
         // role.setTenantId();
-        roleInfoMapper.insert(role);
+        sysRoleInfoMapper.insert(role);
         List<String> appIds = dto.getAppIds();
         List<String> configIds = dto.getConfigIds();
         List<String> devopsIds = dto.getDevopsIds();
@@ -75,31 +80,31 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
         // TODO 下面的操作后期要优化为批量接口
         if (CollUtil.isNotEmpty(appIdList)) {
             for (Long appId : appIdList) {
-                roleInfoMapper.insertRoleApp(roleId, appId);
+                sysRoleInfoMapper.insertRoleApp(roleId, appId);
             }
         }
 
         if (CollUtil.isNotEmpty(menuIdList)) {
             for (Long menuId : menuIdList) {
-                roleInfoMapper.insertRoleMenu(roleId, menuId);
+                sysRoleInfoMapper.insertRoleMenu(roleId, menuId);
             }
         }
 
         if (CollUtil.isNotEmpty(apiIdList)) {
             for (Long apiId : apiIdList) {
-                roleInfoMapper.insertRoleApi(roleId, apiId);
+                sysRoleInfoMapper.insertRoleApi(roleId, apiId);
             }
         }
 
         if (CollUtil.isNotEmpty(orgIds)) {
             for (Long orgId : orgIds) {
-                roleInfoMapper.insertRoleOrg(roleId, orgId);
+                sysRoleInfoMapper.insertRoleOrg(roleId, orgId);
             }
         }
 
         if (CollUtil.isNotEmpty(areaIds)) {
             for (Long areaId : areaIds) {
-                roleInfoMapper.insertRoleArea(roleId, areaId);
+                sysRoleInfoMapper.insertRoleArea(roleId, areaId);
             }
         }
 
@@ -140,20 +145,20 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
             page.setSize(20);
         }
 
-        return roleInfoMapper.MySelectPage(page);
+        return sysRoleInfoMapper.MySelectPage(page);
     }
 
     @Override
     public void batchRemove(List<Long> ids) {
-        roleInfoMapper.deleteBatchIds(ids);
+        sysRoleInfoMapper.deleteBatchIds(ids);
 
     }
 
     @Override
     public void changeStatus(StatusSysRoleInfoDTO dto) {
-        SysRoleInfo sysRoleInfo = roleInfoMapper.selectById(dto.getId());
+        SysRoleInfo sysRoleInfo = sysRoleInfoMapper.selectById(dto.getId());
         sysRoleInfo.setStatus(dto.getStatus());
-        roleInfoMapper.updateById(sysRoleInfo);
+        sysRoleInfoMapper.updateById(sysRoleInfo);
     }
 
     @Override
@@ -170,23 +175,23 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
             page.setSize(20);
         }
 
-        return roleInfoMapper.selectEditUserSysRoleInfoPage(page);
+        return sysRoleInfoMapper.selectEditUserSysRoleInfoPage(page);
     }
 
     @Override
     public RoleDetailVO getRoleDetailById(Long id) {
-        SysRoleInfo sysRoleInfo = roleInfoMapper.selectById(id);
+        SysRoleInfo sysRoleInfo = sysRoleInfoMapper.selectById(id);
         // 查询该角色已授权的应用列表
-        List<SysAppInfo> appInfoList = roleInfoMapper.findAppByRoleCode(sysRoleInfo.getRoleCode());
+        List<SysAppInfo> appInfoList = sysRoleInfoMapper.selectAppByRoleCode(sysRoleInfo.getRoleCode());
         // 查询该角色已授权的菜单列表
-        List<SysMenuInfo> menuInfoList = roleInfoMapper.findMenuByRoleCode(sysRoleInfo.getRoleCode());
+        List<SysMenuInfo> menuInfoList = sysRoleInfoMapper.selectMenuByRoleCode(sysRoleInfo.getRoleCode());
         // 查询该角色已授权的接口列表
-        List<SysApiInfo> apiInfoList = roleInfoMapper.findApiInfoByRoleCode(sysRoleInfo.getRoleCode());
+        List<SysApiInfo> apiInfoList = sysRoleInfoMapper.selectApiInfoByRoleCode(sysRoleInfo.getRoleCode());
         // 查询该角色已授权的部门列表
-        List<SysOrg> orgList = roleInfoMapper.findOrgInfoByRoleCode(sysRoleInfo.getRoleCode());
+        List<SysOrg> orgList = sysRoleInfoMapper.selectOrgInfoByRoleCode(sysRoleInfo.getRoleCode());
         List<Long> orgIds = orgList.stream().map(SysOrg::getId).collect(Collectors.toList());
         // 查询该角色已授权的安防区域
-        List<VideoArea> areaList = roleInfoMapper.findVideoAreaByRoleCode(sysRoleInfo.getRoleCode());
+        List<VideoArea> areaList = sysRoleInfoMapper.selectVideoAreaByRoleCode(sysRoleInfo.getRoleCode());
         List<Long> areaIds = areaList.stream().map(VideoArea::getId).collect(Collectors.toList());
         // 查询该角色已授权的通道
 
@@ -209,6 +214,26 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, SysRo
     }
 
 
+    @Override
+    public AppIdTree getAppIdTree(Integer appType) {
+        // 1.当前操作用户已有角色
+        List<String> roleCode = sysRoleInfoMapper.selectRoleCodeByUserId(userUtils.getSysUserInfo().getId());
+        // 根据角色查取用户已被授权的应用数据
+        List<SysAppInfo> appInfoList = new ArrayList<>();
+        List<SysMenuInfo> menuInfoList = new ArrayList<>();
+        List<SysApiInfo> apiInfoList = new ArrayList<>();
+        for (String code : roleCode) {
+            appInfoList.addAll(sysRoleInfoMapper.selectAppByRoleCode(code));
+        }
+        if(CollUtil.isEmpty(appInfoList)){
+            // 如果查询到的集合为空，则说明该用户所拥有的角色没有配置应用的权限
+            return null;
+        }
+        AppIdTree appIdTree = new AppIdTree();
+
+
+        return appIdTree;
+    }
 
     /**
      * 分拣后获取应用ID

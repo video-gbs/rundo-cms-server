@@ -84,9 +84,11 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         List<VideoArea> videoAreaChildren = videoAraeMapper.selectList(queryWrapper);
         // 3.删除子代节点
         for (VideoArea area : videoAreaChildren) {
+            // 调用远端确认是否可以删除
             videoAraeMapper.deleteById(area.getId());
         }
         // 4.删除目标节点
+        // 调用远端确认是否可以删除
         videoAraeMapper.deleteById(id);
         return "删除安防区域，操作成功";
     }
@@ -129,6 +131,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public List<VideoAreaVO> getVideoAreaList(Long areaId) {
+        // TODO 根据用户ID渲染
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
         VideoArea videoArea = new VideoArea();
         if (areaId != null) {

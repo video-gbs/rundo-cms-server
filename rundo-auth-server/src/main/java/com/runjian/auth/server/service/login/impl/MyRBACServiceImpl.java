@@ -42,32 +42,32 @@ public class MyRBACServiceImpl implements MyRBACService {
 
     @Override
     public List<SysAppInfo> findAppIdByRoleCode(String roleCode) {
-        return roleInfoMapper.findAppByRoleCode(roleCode);
+        return roleInfoMapper.selectAppByRoleCode(roleCode);
     }
 
     @Override
     public List<SysMenuInfo> findMenuInfoByRoleCode(String roleCode) {
-        return roleInfoMapper.findMenuByRoleCode(roleCode);
+        return roleInfoMapper.selectMenuByRoleCode(roleCode);
     }
 
     @Override
     public List<String> findApiUrlByRoleCode(String roleCode) {
-        return roleInfoMapper.findApiUrlByRoleCode(roleCode);
+        return roleInfoMapper.selectApiUrlByRoleCode(roleCode);
     }
 
     @Override
     public List<SysApiInfo> findApiInfoByRoleCode(String roleCode) {
-        return roleInfoMapper.findApiInfoByRoleCode(roleCode);
+        return roleInfoMapper.selectApiInfoByRoleCode(roleCode);
     }
 
     @Override
     public List<SysOrg> findSysOrgByRoleCode(String roleCode) {
-        return roleInfoMapper.findOrgInfoByRoleCode(roleCode);
+        return roleInfoMapper.selectOrgInfoByRoleCode(roleCode);
     }
 
     @Override
     public List<VideoArea> findAreaByRoleCode(String roleCode) {
-        return roleInfoMapper.findVideoAreaByRoleCode(roleCode);
+        return roleInfoMapper.selectVideoAreaByRoleCode(roleCode);
     }
 
     @Override
