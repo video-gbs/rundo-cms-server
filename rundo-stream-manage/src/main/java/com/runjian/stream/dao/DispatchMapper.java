@@ -1,6 +1,7 @@
 package com.runjian.stream.dao;
 
 import com.runjian.stream.entity.DispatchInfo;
+import com.runjian.stream.vo.response.GetDispatchNameRsp;
 import com.runjian.stream.vo.response.GetDispatchRsp;
 import org.apache.ibatis.annotations.Insert;
 
@@ -68,7 +69,14 @@ public interface DispatchMapper {
             " WHERE id = #{dispatchId} ")
     void updateOnlineState(Long dispatchId, Integer onlineState, LocalDateTime updateTime);
 
-    @Select(" SELECT * FROM " + DISPATCH_TABLE_NAME +
-            " WHERE name = #{name} ")
+    @Select(" <script> " +
+            " SELECT * FROM " + DISPATCH_TABLE_NAME +
+            " WHERE 1=1 " +
+            "<if test=\"name != null\" > AND name = #{name} </if>" +
+            " </script> ")
     List<GetDispatchRsp> selectAllByPage(String name);
+
+    @Select(" SELECT id as dispatchId, name FROM " + DISPATCH_TABLE_NAME )
+    List<GetDispatchNameRsp> selectAllName();
+
 }

@@ -87,7 +87,7 @@ public class ChannelNorthController {
     @PostMapping("/play")
     public CommonResponse<VideoPlayRsp> videoPlay(@RequestBody PutChannelPlayReq request) {
         validatorService.validateRequest(request);
-        return CommonResponse.success(channelNorthService.channelPlay(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck()));
+        return CommonResponse.success(channelNorthService.channelPlay(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStreamType()));
     }
 
     /**
@@ -110,7 +110,7 @@ public class ChannelNorthController {
     @PostMapping("/playback")
     public CommonResponse<VideoPlayRsp> videoPlayback(@RequestBody PutChannelPlaybackReq request){
         validatorService.validateRequest(request);
-        return CommonResponse.success(channelNorthService.channelPlayback(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStartTime(), request.getEndTime()));
+        return CommonResponse.success(channelNorthService.channelPlayback(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStreamType(), request.getStartTime(), request.getEndTime()));
     }
 
     /**

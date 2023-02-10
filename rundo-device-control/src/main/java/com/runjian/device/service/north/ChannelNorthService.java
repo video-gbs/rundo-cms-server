@@ -49,7 +49,7 @@ public interface ChannelNorthService {
      * 点播
      * @param chId 通道id
      */
-    VideoPlayRsp channelPlay(Long chId, Boolean enableAudio, Boolean ssrcCheck);
+    VideoPlayRsp channelPlay(Long chId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType);
 
     /**
      * 获取录像数据
@@ -68,7 +68,7 @@ public interface ChannelNorthService {
      * @param startTime 开始时间
      * @param endTime 结束时间
      */
-    VideoPlayRsp channelPlayback(Long chId, Boolean enableAudio, Boolean ssrcCheck, LocalDateTime startTime, LocalDateTime endTime);
+    VideoPlayRsp channelPlayback(Long chId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType, LocalDateTime startTime, LocalDateTime endTime);
 
     /**
      * 云台控制

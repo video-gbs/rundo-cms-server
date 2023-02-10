@@ -4,10 +4,13 @@ import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.stream.service.north.DispatchNorthService;
+import com.runjian.stream.vo.response.GetDispatchNameRsp;
 import com.runjian.stream.vo.response.GetDispatchRsp;
 import com.runjian.stream.vo.response.PutDispatchExtraDataReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Miracle
@@ -22,6 +25,15 @@ public class DispatchNorthController {
 
     @Autowired
     private ValidatorService validatorService;
+
+    /**
+     * 获取所有调度服务的名称
+     * @return
+     */
+    @GetMapping("/name")
+    public CommonResponse<List<GetDispatchNameRsp>> getDispatchName(){
+        return CommonResponse.success(dispatchNorthService.getDispatchName());
+    }
 
     /**
      * 获取调度服务信息

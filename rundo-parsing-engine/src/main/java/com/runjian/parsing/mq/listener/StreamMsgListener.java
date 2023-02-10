@@ -1,17 +1,19 @@
 package com.runjian.parsing.mq.listener;
 
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.rabbitmq.client.Channel;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
+import com.runjian.parsing.constant.IdType;
 import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.dao.DispatchMapper;
 import com.runjian.parsing.entity.DispatchInfo;
 import com.runjian.parsing.mq.config.RabbitMqProperties;
 import com.runjian.parsing.mq.config.RabbitMqSender;
-import com.runjian.parsing.service.StreamManageService;
+import com.runjian.parsing.service.south.StreamSouthService;
 import com.runjian.parsing.vo.CommonMqDto;
 import com.runjian.parsing.vo.dto.StreamConvertDto;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +43,7 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
     private RabbitMqSender rabbitMqSender;
 
     @Autowired
-    private StreamManageService streamManageService;
+    private StreamSouthService streamSouthService;
 
     @Autowired
     private RabbitMqProperties rabbitMqProperties;
@@ -72,20 +74,23 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
             }
             StreamConvertDto streamConvertDto = JSONObject.parseObject(new String(message.getBody()), StreamConvertDto.class);
 
-            // todo 增加错误信息返回
 
-            if (mqRequest.getTime().plusSeconds(10).isBefore(LocalDateTime.now())){
-                // 超时的消息不再处理
-            }else if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_RESULT.getMsg())){
-                streamManageService.streamSouthPlayResult(streamConvertDto.getStreamId(), streamConvertDto.getDataMap());
+             if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_RESULT.getMsg())){
+                streamSouthService.streamSouthPlayResult(streamConvertDto.getStreamId(), streamConvertDto.getDataMap());
             } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CLOSE.getMsg())) {
-                streamManageService.streamSouthClose(streamConvertDto.getStreamId());
+                streamSouthService.streamSouthClose(streamConvertDto.getStreamId());
+            }
+
+            if (StringUtils.isNumber(mqRequest.getMsgId()) || mqRequest.getTime().plusSeconds(10).isBefore(LocalDateTime.now())){
+                // 超时的消息不再处理
+            } else if (mqRequest.getCode() != 0){
+                streamSouthService.errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
             } else if (mqRequest.getMsgType().equals(MsgType.STREAM_STOP_PLAY.getMsg())) {
-                streamManageService.streamSouthStopPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                streamSouthService.streamSouthStopPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
             } else if (mqRequest.getMsgType().equals(MsgType.STREAM_START_RECORD.getMsg())) {
-                streamManageService.streamSouthStartRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                streamSouthService.streamSouthStartRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
             } else if (mqRequest.getMsgType().equals(MsgType.STREAM_STOP_RECORD.getMsg())) {
-                streamManageService.streamSouthStopRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                streamSouthService.streamSouthStopRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
             }
 
         } catch (Exception ex) {

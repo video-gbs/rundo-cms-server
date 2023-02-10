@@ -1,7 +1,6 @@
 package com.runjian.parsing.feign.request;
 
 import com.runjian.parsing.entity.GatewayInfo;
-import com.runjian.parsing.entity.TaskInfo;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 

@@ -21,8 +21,8 @@ public interface ChannelMapper {
     String CHANNEL_TABLE_NAME = "rundo_channel";
 
     @Insert({" <script> " +
-            " INSERT INTO " + CHANNEL_TABLE_NAME + "(id, device_id, sign_state, online_state, channel_type, stream_mode, update_time, create_time) values " +
-            " <foreach collection='saveList' item='item' separator=','>(#{item.id}, #{item.deviceId}, #{item.signState}, #{item.onlineState}, #{item.channelType}, #{item.streamMode}, #{item.updateTime}, #{item.createTime})</foreach> " +
+            " INSERT INTO " + CHANNEL_TABLE_NAME + "(id, device_id, sign_state, online_state, channel_type, update_time, create_time) values " +
+            " <foreach collection='saveList' item='item' separator=','>(#{item.id}, #{item.deviceId}, #{item.signState}, #{item.onlineState}, #{item.channelType}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>"})
     void batchSave(List<ChannelInfo> saveList);
 

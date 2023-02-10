@@ -2,6 +2,7 @@ package com.runjian.device.dao;
 
 import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
+import com.runjian.device.vo.response.GetGatewayPageRsp;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -69,4 +70,10 @@ public interface GatewayMapper {
     @Select(" SELECT id, name FROM " + GATEWAY_TABLE_NAME)
     List<GetGatewayNameRsp> selectAllNameAndId();
 
+    @Select(" <script> " +
+            " SELECT * FROM " + GATEWAY_TABLE_NAME +
+            " WHERE 1=1 " +
+            "<if test=\"name != null\" > AND name = #{name} </if>" +
+            " </script> ")
+    List<GetGatewayPageRsp> selectByPage(String name);
 }
