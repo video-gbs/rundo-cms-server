@@ -8,6 +8,8 @@ import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.vo.feign.request.DeviceReq;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
+import com.runjian.device.expansion.vo.feign.response.PageListResp;
+import com.runjian.device.expansion.vo.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -44,7 +46,7 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
             }
 
             @Override
-            public CommonResponse<IPage<GetChannelByPageRsp>> getChannelByPage(int page, int num, String nameOrOriginId) {
+            public CommonResponse<PageListResp<GetChannelByPageRsp>> getChannelByPage(int page, int num, String nameOrOriginId) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--通道待添加列表获取失败",nameOrOriginId, throwable);
                 return CommonResponse.failure(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
             }
@@ -52,6 +54,12 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
             @Override
             public CommonResponse<ChannelSyncRsp> channelSync(Long deviceId) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--通道同步获取失败",deviceId, throwable);
+                return CommonResponse.failure(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
+            }
+
+            @Override
+            public CommonResponse<Boolean> channelDelete(List<Long> channelId) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--通道删除失败",channelId, throwable);
                 return CommonResponse.failure(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
             }
         };

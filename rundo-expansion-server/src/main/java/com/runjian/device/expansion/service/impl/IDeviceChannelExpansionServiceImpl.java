@@ -18,6 +18,7 @@ import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
+import com.runjian.device.expansion.vo.feign.response.PageListResp;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
@@ -101,16 +102,38 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Override
     public CommonResponse<Boolean> remove(Long id) {
+        TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
         deviceChannelExpansionMapper.deleteById(id);
         //通知控制服务修改添加状态 删除接口待定义
+        List<Long> longs = new ArrayList<>();
+        longs.add(id);
 
-        return null;
+        CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDelete(longs);
+        if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            dataSourceTransactionManager.rollback(transactionStatus);
+            //调用失败
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, booleanCommonResponse);
+            return booleanCommonResponse;
+        }
+        dataSourceTransactionManager.commit(transactionStatus);
+        return CommonResponse.success();
     }
 
     @Override
     public CommonResponse<Boolean> removeBatch(List<Long> idList) {
         deviceChannelExpansionMapper.deleteBatchIds(idList);
         //通知控制服务修改添加状态 删除接口待定义
+        TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+        deviceChannelExpansionMapper.deleteBatchIds(idList);
+        //通知控制服务修改添加状态 删除接口待定义
+        CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDelete(idList);
+        if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            dataSourceTransactionManager.rollback(transactionStatus);
+            //调用失败
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",idList, booleanCommonResponse);
+            return booleanCommonResponse;
+        }
+        dataSourceTransactionManager.commit(transactionStatus);
         return null;
     }
 
@@ -201,15 +224,15 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     @Override
     public PageResp<ChannelExpansionFindlistRsp> findList(int page, int num, String originName) {
         //获取控制服务的添加通道列表
-        CommonResponse<IPage<GetChannelByPageRsp>> channelByPage = channelControlApi.getChannelByPage(page, num, originName);
+        CommonResponse<PageListResp<GetChannelByPageRsp>> channelByPage = channelControlApi.getChannelByPage(page, num, originName);
         //封装返回目前数据库中的编码器名称
         if(channelByPage.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--待添加的通道列表获取失败",originName, channelByPage);
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         }
         PageResp<ChannelExpansionFindlistRsp> listPageResp = new PageResp<>();
-        IPage<GetChannelByPageRsp> originPage = channelByPage.getData();
-        List<GetChannelByPageRsp> records = originPage.getRecords();
+        PageListResp<GetChannelByPageRsp> originPage = channelByPage.getData();
+        List<GetChannelByPageRsp> records = originPage.getList();
         List<ChannelExpansionFindlistRsp> channelExpansionFindlistRsps = new ArrayList<>();
 
         if(!CollectionUtils.isEmpty(records)){
@@ -223,6 +246,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
                         BeanUtil.copyProperties(getChannelByPageRsp,channelExpansionFindlistRsp);
                         channelExpansionFindlistRsp.setDeviceExpansionName(deviceExpansion.getName());
+                        channelExpansionFindlistRsp.setChannelCode(getChannelByPageRsp.getOriginId());
                         channelExpansionFindlistRsps.add(channelExpansionFindlistRsp);
                     }
 

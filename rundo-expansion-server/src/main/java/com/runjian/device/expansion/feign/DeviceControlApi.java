@@ -6,6 +6,8 @@ import com.runjian.device.expansion.feign.fallback.DeviceControlApiFallbackFacto
 import com.runjian.device.expansion.vo.feign.request.DeviceReq;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
+import com.runjian.device.expansion.vo.feign.response.PageListResp;
+import com.runjian.device.expansion.vo.response.PageResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +56,7 @@ public interface DeviceControlApi {
      * @return
      */
     @GetMapping(value = "/channel/north/page")
-    CommonResponse<IPage<GetChannelByPageRsp>> getChannelByPage(@RequestParam(defaultValue = "1")int page, @RequestParam(defaultValue = "10") int num, @RequestParam(required = false) String nameOrOriginId);
+    CommonResponse<PageListResp<GetChannelByPageRsp>> getChannelByPage(@RequestParam(defaultValue = "1")int page, @RequestParam(defaultValue = "10") int num, @RequestParam(required = false) String nameOrOriginId);
 
 
     /**
@@ -65,5 +67,11 @@ public interface DeviceControlApi {
     @GetMapping(value = "/channel/north/sync")
     CommonResponse<ChannelSyncRsp> channelSync(@RequestParam Long deviceId);
 
-
+    /**
+     * 控制服务 通道删除
+     * @param channelIds
+     * @return
+     */
+    @DeleteMapping(value = "/channel/north/delete")
+    CommonResponse<Boolean> channelDelete(@RequestParam List<Long> channelIds);
 }
