@@ -36,7 +36,7 @@ public interface GatewayMapper {
             " SET update_time = #{updateTime} " +
             " <if test='name != null'>, name = #{name}</if> " +
             " <if test='signType != null'>, sign_type = #{signType}</if> " +
-            " <if test='online != null'>, online_state = #{onlineState}</if> " +
+            " <if test='onlineState != null'>, online_state = #{onlineState}</if> " +
             " <if test='ip != null'>, ip = #{ip}</if> " +
             " <if test='port != null'>, port = #{port}</if> " +
             " WHERE id = #{id} "+
