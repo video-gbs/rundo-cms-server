@@ -47,6 +47,9 @@ public class RelationSysUserInfoVO {
     @ApiModelProperty("安防区域名称")
     private String areaName;
 
+    @ApiModelProperty("所属部门")
+    private String orgName;
+
     @ApiModelProperty("描述信息")
     private String description;
 }

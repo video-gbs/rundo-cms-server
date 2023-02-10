@@ -145,13 +145,16 @@
             sui.description,
             sui.STATUS,
             GROUP_CONCAT( sri.role_name ORDER BY sui.id SEPARATOR '/' ) role_name,
-            GROUP_CONCAT( va.area_name ORDER BY sui.id SEPARATOR '/' ) area_name
+            GROUP_CONCAT( va.area_name ORDER BY sui.id SEPARATOR '/' ) area_name,
+            GROUP_CONCAT( so.org_name ORDER BY sui.id SEPARATOR '/' ) org_name
         FROM
             sys_user_info sui
                 LEFT JOIN sys_role_user sru ON sru.user_id = sui.id
                 LEFT JOIN sys_role_info sri ON sri.id = sru.role_id
                 LEFT JOIN role_video_area rva ON rva.role_id = sri.id
                 LEFT JOIN video_area va ON va.id = rva.area_id
+                LEFT JOIN sys_user_org suo ON suo.user_id = sui.id
+                LEFT JOIN sys_org so ON so.id = suo.org_id
         GROUP BY
             sui.id
         ORDER BY sui.id

@@ -33,10 +33,10 @@ public class QuerySysRoleInfoDTO extends CommonPage {
     private String userAccount;
 
     @ApiModelProperty("创建开始时间")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdTimeStart;
 
     @ApiModelProperty("创建时间结束")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdTimeEnd;
 }
