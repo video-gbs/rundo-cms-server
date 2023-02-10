@@ -6,6 +6,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.vo.feign.request.DeviceReq;
+import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
 import com.runjian.device.expansion.vo.feign.response.PageListResp;
@@ -39,9 +40,10 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加删除",id, throwable);
                 return CommonResponse.failure(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
             }
+
             @Override
-            public CommonResponse<Boolean> channelSignSuccess(List<Long> channelIdList) {
-                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--通道添加失败",channelIdList, throwable);
+            public CommonResponse<Boolean> channelSignSuccess(PutChannelSignSuccessReq putChannelSignSuccessReq) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--通道添加失败",putChannelSignSuccessReq, throwable);
                 return CommonResponse.failure(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
             }
 

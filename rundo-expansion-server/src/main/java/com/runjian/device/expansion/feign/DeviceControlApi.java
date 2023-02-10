@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.DeviceControlApiFallbackFactory;
 import com.runjian.device.expansion.vo.feign.request.DeviceReq;
+import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
 import com.runjian.device.expansion.vo.feign.response.PageListResp;
@@ -41,11 +42,11 @@ public interface DeviceControlApi {
 
     /**
      * 控制服务 通道添加状态修改
-     * @param channelIdList
+     * @param putChannelSignSuccessReq
      * @return
      */
-    @PostMapping(value = "/channel/north/sign/success",produces = MediaType.APPLICATION_JSON_VALUE)
-    CommonResponse<Boolean> channelSignSuccess(@RequestBody List<Long> channelIdList);
+    @PutMapping(value = "/channel/north/sign/success",produces = MediaType.APPLICATION_JSON_VALUE)
+    CommonResponse<Boolean> channelSignSuccess(@RequestBody PutChannelSignSuccessReq putChannelSignSuccessReq);
 
 
     /**

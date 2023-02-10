@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 public class DeviceChannelExpansionAddReq {
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty("主键ID")
-    private Long id;
+    @ApiModelProperty("通道ID")
+    private Long ChannelId;
 
     @ApiModelProperty("编码器id")
     @NotNull(message = "编码器id不能为空")

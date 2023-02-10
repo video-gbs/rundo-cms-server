@@ -16,6 +16,7 @@ import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
+import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
 import com.runjian.device.expansion.vo.feign.response.PageListResp;
@@ -65,30 +66,39 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     @Override
     public CommonResponse<Boolean> add(FindChannelListReq findChannelListReq) {
         //进行添加
-        DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
         List<DeviceChannelExpansion> channelList = new ArrayList<>();
         ArrayList<Long> ids = new ArrayList<>();
         for (DeviceChannelExpansionAddReq deviceChannelExpansionAddReq : findChannelListReq.getChannelList()){
-            deviceChannelExpansion.setId(deviceChannelExpansionAddReq.getId());
+            DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
+            deviceChannelExpansion.setId(deviceChannelExpansionAddReq.getChannelId());
             deviceChannelExpansion.setDeviceExpansionId(deviceChannelExpansionAddReq.getDeviceExpansionId());
             deviceChannelExpansion.setChannelName(deviceChannelExpansionAddReq.getChannelName());
             deviceChannelExpansion.setChannelCode(deviceChannelExpansionAddReq.getChannelCode());
             deviceChannelExpansion.setOnlineState(deviceChannelExpansionAddReq.getOnlineState());
             deviceChannelExpansion.setVideoAreaId(findChannelListReq.getVideoAreaId());
             channelList.add(deviceChannelExpansion);
-            ids.add(deviceChannelExpansionAddReq.getId());
+            ids.add(deviceChannelExpansionAddReq.getChannelId());
         }
         TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-        this.saveBatch(channelList);
-        //通知控制服务修改添加状态
-        CommonResponse<Boolean> longCommonResponse = channelControlApi.channelSignSuccess(ids);
-        if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+        try{
+            this.saveBatch(channelList);
+            //通知控制服务修改添加状态
+            PutChannelSignSuccessReq putChannelSignSuccessReq = new PutChannelSignSuccessReq();
+            putChannelSignSuccessReq.setChannelIdList(ids);
+            CommonResponse<Boolean> longCommonResponse = channelControlApi.channelSignSuccess(putChannelSignSuccessReq);
+            if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                dataSourceTransactionManager.rollback(transactionStatus);
+                //调用失败
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",findChannelListReq, longCommonResponse);
+                return longCommonResponse;
+            }
+            dataSourceTransactionManager.commit(transactionStatus);
+        }catch(Exception e){
             dataSourceTransactionManager.rollback(transactionStatus);
-            //调用失败
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",findChannelListReq, longCommonResponse);
-            return longCommonResponse;
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--添加异常",findChannelListReq, e);
+            throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR,e.getMessage());
         }
-        dataSourceTransactionManager.commit(transactionStatus);
+
         return CommonResponse.success();
     }
 
@@ -243,10 +253,10 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 for(DeviceExpansion deviceExpansion : deviceExpansionList){
                     if(getChannelByPageRsp.getDeviceId().equals(deviceExpansion.getId())){
                         ChannelExpansionFindlistRsp channelExpansionFindlistRsp = new ChannelExpansionFindlistRsp();
-
                         BeanUtil.copyProperties(getChannelByPageRsp,channelExpansionFindlistRsp);
                         channelExpansionFindlistRsp.setDeviceExpansionName(deviceExpansion.getName());
                         channelExpansionFindlistRsp.setChannelCode(getChannelByPageRsp.getOriginId());
+                        channelExpansionFindlistRsp.setDeviceExpansionId(getChannelByPageRsp.getDeviceId());
                         channelExpansionFindlistRsps.add(channelExpansionFindlistRsp);
                     }
 

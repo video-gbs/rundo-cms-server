@@ -47,6 +47,10 @@ public class DeviceChannelExpansion {
     @ApiModelProperty("通道编码")
     private String gb28181Code;
 
+
+    @ApiModelProperty("设备厂商")
+    private String manufacturer;
+
     @ApiModelProperty("通道类型：0视频，1音频，2告警")
     private Integer channelType;
 
@@ -56,7 +60,7 @@ public class DeviceChannelExpansion {
 
 
     @ApiModelProperty("安装地点")
-    private String instalLocation;
+    private String installLocation;
 
     @ApiModelProperty("高度")
     private double height;

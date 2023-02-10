@@ -64,7 +64,7 @@ public class DeviceChannelExpansionReq {
 
 
     @ApiModelProperty("安装地点")
-    private String instalLocation;
+    private String installLocation;
 
     @ApiModelProperty("高度")
     private double height;

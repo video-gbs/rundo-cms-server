@@ -25,6 +25,9 @@ public class DeviceChannelExpansionResp {
     @ApiModelProperty("编码器ID")
     private Long deviceExpansionId;
 
+    @ApiModelProperty("所属设备")
+    private String deviceName;
+
     @ApiModelProperty("通道名称")
     private String channelName;
 
@@ -34,13 +37,20 @@ public class DeviceChannelExpansionResp {
     @ApiModelProperty("状态值")
     private Integer onlineState;
 
+    @ApiModelProperty("ip")
+    private String ip;
 
+    @ApiModelProperty("端口")
+    private int port;
 
     @ApiModelProperty("通道编码")
     private String channelCode;
 
     @ApiModelProperty("通道编码")
     private String gb28181Code;
+
+    @ApiModelProperty("设备厂商")
+    private String manufacturer;
 
     @ApiModelProperty("通道类型：0视频，1音频，2告警")
     private Integer channelType;
@@ -51,7 +61,7 @@ public class DeviceChannelExpansionResp {
 
 
     @ApiModelProperty("安装地点")
-    private String instalLocation;
+    private String installLocation;
 
     @ApiModelProperty("高度")
     private double height;
