@@ -14,7 +14,6 @@ import org.springframework.context.annotation.ComponentScan;
  * @date 2022-12-22 周四 14:41
  */
 @SpringBootApplication
-// 开启服务注册功能配置功能
 @EnableDiscoveryClient
 @MapperScan(basePackages = "com.runjian.**.mapper")
 @ComponentScan(value = {"com.runjian.*"})

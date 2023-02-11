@@ -1,8 +1,8 @@
 package com.runjian.auth.server.service.login.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.runjian.auth.server.domain.entity.system.SysAppInfo;
-import com.runjian.auth.server.domain.entity.system.SysUserInfo;
+import com.runjian.auth.server.domain.entity.SysAppInfo;
+import com.runjian.auth.server.domain.entity.SysUserInfo;
 import com.runjian.auth.server.domain.vo.system.HomeVO;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.service.login.HomeSevice;

@@ -7,7 +7,7 @@ import com.runjian.auth.server.domain.dto.page.PageSysDictDTO;
 import com.runjian.auth.server.domain.dto.system.AddSysDictDTO;
 import com.runjian.auth.server.domain.dto.system.QureySysDictDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysDictDTO;
-import com.runjian.auth.server.domain.entity.system.SysDict;
+import com.runjian.auth.server.domain.entity.SysDict;
 import com.runjian.auth.server.domain.vo.system.SysDictVO;
 import com.runjian.auth.server.mapper.system.SysDictMapper;
 import com.runjian.auth.server.service.system.SysDictService;

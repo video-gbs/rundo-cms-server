@@ -6,7 +6,7 @@ import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
-import com.runjian.auth.server.domain.entity.system.SysAppInfo;
+import com.runjian.auth.server.domain.entity.SysAppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 
 import java.util.List;

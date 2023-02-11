@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.entity.video;
+package com.runjian.auth.server.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;

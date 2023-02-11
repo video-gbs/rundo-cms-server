@@ -1,12 +1,12 @@
-package com.runjian.auth.server.controller.video;
+package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
-import com.runjian.auth.server.domain.dto.video.AddVideoAreaDTO;
-import com.runjian.auth.server.domain.dto.video.UpdateVideoAreaDTO;
+import com.runjian.auth.server.domain.dto.system.AddVideoAreaDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateVideoAreaDTO;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.domain.vo.video.MoveVideoAreaDTO;
 import com.runjian.auth.server.domain.vo.video.VideoAreaVO;
-import com.runjian.auth.server.service.area.VideoAreaSaervice;
+import com.runjian.auth.server.service.system.VideoAreaSaervice;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

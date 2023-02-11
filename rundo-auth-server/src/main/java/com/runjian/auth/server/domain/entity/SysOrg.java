@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.entity.system;
+package com.runjian.auth.server.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 菜单信息表
+ * 组织机构表
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@TableName("sys_menu_info")
-@ApiModel(value = "SysMenuInfo对象", description = "菜单信息表")
-public class SysMenuInfo implements Serializable {
+@TableName("sys_org")
+@ApiModel(value = "SysOrg对象", description = "组织机构表")
+public class SysOrg implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,53 +29,57 @@ public class SysMenuInfo implements Serializable {
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("直接父级菜单ID")
-    @TableField("app_pid")
-    private Long appId;
+    @ApiModelProperty("直接上级组织父级ID")
+    @TableField("org_pid")
+    private Long orgPid;
 
-    @ApiModelProperty("直接父级菜单ID")
-    @TableField("menu_pid")
-    private Long menuPid;
+    @ApiModelProperty("所有间接组织父级ID")
+    @TableField("org_pids")
+    private String orgPids;
 
-    @ApiModelProperty("所有间接父级菜单ID")
-    @TableField("menu_pids")
-    private String menuPids;
+    @ApiModelProperty("组织机构名称")
+    @TableField("org_name")
+    private String orgName;
 
-    @ApiModelProperty("菜单名称")
-    @TableField("menu_name")
-    private String menuName;
+    @ApiModelProperty("组织结构编码")
+    @TableField("org_code")
+    private String orgCode;
 
-    @ApiModelProperty("菜单顺序")
-    @TableField("menu_sort")
-    private String menuSort;
+    @ApiModelProperty("组织机构排序")
+    @TableField("org_sort")
+    private Integer orgSort;
 
-    @ApiModelProperty("是否子节点")
-    @TableField("leaf")
-    private Integer leaf;
+    @ApiModelProperty("地址")
+    @TableField("adders")
+    private String adders;
 
-    @ApiModelProperty("跳转URL")
-    @TableField("url")
-    private String url;
+    @ApiModelProperty("部门负责人")
+    @TableField("org_leader")
+    private String orgLeader;
 
-    @ApiModelProperty("图标")
-    @TableField("icon")
-    private String icon;
+    @ApiModelProperty("邮箱")
+    @TableField("email")
+    private String email;
+
+    @ApiModelProperty("电话")
+    @TableField("phone")
+    private String phone;
 
     @ApiModelProperty("层级")
     @TableField("level")
     private Integer level;
 
-    @ApiModelProperty("是否隐藏;0:显示(否）,1:隐藏(是)")
-    @TableField("hidden")
-    private Integer hidden;
+    @ApiModelProperty("是否叶子节点")
+    @TableField("leaf")
+    private Integer leaf;
 
-    @ApiModelProperty("是否禁用;0:启用(否）,1:禁用(是)")
+    @ApiModelProperty("描述信息")
+    @TableField("description")
+    private String description;
+
+    @ApiModelProperty("禁用状态;0:启用(否）,1:禁用(是)")
     @TableField("status")
     private Integer status;
-
-    @ApiModelProperty("前端组件import路径")
-    @TableField("view_import")
-    private String viewImport;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")

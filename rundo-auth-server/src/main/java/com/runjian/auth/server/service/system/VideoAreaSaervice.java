@@ -1,9 +1,9 @@
-package com.runjian.auth.server.service.area;
+package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.domain.dto.video.AddVideoAreaDTO;
-import com.runjian.auth.server.domain.dto.video.UpdateVideoAreaDTO;
-import com.runjian.auth.server.domain.entity.video.VideoArea;
+import com.runjian.auth.server.domain.dto.system.AddVideoAreaDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateVideoAreaDTO;
+import com.runjian.auth.server.domain.entity.VideoArea;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.domain.vo.video.MoveVideoAreaDTO;
 import com.runjian.auth.server.domain.vo.video.VideoAreaVO;

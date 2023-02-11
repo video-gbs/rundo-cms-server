@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.entity.system;
+package com.runjian.auth.server.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 角色信息表
+ * 系统全局参数配置
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@TableName("sys_role_info")
-@ApiModel(value = "SysRoleInfo对象", description = "角色信息表")
-public class SysRoleInfo implements Serializable {
+@TableName("sys_config")
+@ApiModel(value = "SysConfig对象", description = "系统全局参数配置")
+public class SysConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,33 +29,21 @@ public class SysRoleInfo implements Serializable {
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("角色名称")
-    @TableField("role_name")
-    private String roleName;
+    @ApiModelProperty("参数名称")
+    @TableField("param_name")
+    private String paramName;
 
-    @ApiModelProperty("角色编码")
-    @TableField("role_code")
-    private String roleCode;
+    @ApiModelProperty("参数编码")
+    @TableField("param_code")
+    private String paramCode;
 
-    @ApiModelProperty("角色顺序")
-    @TableField("role_sort")
-    private Integer roleSort;
+    @ApiModelProperty("参数值")
+    @TableField("param_value")
+    private String paramValue;
 
-    @ApiModelProperty("角色描述")
-    @TableField("role_desc")
-    private String roleDesc;
-
-    @ApiModelProperty("上级角色ID")
-    @TableField("role_pid")
-    private Long rolePid;
-
-    @ApiModelProperty("所有间接上级角色")
-    @TableField("role_pids")
-    private String rolePids;
-
-    @ApiModelProperty("是否禁用;0:启用(否）,1:禁用(是)")
-    @TableField("status")
-    private Integer status;
+    @ApiModelProperty("参数描述")
+    @TableField("param_desc")
+    private String paramDesc;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")
@@ -65,7 +53,6 @@ public class SysRoleInfo implements Serializable {
     @TableField(value = "delete_flag", fill = FieldFill.INSERT)
     @TableLogic
     private Integer deleteFlag;
-
     @ApiModelProperty("创建人")
     @TableField(value ="created_by", fill = FieldFill.INSERT)
     private Long createdBy;

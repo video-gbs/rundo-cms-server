@@ -6,7 +6,7 @@
         VALUES (app_id = #{appId,jdbcType=BIGINT}, menu_id = #{menuId,jdbcType=BIGINT})
     </select>
 
-    <select id="getMenuInfoByAppId" resultType="com.runjian.auth.server.domain.entity.system.SysMenuInfo">
+    <select id="getMenuInfoByAppId" resultType="com.runjian.auth.server.domain.entity.SysMenuInfo">
         SELECT smi.*
         FROM sys_menu_info smi
             LEFT JOIN sys_app_menu sam ON smi.id = sam.menu_id

@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.entity.system;
+package com.runjian.auth.server.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 系统全局参数配置
+ * 接口信息表
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -19,31 +19,50 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@TableName("sys_config")
-@ApiModel(value = "SysConfig对象", description = "系统全局参数配置")
-public class SysConfig implements Serializable {
-
+@TableName("sys_api_info")
+@ApiModel(value = "SysApiInfo对象", description = "接口信息表")
+public class SysApiInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("参数名称")
-    @TableField("param_name")
-    private String paramName;
+    @ApiModelProperty("接口直接父ID")
+    @TableField("app_id")
+    private Long appId;
 
-    @ApiModelProperty("参数编码")
-    @TableField("param_code")
-    private String paramCode;
+    @ApiModelProperty("接口直接父ID")
+    @TableField("api_pid")
+    private Long apiPid;
 
-    @ApiModelProperty("参数值")
-    @TableField("param_value")
-    private String paramValue;
+    @ApiModelProperty("接口间接父ID")
+    @TableField("api_pids")
+    private String apiPids;
 
-    @ApiModelProperty("参数描述")
-    @TableField("param_desc")
-    private String paramDesc;
+    @ApiModelProperty("接口名称")
+    @TableField("api_name")
+    private String apiName;
+
+    @ApiModelProperty("接口排序")
+    @TableField("api_sort")
+    private Integer apiSort;
+
+    @ApiModelProperty("接口层级")
+    @TableField("level")
+    private Integer level;
+
+    @ApiModelProperty("跳转链接")
+    @TableField("url")
+    private String url;
+
+    @ApiModelProperty("是否叶子节点")
+    @TableField("leaf")
+    private Integer leaf;
+
+    @ApiModelProperty("禁用状态")
+    @TableField("status")
+    private Integer status;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")
@@ -53,6 +72,7 @@ public class SysConfig implements Serializable {
     @TableField(value = "delete_flag", fill = FieldFill.INSERT)
     @TableLogic
     private Integer deleteFlag;
+
     @ApiModelProperty("创建人")
     @TableField(value ="created_by", fill = FieldFill.INSERT)
     private Long createdBy;

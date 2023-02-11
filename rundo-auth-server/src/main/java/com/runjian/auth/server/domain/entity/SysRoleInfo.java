@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.entity.system;
+package com.runjian.auth.server.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 数据字典表
+ * 角色信息表
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -19,34 +19,43 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@TableName("sys_dict")
-@ApiModel(value = "SysDict对象", description = "数据字典表")
-public class SysDict implements Serializable {
+@TableName("sys_role_info")
+@ApiModel(value = "SysRoleInfo对象", description = "角色信息表")
+public class SysRoleInfo implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("分组名称")
-    @TableField("group_name")
-    private String groupName;
+    @ApiModelProperty("角色名称")
+    @TableField("role_name")
+    private String roleName;
 
-    @ApiModelProperty("分组编码")
-    @TableField("group_code")
-    private String groupCode;
+    @ApiModelProperty("角色编码")
+    @TableField("role_code")
+    private String roleCode;
 
-    @ApiModelProperty("字典项名称")
-    @TableField("item_name")
-    private String itemName;
+    @ApiModelProperty("角色顺序")
+    @TableField("role_sort")
+    private Integer roleSort;
 
-    @ApiModelProperty("字典值")
-    @TableField("item_value")
-    private String itemValue;
+    @ApiModelProperty("角色描述")
+    @TableField("role_desc")
+    private String roleDesc;
 
-    @ApiModelProperty("字典描述")
-    @TableField("item_desc")
-    private String itemDesc;
+    @ApiModelProperty("上级角色ID")
+    @TableField("role_pid")
+    private Long rolePid;
+
+    @ApiModelProperty("所有间接上级角色")
+    @TableField("role_pids")
+    private String rolePids;
+
+    @ApiModelProperty("是否禁用;0:启用(否）,1:禁用(是)")
+    @TableField("status")
+    private Integer status;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")

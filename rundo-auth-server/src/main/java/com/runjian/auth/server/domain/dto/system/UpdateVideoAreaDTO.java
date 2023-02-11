@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.dto.video;
+package com.runjian.auth.server.domain.dto.system;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "VideoArea对象", description = "安保区域")
-public class UpdateVideoAreaDTO extends AddVideoAreaDTO{
+public class UpdateVideoAreaDTO extends AddVideoAreaDTO {
     @ApiModelProperty("主键ID")
     private Long id;
 }

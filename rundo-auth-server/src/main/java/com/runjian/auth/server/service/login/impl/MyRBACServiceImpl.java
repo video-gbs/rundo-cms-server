@@ -1,8 +1,7 @@
 package com.runjian.auth.server.service.login.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.runjian.auth.server.domain.entity.system.*;
-import com.runjian.auth.server.domain.entity.video.VideoArea;
+import com.runjian.auth.server.domain.entity.*;
 import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
 import com.runjian.auth.server.mapper.system.SysUserInfoMapper;
 import com.runjian.auth.server.service.login.MyRBACService;

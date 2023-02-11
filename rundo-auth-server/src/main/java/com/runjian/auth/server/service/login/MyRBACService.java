@@ -1,7 +1,6 @@
 package com.runjian.auth.server.service.login;
 
-import com.runjian.auth.server.domain.entity.system.*;
-import com.runjian.auth.server.domain.entity.video.VideoArea;
+import com.runjian.auth.server.domain.entity.*;
 
 import java.util.List;
 

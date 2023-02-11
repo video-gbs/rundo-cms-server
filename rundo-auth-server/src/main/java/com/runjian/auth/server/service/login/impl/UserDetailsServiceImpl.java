@@ -1,7 +1,7 @@
 package com.runjian.auth.server.service.login.impl;
 
 import com.runjian.auth.server.domain.dto.login.LoginUser;
-import com.runjian.auth.server.domain.entity.system.SysUserInfo;
+import com.runjian.auth.server.domain.entity.SysUserInfo;
 import com.runjian.auth.server.service.login.MyRBACService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

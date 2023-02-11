@@ -1,16 +1,16 @@
-package com.runjian.auth.server.service.area.impl;
+package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.dto.video.AddVideoAreaDTO;
-import com.runjian.auth.server.domain.dto.video.UpdateVideoAreaDTO;
-import com.runjian.auth.server.domain.entity.video.VideoArea;
+import com.runjian.auth.server.domain.dto.system.AddVideoAreaDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateVideoAreaDTO;
+import com.runjian.auth.server.domain.entity.VideoArea;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.domain.vo.video.MoveVideoAreaDTO;
 import com.runjian.auth.server.domain.vo.video.VideoAreaVO;
 import com.runjian.auth.server.mapper.video.VideoAraeMapper;
-import com.runjian.auth.server.service.area.VideoAreaSaervice;
+import com.runjian.auth.server.service.system.VideoAreaSaervice;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;

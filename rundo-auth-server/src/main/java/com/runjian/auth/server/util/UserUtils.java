@@ -1,7 +1,7 @@
 package com.runjian.auth.server.util;
 
 import com.runjian.auth.server.domain.dto.login.LoginUser;
-import com.runjian.auth.server.domain.entity.system.SysUserInfo;
+import com.runjian.auth.server.domain.entity.SysUserInfo;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 

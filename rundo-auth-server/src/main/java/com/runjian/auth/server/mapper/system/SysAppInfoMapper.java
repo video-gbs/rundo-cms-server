@@ -3,7 +3,7 @@ package com.runjian.auth.server.mapper.system;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.runjian.auth.server.domain.dto.page.PageSysAppInfoDTO;
-import com.runjian.auth.server.domain.entity.system.SysAppInfo;
+import com.runjian.auth.server.domain.entity.SysAppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 

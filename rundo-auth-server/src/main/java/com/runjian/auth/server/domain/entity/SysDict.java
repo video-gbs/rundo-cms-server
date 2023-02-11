@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.entity.system;
+package com.runjian.auth.server.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 应用信息
+ * 数据字典表
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -19,39 +19,34 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@TableName("sys_app_info")
-@ApiModel(value = "SysAppInfo对象", description = "应用信息")
-public class SysAppInfo implements Serializable {
-
+@TableName("sys_dict")
+@ApiModel(value = "SysDict对象", description = "数据字典表")
+public class SysDict implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("应用类别")
-    @TableField("app_type")
-    private Integer appType;
+    @ApiModelProperty("分组名称")
+    @TableField("group_name")
+    private String groupName;
 
-    @ApiModelProperty("应用名称")
-    @TableField("app_name")
-    private String appName;
+    @ApiModelProperty("分组编码")
+    @TableField("group_code")
+    private String groupCode;
 
-    @ApiModelProperty("应用所在IP")
-    @TableField("app_ip")
-    private String appIp;
+    @ApiModelProperty("字典项名称")
+    @TableField("item_name")
+    private String itemName;
 
-    @ApiModelProperty("应用服务端口")
-    @TableField("app_port")
-    private Integer appPort;
+    @ApiModelProperty("字典值")
+    @TableField("item_value")
+    private String itemValue;
 
-    @ApiModelProperty("应用简介")
-    @TableField("app_desc")
-    private String appDesc;
-
-    @ApiModelProperty(value = "禁用状态", notes = "0正常，1禁用")
-    @TableField("status")
-    private Integer status;
+    @ApiModelProperty("字典描述")
+    @TableField("item_desc")
+    private String itemDesc;
 
     @ApiModelProperty("租户号")
     @TableField("tenant_id")

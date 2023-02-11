@@ -1,7 +1,7 @@
 package com.runjian.auth.server.domain.dto.login;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
-import com.runjian.auth.server.domain.entity.system.SysUserInfo;
+import com.runjian.auth.server.domain.entity.SysUserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

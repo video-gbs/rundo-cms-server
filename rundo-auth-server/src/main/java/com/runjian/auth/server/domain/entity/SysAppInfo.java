@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.entity.system;
+package com.runjian.auth.server.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 用户信息表
+ * 应用信息
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@TableName("sys_user_info")
-@ApiModel(value = "SysUserInfo对象", description = "用户信息表")
-public class SysUserInfo implements Serializable {
+@TableName("sys_app_info")
+@ApiModel(value = "SysAppInfo对象", description = "应用信息")
+public class SysAppInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,47 +29,27 @@ public class SysUserInfo implements Serializable {
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("用户账户")
-    @TableField("user_account")
-    private String userAccount;
+    @ApiModelProperty("应用类别")
+    @TableField("app_type")
+    private Integer appType;
 
-    @ApiModelProperty("用户姓名")
-    @TableField("user_name")
-    private String userName;
+    @ApiModelProperty("应用名称")
+    @TableField("app_name")
+    private String appName;
 
-    @ApiModelProperty("用户密码")
-    @TableField("password")
-    private String password;
+    @ApiModelProperty("应用所在IP")
+    @TableField("app_ip")
+    private String appIp;
 
-    @ApiModelProperty("邮箱")
-    @TableField("email")
-    private String email;
+    @ApiModelProperty("应用服务端口")
+    @TableField("app_port")
+    private Integer appPort;
 
-    @ApiModelProperty("电话")
-    @TableField("phone")
-    private String phone;
+    @ApiModelProperty("应用简介")
+    @TableField("app_desc")
+    private String appDesc;
 
-    @ApiModelProperty("工号")
-    @TableField("job_no")
-    private String jobNo;
-
-    @ApiModelProperty("地址")
-    @TableField("address")
-    private String address;
-
-    @ApiModelProperty("有效期起")
-    @TableField("expiry_date_start")
-    private LocalDateTime expiryDateStart;
-
-    @ApiModelProperty("有效期终")
-    @TableField("expiry_date_end")
-    private LocalDateTime expiryDateEnd;
-
-    @ApiModelProperty("描述信息")
-    @TableField("description")
-    private String description;
-
-    @ApiModelProperty("禁用状态;0:启用(否）,1:禁用(是)")
+    @ApiModelProperty(value = "禁用状态", notes = "0正常，1禁用")
     @TableField("status")
     private Integer status;
 

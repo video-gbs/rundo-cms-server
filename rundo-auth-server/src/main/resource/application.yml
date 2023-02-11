@@ -1,11 +1,11 @@
 server:
   port: 7821
   servlet:
-    context-path: /rundoAuthServer
+    context-path: /auth
 
 spring:
   application:
-    name: rundo-auth-server
+    name: auth-server
   main:
     allow-bean-definition-overriding: true
   profiles:
@@ -109,7 +109,7 @@ logging:
     # 异常处理
     org.springframework.security.web.access.ExceptionTranslationFilter: trace
 response:
-  exclude-url: "/rundoAuthServer/swagger-ui,/rundoAuthServer/swagger-resources,/rundoAuthServer/profile,/rundoAuthServer/v2,/rundoAuthServer/v3,/rundoAuthServer/doc.html,/rundoAuthServer/webjars,/rundoAuthServer/druid,/rundoAuthServer/api/v1"
+  exclude-url: "/auth/swagger-ui,/auth/swagger-resources,/auth/profile,/auth/v2,/auth/v3,/auth/doc.html,/auth/webjars,/auth/druid,/auth/api/v1"
 springfox:
   documentation:
     auto-startup: true
