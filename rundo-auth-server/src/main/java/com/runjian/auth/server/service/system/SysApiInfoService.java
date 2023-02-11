@@ -6,7 +6,7 @@ import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
-import com.runjian.auth.server.domain.entity.SysApiInfo;
+import com.runjian.auth.server.domain.entity.ApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysApiInfoTree;
 
@@ -20,7 +20,7 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface SysApiInfoService extends IService<SysApiInfo> {
+public interface SysApiInfoService extends IService<ApiInfo> {
 
     void saveSysApiInfo(AddSysApiInfoDTO dto);
 

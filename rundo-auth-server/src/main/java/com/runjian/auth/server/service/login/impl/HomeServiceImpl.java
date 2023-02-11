@@ -1,8 +1,8 @@
 package com.runjian.auth.server.service.login.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.runjian.auth.server.domain.entity.SysAppInfo;
-import com.runjian.auth.server.domain.entity.SysUserInfo;
+import com.runjian.auth.server.domain.entity.AppInfo;
+import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.HomeVO;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.service.login.HomeSevice;
@@ -35,15 +35,15 @@ public class HomeServiceImpl implements HomeSevice {
 
     @Override
     public HomeVO getIndex() {
-        SysUserInfo sysUserInfo = userUtils.getSysUserInfo();
-        Long userId = sysUserInfo.getId();
+        UserInfo userInfo = userUtils.getSysUserInfo();
+        Long userId = userInfo.getId();
         // 通过登录的用户查取该用户已授权的角色信息
         List<String> roleCodeList = myRBACService.findRoleInfoByUserAccount(userId);
         if (CollUtil.isEmpty(roleCodeList)) {
             throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH, "未对用户进行角色授权");
         }
         // 查取角色已经授权的应用
-        List<SysAppInfo> roleAppInfoList = new ArrayList<>();
+        List<AppInfo> roleAppInfoList = new ArrayList<>();
         for (String roleCode : roleCodeList) {
             roleAppInfoList.addAll(myRBACService.findAppIdByRoleCode(roleCode));
         }
@@ -51,31 +51,31 @@ public class HomeServiceImpl implements HomeSevice {
             throw new BusinessException("未对用户进行应用授权");
         }
         // 去重
-        List<SysAppInfo> appInfoList = CollUtil.distinct(roleAppInfoList);
+        List<AppInfo> appInfoList = CollUtil.distinct(roleAppInfoList);
         // 分拣应用种类
         List<SysAppInfoVO> appList = new ArrayList<>();
         List<SysAppInfoVO> configList = new ArrayList<>();
         List<SysAppInfoVO> devOpsList = new ArrayList<>();
-        for (SysAppInfo sysAppInfo : appInfoList) {
-            switch (sysAppInfo.getAppType()) {
+        for (AppInfo appInfo : appInfoList) {
+            switch (appInfo.getAppType()) {
                 case 1: {
                     // 功能应用类
                     SysAppInfoVO sysAppInfoVO = new SysAppInfoVO();
-                    BeanUtils.copyProperties(sysAppInfo, sysAppInfoVO);
+                    BeanUtils.copyProperties(appInfo, sysAppInfoVO);
                     appList.add(sysAppInfoVO);
                     break;
                 }
                 case 2: {
                     // 配置类
                     SysAppInfoVO sysAppInfoVO = new SysAppInfoVO();
-                    BeanUtils.copyProperties(sysAppInfo, sysAppInfoVO);
+                    BeanUtils.copyProperties(appInfo, sysAppInfoVO);
                     configList.add(sysAppInfoVO);
                     break;
                 }
                 case 3: {
                     // 运维类
                     SysAppInfoVO sysAppInfoVO = new SysAppInfoVO();
-                    BeanUtils.copyProperties(sysAppInfo, sysAppInfoVO);
+                    BeanUtils.copyProperties(appInfo, sysAppInfoVO);
                     devOpsList.add(sysAppInfoVO);
                     break;
                 }

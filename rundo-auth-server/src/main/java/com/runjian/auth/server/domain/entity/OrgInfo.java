@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 用户信息表
+ * 组织机构表
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@TableName("sys_user_info")
-@ApiModel(value = "SysUserInfo对象", description = "用户信息表")
-public class SysUserInfo implements Serializable {
+@TableName("org_info")
+@ApiModel(value = "OrgInfo对象", description = "组织机构表")
+public class OrgInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,17 +29,33 @@ public class SysUserInfo implements Serializable {
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("用户账户")
-    @TableField("user_account")
-    private String userAccount;
+    @ApiModelProperty("直接上级组织父级ID")
+    @TableField("org_pid")
+    private Long orgPid;
 
-    @ApiModelProperty("用户姓名")
-    @TableField("user_name")
-    private String userName;
+    @ApiModelProperty("所有间接组织父级ID")
+    @TableField("org_pids")
+    private String orgPids;
 
-    @ApiModelProperty("用户密码")
-    @TableField("password")
-    private String password;
+    @ApiModelProperty("组织机构名称")
+    @TableField("org_name")
+    private String orgName;
+
+    @ApiModelProperty("组织结构编码")
+    @TableField("org_code")
+    private String orgCode;
+
+    @ApiModelProperty("组织机构排序")
+    @TableField("org_sort")
+    private Integer orgSort;
+
+    @ApiModelProperty("地址")
+    @TableField("adders")
+    private String adders;
+
+    @ApiModelProperty("部门负责人")
+    @TableField("org_leader")
+    private String orgLeader;
 
     @ApiModelProperty("邮箱")
     @TableField("email")
@@ -49,21 +65,13 @@ public class SysUserInfo implements Serializable {
     @TableField("phone")
     private String phone;
 
-    @ApiModelProperty("工号")
-    @TableField("job_no")
-    private String jobNo;
+    @ApiModelProperty("层级")
+    @TableField("level")
+    private Integer level;
 
-    @ApiModelProperty("地址")
-    @TableField("address")
-    private String address;
-
-    @ApiModelProperty("有效期起")
-    @TableField("expiry_date_start")
-    private LocalDateTime expiryDateStart;
-
-    @ApiModelProperty("有效期终")
-    @TableField("expiry_date_end")
-    private LocalDateTime expiryDateEnd;
+    @ApiModelProperty("是否叶子节点")
+    @TableField("leaf")
+    private Integer leaf;
 
     @ApiModelProperty("描述信息")
     @TableField("description")
@@ -72,10 +80,6 @@ public class SysUserInfo implements Serializable {
     @ApiModelProperty("禁用状态;0:启用(否）,1:禁用(是)")
     @TableField("status")
     private Integer status;
-
-    @ApiModelProperty("租户号")
-    @TableField("tenant_id")
-    private Long tenantId;
 
     @ApiModelProperty("逻辑删除")
     @TableField(value = "delete_flag", fill = FieldFill.INSERT)

@@ -1,7 +1,7 @@
 package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.entity.SysConfig;
+import com.runjian.auth.server.domain.entity.ConfigInfo;
 import com.runjian.auth.server.mapper.system.SysConfigMapper;
 import com.runjian.auth.server.domain.dto.system.AddSysConfigDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysConfigDTO;
@@ -22,21 +22,21 @@ import java.util.List;
  * @since 2023-01-03 11:45:53
  */
 @Service
-public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
+public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, ConfigInfo> implements SysConfigService {
 
     @Autowired
     private SysConfigMapper sysConfigMapper;
 
     @Override
     public void saveSysConfig(AddSysConfigDTO dto) {
-        SysConfig sysConfig = new SysConfig();
-        BeanUtils.copyProperties(dto,sysConfig);
-        sysConfigMapper.insert(sysConfig);
+        ConfigInfo configInfo = new ConfigInfo();
+        BeanUtils.copyProperties(dto, configInfo);
+        sysConfigMapper.insert(configInfo);
     }
 
     @Override
     public void updateSysConfigById(UpdateSysConfigDTO dto) {
-        SysConfig sysConfig = sysConfigMapper.selectById(dto.getId());
+        ConfigInfo configInfo = sysConfigMapper.selectById(dto.getId());
 
 
     }

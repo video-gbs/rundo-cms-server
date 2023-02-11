@@ -1,7 +1,7 @@
 package com.runjian.auth.server.mapper.system;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.runjian.auth.server.domain.entity.SysConfig;
+import com.runjian.auth.server.domain.entity.ConfigInfo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -13,6 +13,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2023-01-03 11:45:53
  */
 @Mapper
-public interface SysConfigMapper extends BaseMapper<SysConfig> {
+public interface SysConfigMapper extends BaseMapper<ConfigInfo> {
 
 }

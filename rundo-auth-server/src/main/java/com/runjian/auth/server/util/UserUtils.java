@@ -1,7 +1,7 @@
 package com.runjian.auth.server.util;
 
 import com.runjian.auth.server.domain.dto.login.LoginUser;
-import com.runjian.auth.server.domain.entity.SysUserInfo;
+import com.runjian.auth.server.domain.entity.UserInfo;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserUtils {
-    public SysUserInfo getSysUserInfo() {
+    public UserInfo getSysUserInfo() {
         LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return loginUser.getSysUserInfo();
+        return loginUser.getUserInfo();
     }
 
 

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageRelationSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.*;
-import com.runjian.auth.server.domain.entity.SysUserInfo;
+import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUserInfo> implements SysUserInfoService {
+public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, UserInfo> implements SysUserInfoService {
     @Autowired
     private PasswordUtil passwordUtil;
 
@@ -42,20 +42,20 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     @Override
     public void saveSysUserInfo(AddSysUserInfoDTO dto) {
         // 处理基本信息
-        SysUserInfo sysUserInfo = new SysUserInfo();
-        BeanUtils.copyProperties(dto, sysUserInfo);
+        UserInfo userInfo = new UserInfo();
+        BeanUtils.copyProperties(dto, userInfo);
         // 处理密码
         String password = passwordUtil.encode(dto.getPassword());
-        sysUserInfo.setPassword(password);
+        userInfo.setPassword(password);
         // sysUserInfo.setTenantId();
-        sysUserInfoMapper.insert(sysUserInfo);
+        sysUserInfoMapper.insert(userInfo);
         // 处理部门信息
-        sysUserInfoMapper.insertUserOrg(sysUserInfo.getId(), dto.getOrgId());
+        sysUserInfoMapper.insertUserOrg(userInfo.getId(), dto.getOrgId());
         // 处理角色信息
         List<Long> roleIds = dto.getRoleIds();
         if (roleIds.size() > 0) {
             for (Long roleId : roleIds) {
-                sysUserInfoMapper.insertUserRole(sysUserInfo.getId(), roleId);
+                sysUserInfoMapper.insertUserRole(userInfo.getId(), roleId);
             }
         }
 
@@ -65,8 +65,8 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     @Override
     public EditSysUserInfoVO getSysUserInfoById(Long id) {
         EditSysUserInfoVO vo = new EditSysUserInfoVO();
-        SysUserInfo sysUserInfo = sysUserInfoMapper.selectById(id);
-        BeanUtils.copyProperties(sysUserInfo, vo);
+        UserInfo userInfo = sysUserInfoMapper.selectById(id);
+        BeanUtils.copyProperties(userInfo, vo);
         OrgInfoVO orgInfoVO = sysUserInfoMapper.selectOrgInfoByUserId(id);
         List<Long> roleIds = sysUserInfoMapper.selectRoleByUserId(id);
         vo.setPassword(null);
@@ -80,7 +80,7 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
     @Override
     public void updateSysUserInfo(UpdateSysUserInfoDTO dto) {
         // 根据id查取原始信息
-        SysUserInfo sysUserInfo = sysUserInfoMapper.selectById(dto.getId());
+        UserInfo userInfo = sysUserInfoMapper.selectById(dto.getId());
         // 根据id查取角色信息
         List<Long> oldRoleIds = sysUserInfoMapper.selectRoleByUserId(dto.getId());
         // 处理信息
@@ -89,21 +89,21 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
             String password = passwordUtil.encode(dto.getPassword());
             dto.setPassword(password);
         } else {
-            dto.setPassword(sysUserInfo.getPassword());
+            dto.setPassword(userInfo.getPassword());
         }
 
-        BeanUtils.copyProperties(dto, sysUserInfo);
-        sysUserInfoMapper.updateById(sysUserInfo);
+        BeanUtils.copyProperties(dto, userInfo);
+        sysUserInfoMapper.updateById(userInfo);
         // 原始关联角色为空 则提交关联角色为新增
         List<Long> newRoleIds = dto.getRoleIds();
         if (CollUtil.isEmpty(oldRoleIds)) {
             for (Long roleId : newRoleIds) {
-                sysUserInfoMapper.insertUserRole(sysUserInfo.getId(), roleId);
+                sysUserInfoMapper.insertUserRole(userInfo.getId(), roleId);
             }
         }
         // 如果提交的角色为空，则删除所有的角色关联
         if (CollUtil.isEmpty(newRoleIds)) {
-            sysUserInfoMapper.deleteUserRole(sysUserInfo.getId(), null);
+            sysUserInfoMapper.deleteUserRole(userInfo.getId(), null);
         }
         // 提交的角色与原始的角色均不为空
         // 采取Lambda表达式取得相同的角色
@@ -111,12 +111,12 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
         // 原始角色列表剔除相同部分后删除授权
         oldRoleIds.removeAll(common);
         for (Long roleId : oldRoleIds) {
-            sysUserInfoMapper.deleteUserRole(sysUserInfo.getId(), roleId);
+            sysUserInfoMapper.deleteUserRole(userInfo.getId(), roleId);
         }
         // 新提交的角色列表剔除相同部分后新增授权
         newRoleIds.removeAll(common);
         for (Long roleId : newRoleIds) {
-            sysUserInfoMapper.insertUserRole(sysUserInfo.getId(), roleId);
+            sysUserInfoMapper.insertUserRole(userInfo.getId(), roleId);
         }
 
     }
@@ -124,9 +124,9 @@ public class SysUserInfoServiceImpl extends ServiceImpl<SysUserInfoMapper, SysUs
 
     @Override
     public void changeStatus(StatusSysUserInfoDTO dto) {
-        SysUserInfo sysUserInfo = sysUserInfoMapper.selectById(dto.getId());
-        sysUserInfo.setStatus(dto.getStatus());
-        sysUserInfoMapper.updateById(sysUserInfo);
+        UserInfo userInfo = sysUserInfoMapper.selectById(dto.getId());
+        userInfo.setStatus(dto.getStatus());
+        sysUserInfoMapper.updateById(userInfo);
     }
 
     @Override

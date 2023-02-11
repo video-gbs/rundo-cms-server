@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 菜单信息表
+ * 角色信息表
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@TableName("sys_menu_info")
-@ApiModel(value = "SysMenuInfo对象", description = "菜单信息表")
-public class SysMenuInfo implements Serializable {
+@TableName("role_info")
+@ApiModel(value = "RoleInfo对象", description = "角色信息表")
+public class RoleInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,57 +29,33 @@ public class SysMenuInfo implements Serializable {
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("直接父级菜单ID")
-    @TableField("app_pid")
-    private Long appId;
+    @ApiModelProperty("角色名称")
+    @TableField("role_name")
+    private String roleName;
 
-    @ApiModelProperty("直接父级菜单ID")
-    @TableField("menu_pid")
-    private Long menuPid;
+    @ApiModelProperty("角色编码")
+    @TableField("role_code")
+    private String roleCode;
 
-    @ApiModelProperty("所有间接父级菜单ID")
-    @TableField("menu_pids")
-    private String menuPids;
+    @ApiModelProperty("角色顺序")
+    @TableField("role_sort")
+    private Integer roleSort;
 
-    @ApiModelProperty("菜单名称")
-    @TableField("menu_name")
-    private String menuName;
+    @ApiModelProperty("角色描述")
+    @TableField("role_desc")
+    private String roleDesc;
 
-    @ApiModelProperty("菜单顺序")
-    @TableField("menu_sort")
-    private String menuSort;
+    @ApiModelProperty("上级角色ID")
+    @TableField("role_pid")
+    private Long rolePid;
 
-    @ApiModelProperty("是否子节点")
-    @TableField("leaf")
-    private Integer leaf;
-
-    @ApiModelProperty("跳转URL")
-    @TableField("url")
-    private String url;
-
-    @ApiModelProperty("图标")
-    @TableField("icon")
-    private String icon;
-
-    @ApiModelProperty("层级")
-    @TableField("level")
-    private Integer level;
-
-    @ApiModelProperty("是否隐藏;0:显示(否）,1:隐藏(是)")
-    @TableField("hidden")
-    private Integer hidden;
+    @ApiModelProperty("所有间接上级角色")
+    @TableField("role_pids")
+    private String rolePids;
 
     @ApiModelProperty("是否禁用;0:启用(否）,1:禁用(是)")
     @TableField("status")
     private Integer status;
-
-    @ApiModelProperty("前端组件import路径")
-    @TableField("view_import")
-    private String viewImport;
-
-    @ApiModelProperty("租户号")
-    @TableField("tenant_id")
-    private Long tenantId;
 
     @ApiModelProperty("逻辑删除")
     @TableField(value = "delete_flag", fill = FieldFill.INSERT)

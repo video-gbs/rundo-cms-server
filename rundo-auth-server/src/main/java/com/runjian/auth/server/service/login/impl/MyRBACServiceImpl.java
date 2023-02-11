@@ -27,9 +27,9 @@ public class MyRBACServiceImpl implements MyRBACService {
 
 
     @Override
-    public SysUserInfo findUserInfoByUserAccount(String userName) {
-        LambdaQueryWrapper<SysUserInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUserInfo::getUserAccount, userName);
+    public UserInfo findUserInfoByUserAccount(String userName) {
+        LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserInfo::getUserAccount, userName);
         return sysUserInfoMapper.selectOne(queryWrapper);
     }
 
@@ -40,12 +40,12 @@ public class MyRBACServiceImpl implements MyRBACService {
     }
 
     @Override
-    public List<SysAppInfo> findAppIdByRoleCode(String roleCode) {
+    public List<AppInfo> findAppIdByRoleCode(String roleCode) {
         return roleInfoMapper.selectAppByRoleCode(roleCode);
     }
 
     @Override
-    public List<SysMenuInfo> findMenuInfoByRoleCode(String roleCode) {
+    public List<MenuInfo> findMenuInfoByRoleCode(String roleCode) {
         return roleInfoMapper.selectMenuByRoleCode(roleCode);
     }
 
@@ -55,12 +55,12 @@ public class MyRBACServiceImpl implements MyRBACService {
     }
 
     @Override
-    public List<SysApiInfo> findApiInfoByRoleCode(String roleCode) {
+    public List<ApiInfo> findApiInfoByRoleCode(String roleCode) {
         return roleInfoMapper.selectApiInfoByRoleCode(roleCode);
     }
 
     @Override
-    public List<SysOrg> findSysOrgByRoleCode(String roleCode) {
+    public List<OrgInfo> findSysOrgByRoleCode(String roleCode) {
         return roleInfoMapper.selectOrgInfoByRoleCode(roleCode);
     }
 

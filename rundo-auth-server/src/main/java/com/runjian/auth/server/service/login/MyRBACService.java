@@ -19,7 +19,7 @@ public interface MyRBACService {
      * @param userName
      * @return
      */
-    SysUserInfo findUserInfoByUserAccount(String userName);
+    UserInfo findUserInfoByUserAccount(String userName);
 
     /**
      * 通过用户编号，查取用户所有的角色信息
@@ -35,7 +35,7 @@ public interface MyRBACService {
      * @param roleCode
      * @return
      */
-    List<SysAppInfo> findAppIdByRoleCode(String roleCode);
+    List<AppInfo> findAppIdByRoleCode(String roleCode);
 
     /**
      * 通过角色编码，查取角色已有的菜单信息
@@ -43,7 +43,7 @@ public interface MyRBACService {
      * @param roleCode
      * @return
      */
-    List<SysMenuInfo> findMenuInfoByRoleCode(String roleCode);
+    List<MenuInfo> findMenuInfoByRoleCode(String roleCode);
 
     /**
      * 通过角色编码，查取角色已有的API URL
@@ -59,7 +59,7 @@ public interface MyRBACService {
      * @param roleCode
      * @return
      */
-    List<SysApiInfo> findApiInfoByRoleCode(String roleCode);
+    List<ApiInfo> findApiInfoByRoleCode(String roleCode);
 
     /**
      * 通过角色编码，查取角色已有部门信息
@@ -67,7 +67,7 @@ public interface MyRBACService {
      * @param roleCode
      * @return
      */
-    List<SysOrg> findSysOrgByRoleCode(String roleCode);
+    List<OrgInfo> findSysOrgByRoleCode(String roleCode);
 
     /**
      * 通过角色编码，查取角色已有的安防区域信息

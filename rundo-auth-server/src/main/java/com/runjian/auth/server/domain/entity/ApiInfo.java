@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 组织机构表
+ * 接口信息表
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -19,71 +19,50 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@TableName("sys_org")
-@ApiModel(value = "SysOrg对象", description = "组织机构表")
-public class SysOrg implements Serializable {
-
+@TableName("api_info")
+@ApiModel(value = "ApiInfo对象", description = "接口信息表")
+public class ApiInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("直接上级组织父级ID")
-    @TableField("org_pid")
-    private Long orgPid;
+    @ApiModelProperty("接口直接父ID")
+    @TableField("app_id")
+    private Long appId;
 
-    @ApiModelProperty("所有间接组织父级ID")
-    @TableField("org_pids")
-    private String orgPids;
+    @ApiModelProperty("接口直接父ID")
+    @TableField("api_pid")
+    private Long apiPid;
 
-    @ApiModelProperty("组织机构名称")
-    @TableField("org_name")
-    private String orgName;
+    @ApiModelProperty("接口间接父ID")
+    @TableField("api_pids")
+    private String apiPids;
 
-    @ApiModelProperty("组织结构编码")
-    @TableField("org_code")
-    private String orgCode;
+    @ApiModelProperty("接口名称")
+    @TableField("api_name")
+    private String apiName;
 
-    @ApiModelProperty("组织机构排序")
-    @TableField("org_sort")
-    private Integer orgSort;
+    @ApiModelProperty("接口排序")
+    @TableField("api_sort")
+    private Integer apiSort;
 
-    @ApiModelProperty("地址")
-    @TableField("adders")
-    private String adders;
-
-    @ApiModelProperty("部门负责人")
-    @TableField("org_leader")
-    private String orgLeader;
-
-    @ApiModelProperty("邮箱")
-    @TableField("email")
-    private String email;
-
-    @ApiModelProperty("电话")
-    @TableField("phone")
-    private String phone;
-
-    @ApiModelProperty("层级")
+    @ApiModelProperty("接口层级")
     @TableField("level")
     private Integer level;
+
+    @ApiModelProperty("跳转链接")
+    @TableField("url")
+    private String url;
 
     @ApiModelProperty("是否叶子节点")
     @TableField("leaf")
     private Integer leaf;
 
-    @ApiModelProperty("描述信息")
-    @TableField("description")
-    private String description;
-
-    @ApiModelProperty("禁用状态;0:启用(否）,1:禁用(是)")
+    @ApiModelProperty("禁用状态")
     @TableField("status")
     private Integer status;
-
-    @ApiModelProperty("租户号")
-    @TableField("tenant_id")
-    private Long tenantId;
 
     @ApiModelProperty("逻辑删除")
     @TableField(value = "delete_flag", fill = FieldFill.INSERT)

@@ -3,7 +3,7 @@ package com.runjian.auth.server.service.system;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.system.*;
-import com.runjian.auth.server.domain.entity.SysRoleInfo;
+import com.runjian.auth.server.domain.entity.RoleInfo;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface SysRoleInfoService extends IService<SysRoleInfo> {
+public interface SysRoleInfoService extends IService<RoleInfo> {
 
     void addRole(AddSysRoleInfoDTO dto);
 

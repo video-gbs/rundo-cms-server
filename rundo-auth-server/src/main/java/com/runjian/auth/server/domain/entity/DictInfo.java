@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 系统全局参数配置
+ * 数据字典表
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -19,40 +19,40 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@TableName("sys_config")
-@ApiModel(value = "SysConfig对象", description = "系统全局参数配置")
-public class SysConfig implements Serializable {
-
+@TableName("dict_info")
+@ApiModel(value = "DictInfo对象", description = "数据字典表")
+public class DictInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("参数名称")
-    @TableField("param_name")
-    private String paramName;
+    @ApiModelProperty("分组名称")
+    @TableField("group_name")
+    private String groupName;
 
-    @ApiModelProperty("参数编码")
-    @TableField("param_code")
-    private String paramCode;
+    @ApiModelProperty("分组编码")
+    @TableField("group_code")
+    private String groupCode;
 
-    @ApiModelProperty("参数值")
-    @TableField("param_value")
-    private String paramValue;
+    @ApiModelProperty("字典项名称")
+    @TableField("item_name")
+    private String itemName;
 
-    @ApiModelProperty("参数描述")
-    @TableField("param_desc")
-    private String paramDesc;
+    @ApiModelProperty("字典值")
+    @TableField("item_value")
+    private String itemValue;
 
-    @ApiModelProperty("租户号")
-    @TableField("tenant_id")
-    private Long tenantId;
+    @ApiModelProperty("字典描述")
+    @TableField("item_desc")
+    private String itemDesc;
 
     @ApiModelProperty("逻辑删除")
     @TableField(value = "delete_flag", fill = FieldFill.INSERT)
     @TableLogic
     private Integer deleteFlag;
+
     @ApiModelProperty("创建人")
     @TableField(value ="created_by", fill = FieldFill.INSERT)
     private Long createdBy;

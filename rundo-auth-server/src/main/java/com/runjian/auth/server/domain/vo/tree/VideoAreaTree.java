@@ -1,6 +1,6 @@
 package com.runjian.auth.server.domain.vo.tree;
 
-import com.runjian.auth.server.domain.vo.video.VideoAreaVO;
+import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
 import com.runjian.auth.server.util.tree.DataTree;
 
 import java.util.List;

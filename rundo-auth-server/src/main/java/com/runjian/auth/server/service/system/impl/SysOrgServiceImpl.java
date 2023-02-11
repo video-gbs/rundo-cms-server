@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
-import com.runjian.auth.server.domain.entity.SysOrg;
+import com.runjian.auth.server.domain.entity.OrgInfo;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.mapper.system.SysOrgMapper;
@@ -30,39 +30,39 @@ import java.util.stream.Collectors;
  * @since 2023-01-03 11:45:53
  */
 @Service
-public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> implements SysOrgService {
+public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, OrgInfo> implements SysOrgService {
 
     @Autowired
     private SysOrgMapper sysOrgMapper;
 
     @Override
     public SysOrgVO saveSysOrg(AddSysOrgDTO dto) {
-        SysOrg sysOrg = new SysOrg();
-        sysOrg.setOrgPid(dto.getOrgPid());
-        SysOrg parentInfo = sysOrgMapper.selectById(dto.getOrgPid());
+        OrgInfo orgInfo = new OrgInfo();
+        orgInfo.setOrgPid(dto.getOrgPid());
+        OrgInfo parentInfo = sysOrgMapper.selectById(dto.getOrgPid());
         String orgPids = parentInfo.getOrgPids() + "[" + dto.getOrgPid() + "]";
-        sysOrg.setOrgPids(orgPids);
-        sysOrg.setOrgName(dto.getOrgName());
-        sysOrg.setOrgCode(dto.getOrgCode());
+        orgInfo.setOrgPids(orgPids);
+        orgInfo.setOrgName(dto.getOrgName());
+        orgInfo.setOrgCode(dto.getOrgCode());
         if (null != dto.getOrgSort()) {
-            sysOrg.setOrgSort(dto.getOrgSort());
+            orgInfo.setOrgSort(dto.getOrgSort());
         }
-        sysOrg.setOrgSort(100);
-        sysOrg.setAdders(dto.getAdders());
-        sysOrg.setOrgLeader(dto.getOrgLeader());
-        sysOrg.setEmail(dto.getEmail());
-        sysOrg.setPhone(dto.getPhone());
-        sysOrg.setLevel(parentInfo.getLevel() + 1);
-        sysOrg.setLeaf(0);
-        sysOrg.setDescription(dto.getDescription());
-        sysOrg.setStatus(0);
+        orgInfo.setOrgSort(100);
+        orgInfo.setAdders(dto.getAdders());
+        orgInfo.setOrgLeader(dto.getOrgLeader());
+        orgInfo.setEmail(dto.getEmail());
+        orgInfo.setPhone(dto.getPhone());
+        orgInfo.setLevel(parentInfo.getLevel() + 1);
+        orgInfo.setLeaf(0);
+        orgInfo.setDescription(dto.getDescription());
+        orgInfo.setStatus(0);
 
         // sysOrg.setTenantId();
 
-        sysOrgMapper.insert(sysOrg);
+        sysOrgMapper.insert(orgInfo);
 
         SysOrgVO sysOrgVO = new SysOrgVO();
-        BeanUtils.copyProperties(sysOrg, sysOrgVO);
+        BeanUtils.copyProperties(orgInfo, sysOrgVO);
         return sysOrgVO;
 
     }
@@ -70,16 +70,16 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     @Override
     public String removeSysOrgById(Long id) {
         // 1.判断是否为根节点
-        SysOrg sysOrg = sysOrgMapper.selectById(id);
-        if (sysOrg.getOrgPid().equals(0L)) {
+        OrgInfo orgInfo = sysOrgMapper.selectById(id);
+        if (orgInfo.getOrgPid().equals(0L)) {
             throw new BusinessException("系统内置根节点不能删除");
         }
         // 2.查取该节点的所有子代节点
-        LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.likeRight(SysOrg::getOrgPids, sysOrg.getOrgPids() + "[" + sysOrg.getId() + "]");
-        List<SysOrg> sysOrgChild = sysOrgMapper.selectList(queryWrapper);
+        LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.likeRight(OrgInfo::getOrgPids, orgInfo.getOrgPids() + "[" + orgInfo.getId() + "]");
+        List<OrgInfo> orgInfoChild = sysOrgMapper.selectList(queryWrapper);
         // 3.删除子代节点
-        for (SysOrg org : sysOrgChild) {
+        for (OrgInfo org : orgInfoChild) {
             sysOrgMapper.deleteById(org.getId());
         }
         // 4.删除目标节点
@@ -89,23 +89,23 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
 
     @Override
     public void updateSysOrgById(UpdateSysOrgDTO dto) {
-        SysOrg sysOrg = new SysOrg();
-        BeanUtils.copyProperties(dto, sysOrg);
-        sysOrgMapper.updateById(sysOrg);
+        OrgInfo orgInfo = new OrgInfo();
+        BeanUtils.copyProperties(dto, orgInfo);
+        sysOrgMapper.updateById(orgInfo);
     }
 
     @Override
     public SysOrgVO getSysOrgById(Long id) {
-        SysOrg sysOrg = sysOrgMapper.selectById(id);
+        OrgInfo orgInfo = sysOrgMapper.selectById(id);
         SysOrgVO sysOrgVO = new SysOrgVO();
-        BeanUtils.copyProperties(sysOrg, sysOrgVO);
+        BeanUtils.copyProperties(orgInfo, sysOrgVO);
         return sysOrgVO;
     }
 
     @Override
     public List<SysOrgVO> getSysOrgList() {
-        List<SysOrg> sysOrgList = sysOrgMapper.selectList(null);
-        return sysOrgList.stream().map(
+        List<OrgInfo> orgInfoList = sysOrgMapper.selectList(null);
+        return orgInfoList.stream().map(
                 item -> {
                     SysOrgVO sysOrgVO = new SysOrgVO();
                     BeanUtils.copyProperties(item, sysOrgVO);
@@ -121,9 +121,9 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
             return;
         }
         // 1.根据上级组织ID，查询上级组织ID信息
-        SysOrg parentInfo = sysOrgMapper.selectById(dto.getOrgPid());
+        OrgInfo parentInfo = sysOrgMapper.selectById(dto.getOrgPid());
         // 1-1 同一节点下的移动判断
-        SysOrg parentInfoId = sysOrgMapper.selectById(dto.getId());
+        OrgInfo parentInfoId = sysOrgMapper.selectById(dto.getId());
         if (parentInfoId.getOrgPid().equals(parentInfo.getOrgPid())) {
             // 切换排序顺序
             parentInfoId.setOrgSort(parentInfo.getOrgSort());
@@ -134,17 +134,17 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
         }
 
         // 2.根据id，查询当前组织的信息
-        SysOrg sysOrg = sysOrgMapper.selectById(dto.getId());
+        OrgInfo orgInfo = sysOrgMapper.selectById(dto.getId());
         // 3.根据id，查询当前组织的直接下级组织信息
-        List<SysOrg> childrenList = getChildren(sysOrg.getId());
+        List<OrgInfo> childrenList = getChildren(orgInfo.getId());
         // 4.更新当前节点信息
-        sysOrg.setOrgPid(parentInfo.getId());
-        sysOrg.setOrgPids(parentInfo.getOrgPids() + "[" + parentInfo.getId() + "]");
-        sysOrg.setLevel(parentInfo.getLevel() + 1);
-        sysOrgMapper.updateById(sysOrg);
+        orgInfo.setOrgPid(parentInfo.getId());
+        orgInfo.setOrgPids(parentInfo.getOrgPids() + "[" + parentInfo.getId() + "]");
+        orgInfo.setLevel(parentInfo.getLevel() + 1);
+        sysOrgMapper.updateById(orgInfo);
         // 5.更新子节点信息
         if (childrenList.size() > 0) {
-            for (SysOrg org : childrenList) {
+            for (OrgInfo org : childrenList) {
                 updateChildren(org, childrenList);
             }
         }
@@ -159,10 +159,10 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
             return "没有选定删除目标";
         }
         // 2.检索删除的节点中是否包含根节点
-        List<SysOrg> sysOrgList = sysOrgMapper.selectBatchIds(ids);
+        List<OrgInfo> orgInfoList = sysOrgMapper.selectBatchIds(ids);
         boolean flag = false;
-        for (SysOrg sysOrg : sysOrgList) {
-            if (sysOrg.getOrgPid().equals(0L)) {
+        for (OrgInfo orgInfo : orgInfoList) {
+            if (orgInfo.getOrgPid().equals(0L)) {
                 flag = true;
             }
         }
@@ -176,11 +176,11 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
 
     @Override
     public List<SysOrgTree> getSysOrgTree() {
-        LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.orderByAsc(true, SysOrg::getOrgSort);
-        queryWrapper.orderByAsc(true, SysOrg::getUpdatedTime);
-        List<SysOrg> sysOrgList = sysOrgMapper.selectList(queryWrapper);
-        List<SysOrgTree> sysOrgTreeList = sysOrgList.stream().map(
+        LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByAsc(true, OrgInfo::getOrgSort);
+        queryWrapper.orderByAsc(true, OrgInfo::getUpdatedTime);
+        List<OrgInfo> orgInfoList = sysOrgMapper.selectList(queryWrapper);
+        List<SysOrgTree> sysOrgTreeList = orgInfoList.stream().map(
                 item -> {
                     SysOrgTree bean = new SysOrgTree();
                     BeanUtils.copyProperties(item, bean);
@@ -191,30 +191,30 @@ public class SysOrgServiceImpl extends ServiceImpl<SysOrgMapper, SysOrg> impleme
     }
 
     @Override
-    public IPage<SysOrg> getListByPage(Integer pageNum, Integer pageSize) {
-        Page<SysOrg> page = Page.of(pageNum, pageSize);
+    public IPage<OrgInfo> getListByPage(Integer pageNum, Integer pageSize) {
+        Page<OrgInfo> page = Page.of(pageNum, pageSize);
         return sysOrgMapper.selectPage(page, null);
     }
 
-    private void updateChildren(SysOrg sysOrg, List<SysOrg> childrenList) {
-        SysOrg parentInfo = sysOrgMapper.selectById(sysOrg.getOrgPid());
-        for (SysOrg org : childrenList) {
-            org.setOrgPids(parentInfo.getOrgPids() + "[" + sysOrg.getId() + "]");
+    private void updateChildren(OrgInfo orgInfo, List<OrgInfo> childrenList) {
+        OrgInfo parentInfo = sysOrgMapper.selectById(orgInfo.getOrgPid());
+        for (OrgInfo org : childrenList) {
+            org.setOrgPids(parentInfo.getOrgPids() + "[" + orgInfo.getId() + "]");
             org.setLevel(parentInfo.getLevel() + 1);
             sysOrgMapper.updateById(org);
-            List<SysOrg> sunChildrenList = getChildren(org.getId());
+            List<OrgInfo> sunChildrenList = getChildren(org.getId());
             if (sunChildrenList.size() > 0) {
-                for (SysOrg sun : sunChildrenList) {
+                for (OrgInfo sun : sunChildrenList) {
                     updateChildren(sun, sunChildrenList);
                 }
             }
         }
     }
 
-    private List<SysOrg> getChildren(Long id) {
-        LambdaQueryWrapper<SysOrg> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysOrg::getOrgPid, id);
-        queryWrapper.orderBy(true, true, SysOrg::getOrgSort, SysOrg::getUpdatedTime);
+    private List<OrgInfo> getChildren(Long id) {
+        LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OrgInfo::getOrgPid, id);
+        queryWrapper.orderBy(true, true, OrgInfo::getOrgSort, OrgInfo::getUpdatedTime);
         return sysOrgMapper.selectList(queryWrapper);
     }
 

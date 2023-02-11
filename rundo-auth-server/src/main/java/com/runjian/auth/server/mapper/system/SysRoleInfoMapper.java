@@ -21,7 +21,7 @@ import java.util.List;
  * @since 2023-01-03 11:45:53
  */
 @Mapper
-public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
+public interface SysRoleInfoMapper extends BaseMapper<RoleInfo> {
 
     /**
      * 根据用户ID查询用户角色
@@ -37,7 +37,7 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      * @param roleCode
      * @return
      */
-    List<SysAppInfo> selectAppByRoleCode(@Param("roleCode") String roleCode);
+    List<AppInfo> selectAppByRoleCode(@Param("roleCode") String roleCode);
 
     /**
      * 根据角色编码查询菜单权限
@@ -45,7 +45,7 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      * @param roleCode
      * @return
      */
-    List<SysMenuInfo> selectMenuByRoleCode(@Param("roleCode") String roleCode);
+    List<MenuInfo> selectMenuByRoleCode(@Param("roleCode") String roleCode);
 
     /**
      * 通过角色编码，查取角色已有的API URL
@@ -61,7 +61,7 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      * @param roleCode
      * @return
      */
-    List<SysApiInfo> selectApiInfoByRoleCode(@Param("roleCode") String roleCode);
+    List<ApiInfo> selectApiInfoByRoleCode(@Param("roleCode") String roleCode);
 
     /**
      * 通过角色编码，查取角色已有部门信息
@@ -69,7 +69,7 @@ public interface SysRoleInfoMapper extends BaseMapper<SysRoleInfo> {
      * @param roleCode
      * @return
      */
-    List<SysOrg> selectOrgInfoByRoleCode(@Param("roleCode") String roleCode);
+    List<OrgInfo> selectOrgInfoByRoleCode(@Param("roleCode") String roleCode);
 
     /**
      * 通过角色编码，查取角色已有的安防区域信息

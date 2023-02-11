@@ -1,7 +1,7 @@
 package com.runjian.auth.server.service.login.impl;
 
 import com.runjian.auth.server.domain.dto.login.LoginUser;
-import com.runjian.auth.server.domain.entity.SysUserInfo;
+import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.service.login.MyRBACService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +31,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 1.加载用户基础信息
-        SysUserInfo sysUserInfo = myRBACService.findUserInfoByUserAccount(username);
+        UserInfo userInfo = myRBACService.findUserInfoByUserAccount(username);
         // 如果查询不到数据就通过抛出异常来给出提示
-        if (Objects.isNull(sysUserInfo)) {
+        if (Objects.isNull(userInfo)) {
             throw new UsernameNotFoundException("用户账户不能存在");
         }
         // TODO 根据用户ID查询权限信息 添加到LoginUser中
         // 2.加载用户角色列表
-        List<String> roleCodes = myRBACService.findRoleInfoByUserAccount(sysUserInfo.getId());
+        List<String> roleCodes = myRBACService.findRoleInfoByUserAccount(userInfo.getId());
         // 3. 通过用户角色列表加载用户的资源权限列表
         List<String> authorities = new ArrayList<>();
         for (String roleCode : roleCodes) {
@@ -49,7 +49,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         // 4.把数据封装为 UserDetails 返回
         LoginUser loginUser = new LoginUser();
-        loginUser.setSysUserInfo(sysUserInfo);
+        loginUser.setUserInfo(userInfo);
         loginUser.setAuthorities(
                 AuthorityUtils.commaSeparatedStringToAuthorityList(
                         String.join(",", authorities)

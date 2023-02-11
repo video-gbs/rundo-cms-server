@@ -5,7 +5,6 @@ import com.runjian.auth.server.domain.dto.login.UserInfoDTO;
 import com.runjian.auth.server.service.login.LoginService;
 import com.runjian.auth.server.util.JwtUtil;
 import com.runjian.auth.server.util.RedisCache;
-import com.runjian.common.config.response.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -49,17 +48,17 @@ public class LoginServiceImpl implements LoginService {
 
         // 认证通过了，使用userid生成一个JWT令牌 并将JWT存入CommonResponse返回
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
-        String userid = loginUser.getSysUserInfo().getId().toString();
+        String userid = loginUser.getUserInfo().getId().toString();
         String jwt = JwtUtil.createJWT(userid);
 
         Map<String, String> map = new HashMap<>();
         map.put("token", jwt);
-        map.put("username", loginUser.getSysUserInfo().getUserName());
-        map.put("userAccount", loginUser.getSysUserInfo().getUserAccount());
-        map.put("jobNo", loginUser.getSysUserInfo().getJobNo());
-        map.put("email", loginUser.getSysUserInfo().getEmail());
-        map.put("phone", loginUser.getSysUserInfo().getPhone());
-        map.put("description", loginUser.getSysUserInfo().getDescription());
+        map.put("username", loginUser.getUserInfo().getUserName());
+        map.put("userAccount", loginUser.getUserInfo().getUserAccount());
+        map.put("jobNo", loginUser.getUserInfo().getJobNo());
+        map.put("email", loginUser.getUserInfo().getEmail());
+        map.put("phone", loginUser.getUserInfo().getPhone());
+        map.put("description", loginUser.getUserInfo().getDescription());
 
         // 把完整的用户信息放入redis中，userId 作为key
         redisCache.setCacheObject("login:" + userid, loginUser);
@@ -71,7 +70,7 @@ public class LoginServiceImpl implements LoginService {
         // 获取SecurityContextHolder中的用户ID
         UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        Long userid = loginUser.getSysUserInfo().getId();
+        Long userid = loginUser.getUserInfo().getId();
         // 删除redis中的UserID
         redisCache.deleteObject("login:" + userid);
     }

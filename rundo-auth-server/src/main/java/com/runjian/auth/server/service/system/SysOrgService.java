@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
-import com.runjian.auth.server.domain.entity.SysOrg;
+import com.runjian.auth.server.domain.entity.OrgInfo;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 
@@ -19,13 +19,13 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface SysOrgService extends IService<SysOrg> {
+public interface SysOrgService extends IService<OrgInfo> {
 
     SysOrgVO saveSysOrg(AddSysOrgDTO dto);
 
     List<SysOrgTree> getSysOrgTree();
 
-    IPage<SysOrg> getListByPage(Integer pageNum, Integer pageSize);
+    IPage<OrgInfo> getListByPage(Integer pageNum, Integer pageSize);
 
     String removeSysOrgById(Long id);
 

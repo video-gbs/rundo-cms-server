@@ -1,4 +1,4 @@
-package com.runjian.auth.server.domain.vo.video;
+package com.runjian.auth.server.domain.dto.system;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

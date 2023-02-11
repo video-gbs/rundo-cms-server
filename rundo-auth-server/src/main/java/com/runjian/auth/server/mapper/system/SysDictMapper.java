@@ -3,7 +3,7 @@ package com.runjian.auth.server.mapper.system;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.runjian.auth.server.domain.dto.page.PageSysDictDTO;
-import com.runjian.auth.server.domain.entity.SysDict;
+import com.runjian.auth.server.domain.entity.DictInfo;
 import com.runjian.auth.server.domain.vo.system.SysDictVO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -16,7 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2023-01-03 11:45:53
  */
 @Mapper
-public interface SysDictMapper extends BaseMapper<SysDict> {
+public interface SysDictMapper extends BaseMapper<DictInfo> {
 
     Page<SysDictVO> MySelectPage(PageSysDictDTO page);
 }

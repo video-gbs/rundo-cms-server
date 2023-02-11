@@ -13,7 +13,7 @@
             sui.id = #{userId,jdbcType=BIGINT}
     </select>
 
-    <select id="selectAppByRoleCode" resultType="com.runjian.auth.server.domain.entity.SysAppInfo">
+    <select id="selectAppByRoleCode" resultType="com.runjian.auth.server.domain.entity.AppInfo">
         SELECT sai.*
         FROM sys_app_info sai
                  LEFT JOIN sys_role_app sra ON sra.app_id = sai.id
@@ -23,7 +23,7 @@
           AND sai.status = 0
     </select>
 
-    <select id="selectMenuByRoleCode" resultType="com.runjian.auth.server.domain.entity.SysMenuInfo">
+    <select id="selectMenuByRoleCode" resultType="com.runjian.auth.server.domain.entity.MenuInfo">
         SELECT
             smi.*
         FROM
@@ -45,7 +45,7 @@
             sri.role_code = #{roleCode}
     </select>
 
-    <select id="selectApiInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.SysApiInfo">
+    <select id="selectApiInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.ApiInfo">
         SELECT
             sai.*
         FROM
@@ -56,7 +56,7 @@
             sri.role_code = #{roleCode}
     </select>
 
-    <select id="selectOrgInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.SysOrg">
+    <select id="selectOrgInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.OrgInfo">
         SELECT
             org.*
         FROM

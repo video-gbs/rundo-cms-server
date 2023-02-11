@@ -1,7 +1,7 @@
 package com.runjian.auth.server.mapper.system;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.runjian.auth.server.domain.entity.SysOrg;
+import com.runjian.auth.server.domain.entity.OrgInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,7 +16,7 @@ import java.util.List;
  * @since 2023-01-03 11:45:53
  */
 @Mapper
-public interface SysOrgMapper extends BaseMapper<SysOrg> {
+public interface SysOrgMapper extends BaseMapper<OrgInfo> {
 
-    List<SysOrg> selectOrgTree(@Param("orgId") Long orgId, @Param("orgName") String orgName);
+    List<OrgInfo> selectOrgTree(@Param("orgId") Long orgId, @Param("orgName") String orgName);
 }

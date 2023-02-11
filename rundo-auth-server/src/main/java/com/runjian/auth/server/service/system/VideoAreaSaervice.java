@@ -5,8 +5,8 @@ import com.runjian.auth.server.domain.dto.system.AddVideoAreaDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateVideoAreaDTO;
 import com.runjian.auth.server.domain.entity.VideoArea;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
-import com.runjian.auth.server.domain.vo.video.MoveVideoAreaDTO;
-import com.runjian.auth.server.domain.vo.video.VideoAreaVO;
+import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
+import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
 
 import java.util.List;
 

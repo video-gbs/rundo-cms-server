@@ -7,7 +7,7 @@ import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
-import com.runjian.auth.server.domain.entity.SysApiInfo;
+import com.runjian.auth.server.domain.entity.ApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysApiInfoTree;
 import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
@@ -30,27 +30,27 @@ import java.util.stream.Collectors;
  * @since 2023-01-03 11:45:53
  */
 @Service
-public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiInfo> implements SysApiInfoService {
+public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, ApiInfo> implements SysApiInfoService {
 
     @Autowired
     private SysApiInfoMapper sysApiInfoMapper;
 
     @Override
     public void saveSysApiInfo(AddSysApiInfoDTO dto) {
-        SysApiInfo sysApiInfo = new SysApiInfo();
+        ApiInfo apiInfo = new ApiInfo();
         // 减少表操作此处代表菜单页面的ID
-        sysApiInfo.setApiPid(dto.getApiPid());
+        apiInfo.setApiPid(dto.getApiPid());
         // SysApiInfo parentApiInfo = sysApiInfoMapper.selectById(dto.getApiPid());
         // sysApiInfo.setApiPids(parentApiInfo.getApiPids() + ",[" + dto.getApiPid() + "]");
-        sysApiInfo.setApiName(dto.getApiName());
-        sysApiInfo.setApiSort(dto.getApiSort());
+        apiInfo.setApiName(dto.getApiName());
+        apiInfo.setApiSort(dto.getApiSort());
         // sysApiInfo.setLevel(parentApiInfo.getLevel() + 1);
-        sysApiInfo.setUrl(dto.getUrl());
-        sysApiInfo.setLeaf(0);
-        sysApiInfo.setStatus(dto.getStatus());
+        apiInfo.setUrl(dto.getUrl());
+        apiInfo.setLeaf(0);
+        apiInfo.setStatus(dto.getStatus());
         // sysApiInfo.setTenantId();
-        sysApiInfoMapper.insert(sysApiInfo);
-        Long apiId = sysApiInfo.getId();
+        sysApiInfoMapper.insert(apiInfo);
+        Long apiId = apiInfo.getId();
         Long appId = dto.getAppId();
         // 处理应用 API映射
         sysApiInfoMapper.insertAppApi(appId, apiId);
@@ -58,16 +58,16 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
 
     @Override
     public void updateSysApiInfoById(UpdateSysApiInfoDTO dto) {
-        SysApiInfo sysApiInfo = new SysApiInfo();
-        BeanUtils.copyProperties(dto, sysApiInfo);
-        sysApiInfoMapper.updateById(sysApiInfo);
+        ApiInfo apiInfo = new ApiInfo();
+        BeanUtils.copyProperties(dto, apiInfo);
+        sysApiInfoMapper.updateById(apiInfo);
     }
 
     @Override
     public SysApiInfoVO getSysApiInfoById(Long id) {
-        SysApiInfo sysApiInfo = sysApiInfoMapper.selectById(id);
+        ApiInfo apiInfo = sysApiInfoMapper.selectById(id);
         SysApiInfoVO sysApiInfoVO = new SysApiInfoVO();
-        BeanUtils.copyProperties(sysApiInfo, sysApiInfoVO);
+        BeanUtils.copyProperties(apiInfo, sysApiInfoVO);
         return sysApiInfoVO;
     }
 
@@ -79,19 +79,19 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, SysApiI
 
     @Override
     public void changeStatus(StatusSysApiInfoDTO dto) {
-        SysApiInfo sysApiInfo = sysApiInfoMapper.selectById(dto.getId());
-        sysApiInfo.setStatus(dto.getStatus());
-        sysApiInfoMapper.updateById(sysApiInfo);
+        ApiInfo apiInfo = sysApiInfoMapper.selectById(dto.getId());
+        apiInfo.setStatus(dto.getStatus());
+        sysApiInfoMapper.updateById(apiInfo);
     }
 
     @Override
     public List<SysApiInfoTree> getSysApiInfoTree(QuerySysApiInfoDTO dto) {
         List<SysApiInfoVO> sysApiInfoVOList = new ArrayList<>();
-        LambdaQueryWrapper<SysApiInfo> queryWrapper = new LambdaQueryWrapper<>();
-        List<SysApiInfo> sysApiInfoList = sysApiInfoMapper.selectList(queryWrapper);
-        for (SysApiInfo sysApiInfo : sysApiInfoList) {
+        LambdaQueryWrapper<ApiInfo> queryWrapper = new LambdaQueryWrapper<>();
+        List<ApiInfo> apiInfoList = sysApiInfoMapper.selectList(queryWrapper);
+        for (ApiInfo apiInfo : apiInfoList) {
             SysApiInfoVO sysApiInfoVO = new SysApiInfoVO();
-            BeanUtils.copyProperties(sysApiInfo, sysApiInfoVO);
+            BeanUtils.copyProperties(apiInfo, sysApiInfoVO);
             sysApiInfoVOList.add(sysApiInfoVO);
         }
         List<SysApiInfoTree> sysApiInfoTreeList = sysApiInfoVOList.stream().map(

@@ -6,7 +6,7 @@ import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
-import com.runjian.auth.server.domain.entity.SysAppInfo;
+import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface SysAppInfoService extends IService<SysAppInfo> {
+public interface SysAppInfoService extends IService<AppInfo> {
 
     void saveSysAppInfo(AddSysAppInfoDTO dto);
 
