@@ -1,4 +1,4 @@
-package com.runjian.auth.server.mapper.system;
+package com.runjian.auth.server.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,7 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2023-01-03 11:45:53
  */
 @Mapper
-public interface SysAppInfoMapper extends BaseMapper<AppInfo> {
+public interface AppInfoMapper extends BaseMapper<AppInfo> {
 
     Page<SysAppInfoVO> MySelectPage(PageSysAppInfoDTO dto);
 

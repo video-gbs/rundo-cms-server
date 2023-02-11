@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 @TableName("role_info")
 @ApiModel(value = "RoleInfo对象", description = "角色信息表")
 public class RoleInfo implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
@@ -63,11 +62,11 @@ public class RoleInfo implements Serializable {
     private Integer deleteFlag;
 
     @ApiModelProperty("创建人")
-    @TableField(value ="created_by", fill = FieldFill.INSERT)
+    @TableField(value = "created_by", fill = FieldFill.INSERT)
     private Long createdBy;
 
     @ApiModelProperty("更新人")
-    @TableField(value ="updated_by", fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "updated_by", fill = FieldFill.INSERT_UPDATE)
     private Long updatedBy;
 
     @ApiModelProperty("创建时间")

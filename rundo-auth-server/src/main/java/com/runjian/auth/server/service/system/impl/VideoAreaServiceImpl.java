@@ -9,7 +9,7 @@ import com.runjian.auth.server.domain.entity.VideoArea;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
-import com.runjian.auth.server.mapper.video.VideoAraeMapper;
+import com.runjian.auth.server.mapper.VideoAraeMapper;
 import com.runjian.auth.server.service.system.VideoAreaSaervice;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessException;

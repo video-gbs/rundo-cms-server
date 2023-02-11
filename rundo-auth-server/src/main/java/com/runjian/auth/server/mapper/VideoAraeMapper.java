@@ -1,4 +1,4 @@
-package com.runjian.auth.server.mapper.video;
+package com.runjian.auth.server.mapper;
 
 import com.runjian.auth.server.domain.entity.VideoArea;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

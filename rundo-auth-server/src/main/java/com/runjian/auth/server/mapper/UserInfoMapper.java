@@ -1,4 +1,4 @@
-package com.runjian.auth.server.mapper.system;
+package com.runjian.auth.server.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -22,7 +22,7 @@ import java.util.List;
  * @since 2023-01-29 20:01:25
  */
 @Mapper
-public interface SysUserInfoMapper extends BaseMapper<UserInfo> {
+public interface UserInfoMapper extends BaseMapper<UserInfo> {
 
     void insertUserOrg(@Param("userId") Long userId, @Param("orgId") Long orgId);
 

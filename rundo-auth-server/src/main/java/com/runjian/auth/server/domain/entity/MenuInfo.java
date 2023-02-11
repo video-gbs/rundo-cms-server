@@ -22,22 +22,21 @@ import java.time.LocalDateTime;
 @TableName("menu_info")
 @ApiModel(value = "MenuInfo对象", description = "菜单信息表")
 public class MenuInfo implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("直接父级菜单ID")
-    @TableField("app_pid")
+    @ApiModelProperty("所属应用")
+    @TableField("app_id")
     private Long appId;
 
-    @ApiModelProperty("直接父级菜单ID")
+    @ApiModelProperty("父菜单ID")
     @TableField("menu_pid")
     private Long menuPid;
 
-    @ApiModelProperty("所有间接父级菜单ID")
+    @ApiModelProperty("当前菜单所有父菜单")
     @TableField("menu_pids")
     private String menuPids;
 
@@ -45,7 +44,7 @@ public class MenuInfo implements Serializable {
     @TableField("menu_name")
     private String menuName;
 
-    @ApiModelProperty("菜单顺序")
+    @ApiModelProperty("排序")
     @TableField("menu_sort")
     private String menuSort;
 
@@ -83,11 +82,11 @@ public class MenuInfo implements Serializable {
     private Integer deleteFlag;
 
     @ApiModelProperty("创建人")
-    @TableField(value ="created_by", fill = FieldFill.INSERT)
+    @TableField(value = "created_by", fill = FieldFill.INSERT)
     private Long createdBy;
 
     @ApiModelProperty("更新人")
-    @TableField(value ="updated_by", fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "updated_by", fill = FieldFill.INSERT_UPDATE)
     private Long updatedBy;
 
     @ApiModelProperty("创建时间")

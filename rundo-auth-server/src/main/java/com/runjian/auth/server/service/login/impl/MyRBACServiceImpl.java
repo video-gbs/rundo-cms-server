@@ -2,8 +2,8 @@ package com.runjian.auth.server.service.login.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.runjian.auth.server.domain.entity.*;
-import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
-import com.runjian.auth.server.mapper.system.SysUserInfoMapper;
+import com.runjian.auth.server.mapper.RoleInfoMapper;
+import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.login.MyRBACService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,17 +20,17 @@ import java.util.List;
 @Service
 public class MyRBACServiceImpl implements MyRBACService {
     @Autowired
-    private SysUserInfoMapper sysUserInfoMapper;
+    private UserInfoMapper userInfoMapper;
 
     @Autowired
-    private SysRoleInfoMapper roleInfoMapper;
+    private RoleInfoMapper roleInfoMapper;
 
 
     @Override
     public UserInfo findUserInfoByUserAccount(String userName) {
         LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserInfo::getUserAccount, userName);
-        return sysUserInfoMapper.selectOne(queryWrapper);
+        return userInfoMapper.selectOne(queryWrapper);
     }
 
 

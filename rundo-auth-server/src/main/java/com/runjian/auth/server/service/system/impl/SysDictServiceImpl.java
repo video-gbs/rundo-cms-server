@@ -9,7 +9,7 @@ import com.runjian.auth.server.domain.dto.system.QureySysDictDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysDictDTO;
 import com.runjian.auth.server.domain.entity.DictInfo;
 import com.runjian.auth.server.domain.vo.system.SysDictVO;
-import com.runjian.auth.server.mapper.system.SysDictMapper;
+import com.runjian.auth.server.mapper.DictInfoMapper;
 import com.runjian.auth.server.service.system.SysDictService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,28 +28,28 @@ import java.util.stream.Collectors;
  * @since 2023-01-03 11:45:53
  */
 @Service
-public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, DictInfo> implements SysDictService {
+public class SysDictServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> implements SysDictService {
 
     @Autowired
-    private SysDictMapper sysDictMapper;
+    private DictInfoMapper dictInfoMapper;
 
     @Override
     public void saveSysDict(AddSysDictDTO dto) {
         DictInfo dictInfo = new DictInfo();
         BeanUtils.copyProperties(dto, dictInfo);
-        sysDictMapper.insert(dictInfo);
+        dictInfoMapper.insert(dictInfo);
     }
 
     @Override
     public void updateSysDictById(UpdateSysDictDTO dto) {
-        DictInfo dictInfo = sysDictMapper.selectById(dto.getId());
+        DictInfo dictInfo = dictInfoMapper.selectById(dto.getId());
         BeanUtils.copyProperties(dto, dictInfo);
-        sysDictMapper.updateById(dictInfo);
+        dictInfoMapper.updateById(dictInfo);
     }
 
     @Override
     public SysDictVO getSysDictById(Long id) {
-        DictInfo dictInfo = sysDictMapper.selectById(id);
+        DictInfo dictInfo = dictInfoMapper.selectById(id);
         SysDictVO sysDictVO = new SysDictVO();
         BeanUtils.copyProperties(dictInfo, sysDictVO);
         return sysDictVO;
@@ -57,7 +57,7 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, DictInfo> imp
 
     @Override
     public List<SysDictVO> getSysDictList() {
-        List<DictInfo> dictInfoList = sysDictMapper.selectList(null);
+        List<DictInfo> dictInfoList = dictInfoMapper.selectList(null);
         List<SysDictVO> sysDictVOList = new ArrayList<>();
         for (DictInfo dictInfo : dictInfoList) {
             SysDictVO sysDictVO = new SysDictVO();
@@ -82,19 +82,19 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictMapper, DictInfo> imp
         } else {
             page.setSize(20);
         }
-        return sysDictMapper.MySelectPage(page);
+        return dictInfoMapper.MySelectPage(page);
     }
 
     @Override
     public void removeSysDictById(Long id) {
-        sysDictMapper.deleteById(id);
+        dictInfoMapper.deleteById(id);
     }
 
     @Override
     public List<SysDictVO> getByGroupCode(String groupCode) {
         LambdaQueryWrapper<DictInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(DictInfo::getGroupCode, groupCode);
-        List<DictInfo> dictInfoList = sysDictMapper.selectList(queryWrapper);
+        List<DictInfo> dictInfoList = dictInfoMapper.selectList(queryWrapper);
         return dictInfoList.stream().map(
                 item -> {
                     SysDictVO sysDictVO = new SysDictVO();

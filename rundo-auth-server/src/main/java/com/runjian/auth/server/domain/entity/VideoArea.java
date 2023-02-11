@@ -1,9 +1,6 @@
 package com.runjian.auth.server.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -14,7 +11,7 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 安保区域
+ * 安防区域
  * </p>
  *
  * @author Jiang4Yu@126.com
@@ -23,9 +20,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @TableName("video_area")
-@ApiModel(value = "VideoArae对象", description = "安保区域")
+@ApiModel(value = "VideoArea对象", description = "安防区域")
 public class VideoArea implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
@@ -49,26 +45,28 @@ public class VideoArea implements Serializable {
     private String areaNames;
 
     @ApiModelProperty("描述信息")
+    @TableField("description")
     private String description;
+
+    @ApiModelProperty("排序")
+    @TableField("area_sort")
+    private Integer areaSort;
 
     @ApiModelProperty("层级")
     @TableField("level")
     private Integer level;
 
-    @ApiModelProperty("区域排序")
-    @TableField("area_sort")
-    private Integer areaSort;
-
     @ApiModelProperty("逻辑删除")
     @TableField(value = "delete_flag", fill = FieldFill.INSERT)
+    @TableLogic
     private Integer deleteFlag;
 
     @ApiModelProperty("创建人")
-    @TableField(value ="created_by", fill = FieldFill.INSERT)
+    @TableField(value = "created_by", fill = FieldFill.INSERT)
     private Long createdBy;
 
     @ApiModelProperty("更新人")
-    @TableField(value ="updated_by", fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "updated_by", fill = FieldFill.INSERT_UPDATE)
     private Long updatedBy;
 
     @ApiModelProperty("创建时间")

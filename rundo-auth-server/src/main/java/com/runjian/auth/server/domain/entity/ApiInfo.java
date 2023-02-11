@@ -28,7 +28,7 @@ public class ApiInfo implements Serializable {
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("接口直接父ID")
+    @ApiModelProperty("所属应用")
     @TableField("app_id")
     private Long appId;
 
@@ -65,16 +65,16 @@ public class ApiInfo implements Serializable {
     private Integer status;
 
     @ApiModelProperty("逻辑删除")
-    @TableField(value = "delete_flag", fill = FieldFill.INSERT)
+    @TableField("delete_flag")
     @TableLogic
     private Integer deleteFlag;
 
     @ApiModelProperty("创建人")
-    @TableField(value ="created_by", fill = FieldFill.INSERT)
+    @TableField(value = "created_by", fill = FieldFill.INSERT)
     private Long createdBy;
 
     @ApiModelProperty("更新人")
-    @TableField(value ="updated_by", fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "updated_by", fill = FieldFill.INSERT_UPDATE)
     private Long updatedBy;
 
     @ApiModelProperty("创建时间")

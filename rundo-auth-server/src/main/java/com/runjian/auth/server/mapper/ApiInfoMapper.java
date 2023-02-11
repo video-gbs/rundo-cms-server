@@ -1,4 +1,4 @@
-package com.runjian.auth.server.mapper.system;
+package com.runjian.auth.server.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,7 +16,7 @@ import org.apache.ibatis.annotations.Param;
  * @since 2023-01-03 11:45:53
  */
 @Mapper
-public interface SysApiInfoMapper extends BaseMapper<ApiInfo> {
+public interface ApiInfoMapper extends BaseMapper<ApiInfo> {
 
     void insertAppApi(@Param("appId") Long appId, @Param("apiId") Long apiId);
 

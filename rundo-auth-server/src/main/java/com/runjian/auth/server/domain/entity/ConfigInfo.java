@@ -20,9 +20,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @TableName("config_info")
-@ApiModel(value = "SysConfig对象", description = "系统全局参数配置")
+@ApiModel(value = "ConfigInfo对象", description = "系统全局参数配置")
 public class ConfigInfo implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
@@ -49,12 +48,13 @@ public class ConfigInfo implements Serializable {
     @TableField(value = "delete_flag", fill = FieldFill.INSERT)
     @TableLogic
     private Integer deleteFlag;
+
     @ApiModelProperty("创建人")
-    @TableField(value ="created_by", fill = FieldFill.INSERT)
+    @TableField(value = "created_by", fill = FieldFill.INSERT)
     private Long createdBy;
 
     @ApiModelProperty("更新人")
-    @TableField(value ="updated_by", fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "updated_by", fill = FieldFill.INSERT_UPDATE)
     private Long updatedBy;
 
     @ApiModelProperty("创建时间")

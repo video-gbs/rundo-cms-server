@@ -38,7 +38,7 @@ public class MyBatisPlusGenerate {
     /**
      * JDBC 连接地址
      */
-    private static final String JDBC_URL = "jdbc:mysql://192.168.91.100:3306/rundo_rbac?serverTimezone=Asia/Shanghai" +
+    private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/rundo_rbac?serverTimezone=Asia/Shanghai" +
             "&useLegacyDatetimeCode=false" +
             "&nullNamePatternMatchesAll=true" +
             "&allowPublicKeyRetrieval=true" +
@@ -54,7 +54,7 @@ public class MyBatisPlusGenerate {
     /**
      * 数据库密码
      */
-    private static final String JDBC_PASSWORD = "rundomysql";
+    private static final String JDBC_PASSWORD = "root";
 
     /**
      * 包配置 - 父级目录
@@ -115,14 +115,15 @@ public class MyBatisPlusGenerate {
     /**
      * 要生成的表，用 `,` 分割，all 代表生成所有表
      */
-    private static final String TABLES = "sys_api_info," +
-            "sys_app_info," +
-            "sys_config," +
-            "sys_dict," +
-            "sys_menu_info," +
-            "sys_user_info," +
-            "sys_role_info," +
-            "sys_org";
+    private static final String TABLES = "api_info," +
+            "app_info," +
+            "config_info," +
+            "dict_info," +
+            "menu_info," +
+            "user_info," +
+            "role_info," +
+            "video_area," +
+            "org_info";
 
     /**
      * 数据源配置
@@ -227,7 +228,9 @@ public class MyBatisPlusGenerate {
                 //添加表字段填充，"create_time"字段自动填充为插入时间，"update_time"字段自动填充为插入修改时间
                 .addTableFills(
                         new Column("created_time", FieldFill.INSERT),
-                        new Column("updated_time", FieldFill.INSERT_UPDATE)
+                        new Column("created_by", FieldFill.INSERT),
+                        new Column("updated_time", FieldFill.INSERT_UPDATE),
+                        new Column("updated_by", FieldFill.INSERT_UPDATE)
                 )
                 // 开启生成实体时生成字段注解
                 .enableTableFieldAnnotation()

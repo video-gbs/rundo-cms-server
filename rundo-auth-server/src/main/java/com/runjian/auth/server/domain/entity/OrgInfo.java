@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 @TableName("org_info")
 @ApiModel(value = "OrgInfo对象", description = "组织机构表")
 public class OrgInfo implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
@@ -41,21 +40,25 @@ public class OrgInfo implements Serializable {
     @TableField("org_name")
     private String orgName;
 
+    @ApiModelProperty("组织机构全名")
+    @TableField("org_name_str")
+    private String orgNameStr;
+
     @ApiModelProperty("组织结构编码")
     @TableField("org_code")
     private String orgCode;
 
     @ApiModelProperty("组织机构排序")
     @TableField("org_sort")
-    private Integer orgSort;
-
-    @ApiModelProperty("地址")
-    @TableField("adders")
-    private String adders;
+    private String orgSort;
 
     @ApiModelProperty("部门负责人")
     @TableField("org_leader")
     private String orgLeader;
+
+    @ApiModelProperty("地址")
+    @TableField("adders")
+    private String adders;
 
     @ApiModelProperty("邮箱")
     @TableField("email")
@@ -87,11 +90,11 @@ public class OrgInfo implements Serializable {
     private Integer deleteFlag;
 
     @ApiModelProperty("创建人")
-    @TableField(value ="created_by", fill = FieldFill.INSERT)
+    @TableField(value = "created_by", fill = FieldFill.INSERT)
     private Long createdBy;
 
     @ApiModelProperty("更新人")
-    @TableField(value ="updated_by", fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "updated_by", fill = FieldFill.INSERT_UPDATE)
     private Long updatedBy;
 
     @ApiModelProperty("创建时间")

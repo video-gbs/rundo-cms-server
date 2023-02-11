@@ -10,7 +10,7 @@ import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.entity.MenuInfo;
 import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysMenuInfoTree;
-import com.runjian.auth.server.mapper.system.SysMenuInfoMapper;
+import com.runjian.auth.server.mapper.MenuInfoMapper;
 import com.runjian.auth.server.service.login.MyRBACService;
 import com.runjian.auth.server.service.system.SysMenuInfoService;
 import com.runjian.auth.server.util.UserUtils;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, MenuInfo> implements SysMenuInfoService {
+public class SysMenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> implements SysMenuInfoService {
 
     @Autowired
     private UserUtils userUtils;
@@ -44,7 +44,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, MenuI
     private MyRBACService myRBACService;
 
     @Autowired
-    private SysMenuInfoMapper sysMenuInfoMapper;
+    private MenuInfoMapper menuInfoMapper;
 
     @Override
     public List<SysMenuInfoTree> getSysMenuTree(QuerySysMenuInfoDTO dto) {
@@ -77,7 +77,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, MenuI
             roleMenuList.addAll(myRBACService.findMenuInfoByRoleCode(roleCode));
         }
         // 通过应用ID查取该应用下的所有菜单
-        List<MenuInfo> appMenuList = sysMenuInfoMapper.getMenuInfoByAppId(dto.getAppId());
+        List<MenuInfo> appMenuList = menuInfoMapper.getMenuInfoByAppId(dto.getAppId());
         // 将已经授权的菜单和应用的菜单取交集，得到用户在这个应用下的可访问菜单
         List<MenuInfo> re = new ArrayList<>();
         for (MenuInfo rome : roleMenuList) {
@@ -117,7 +117,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, MenuI
         MenuInfo menuInfo = new MenuInfo();
         menuInfo.setAppId(dto.getAppId());
         menuInfo.setMenuPid(dto.getMenuPid());
-        MenuInfo parentInfo = sysMenuInfoMapper.selectById(dto.getMenuPid());
+        MenuInfo parentInfo = menuInfoMapper.selectById(dto.getMenuPid());
         String menuPids = parentInfo.getMenuPids() + "[" + dto.getMenuPid() + "]";
         menuInfo.setMenuPids(menuPids);
         menuInfo.setMenuName(dto.getMenuName());
@@ -132,11 +132,11 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, MenuI
         menuInfo.setViewImport(dto.getViewImport());
         // TODO 处理租客信息
         // sysMenuInfo.setTenantId();
-        sysMenuInfoMapper.insert(menuInfo);
+        menuInfoMapper.insert(menuInfo);
         // 处理应用菜单映射管理
         Long menuId = menuInfo.getId();
         Long appId = dto.getAppId();
-        sysMenuInfoMapper.saveAppMenu(menuId, appId);
+        menuInfoMapper.saveAppMenu(menuId, appId);
     }
 
     @Override
@@ -144,13 +144,13 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, MenuI
         // 1.确认当前需要删除的菜单有无下级菜单
         LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(MenuInfo::getMenuPids, "[" + id + "]");
-        List<MenuInfo> menuInfoChild = sysMenuInfoMapper.selectList(queryWrapper);
+        List<MenuInfo> menuInfoChild = menuInfoMapper.selectList(queryWrapper);
         if (menuInfoChild.size() > 0) {
             // 1.1 有下级菜单不允许删除
             throw new BusinessException("不能删除含有下级菜单的菜单");
         }
         // 1.2 无下级菜单才可以删除
-        sysMenuInfoMapper.deleteById(id);
+        menuInfoMapper.deleteById(id);
     }
 
 
@@ -161,7 +161,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<SysMenuInfoMapper, MenuI
 
     @Override
     public SysMenuInfoVO getSysMenuInfoById(Long id) {
-        MenuInfo menuInfo = sysMenuInfoMapper.selectById(id);
+        MenuInfo menuInfo = menuInfoMapper.selectById(id);
         SysMenuInfoVO sysMenuInfoVO = new SysMenuInfoVO();
         BeanUtils.copyProperties(menuInfo, sysMenuInfoVO);
         return sysMenuInfoVO;

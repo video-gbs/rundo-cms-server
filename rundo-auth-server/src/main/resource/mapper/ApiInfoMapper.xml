@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.runjian.auth.server.mapper.system.SysApiInfoMapper">
+<mapper namespace="com.runjian.auth.server.mapper.ApiInfoMapper">
 
     <insert id="insertAppApi">
-        INSERT INTO sys_app_api (app_id, api_id)
+        INSERT INTO app_api (app_id, api_id)
         VALUES (#{appId,jdbcType=BIGINT}, #{apiId,jdbcType=BIGINT})
     </insert>
 
@@ -16,7 +16,7 @@
             sai.url,
             sai.level
         FROM
-            sys_api_info sai
+            api_info sai
         WHERE
             sai.delete_flag = 0
     </select>

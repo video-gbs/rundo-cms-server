@@ -1,4 +1,4 @@
-package com.runjian.auth.server.mapper.system;
+package com.runjian.auth.server.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -21,7 +21,7 @@ import java.util.List;
  * @since 2023-01-03 11:45:53
  */
 @Mapper
-public interface SysRoleInfoMapper extends BaseMapper<RoleInfo> {
+public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
 
     /**
      * 根据用户ID查询用户角色

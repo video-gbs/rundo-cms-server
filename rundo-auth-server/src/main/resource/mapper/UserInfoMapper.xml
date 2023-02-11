@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.runjian.auth.server.mapper.system.SysUserInfoMapper">
+<mapper namespace="com.runjian.auth.server.mapper.UserInfoMapper">
     <insert id="insertUserOrg">
         INSERT INTO sys_user_org(user_id, org_id)
         VALUES (#{userId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT});

@@ -22,20 +22,23 @@ import java.time.LocalDateTime;
 @TableName("app_info")
 @ApiModel(value = "AppInfo对象", description = "应用信息")
 public class AppInfo implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("应用类别")
+    @ApiModelProperty("应用分类，1功能，2配置，3运维")
     @TableField("app_type")
     private Integer appType;
 
     @ApiModelProperty("应用名称")
     @TableField("app_name")
     private String appName;
+
+    @ApiModelProperty("应用图标/背景色")
+    @TableField("app_icon")
+    private String appIcon;
 
     @ApiModelProperty("应用所在IP")
     @TableField("app_ip")
@@ -44,6 +47,10 @@ public class AppInfo implements Serializable {
     @ApiModelProperty("应用服务端口")
     @TableField("app_port")
     private Integer appPort;
+
+    @ApiModelProperty("应用跳转路由")
+    @TableField("app_url")
+    private String appUrl;
 
     @ApiModelProperty("应用简介")
     @TableField("app_desc")
@@ -59,11 +66,11 @@ public class AppInfo implements Serializable {
     private Integer deleteFlag;
 
     @ApiModelProperty("创建人")
-    @TableField(value ="created_by", fill = FieldFill.INSERT)
+    @TableField(value = "created_by", fill = FieldFill.INSERT)
     private Long createdBy;
 
     @ApiModelProperty("更新人")
-    @TableField(value ="updated_by", fill = FieldFill.INSERT_UPDATE)
+    @TableField(value = "updated_by", fill = FieldFill.INSERT_UPDATE)
     private Long updatedBy;
 
     @ApiModelProperty("创建时间")

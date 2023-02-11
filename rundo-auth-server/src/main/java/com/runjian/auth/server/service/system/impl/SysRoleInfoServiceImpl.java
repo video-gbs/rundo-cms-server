@@ -12,7 +12,7 @@ import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.tree.AppIdTree;
-import com.runjian.auth.server.mapper.system.SysRoleInfoMapper;
+import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.system.SysRoleInfoService;
 import com.runjian.auth.server.util.RundoIdUtil;
 import com.runjian.auth.server.util.UserUtils;
@@ -32,12 +32,12 @@ import java.util.stream.Collectors;
  * @since 2023-01-03 11:45:53
  */
 @Service
-public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, RoleInfo> implements SysRoleInfoService {
+public class SysRoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> implements SysRoleInfoService {
 
     @Autowired
     private RundoIdUtil idUtil;
     @Autowired
-    private SysRoleInfoMapper sysRoleInfoMapper;
+    private RoleInfoMapper roleInfoMapper;
 
     @Autowired
     private UserUtils userUtils;
@@ -54,7 +54,7 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, RoleI
         // role.setParentRoleId();
         // role.setParentRoleIds();
         // role.setTenantId();
-        sysRoleInfoMapper.insert(role);
+        roleInfoMapper.insert(role);
         List<String> appIds = dto.getAppIds();
         List<String> configIds = dto.getConfigIds();
         List<String> devopsIds = dto.getDevopsIds();
@@ -79,31 +79,31 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, RoleI
         // TODO 下面的操作后期要优化为批量接口
         if (CollUtil.isNotEmpty(appIdList)) {
             for (Long appId : appIdList) {
-                sysRoleInfoMapper.insertRoleApp(roleId, appId);
+                roleInfoMapper.insertRoleApp(roleId, appId);
             }
         }
 
         if (CollUtil.isNotEmpty(menuIdList)) {
             for (Long menuId : menuIdList) {
-                sysRoleInfoMapper.insertRoleMenu(roleId, menuId);
+                roleInfoMapper.insertRoleMenu(roleId, menuId);
             }
         }
 
         if (CollUtil.isNotEmpty(apiIdList)) {
             for (Long apiId : apiIdList) {
-                sysRoleInfoMapper.insertRoleApi(roleId, apiId);
+                roleInfoMapper.insertRoleApi(roleId, apiId);
             }
         }
 
         if (CollUtil.isNotEmpty(orgIds)) {
             for (Long orgId : orgIds) {
-                sysRoleInfoMapper.insertRoleOrg(roleId, orgId);
+                roleInfoMapper.insertRoleOrg(roleId, orgId);
             }
         }
 
         if (CollUtil.isNotEmpty(areaIds)) {
             for (Long areaId : areaIds) {
-                sysRoleInfoMapper.insertRoleArea(roleId, areaId);
+                roleInfoMapper.insertRoleArea(roleId, areaId);
             }
         }
 
@@ -144,20 +144,20 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, RoleI
             page.setSize(20);
         }
 
-        return sysRoleInfoMapper.MySelectPage(page);
+        return roleInfoMapper.MySelectPage(page);
     }
 
     @Override
     public void batchRemove(List<Long> ids) {
-        sysRoleInfoMapper.deleteBatchIds(ids);
+        roleInfoMapper.deleteBatchIds(ids);
 
     }
 
     @Override
     public void changeStatus(StatusSysRoleInfoDTO dto) {
-        RoleInfo roleInfo = sysRoleInfoMapper.selectById(dto.getId());
+        RoleInfo roleInfo = roleInfoMapper.selectById(dto.getId());
         roleInfo.setStatus(dto.getStatus());
-        sysRoleInfoMapper.updateById(roleInfo);
+        roleInfoMapper.updateById(roleInfo);
     }
 
     @Override
@@ -174,23 +174,23 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, RoleI
             page.setSize(20);
         }
 
-        return sysRoleInfoMapper.selectEditUserSysRoleInfoPage(page);
+        return roleInfoMapper.selectEditUserSysRoleInfoPage(page);
     }
 
     @Override
     public RoleDetailVO getRoleDetailById(Long id) {
-        RoleInfo roleInfo = sysRoleInfoMapper.selectById(id);
+        RoleInfo roleInfo = roleInfoMapper.selectById(id);
         // 查询该角色已授权的应用列表
-        List<AppInfo> appInfoList = sysRoleInfoMapper.selectAppByRoleCode(roleInfo.getRoleCode());
+        List<AppInfo> appInfoList = roleInfoMapper.selectAppByRoleCode(roleInfo.getRoleCode());
         // 查询该角色已授权的菜单列表
-        List<MenuInfo> menuInfoList = sysRoleInfoMapper.selectMenuByRoleCode(roleInfo.getRoleCode());
+        List<MenuInfo> menuInfoList = roleInfoMapper.selectMenuByRoleCode(roleInfo.getRoleCode());
         // 查询该角色已授权的接口列表
-        List<ApiInfo> apiInfoList = sysRoleInfoMapper.selectApiInfoByRoleCode(roleInfo.getRoleCode());
+        List<ApiInfo> apiInfoList = roleInfoMapper.selectApiInfoByRoleCode(roleInfo.getRoleCode());
         // 查询该角色已授权的部门列表
-        List<OrgInfo> orgList = sysRoleInfoMapper.selectOrgInfoByRoleCode(roleInfo.getRoleCode());
+        List<OrgInfo> orgList = roleInfoMapper.selectOrgInfoByRoleCode(roleInfo.getRoleCode());
         List<Long> orgIds = orgList.stream().map(OrgInfo::getId).collect(Collectors.toList());
         // 查询该角色已授权的安防区域
-        List<VideoArea> areaList = sysRoleInfoMapper.selectVideoAreaByRoleCode(roleInfo.getRoleCode());
+        List<VideoArea> areaList = roleInfoMapper.selectVideoAreaByRoleCode(roleInfo.getRoleCode());
         List<Long> areaIds = areaList.stream().map(VideoArea::getId).collect(Collectors.toList());
         // 查询该角色已授权的通道
 
@@ -216,13 +216,13 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<SysRoleInfoMapper, RoleI
     @Override
     public AppIdTree getAppIdTree(Integer appType) {
         // 1.当前操作用户已有角色
-        List<String> roleCode = sysRoleInfoMapper.selectRoleCodeByUserId(userUtils.getSysUserInfo().getId());
+        List<String> roleCode = roleInfoMapper.selectRoleCodeByUserId(userUtils.getSysUserInfo().getId());
         // 根据角色查取用户已被授权的应用数据
         List<AppInfo> appInfoList = new ArrayList<>();
         List<MenuInfo> menuInfoList = new ArrayList<>();
         List<ApiInfo> apiInfoList = new ArrayList<>();
         for (String code : roleCode) {
-            appInfoList.addAll(sysRoleInfoMapper.selectAppByRoleCode(code));
+            appInfoList.addAll(roleInfoMapper.selectAppByRoleCode(code));
         }
         if(CollUtil.isEmpty(appInfoList)){
             // 如果查询到的集合为空，则说明该用户所拥有的角色没有配置应用的权限

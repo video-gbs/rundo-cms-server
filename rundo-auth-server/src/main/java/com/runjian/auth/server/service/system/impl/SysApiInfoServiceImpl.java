@@ -10,7 +10,7 @@ import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
 import com.runjian.auth.server.domain.entity.ApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysApiInfoTree;
-import com.runjian.auth.server.mapper.system.SysApiInfoMapper;
+import com.runjian.auth.server.mapper.ApiInfoMapper;
 import com.runjian.auth.server.service.system.SysApiInfoService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import org.springframework.beans.BeanUtils;
@@ -30,10 +30,10 @@ import java.util.stream.Collectors;
  * @since 2023-01-03 11:45:53
  */
 @Service
-public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, ApiInfo> implements SysApiInfoService {
+public class SysApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> implements SysApiInfoService {
 
     @Autowired
-    private SysApiInfoMapper sysApiInfoMapper;
+    private ApiInfoMapper apiInfoMapper;
 
     @Override
     public void saveSysApiInfo(AddSysApiInfoDTO dto) {
@@ -49,23 +49,23 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, ApiInfo
         apiInfo.setLeaf(0);
         apiInfo.setStatus(dto.getStatus());
         // sysApiInfo.setTenantId();
-        sysApiInfoMapper.insert(apiInfo);
+        apiInfoMapper.insert(apiInfo);
         Long apiId = apiInfo.getId();
         Long appId = dto.getAppId();
         // 处理应用 API映射
-        sysApiInfoMapper.insertAppApi(appId, apiId);
+        apiInfoMapper.insertAppApi(appId, apiId);
     }
 
     @Override
     public void updateSysApiInfoById(UpdateSysApiInfoDTO dto) {
         ApiInfo apiInfo = new ApiInfo();
         BeanUtils.copyProperties(dto, apiInfo);
-        sysApiInfoMapper.updateById(apiInfo);
+        apiInfoMapper.updateById(apiInfo);
     }
 
     @Override
     public SysApiInfoVO getSysApiInfoById(Long id) {
-        ApiInfo apiInfo = sysApiInfoMapper.selectById(id);
+        ApiInfo apiInfo = apiInfoMapper.selectById(id);
         SysApiInfoVO sysApiInfoVO = new SysApiInfoVO();
         BeanUtils.copyProperties(apiInfo, sysApiInfoVO);
         return sysApiInfoVO;
@@ -74,21 +74,21 @@ public class SysApiInfoServiceImpl extends ServiceImpl<SysApiInfoMapper, ApiInfo
     @Override
     public Page<SysApiInfoVO> getSysApiInfoByPage(Integer pageNum, Integer pageSize) {
         Page<SysApiInfoVO> page = new Page<>(pageNum, pageSize);
-        return sysApiInfoMapper.MySelectPage(page);
+        return apiInfoMapper.MySelectPage(page);
     }
 
     @Override
     public void changeStatus(StatusSysApiInfoDTO dto) {
-        ApiInfo apiInfo = sysApiInfoMapper.selectById(dto.getId());
+        ApiInfo apiInfo = apiInfoMapper.selectById(dto.getId());
         apiInfo.setStatus(dto.getStatus());
-        sysApiInfoMapper.updateById(apiInfo);
+        apiInfoMapper.updateById(apiInfo);
     }
 
     @Override
     public List<SysApiInfoTree> getSysApiInfoTree(QuerySysApiInfoDTO dto) {
         List<SysApiInfoVO> sysApiInfoVOList = new ArrayList<>();
         LambdaQueryWrapper<ApiInfo> queryWrapper = new LambdaQueryWrapper<>();
-        List<ApiInfo> apiInfoList = sysApiInfoMapper.selectList(queryWrapper);
+        List<ApiInfo> apiInfoList = apiInfoMapper.selectList(queryWrapper);
         for (ApiInfo apiInfo : apiInfoList) {
             SysApiInfoVO sysApiInfoVO = new SysApiInfoVO();
             BeanUtils.copyProperties(apiInfo, sysApiInfoVO);
