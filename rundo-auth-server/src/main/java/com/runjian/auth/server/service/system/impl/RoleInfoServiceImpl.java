@@ -11,11 +11,16 @@ import com.runjian.auth.server.domain.entity.*;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
-import com.runjian.auth.server.domain.vo.tree.AppIdTree;
+import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
+import com.runjian.auth.server.domain.vo.tree.RoleAppInfo;
+import com.runjian.auth.server.domain.vo.tree.RoleAppTree;
+import com.runjian.auth.server.mapper.ApiInfoMapper;
+import com.runjian.auth.server.mapper.MenuInfoMapper;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.util.RundoIdUtil;
 import com.runjian.auth.server.util.UserUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -212,26 +217,54 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         return roleDetailVO;
     }
 
+    @Autowired
+    private MenuInfoMapper menuInfoMapper;
+
+    @Autowired
+    private ApiInfoMapper apiInfoMapper;
 
     @Override
-    public AppIdTree getAppIdTree(Integer appType) {
+    public RoleAppTree getAppIdTree(Integer appType) {
         // 1.当前操作用户已有角色
         List<String> roleCode = roleInfoMapper.selectRoleCodeByUserId(userUtils.getSysUserInfo().getId());
+        if (CollUtil.isEmpty(roleCode)) {
+            // 当前用户没有被授权应用
+            return null;
+        }
         // 根据角色查取用户已被授权的应用数据
         List<AppInfo> appInfoList = new ArrayList<>();
-        List<MenuInfo> menuInfoList = new ArrayList<>();
+        List<MenuInfo> reloAllMenuInfoList = new ArrayList<>();
         List<ApiInfo> apiInfoList = new ArrayList<>();
         for (String code : roleCode) {
             appInfoList.addAll(roleInfoMapper.selectAppByRoleCode(code));
+            reloAllMenuInfoList.addAll(roleInfoMapper.selectMenuByRoleCode(code));
+            apiInfoList.addAll(roleInfoMapper.selectApiInfoByRoleCode(code));
         }
-        if(CollUtil.isEmpty(appInfoList)){
-            // 如果查询到的集合为空，则说明该用户所拥有的角色没有配置应用的权限
+        if (CollUtil.isEmpty(appInfoList)) {
             return null;
         }
-        AppIdTree appIdTree = new AppIdTree();
+        List<RoleAppInfo> roleAppInfoList = new ArrayList<>();
+        for (AppInfo appInfo : appInfoList) {
+            RoleAppInfo roleAppInfo = new RoleAppInfo();
+            List<MenuInfo> roleAppMenuList = menuInfoMapper.selectByAppId(appInfo.getId());
+            roleAppMenuList.retainAll(reloAllMenuInfoList);
+            List<MenuInfoTree> menuInfoTreeList = roleAppMenuList.stream().map(
+                    item -> {
+                        MenuInfoTree bean = new MenuInfoTree();
+                        BeanUtils.copyProperties(item, bean);
+                        return bean;
+                    }
+            ).collect(Collectors.toList());
+            roleAppInfo.setAppName(appInfo.getAppName());
+            roleAppInfo.setAppId("A_" + appInfo.getId());
+            roleAppInfo.setMenuInfo(menuInfoTreeList);
+            // List<ApiInfo> roleAppApiList = apiInfoMapper.selectByAppId(appInfo.getId());
 
 
-        return appIdTree;
+        }
+
+
+        return null;
     }
 
     /**
@@ -263,8 +296,8 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<Long> menuIds = new ArrayList<>();
         if (CollUtil.isNotEmpty(stringList)) {
             for (String str : stringList) {
-                if (str.startsWith("m_")) {
-                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "m_"));
+                if (str.startsWith("M_")) {
+                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "M_"));
                     menuIds.add(menuId);
                 }
             }
@@ -282,8 +315,8 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<Long> apiIds = new ArrayList<>();
         if (CollUtil.isNotEmpty(stringList)) {
             for (String str : stringList) {
-                if (str.startsWith("u_")) {
-                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "u_"));
+                if (str.startsWith("U_")) {
+                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "U_"));
                     apiIds.add(menuId);
                 }
             }
@@ -304,7 +337,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             if (!appType.equals(appInfo.getAppType())) {
                 appInfoList.remove(appInfo);
             } else {
-                resultList.add("a_" + appInfo.getId());
+                resultList.add("A_" + appInfo.getId());
             }
         }
         // 2.根据目标分类的结果过滤掉不属于这个应用分类的菜单
@@ -313,7 +346,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                 if (!menuInfo.getAppId().equals(appInfo.getId())) {
                     menuInfoList.remove(menuInfo);
                 } else {
-                    resultList.add("m_" + appInfo.getId());
+                    resultList.add("M_" + appInfo.getId());
                 }
             }
         }
@@ -323,7 +356,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                 if (!apiInfo.getAppId().equals(appInfo.getId())) {
                     apiInfoList.remove(apiInfo);
                 } else {
-                    resultList.add("u_" + appInfo.getId());
+                    resultList.add("U_" + appInfo.getId());
                 }
             }
         }

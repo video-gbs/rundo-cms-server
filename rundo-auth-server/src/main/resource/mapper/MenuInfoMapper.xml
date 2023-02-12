@@ -12,6 +12,7 @@
             menu.url,
             menu.icon,
             menu.level,
+            menu.menu_sort,
             menu.hidden,
             menu.status,
             menu.view_import
@@ -26,5 +27,6 @@
                 OR menu.app_id = #{appId,jdbcType=BIGINT}
             </if>
         </where>
+        ORDER BY menu.level,menu.menu_sort,menu.id
     </select>
 </mapper>

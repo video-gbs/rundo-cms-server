@@ -7,7 +7,7 @@ import com.runjian.auth.server.domain.entity.RoleInfo;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
-import com.runjian.auth.server.domain.vo.tree.AppIdTree;
+import com.runjian.auth.server.domain.vo.tree.RoleAppTree;
 
 import java.util.List;
 
@@ -35,5 +35,5 @@ public interface RoleInfoService extends IService<RoleInfo> {
 
     void modifyByStatus(StatusSysRoleInfoDTO dto);
 
-    AppIdTree getAppIdTree(Integer appType);
+    RoleAppTree getAppIdTree(Integer appType);
 }

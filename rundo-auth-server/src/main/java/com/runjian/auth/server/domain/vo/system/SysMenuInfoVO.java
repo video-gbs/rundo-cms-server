@@ -19,6 +19,10 @@ public class SysMenuInfoVO {
 
     @ApiModelProperty("直接父级菜单ID")
     @JsonFormat(shape =JsonFormat.Shape.STRING )
+    private Long appId;
+
+    @ApiModelProperty("直接父级菜单ID")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long menuPid;
 
     @ApiModelProperty("图标")
@@ -28,7 +32,10 @@ public class SysMenuInfoVO {
     private String menuName;
 
     @ApiModelProperty("菜单顺序")
-    private String menuSort;
+    private Integer menuSort;
+
+    @ApiModelProperty("层级")
+    private Integer level;
 
     @ApiModelProperty("跳转URL")
     private String url;
