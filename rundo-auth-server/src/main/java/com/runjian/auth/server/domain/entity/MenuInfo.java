@@ -46,7 +46,7 @@ public class MenuInfo implements Serializable {
 
     @ApiModelProperty("排序")
     @TableField("menu_sort")
-    private String menuSort;
+    private Integer menuSort;
 
     @ApiModelProperty("是否子节点")
     @TableField("leaf")

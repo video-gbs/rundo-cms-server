@@ -37,7 +37,7 @@ public class AddSysMenuInfoDTO {
 
     @ApiModelProperty("排序")
     @NotNull
-    private String menuSort;
+    private Integer menuSort;
 
     @ApiModelProperty("跳转URL")
     private String url;

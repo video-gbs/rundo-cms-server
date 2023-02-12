@@ -6,7 +6,7 @@ import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
 import com.runjian.auth.server.domain.entity.MenuInfo;
 import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
-import com.runjian.auth.server.domain.vo.tree.SysMenuInfoTree;
+import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
  */
 public interface MenuInfoService extends IService<MenuInfo> {
 
-    List<SysMenuInfoTree> findByTree(QuerySysMenuInfoDTO dto);
+    List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto);
 
     void save(AddSysMenuInfoDTO dto);
 

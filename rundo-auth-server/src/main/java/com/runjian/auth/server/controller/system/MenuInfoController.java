@@ -5,7 +5,7 @@ import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
 import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
-import com.runjian.auth.server.domain.vo.tree.SysMenuInfoTree;
+import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
 import com.runjian.auth.server.service.system.MenuInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
@@ -35,7 +35,7 @@ public class MenuInfoController {
 
     @PostMapping("/tree")
     @ApiOperation("获取菜单层级树")
-    public CommonResponse<List<SysMenuInfoTree>> getSysMenuTree(@RequestBody QuerySysMenuInfoDTO dto) {
+    public CommonResponse<List<MenuInfoTree>> getSysMenuTree(@RequestBody QuerySysMenuInfoDTO dto) {
         return CommonResponse.success(menuInfoService.findByTree(dto));
     }
 

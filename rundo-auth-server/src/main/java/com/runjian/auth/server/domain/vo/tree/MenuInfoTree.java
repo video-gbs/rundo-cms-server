@@ -12,9 +12,9 @@ import java.util.List;
  * @Description 菜单树
  * @date 2023-01-31 周二 15:46
  */
-public class SysMenuInfoTree extends SysMenuInfoVO implements DataTree<SysMenuInfoTree> {
+public class MenuInfoTree extends SysMenuInfoVO implements DataTree<MenuInfoTree> {
 
-    List<SysMenuInfoTree> children;
+    List<MenuInfoTree> children;
 
     @Override
     public Long getParentId() {
@@ -22,12 +22,12 @@ public class SysMenuInfoTree extends SysMenuInfoVO implements DataTree<SysMenuIn
     }
 
     @Override
-    public void setChildren(List<SysMenuInfoTree> children) {
+    public void setChildren(List<MenuInfoTree> children) {
         this.children = children;
     }
 
     @Override
-    public List<SysMenuInfoTree> getChildren() {
+    public List<MenuInfoTree> getChildren() {
         return this.children;
     }
 }

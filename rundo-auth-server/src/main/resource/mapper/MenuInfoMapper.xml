@@ -2,14 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.runjian.auth.server.mapper.MenuInfoMapper">
 
-    <select id="getMenuInfoByAppId" resultType="com.runjian.auth.server.domain.entity.MenuInfo">
+    <select id="selectByAppId" resultType="com.runjian.auth.server.domain.entity.MenuInfo">
         SELECT
-            smi.*
+            menu.id,
+            menu.app_id,
+            menu.menu_pid,
+            menu.menu_pids,
+            menu.menu_name,
+            menu.url,
+            menu.icon,
+            menu.level,
+            menu.hidden,
+            menu.status,
+            menu.view_import
         FROM
-            menu_info smi
-        WHERE smi.app_id = #{appId,jdbcType=BIGINT}
-          AND smi.delete_flag = 0
-          AND smi.hidden = 0
-          AND smi.status = 0
+            menu_info menu
+        <where>
+            menu.delete_flag = 0
+            AND menu.hidden = 0
+            AND menu.status = 0
+            AND menu.app_id = 0
+            <if test="appId != null">
+                OR menu.app_id = #{appId,jdbcType=BIGINT}
+            </if>
+        </where>
     </select>
 </mapper>
