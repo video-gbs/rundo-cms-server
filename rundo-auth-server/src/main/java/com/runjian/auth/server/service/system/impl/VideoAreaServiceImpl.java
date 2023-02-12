@@ -48,7 +48,6 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         area.setAreaNames(areaNames);
         area.setDescription(dto.getDescription());
         area.setLevel(prentInfo.getLevel() + 1);
-        // area.setTenantId();
         log.info("添加安防区域入库数据信息{}", JSONUtil.toJsonStr(area));
         videoAraeMapper.insert(area);
         VideoAreaVO videoAreaVO = new VideoAreaVO();

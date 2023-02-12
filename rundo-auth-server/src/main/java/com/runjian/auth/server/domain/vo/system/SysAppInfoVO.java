@@ -28,7 +28,13 @@ public class SysAppInfoVO {
     private String appIp;
 
     @ApiModelProperty("应用服务端口")
-    private String appPort;
+    private Integer appPort;
+
+    @ApiModelProperty(value = "应用名称")
+    private String appIcon;
+
+    @ApiModelProperty("url")
+    private String appUrl;
 
     @ApiModelProperty("应用简介")
     private String appDesc;
