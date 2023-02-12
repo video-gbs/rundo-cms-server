@@ -20,19 +20,19 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface SysApiInfoService extends IService<ApiInfo> {
+public interface ApiInfoService extends IService<ApiInfo> {
 
-    void saveSysApiInfo(AddSysApiInfoDTO dto);
+    void save(AddSysApiInfoDTO dto);
 
-    void updateSysApiInfoById(UpdateSysApiInfoDTO dto);
+    void modifyById(UpdateSysApiInfoDTO dto);
 
-    SysApiInfoVO getSysApiInfoById(Long id);
+    SysApiInfoVO findById(Long id);
 
-    List<SysApiInfoVO> getSysApiInfoList();
+    List<SysApiInfoVO> findByList();
 
-    Page<SysApiInfoVO> getSysApiInfoByPage(Integer pageNum, Integer pageSize);
+    Page<SysApiInfoVO> findByPage(Integer pageNum, Integer pageSize);
 
-    void changeStatus(StatusSysApiInfoDTO dto);
+    void modifyByStatus(StatusSysApiInfoDTO dto);
 
-    List<SysApiInfoTree> getSysApiInfoTree(QuerySysApiInfoDTO dto);
+    List<SysApiInfoTree> findByTree(QuerySysApiInfoDTO dto);
 }

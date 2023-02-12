@@ -3,7 +3,7 @@ package com.runjian.auth.server.controller.system;
 import com.runjian.auth.server.domain.dto.system.AddSysConfigDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysConfigDTO;
 import com.runjian.auth.server.domain.vo.system.SysConfigVO;
-import com.runjian.auth.server.service.system.SysConfigService;
+import com.runjian.auth.server.service.system.ConfigInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,42 +23,42 @@ import java.util.List;
 @Api(tags = "系统参数配置")
 @RestController
 @RequestMapping("/sysConfig")
-public class SysConfigController {
+public class ConfigInfoController {
 
     @Autowired
-    private SysConfigService sysConfigService;
+    private ConfigInfoService configInfoService;
 
     @PostMapping("/add")
     @ApiOperation("添加系统参数配置")
     public CommonResponse<?> add(@RequestBody AddSysConfigDTO dto) {
-        sysConfigService.saveSysConfig(dto);
+        configInfoService.save(dto);
         return CommonResponse.success();
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑系统参数配置")
     public CommonResponse<?> update(@RequestBody UpdateSysConfigDTO dto) {
-        sysConfigService.updateSysConfigById(dto);
+        configInfoService.modifyById(dto);
         return CommonResponse.success();
     }
 
     @GetMapping("/getById")
     @ApiOperation("获取编辑系统参数配置信息")
     public CommonResponse<SysConfigVO> getById(@RequestParam Long id) {
-        return CommonResponse.success(sysConfigService.getSysConfigById(id));
+        return CommonResponse.success(configInfoService.findById(id));
     }
 
     @GetMapping("/getList")
     @ApiOperation("获取系统参数配置列表 无分页")
     public CommonResponse<List<SysConfigVO>> getList() {
-        return CommonResponse.success(sysConfigService.getSysConfigList());
+        return CommonResponse.success(configInfoService.findByList());
     }
 
     @GetMapping("/getListByPage")
     @ApiOperation("获取系统参数配置列表 含分页")
     public CommonResponse getListByPage(@RequestBody Long id) {
         // TODO 分页获取系统参数配置列表
-        return CommonResponse.success(sysConfigService.list());
+        return CommonResponse.success(configInfoService.list());
     }
 
 }

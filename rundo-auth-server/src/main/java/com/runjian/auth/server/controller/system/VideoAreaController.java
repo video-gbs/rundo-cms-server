@@ -37,25 +37,25 @@ public class VideoAreaController {
     @ApiOperation("添加安防区域")
     public CommonResponse<VideoAreaVO> save(@RequestBody AddVideoAreaDTO dto) {
         log.info("添加安防区域前端传参信息{}", JSONUtil.toJsonStr(dto));
-        return CommonResponse.success(videoAreaSaervice.saveVideoArae(dto));
+        return CommonResponse.success(videoAreaSaervice.save(dto));
     }
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除安防区域")
     public CommonResponse<String> delete(@PathVariable Long id) {
-        return CommonResponse.success(videoAreaSaervice.removeVideoAreaById(id));
+        return CommonResponse.success(videoAreaSaervice.erasureById(id));
     }
 
     @PostMapping("/batchDelete")
     @ApiOperation("批量删除安防区域")
     public CommonResponse<String> batchDelete(@RequestBody List<Long> ids) {
-        return CommonResponse.success(videoAreaSaervice.batchDelete(ids));
+        return CommonResponse.success(videoAreaSaervice.erasureBatch(ids));
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑安防区域")
     public CommonResponse<?> update(@RequestBody UpdateVideoAreaDTO dto) {
-        videoAreaSaervice.updateVideoAreaById(dto);
+        videoAreaSaervice.modifyById(dto);
         return CommonResponse.success();
     }
 
@@ -70,20 +70,20 @@ public class VideoAreaController {
     @GetMapping("/getById/{id}")
     @ApiOperation("获取安防区域信息")
     public CommonResponse<VideoAreaVO> getById(@PathVariable Long id) {
-        return CommonResponse.success(videoAreaSaervice.getVideoAreaById(id));
+        return CommonResponse.success(videoAreaSaervice.findById(id));
     }
 
     @GetMapping("/tree")
     @ApiOperation("获取安防区域层级树")
     public CommonResponse<List<VideoAreaTree>> getTreeList() {
-        return CommonResponse.success(videoAreaSaervice.getTreeList());
+        return CommonResponse.success(videoAreaSaervice.findByTree());
     }
 
 
     @PostMapping("/getList")
     @ApiOperation("获取安防区域列表")
     public CommonResponse<List<VideoAreaVO>> getList(@RequestParam(value = "areaId", required = false) Long areaId) {
-        return CommonResponse.success(videoAreaSaervice.getVideoAreaList(areaId));
+        return CommonResponse.success(videoAreaSaervice.findByList(areaId));
     }
 
 }

@@ -227,6 +227,7 @@ public class MyBatisPlusGenerate {
                 // .addSuperEntityColumns("id", "created_time", "updated_time")
                 //添加表字段填充，"create_time"字段自动填充为插入时间，"update_time"字段自动填充为插入修改时间
                 .addTableFills(
+                        new Column("delete_flag", FieldFill.INSERT),
                         new Column("created_time", FieldFill.INSERT),
                         new Column("created_by", FieldFill.INSERT),
                         new Column("updated_time", FieldFill.INSERT_UPDATE),

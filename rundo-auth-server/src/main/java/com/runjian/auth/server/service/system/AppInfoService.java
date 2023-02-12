@@ -19,19 +19,19 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface SysAppInfoService extends IService<AppInfo> {
+public interface AppInfoService extends IService<AppInfo> {
 
-    void saveSysAppInfo(AddSysAppInfoDTO dto);
+    void save(AddSysAppInfoDTO dto);
 
-    void updateSysAppInfoById(UpdateSysAppInfoDTO dto);
+    void modifyById(UpdateSysAppInfoDTO dto);
 
-    SysAppInfoVO getSysAppInfoById(Long id);
+    SysAppInfoVO findById(Long id);
 
-    List<SysAppInfoVO> getSysAppInfoList();
+    List<SysAppInfoVO> findByList();
 
-    void removeSysAppInfoById(Long id);
+    void erasureById(Long id);
 
-    Page<SysAppInfoVO> getSysAppInfoByPage(QuerySysAppInfoDTO dto);
+    Page<SysAppInfoVO> findByPage(QuerySysAppInfoDTO dto);
 
-    void changeStatus(StatusSysAppInfoDTO dto);
+    void modifyByStatus(StatusSysAppInfoDTO dto);
 }

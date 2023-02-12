@@ -37,7 +37,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     private VideoAraeMapper videoAraeMapper;
 
     @Override
-    public VideoAreaVO saveVideoArae(AddVideoAreaDTO dto) {
+    public VideoAreaVO save(AddVideoAreaDTO dto) {
         VideoArea area = new VideoArea();
         area.setAreaName(dto.getAreaName());
         area.setAreaPid(dto.getAreaPid());
@@ -57,14 +57,14 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     }
 
     @Override
-    public void updateVideoAreaById(UpdateVideoAreaDTO dto) {
+    public void modifyById(UpdateVideoAreaDTO dto) {
         VideoArea videoArea = new VideoArea();
         BeanUtils.copyProperties(dto, videoArea);
         videoAraeMapper.updateById(videoArea);
     }
 
     @Override
-    public VideoAreaVO getVideoAreaById(Long id) {
+    public VideoAreaVO findById(Long id) {
         VideoArea videoArea = videoAraeMapper.selectById(id);
         VideoAreaVO videoAreaVO = new VideoAreaVO();
         BeanUtils.copyProperties(videoArea, videoAreaVO);
@@ -72,7 +72,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     }
 
     @Override
-    public String removeVideoAreaById(Long id) {
+    public String erasureById(Long id) {
         // 1.判断是否为根节点
         VideoArea videoArea = videoAraeMapper.selectById(id);
         if (videoArea.getAreaPid().equals(0L)) {
@@ -130,7 +130,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
 
     @Override
-    public List<VideoAreaVO> getVideoAreaList(Long areaId) {
+    public List<VideoAreaVO> findByList(Long areaId) {
         // TODO 根据用户ID渲染
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
         VideoArea videoArea = new VideoArea();
@@ -153,7 +153,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     }
 
     @Override
-    public String batchDelete(List<Long> ids) {
+    public String erasureBatch(List<Long> ids) {
         // 1.确定节点ID不为空
         if (ids.size() <= 0) {
             return "没有选定删除目标";
@@ -174,7 +174,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     }
 
     @Override
-    public List<VideoAreaTree> getTreeList() {
+    public List<VideoAreaTree> findByTree() {
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderBy(true, true, VideoArea::getAreaSort, VideoArea::getUpdatedTime);
         List<VideoArea> videoList = videoAraeMapper.selectList(queryWrapper);

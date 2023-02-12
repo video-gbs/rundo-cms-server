@@ -19,21 +19,21 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface SysRoleInfoService extends IService<RoleInfo> {
+public interface RoleInfoService extends IService<RoleInfo> {
 
-    void addRole(AddSysRoleInfoDTO dto);
+    void save(AddSysRoleInfoDTO dto);
 
-    void updateRole(UpdateSysRoleInfoDTO dto);
+    void modifyById(UpdateSysRoleInfoDTO dto);
 
-    Page<SysRoleInfoVO> getSysRoleInfoByPage(QuerySysRoleInfoDTO dto);
+    Page<SysRoleInfoVO> findByPage(QuerySysRoleInfoDTO dto);
 
-    void batchRemove(List<Long> ids);
+    void erasureBatch(List<Long> ids);
 
     Page<EditUserSysRoleInfoVO> getEditUserSysRoleInfoList(QueryEditUserSysRoleInfoDTO dto);
 
     RoleDetailVO getRoleDetailById(Long id);
 
-    void changeStatus(StatusSysRoleInfoDTO dto);
+    void modifyByStatus(StatusSysRoleInfoDTO dto);
 
     AppIdTree getAppIdTree(Integer appType);
 }

@@ -18,23 +18,23 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface SysUserInfoService extends IService<UserInfo> {
+public interface UserInfoService extends IService<UserInfo> {
 
-    void saveSysUserInfo(AddSysUserInfoDTO dto);
+    void save(AddSysUserInfoDTO dto);
 
-    void updateSysUserInfo(UpdateSysUserInfoDTO dto);
+    void modifyById(UpdateSysUserInfoDTO dto);
 
-    void changeStatus(StatusSysUserInfoDTO dto);
+    void modifyByStatus(StatusSysUserInfoDTO dto);
 
-    Page<ListSysUserInfoVO> getSysUserInfoByPage(QuerySysUserInfoDTO dto);
+    Page<ListSysUserInfoVO> findByPage(QuerySysUserInfoDTO dto);
 
-    void removeSysUserInfoById(Long id);
+    void erasureById(Long id);
 
-    void batchRemoveSysUserInfo(List<Long> ids);
+    void erasureBatch(List<Long> ids);
 
-    EditSysUserInfoVO getSysUserInfoById(Long id);
+    EditSysUserInfoVO findById(Long id);
 
-    RelationSysUserInfoVO getRelationSysUserInfoById(Long id);
+    RelationSysUserInfoVO findRelationById(Long id);
 
-    Page<RelationSysUserInfoVO> getRelationSysUserInfoList(QueryRelationSysUserInfoDTO dto);
+    Page<RelationSysUserInfoVO> findRelationList(QueryRelationSysUserInfoDTO dto);
 }

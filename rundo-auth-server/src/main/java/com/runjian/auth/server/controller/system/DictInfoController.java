@@ -6,7 +6,7 @@ import com.runjian.auth.server.domain.dto.system.AddSysDictDTO;
 import com.runjian.auth.server.domain.dto.system.QureySysDictDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysDictDTO;
 import com.runjian.auth.server.domain.vo.system.SysDictVO;
-import com.runjian.auth.server.service.system.SysDictService;
+import com.runjian.auth.server.service.system.DictInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,16 +29,16 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/sysDict")
-public class SysDictController {
+public class DictInfoController {
 
     @Autowired
-    private SysDictService sysDictService;
+    private DictInfoService dictInfoService;
 
     @PostMapping("/add")
     @ApiOperation("添加数据字典")
     public CommonResponse<?> save(@RequestBody @Valid AddSysDictDTO dto) {
         log.info("添加数据字典前端传参{}", JSONUtil.toJsonStr(dto));
-        sysDictService.saveSysDict(dto);
+        dictInfoService.save(dto);
         return CommonResponse.success();
     }
 
@@ -46,39 +46,39 @@ public class SysDictController {
     @ApiOperation("删除数据字典")
     public CommonResponse<?> remove(@PathVariable Long id) {
         log.info("删除数据字典前端传参{}", id);
-        sysDictService.removeSysDictById(id);
+        dictInfoService.erasureById(id);
         return CommonResponse.success();
     }
 
     @PostMapping("/update")
     @ApiOperation("修改数据字典")
     public CommonResponse<?> updateSysDict(@RequestBody UpdateSysDictDTO dto) {
-        sysDictService.updateSysDictById(dto);
+        dictInfoService.modifyById(dto);
         return CommonResponse.success();
     }
 
     @GetMapping("/getById/{id}")
     @ApiOperation("获取数据字典信息")
     public CommonResponse<SysDictVO> getById(@PathVariable Long id) {
-        return CommonResponse.success(sysDictService.getSysDictById(id));
+        return CommonResponse.success(dictInfoService.findById(id));
     }
 
     @PostMapping("/getByGroupCode")
     @ApiOperation("通过字典分组获取字典信息")
     public CommonResponse<List<SysDictVO>> getByGroupCode(@RequestParam("groupCode") String groupCode){
-        return CommonResponse.success(sysDictService.getByGroupCode(groupCode));
+        return CommonResponse.success(dictInfoService.findByGroupCode(groupCode));
     }
 
     @GetMapping("/getList")
     @ApiOperation("获取数据字典列表 无分页")
     public CommonResponse<List<SysDictVO>> getList() {
-        return CommonResponse.success(sysDictService.getSysDictList());
+        return CommonResponse.success(dictInfoService.findByList());
     }
 
     @PostMapping("/getListByPage")
     @ApiOperation("分页获取数据字典列表")
     public CommonResponse<IPage<SysDictVO>> getListByPage(@RequestBody @Valid QureySysDictDTO dto) {
         // TODO 分页获取数据字典列表
-        return CommonResponse.success(sysDictService.getSysDictByPage(dto));
+        return CommonResponse.success(dictInfoService.findByPage(dto));
     }
 }

@@ -16,12 +16,12 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface SysConfigService extends IService<ConfigInfo> {
-    void saveSysConfig(AddSysConfigDTO dto);
+public interface ConfigInfoService extends IService<ConfigInfo> {
+    void save(AddSysConfigDTO dto);
 
-    void updateSysConfigById(UpdateSysConfigDTO dto);
+    void modifyById(UpdateSysConfigDTO dto);
 
-    SysConfigVO getSysConfigById(Long id);
+    SysConfigVO findById(Long id);
 
-    List<SysConfigVO> getSysConfigList();
+    List<SysConfigVO> findByList();
 }

@@ -13,7 +13,7 @@ import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.tree.AppIdTree;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
-import com.runjian.auth.server.service.system.SysRoleInfoService;
+import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.util.RundoIdUtil;
 import com.runjian.auth.server.util.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * @since 2023-01-03 11:45:53
  */
 @Service
-public class SysRoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> implements SysRoleInfoService {
+public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> implements RoleInfoService {
 
     @Autowired
     private RundoIdUtil idUtil;
@@ -43,7 +43,7 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo
     private UserUtils userUtils;
 
     @Override
-    public void addRole(AddSysRoleInfoDTO dto) {
+    public void save(AddSysRoleInfoDTO dto) {
         RoleInfo role = new RoleInfo();
         Long roleId = idUtil.nextId();
         role.setId(roleId);
@@ -111,12 +111,12 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo
     }
 
     @Override
-    public void updateRole(UpdateSysRoleInfoDTO dto) {
+    public void modifyById(UpdateSysRoleInfoDTO dto) {
 
     }
 
     @Override
-    public Page<SysRoleInfoVO> getSysRoleInfoByPage(QuerySysRoleInfoDTO dto) {
+    public Page<SysRoleInfoVO> findByPage(QuerySysRoleInfoDTO dto) {
         PageSysRoleInfoDto page = new PageSysRoleInfoDto();
         if (dto.getRoleName() != null) {
             page.setRoleName(dto.getRoleName());
@@ -148,13 +148,13 @@ public class SysRoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo
     }
 
     @Override
-    public void batchRemove(List<Long> ids) {
+    public void erasureBatch(List<Long> ids) {
         roleInfoMapper.deleteBatchIds(ids);
 
     }
 
     @Override
-    public void changeStatus(StatusSysRoleInfoDTO dto) {
+    public void modifyByStatus(StatusSysRoleInfoDTO dto) {
         RoleInfo roleInfo = roleInfoMapper.selectById(dto.getId());
         roleInfo.setStatus(dto.getStatus());
         roleInfoMapper.updateById(roleInfo);

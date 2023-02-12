@@ -18,19 +18,19 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface SysDictService extends IService<DictInfo> {
+public interface DictInfoService extends IService<DictInfo> {
 
-    void saveSysDict(AddSysDictDTO dto);
+    void save(AddSysDictDTO dto);
 
-    void updateSysDictById(UpdateSysDictDTO dto);
+    void modifyById(UpdateSysDictDTO dto);
 
-    SysDictVO getSysDictById(Long id);
+    SysDictVO findById(Long id);
 
-    List<SysDictVO> getSysDictList();
+    List<SysDictVO> findByList();
 
-    Page<SysDictVO> getSysDictByPage(QureySysDictDTO dto);
+    Page<SysDictVO> findByPage(QureySysDictDTO dto);
 
-    void removeSysDictById(Long id);
+    void erasureById(Long id);
 
-    List<SysDictVO> getByGroupCode(String groupCode);
+    List<SysDictVO> findByGroupCode(String groupCode);
 }

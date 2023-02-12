@@ -18,19 +18,19 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface SysMenuInfoService extends IService<MenuInfo> {
+public interface MenuInfoService extends IService<MenuInfo> {
 
-    List<SysMenuInfoTree> getSysMenuTree(QuerySysMenuInfoDTO dto);
+    List<SysMenuInfoTree> findByTree(QuerySysMenuInfoDTO dto);
 
-    void addSysMenu(AddSysMenuInfoDTO dto);
+    void save(AddSysMenuInfoDTO dto);
 
-    void updateSysMenuInfoById(UpdateSysMenuInfoDTO dto);
+    void modifyById(UpdateSysMenuInfoDTO dto);
 
-    SysMenuInfoVO getSysMenuInfoById(Long id);
+    SysMenuInfoVO findById(Long id);
 
-    List<SysMenuInfoVO> getSysMenuInfoList();
+    List<SysMenuInfoVO> findByList();
 
-    void removeSysMenuInfoById(Long id);
+    void erasureById(Long id);
 
 
 }

@@ -11,7 +11,7 @@ import com.runjian.auth.server.domain.entity.ApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysApiInfoTree;
 import com.runjian.auth.server.mapper.ApiInfoMapper;
-import com.runjian.auth.server.service.system.SysApiInfoService;
+import com.runjian.auth.server.service.system.ApiInfoService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +30,13 @@ import java.util.stream.Collectors;
  * @since 2023-01-03 11:45:53
  */
 @Service
-public class SysApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> implements SysApiInfoService {
+public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> implements ApiInfoService {
 
     @Autowired
     private ApiInfoMapper apiInfoMapper;
 
     @Override
-    public void saveSysApiInfo(AddSysApiInfoDTO dto) {
+    public void save(AddSysApiInfoDTO dto) {
         ApiInfo apiInfo = new ApiInfo();
         // 减少表操作此处代表菜单页面的ID
         apiInfo.setApiPid(dto.getApiPid());
@@ -57,14 +57,14 @@ public class SysApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> i
     }
 
     @Override
-    public void updateSysApiInfoById(UpdateSysApiInfoDTO dto) {
+    public void modifyById(UpdateSysApiInfoDTO dto) {
         ApiInfo apiInfo = new ApiInfo();
         BeanUtils.copyProperties(dto, apiInfo);
         apiInfoMapper.updateById(apiInfo);
     }
 
     @Override
-    public SysApiInfoVO getSysApiInfoById(Long id) {
+    public SysApiInfoVO findById(Long id) {
         ApiInfo apiInfo = apiInfoMapper.selectById(id);
         SysApiInfoVO sysApiInfoVO = new SysApiInfoVO();
         BeanUtils.copyProperties(apiInfo, sysApiInfoVO);
@@ -72,20 +72,20 @@ public class SysApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> i
     }
 
     @Override
-    public Page<SysApiInfoVO> getSysApiInfoByPage(Integer pageNum, Integer pageSize) {
+    public Page<SysApiInfoVO> findByPage(Integer pageNum, Integer pageSize) {
         Page<SysApiInfoVO> page = new Page<>(pageNum, pageSize);
         return apiInfoMapper.MySelectPage(page);
     }
 
     @Override
-    public void changeStatus(StatusSysApiInfoDTO dto) {
+    public void modifyByStatus(StatusSysApiInfoDTO dto) {
         ApiInfo apiInfo = apiInfoMapper.selectById(dto.getId());
         apiInfo.setStatus(dto.getStatus());
         apiInfoMapper.updateById(apiInfo);
     }
 
     @Override
-    public List<SysApiInfoTree> getSysApiInfoTree(QuerySysApiInfoDTO dto) {
+    public List<SysApiInfoTree> findByTree(QuerySysApiInfoDTO dto) {
         List<SysApiInfoVO> sysApiInfoVOList = new ArrayList<>();
         LambdaQueryWrapper<ApiInfo> queryWrapper = new LambdaQueryWrapper<>();
         List<ApiInfo> apiInfoList = apiInfoMapper.selectList(queryWrapper);
@@ -106,7 +106,7 @@ public class SysApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> i
     }
 
     @Override
-    public List<SysApiInfoVO> getSysApiInfoList() {
+    public List<SysApiInfoVO> findByList() {
         return null;
     }
 

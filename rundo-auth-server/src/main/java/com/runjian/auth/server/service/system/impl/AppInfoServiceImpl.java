@@ -10,7 +10,7 @@ import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
 import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.mapper.AppInfoMapper;
-import com.runjian.auth.server.service.system.SysAppInfoService;
+import com.runjian.auth.server.service.system.AppInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,32 +27,32 @@ import java.util.List;
  * @since 2023-01-03 11:45:53
  */
 @Service
-public class SysAppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> implements SysAppInfoService {
+public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> implements AppInfoService {
 
     @Autowired
     private AppInfoMapper appInfoMapper;
 
     @Override
-    public void saveSysAppInfo(AddSysAppInfoDTO dto) {
+    public void save(AddSysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
         BeanUtils.copyProperties(dto, appInfo);
         appInfoMapper.insert(appInfo);
     }
 
     @Override
-    public void updateSysAppInfoById(UpdateSysAppInfoDTO dto) {
+    public void modifyById(UpdateSysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
         BeanUtils.copyProperties(dto, appInfo);
         appInfoMapper.updateById(appInfo);
     }
 
     @Override
-    public void removeSysAppInfoById(Long id) {
+    public void erasureById(Long id) {
         appInfoMapper.deleteById(id);
     }
 
     @Override
-    public Page<SysAppInfoVO> getSysAppInfoByPage(QuerySysAppInfoDTO dto) {
+    public Page<SysAppInfoVO> findByPage(QuerySysAppInfoDTO dto) {
         PageSysAppInfoDTO page = new PageSysAppInfoDTO();
         page.setAppName(dto.getAppName());
         page.setAppIp(dto.getAppIp());
@@ -70,14 +70,14 @@ public class SysAppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> i
     }
 
     @Override
-    public void changeStatus(StatusSysAppInfoDTO dto) {
+    public void modifyByStatus(StatusSysAppInfoDTO dto) {
         AppInfo appInfo = appInfoMapper.selectById(dto.getId());
         appInfo.setStatus(dto.getStatus());
         appInfoMapper.updateById(appInfo);
     }
 
     @Override
-    public SysAppInfoVO getSysAppInfoById(Long id) {
+    public SysAppInfoVO findById(Long id) {
         AppInfo appInfo = appInfoMapper.selectById(id);
         SysAppInfoVO sysAppInfoVO = new SysAppInfoVO();
         BeanUtils.copyProperties(appInfo, sysAppInfoVO);
@@ -85,7 +85,7 @@ public class SysAppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> i
     }
 
     @Override
-    public List<SysAppInfoVO> getSysAppInfoList() {
+    public List<SysAppInfoVO> findByList() {
         List<SysAppInfoVO> sysAppInfoVOList = new ArrayList<>();
         List<AppInfo> appInfoList = appInfoMapper.selectList(null);
         for (AppInfo appInfo : appInfoList) {

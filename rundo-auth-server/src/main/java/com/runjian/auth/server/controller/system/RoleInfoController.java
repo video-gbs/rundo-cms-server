@@ -9,7 +9,7 @@ import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.tree.AppIdTree;
 import com.runjian.auth.server.domain.vo.tree.ConfigIdTree;
 import com.runjian.auth.server.domain.vo.tree.DevopsIdTree;
-import com.runjian.auth.server.service.system.SysRoleInfoService;
+import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,45 +31,45 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/sysRoleInfo")
-public class SysRoleInfoController {
+public class RoleInfoController {
 
 
     @Autowired
-    private SysRoleInfoService sysRoleInfoService;
+    private RoleInfoService roleInfoService;
 
     @PostMapping("/add")
     @ApiOperation("新建角色")
     public CommonResponse<?> addRole(@RequestBody AddSysRoleInfoDTO dto) {
         log.info("新建角色前端传参{}", JSONUtil.toJsonStr(dto));
-        sysRoleInfoService.addRole(dto);
+        roleInfoService.save(dto);
         return CommonResponse.success();
     }
 
     @PostMapping("/getRoleDetail/{id}")
     @ApiOperation("编辑时回显角色详细信息")
     public CommonResponse<RoleDetailVO> getRoleDetailById(@PathVariable Long id){
-        return CommonResponse.success(sysRoleInfoService.getRoleDetailById(id));
+        return CommonResponse.success(roleInfoService.getRoleDetailById(id));
     }
 
 
     @PostMapping("/update")
     @ApiOperation("编辑角色")
     public CommonResponse<?> updateRole(@RequestBody UpdateSysRoleInfoDTO dto) {
-        sysRoleInfoService.updateRole(dto);
+        roleInfoService.modifyById(dto);
         return CommonResponse.success();
     }
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除角色")
     public CommonResponse<?> remove(@PathVariable Long id) {
-        sysRoleInfoService.removeById(id);
+        roleInfoService.removeById(id);
         return CommonResponse.success();
     }
 
     @PostMapping("/batchRemove")
     @ApiOperation("批量删除角色")
     public CommonResponse<?> batchRemove(@RequestBody List<Long> ids) {
-        sysRoleInfoService.batchRemove(ids);
+        roleInfoService.erasureBatch(ids);
         return CommonResponse.success();
     }
 
@@ -77,7 +77,7 @@ public class SysRoleInfoController {
     @ApiOperation("接口状态切换")
     public CommonResponse<?> changeStatus(@RequestBody StatusSysRoleInfoDTO dto) {
         log.info("接口状态切换前端传参{}", JSONUtil.toJsonStr(dto));
-        sysRoleInfoService.changeStatus(dto);
+        roleInfoService.modifyByStatus(dto);
         return CommonResponse.success();
     }
 
@@ -85,20 +85,20 @@ public class SysRoleInfoController {
     @PostMapping("/getListByPage")
     @ApiOperation("获取角色分页列表")
     public CommonResponse<IPage<SysRoleInfoVO>> getListByPage(@RequestBody QuerySysRoleInfoDTO dto) {
-        return CommonResponse.success(sysRoleInfoService.getSysRoleInfoByPage(dto));
+        return CommonResponse.success(roleInfoService.findByPage(dto));
     }
 
     @PostMapping("/getEditUserSysRoleInfoList")
     @ApiOperation("新增编辑用户时获取角色分页列表")
     public CommonResponse<IPage<EditUserSysRoleInfoVO>> getEditUserSysRoleInfoList(@RequestBody QueryEditUserSysRoleInfoDTO dto) {
-        return CommonResponse.success(sysRoleInfoService.getEditUserSysRoleInfoList(dto));
+        return CommonResponse.success(roleInfoService.getEditUserSysRoleInfoList(dto));
     }
 
     @PostMapping("/getAppIdTree")
     @ApiOperation("新建角色时获取应用类相关ID列表")
     public CommonResponse<List<AppIdTree>> getAppIdTree(){
         Integer appType = 1;
-        sysRoleInfoService.getAppIdTree(appType);
+        roleInfoService.getAppIdTree(appType);
 
         return null;
     }
@@ -107,7 +107,7 @@ public class SysRoleInfoController {
     @ApiOperation("新建角色时获取配置类的相关ID的树")
     public CommonResponse<List<ConfigIdTree>> getConfigIdTree(){
         Integer appType = 2;
-        sysRoleInfoService.getAppIdTree(appType);
+        roleInfoService.getAppIdTree(appType);
         return null;
     }
 
@@ -115,7 +115,7 @@ public class SysRoleInfoController {
     @ApiOperation("新建角色时获取运维类的相关ID的树")
     public CommonResponse<List<DevopsIdTree>> getDevopsIdTree(){
         Integer appType = 3;
-        sysRoleInfoService.getAppIdTree(appType);
+        roleInfoService.getAppIdTree(appType);
         return null;
     }
 }

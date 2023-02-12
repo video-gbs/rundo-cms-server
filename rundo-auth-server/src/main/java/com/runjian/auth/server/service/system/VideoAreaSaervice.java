@@ -20,19 +20,19 @@ import java.util.List;
  */
 public interface VideoAreaSaervice extends IService<VideoArea> {
 
-    VideoAreaVO saveVideoArae(AddVideoAreaDTO dto);
+    VideoAreaVO save(AddVideoAreaDTO dto);
 
-    void updateVideoAreaById(UpdateVideoAreaDTO dto);
+    void modifyById(UpdateVideoAreaDTO dto);
 
-    VideoAreaVO getVideoAreaById(Long id);
+    VideoAreaVO findById(Long id);
 
-    String removeVideoAreaById(Long id);
+    String erasureById(Long id);
 
-    List<VideoAreaTree> getTreeList();
+    List<VideoAreaTree> findByTree();
 
     void moveVideoArea(MoveVideoAreaDTO dto);
 
-    List<VideoAreaVO> getVideoAreaList(Long areaId);
+    List<VideoAreaVO> findByList(Long areaId);
 
-    String batchDelete(List<Long> ids);
+    String erasureBatch(List<Long> ids);
 }

@@ -12,7 +12,7 @@ import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysMenuInfoTree;
 import com.runjian.auth.server.mapper.MenuInfoMapper;
 import com.runjian.auth.server.service.login.MyRBACService;
-import com.runjian.auth.server.service.system.SysMenuInfoService;
+import com.runjian.auth.server.service.system.MenuInfoService;
 import com.runjian.auth.server.util.UserUtils;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class SysMenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> implements SysMenuInfoService {
+public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> implements MenuInfoService {
 
     @Autowired
     private UserUtils userUtils;
@@ -47,7 +47,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo
     private MenuInfoMapper menuInfoMapper;
 
     @Override
-    public List<SysMenuInfoTree> getSysMenuTree(QuerySysMenuInfoDTO dto) {
+    public List<SysMenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
         // 1.通过用户获取角色列表(未删除且未禁用的角色)
         // 如果角色表为空-->该用户未授权或者角色权限已经收回
         List<String> roleCodeList = myRBACService.findRoleInfoByUserAccount(userUtils.getSysUserInfo().getId());
@@ -113,7 +113,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo
     }
 
     @Override
-    public void addSysMenu(AddSysMenuInfoDTO dto) {
+    public void save(AddSysMenuInfoDTO dto) {
         MenuInfo menuInfo = new MenuInfo();
         menuInfo.setAppId(dto.getAppId());
         menuInfo.setMenuPid(dto.getMenuPid());
@@ -140,7 +140,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo
     }
 
     @Override
-    public void removeSysMenuInfoById(Long id) {
+    public void erasureById(Long id) {
         // 1.确认当前需要删除的菜单有无下级菜单
         LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(MenuInfo::getMenuPids, "[" + id + "]");
@@ -155,12 +155,12 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo
 
 
     @Override
-    public void updateSysMenuInfoById(UpdateSysMenuInfoDTO dto) {
+    public void modifyById(UpdateSysMenuInfoDTO dto) {
 
     }
 
     @Override
-    public SysMenuInfoVO getSysMenuInfoById(Long id) {
+    public SysMenuInfoVO findById(Long id) {
         MenuInfo menuInfo = menuInfoMapper.selectById(id);
         SysMenuInfoVO sysMenuInfoVO = new SysMenuInfoVO();
         BeanUtils.copyProperties(menuInfo, sysMenuInfoVO);
@@ -168,7 +168,7 @@ public class SysMenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo
     }
 
     @Override
-    public List<SysMenuInfoVO> getSysMenuInfoList() {
+    public List<SysMenuInfoVO> findByList() {
         return null;
     }
 

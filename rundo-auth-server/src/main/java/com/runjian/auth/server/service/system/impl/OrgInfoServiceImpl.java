@@ -11,7 +11,7 @@ import com.runjian.auth.server.domain.entity.OrgInfo;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.mapper.OrgInfoMapper;
-import com.runjian.auth.server.service.system.SysOrgService;
+import com.runjian.auth.server.service.system.OrgInfoService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessException;
 import org.springframework.beans.BeanUtils;
@@ -30,13 +30,13 @@ import java.util.stream.Collectors;
  * @since 2023-01-03 11:45:53
  */
 @Service
-public class SysOrgServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> implements SysOrgService {
+public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> implements OrgInfoService {
 
     @Autowired
     private OrgInfoMapper orgInfoMapper;
 
     @Override
-    public SysOrgVO saveSysOrg(AddSysOrgDTO dto) {
+    public SysOrgVO save(AddSysOrgDTO dto) {
         OrgInfo orgInfo = new OrgInfo();
         orgInfo.setOrgPid(dto.getOrgPid());
         OrgInfo parentInfo = orgInfoMapper.selectById(dto.getOrgPid());
@@ -68,7 +68,7 @@ public class SysOrgServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> imple
     }
 
     @Override
-    public String removeSysOrgById(Long id) {
+    public String erasureById(Long id) {
         // 1.判断是否为根节点
         OrgInfo orgInfo = orgInfoMapper.selectById(id);
         if (orgInfo.getOrgPid().equals(0L)) {
@@ -88,14 +88,14 @@ public class SysOrgServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> imple
     }
 
     @Override
-    public void updateSysOrgById(UpdateSysOrgDTO dto) {
+    public void modifyById(UpdateSysOrgDTO dto) {
         OrgInfo orgInfo = new OrgInfo();
         BeanUtils.copyProperties(dto, orgInfo);
         orgInfoMapper.updateById(orgInfo);
     }
 
     @Override
-    public SysOrgVO getSysOrgById(Long id) {
+    public SysOrgVO findById(Long id) {
         OrgInfo orgInfo = orgInfoMapper.selectById(id);
         SysOrgVO sysOrgVO = new SysOrgVO();
         BeanUtils.copyProperties(orgInfo, sysOrgVO);
@@ -103,7 +103,7 @@ public class SysOrgServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> imple
     }
 
     @Override
-    public List<SysOrgVO> getSysOrgList() {
+    public List<SysOrgVO> findByList() {
         List<OrgInfo> orgInfoList = orgInfoMapper.selectList(null);
         return orgInfoList.stream().map(
                 item -> {
@@ -153,7 +153,7 @@ public class SysOrgServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> imple
     }
 
     @Override
-    public String batchDelete(List<Long> ids) {
+    public String erasureBatch(List<Long> ids) {
         // 1.确定节点ID不为空
         if (ids.size() <= 0) {
             return "没有选定删除目标";
@@ -175,7 +175,7 @@ public class SysOrgServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> imple
     }
 
     @Override
-    public List<SysOrgTree> getSysOrgTree() {
+    public List<SysOrgTree> findByTree() {
         LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByAsc(true, OrgInfo::getOrgSort);
         queryWrapper.orderByAsc(true, OrgInfo::getUpdatedTime);
@@ -191,7 +191,7 @@ public class SysOrgServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> imple
     }
 
     @Override
-    public IPage<OrgInfo> getListByPage(Integer pageNum, Integer pageSize) {
+    public IPage<OrgInfo> findByPage(Integer pageNum, Integer pageSize) {
         Page<OrgInfo> page = Page.of(pageNum, pageSize);
         return orgInfoMapper.selectPage(page, null);
     }

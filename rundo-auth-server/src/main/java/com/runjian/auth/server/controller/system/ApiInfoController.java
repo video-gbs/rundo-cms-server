@@ -8,7 +8,7 @@ import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.SysApiInfoTree;
-import com.runjian.auth.server.service.system.SysApiInfoService;
+import com.runjian.auth.server.service.system.ApiInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,17 +30,17 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/sysApiInfo")
-public class SysApiInfoController {
+public class ApiInfoController {
 
 
     @Autowired
-    private SysApiInfoService sysApiInfoService;
+    private ApiInfoService apiInfoService;
 
     @PostMapping("/add")
     @ApiOperation("添加接口")
     public CommonResponse<?> save(@RequestBody AddSysApiInfoDTO dto) {
         log.info("添加接口信息前端传参{}", JSONUtil.toJsonStr(dto));
-        sysApiInfoService.saveSysApiInfo(dto);
+        apiInfoService.save(dto);
         return CommonResponse.success();
     }
 
@@ -48,7 +48,7 @@ public class SysApiInfoController {
     @ApiOperation("编辑接口")
     public CommonResponse<?> updateSysDict(@RequestBody UpdateSysApiInfoDTO dto) {
         log.info("添加接口信息前端传参{}", JSONUtil.toJsonStr(dto));
-        sysApiInfoService.updateSysApiInfoById(dto);
+        apiInfoService.modifyById(dto);
         return CommonResponse.success();
     }
 
@@ -56,7 +56,7 @@ public class SysApiInfoController {
     @ApiOperation("接口状态切换")
     public CommonResponse<?> changeStatus(@RequestBody StatusSysApiInfoDTO dto) {
         log.info("接口状态切换前端传参{}", JSONUtil.toJsonStr(dto));
-        sysApiInfoService.changeStatus(dto);
+        apiInfoService.modifyByStatus(dto);
         return CommonResponse.success();
     }
 
@@ -64,20 +64,20 @@ public class SysApiInfoController {
     @GetMapping("/getById/{id}")
     @ApiOperation("获取接口信息")
     public CommonResponse<SysApiInfoVO> getById(@PathVariable Long id) {
-        return CommonResponse.success(sysApiInfoService.getSysApiInfoById(id));
+        return CommonResponse.success(apiInfoService.findById(id));
     }
 
     @PostMapping("/tree")
     @ApiOperation("获取接口层级树")
     public CommonResponse<List<SysApiInfoTree>> getApiInfoTree(@RequestBody QuerySysApiInfoDTO dto) {
         log.info("获取接口层级树，前端查询条件:{}", JSONUtil.toJsonStr(dto));
-        return CommonResponse.success(sysApiInfoService.getSysApiInfoTree(dto));
+        return CommonResponse.success(apiInfoService.findByTree(dto));
     }
 
     @GetMapping("/getList")
     @ApiOperation("获取接口列表 无分页")
     public CommonResponse<List<SysApiInfoVO>> getList() {
-        return CommonResponse.success(sysApiInfoService.getSysApiInfoList());
+        return CommonResponse.success(apiInfoService.findByList());
     }
 
     @GetMapping("/getListByPage")
@@ -86,6 +86,6 @@ public class SysApiInfoController {
                                                              Integer pageNum,
                                                              @RequestParam(value = "pageSize", defaultValue = "20")
                                                              Integer pageSize) {
-        return CommonResponse.success(sysApiInfoService.getSysApiInfoByPage(pageNum, pageSize));
+        return CommonResponse.success(apiInfoService.findByPage(pageNum, pageSize));
     }
 }

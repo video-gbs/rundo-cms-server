@@ -50,7 +50,7 @@ public class OrgInfo implements Serializable {
 
     @ApiModelProperty("组织机构排序")
     @TableField("org_sort")
-    private String orgSort;
+    private Integer orgSort;
 
     @ApiModelProperty("部门负责人")
     @TableField("org_leader")

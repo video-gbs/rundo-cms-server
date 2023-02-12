@@ -19,23 +19,23 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface SysOrgService extends IService<OrgInfo> {
+public interface OrgInfoService extends IService<OrgInfo> {
 
-    SysOrgVO saveSysOrg(AddSysOrgDTO dto);
+    SysOrgVO save(AddSysOrgDTO dto);
 
-    List<SysOrgTree> getSysOrgTree();
+    List<SysOrgTree> findByTree();
 
-    IPage<OrgInfo> getListByPage(Integer pageNum, Integer pageSize);
+    IPage<OrgInfo> findByPage(Integer pageNum, Integer pageSize);
 
-    String removeSysOrgById(Long id);
+    String erasureById(Long id);
 
-    void updateSysOrgById(UpdateSysOrgDTO dto);
+    void modifyById(UpdateSysOrgDTO dto);
 
-    SysOrgVO getSysOrgById(Long id);
+    SysOrgVO findById(Long id);
 
-    List<SysOrgVO> getSysOrgList();
+    List<SysOrgVO> findByList();
 
     void moveSysOrg(MoveSysOrgDTO dto);
 
-    String batchDelete(List<Long> ids);
+    String erasureBatch(List<Long> ids);
 }
