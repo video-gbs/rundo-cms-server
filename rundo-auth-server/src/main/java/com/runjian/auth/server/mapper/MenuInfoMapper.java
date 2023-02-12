@@ -18,8 +18,5 @@ import java.util.List;
 @Mapper
 public interface MenuInfoMapper extends BaseMapper<MenuInfo> {
 
-
-    int saveAppMenu(@Param("appId") Long appId, @Param("menuId") Long menuId);
-
     List<MenuInfo> getMenuInfoByAppId(@Param("appId") Long appId);
 }

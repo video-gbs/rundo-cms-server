@@ -38,6 +38,7 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
     @Override
     public void save(AddSysApiInfoDTO dto) {
         ApiInfo apiInfo = new ApiInfo();
+        apiInfo.setAppId(dto.getAppId());
         // 减少表操作此处代表菜单页面的ID
         apiInfo.setApiPid(dto.getApiPid());
         // SysApiInfo parentApiInfo = sysApiInfoMapper.selectById(dto.getApiPid());
@@ -48,12 +49,7 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
         apiInfo.setUrl(dto.getUrl());
         apiInfo.setLeaf(0);
         apiInfo.setStatus(dto.getStatus());
-        // sysApiInfo.setTenantId();
         apiInfoMapper.insert(apiInfo);
-        Long apiId = apiInfo.getId();
-        Long appId = dto.getAppId();
-        // 处理应用 API映射
-        apiInfoMapper.insertAppApi(appId, apiId);
     }
 
     @Override

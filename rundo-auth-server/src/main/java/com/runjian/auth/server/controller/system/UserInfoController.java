@@ -39,12 +39,14 @@ public class UserInfoController {
     @ApiOperation("添加用户")
     public CommonResponse<?> addUser(@RequestBody @Valid AddSysUserInfoDTO dto) {
         log.info("添加用户前端传参{}", JSONUtil.toJsonStr(dto));
-        if (Objects.equals(dto.getPassword(), dto.getPassword())) {
+        if (null != dto.getPassword() && null != dto.getRePassword()) {
+            if (!Objects.equals(dto.getPassword(), dto.getPassword())) {
+                return CommonResponse.create(200, "两次密码不一致", null);
+            }
             userInfoService.save(dto);
-        } else {
-            return CommonResponse.create(200, "两次密码不一致", null);
+            return CommonResponse.success();
         }
-        return CommonResponse.success();
+        return CommonResponse.create(200, "密码不能为空", null);
     }
 
     @PostMapping("/getById/{id}")

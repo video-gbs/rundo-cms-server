@@ -6,18 +6,18 @@
         SELECT
             sri.role_code
         FROM
-            sys_role_info sri
-            LEFT JOIN sys_role_user sru ON sru.role_id = sri.id
-            LEFT JOIN sys_user_info sui ON sui.id = sru.user_id
+            role_info sri
+            LEFT JOIN role_user sru ON sru.role_id = sri.id
+            LEFT JOIN user_info sui ON sui.id = sru.user_id
         WHERE
             sui.id = #{userId,jdbcType=BIGINT}
     </select>
 
     <select id="selectAppByRoleCode" resultType="com.runjian.auth.server.domain.entity.AppInfo">
         SELECT sai.*
-        FROM sys_app_info sai
-                 LEFT JOIN sys_role_app sra ON sra.app_id = sai.id
-                 LEFT JOIN sys_role_info sri ON sri.id = sra.role_id
+        FROM app_info sai
+                 LEFT JOIN role_app sra ON sra.app_id = sai.id
+                 LEFT JOIN role_info sri ON sri.id = sra.role_id
         WHERE sri.role_code = #{roleCode}
           AND sai.delete_flag = 0
           AND sai.status = 0
@@ -27,9 +27,9 @@
         SELECT
             smi.*
         FROM
-            sys_menu_info smi
-        LEFT JOIN sys_role_menu srm ON srm.menu_id = smi.id
-        LEFT JOIN sys_role_info sri ON sri.id = srm.role_id
+            menu_info smi
+        LEFT JOIN role_menu srm ON srm.menu_id = smi.id
+        LEFT JOIN role_info sri ON sri.id = srm.role_id
         WHERE
             sri.role_code = #{roleCode}
     </select>
@@ -38,9 +38,9 @@
         SELECT
             sai.url
         FROM
-            sys_api_info sai
-            LEFT JOIN sys_role_api sra ON sra.api_id = sai.id
-            LEFT JOIN sys_role_info sri ON sri.id = sra.role_id
+            api_info sai
+            LEFT JOIN role_api sra ON sra.api_id = sai.id
+            LEFT JOIN role_info sri ON sri.id = sra.role_id
         WHERE
             sri.role_code = #{roleCode}
     </select>
@@ -49,9 +49,9 @@
         SELECT
             sai.*
         FROM
-            sys_api_info sai
-            LEFT JOIN sys_role_api sra ON sra.api_id = sai.id
-            LEFT JOIN sys_role_info sri ON sri.id = sra.role_id
+            api_info sai
+            LEFT JOIN role_api sra ON sra.api_id = sai.id
+            LEFT JOIN role_info sri ON sri.id = sra.role_id
         WHERE
             sri.role_code = #{roleCode}
     </select>
@@ -60,9 +60,9 @@
         SELECT
             org.*
         FROM
-            sys_org org
-            LEFT JOIN sys_role_org sro ON sro.org_id = org.id
-            LEFT JOIN sys_role_info sri ON sri.id = sro.role_id
+            org_info org
+            LEFT JOIN role_org sro ON sro.org_id = org.id
+            LEFT JOIN role_info sri ON sri.id = sro.role_id
         WHERE
             sri.role_code = #{roleCode}
     </select>
@@ -72,8 +72,8 @@
             area.*
         FROM
             video_area area
-            LEFT JOIN role_video_area rva ON rva.area_id = area.id
-            LEFT JOIN sys_role_info sri ON sri.id = rva.role_id
+            LEFT JOIN role_area rva ON rva.area_id = area.id
+            LEFT JOIN role_info sri ON sri.id = rva.role_id
         WHERE
             sri.role_code = #{roleCode}
     </select>
@@ -84,7 +84,7 @@
                sri.role_desc,
                sri.status,
                sri.created_by
-        FROM sys_role_info sri
+        FROM role_info sri
         WHERE sri.delete_flag = 0
     </select>
 
@@ -99,8 +99,8 @@
             role.role_desc,
             role.status
         FROM
-            sys_role_info role
-            LEFT JOIN sys_user_info userInfo ON userInfo.id = role.created_by
+            role_info role
+            LEFT JOIN user_info userInfo ON userInfo.id = role.created_by
         <where>
             role.delete_flag = 0
             <if test="userAccount != null and userAccount != ''">
@@ -121,56 +121,56 @@
     </select>
 
     <insert id="insertRoleApp">
-        INSERT INTO sys_role_app (role_id, app_id)
+        INSERT INTO role_app (role_id, app_id)
         VALUES (#{roleId,jdbcType=BIGINT}, #{appId,jdbcType=BIGINT});
     </insert>
 
     <insert id="insertRoleMenu">
-        INSERT INTO sys_role_menu (role_id, menu_id)
+        INSERT INTO role_menu (role_id, menu_id)
         VALUES (#{roleId,jdbcType=BIGINT}, #{menuId,jdbcType=BIGINT});
     </insert>
 
     <insert id="insertRoleApi">
-        INSERT INTO sys_role_api (role_id, api_id)
+        INSERT INTO role_api (role_id, api_id)
         VALUES (#{roleId,jdbcType=BIGINT}, #{apiId,jdbcType=BIGINT});
     </insert>
 
     <insert id="insertRoleOrg">
-        INSERT INTO sys_role_org (role_id, org_id)
+        INSERT INTO role_org (role_id, org_id)
         VALUES (#{roleId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT});
     </insert>
 
     <insert id="insertRoleArea">
-        INSERT INTO role_video_area (role_id, area_id)
+        INSERT INTO role_area (role_id, area_id)
         VALUES (#{roleId,jdbcType=BIGINT}, #{areaId,jdbcType=BIGINT});
     </insert>
 
     <delete id="removeRoleApp">
-        DELETE FROM sys_role_app t
+        DELETE FROM role_app t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
         AND t.app_id = #{appId,jdbcType=BIGINT}
     </delete>
 
     <delete id="removeRoleMenu">
-        DELETE FROM sys_role_menu t
+        DELETE FROM role_menu t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
         AND t.menu_id = #{menuId,jdbcType=BIGINT}
     </delete>
 
     <delete id="removeRoleApi">
-        DELETE FROM sys_role_api t
+        DELETE FROM role_api t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
         AND t.api_id = #{apiId,jdbcType=BIGINT}
     </delete>
 
     <delete id="removeRoleOrg">
-        DELETE FROM sys_role_org t
+        DELETE FROM role_org t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
         AND t.org_id = #{orgId,jdbcType=BIGINT}
     </delete>
 
     <delete id="removeRoleArea">
-        DELETE FROM role_video_area t
+        DELETE FROM role_area t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
         AND t.area_id = #{areaId,jdbcType=BIGINT}
     </delete>

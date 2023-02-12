@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.runjian.auth.server.mapper.UserInfoMapper">
-    <insert id="insertUserOrg">
-        INSERT INTO sys_user_org(user_id, org_id)
-        VALUES (#{userId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT});
-    </insert>
-
     <insert id="insertUserRole">
-        INSERT INTO sys_role_user(user_id, role_id)
+        INSERT INTO role_user(user_id, role_id)
         VALUES (#{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT});
     </insert>
 
     <select id="selectRoleByUserId" resultType="java.lang.Long">
         SELECT sru.role_id
-        FROM sys_role_user sru
+        FROM role_user sru
         <where>
             <if test="userId != null">
-                sru.user_id= #{userId,jdbcType=BIGINT}
+                sru.user_id = #{userId,jdbcType=BIGINT}
             </if>
         </where>
     </select>
 
     <delete id="deleteUserRole">
         DELETE
-        FROM sys_role_user sru
+        FROM role_user sru
         <where>
             <if test="userId != null">
                 sru.user_id = #{userId,jdbcType=BIGINT}
@@ -35,128 +30,120 @@
     </delete>
 
     <select id="MySelectPage" resultType="com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO">
-        SELECT r1.id,
-               r1.user_account,
-               r1.user_name,
-               r2.org_id,
-               r2.org_name,
-               r1.role_name,
-               r1.job_no,
-               r1.created_time,
-               r1.updated_time,
-               r1.status
-        FROM (SELECT userInfo.id,
-                     userInfo.user_account,
-                     userInfo.user_name,
-                     org.org_name,
-                     GROUP_CONCAT(role.role_name ORDER BY userInfo.id SEPARATOR '/') role_name,
-                     userInfo.job_no,
-                     userInfo.created_time,
-                     userInfo.updated_time,
-                     userInfo.status,
-                     suo.org_id
-              FROM sys_user_info userInfo
-                       LEFT JOIN sys_user_org suo ON suo.user_id = userInfo.id
-                       LEFT JOIN sys_org org ON suo.org_id = org.id
-                       LEFT JOIN sys_role_user sru ON sru.user_id = userInfo.id
-                       LEFT JOIN sys_role_info role ON sru.role_id = role.id
-              WHERE userInfo.delete_flag = 0
-              GROUP BY id) r1
-                 LEFT JOIN (SELECT org.id                                                   org_id,
-                                   org.org_pid,
-                                   GROUP_CONCAT(org.org_name ORDER BY org.id SEPARATOR '/') org_name
-                            FROM sys_org org
-                                     JOIN sys_org so ON so.id = org.org_pid
-                                     LEFT JOIN sys_user_org suo ON suo.org_id = org.id
-                            GROUP BY org_pid) r2 ON r2.org_id = r1.org_id
+        SELECT user.id,
+               user.user_account,
+               user.user_name,
+               org.org_name_str AS org_name,
+               GROUP_CONCAT(role.role_name ORDER BY user.id SEPARATOR '/') AS role_name,
+               user.job_no,
+               user.status,
+               user.created_time,
+               user.updated_time
+        FROM user_info user
+                 LEFT JOIN org_info org ON org.id = user.org_id
+                 LEFT JOIN role_user ru ON ru.user_id = user.id
+                 LEFT JOIN role_info role ON role.id = ru.role_id
         <where>
-            <if test="orgId != null ">
-                r2.org_id = #{orgId,jdbcType=BIGINT}
+            user.delete_flag = 0
+            <if test="orgId != null">
+                AND user.org_id = #{orgId,jdbcType=BIGINT}
             </if>
             <if test="userAccount != null and userAccount != ''">
-                AND r1.user_account = #{userAccount,jdbcType=VARCHAR}
+                AND user.user_account = #{userAccount,jdbcType=VARCHAR}
             </if>
             <if test="userName != null and userName != ''">
-                AND r1.user_name = #{userName,jdbcType=VARCHAR}
+                AND user.user_name = #{userName,jdbcType=VARCHAR}
             </if>
         </where>
-        ORDER BY r1.id
+        GROUP BY user.id
     </select>
 
     <select id="selectOrgInfoByUserId" resultType="com.runjian.auth.server.domain.vo.system.OrgInfoVO">
-        SELECT
-            suo.org_id,so.org_name
-        FROM
-            sys_user_org suo
-            LEFT JOIN sys_org so ON so.id = suo.org_id
+        SELECT userInfo.org_id,
+               orgInfo.org_name
+        FROM user_info userInfo
+                 LEFT JOIN org_info orgInfo ON orgInfo.id = userInfo.org_id
         <where>
             <if test="userId != null">
-                suo.user_id = #{userId,jdbcType=BIGINT}
+                userInfo.id = #{userId,jdbcType=BIGINT}
             </if>
         </where>
     </select>
 
-    <select id="selectRelationSysUserInfoById" resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
+    <select id="selectRelationSysUserInfoById"
+            resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
         SELECT
-            re.*
-        FROM
-            (
-                SELECT
-                    sui.id,
-                    sui.user_account,
-                    sui.user_name,
-                    sui.email,
-                    sui.phone,
-                    sui.job_no,
-                    sui.address,
-                    sui.expiry_date_start,
-                    sui.expiry_date_end,
-                    sui.description,
-                    sui.STATUS,
-                    GROUP_CONCAT( sri.role_name ORDER BY sui.id SEPARATOR ' ' ) role_name,
-                    GROUP_CONCAT( va.area_name ORDER BY sui.id SEPARATOR ' ' ) area_name
-                FROM
-                    sys_user_info sui
-                        LEFT JOIN sys_role_user sru ON sru.user_id = sui.id
-                        LEFT JOIN sys_role_info sri ON sri.id = sru.role_id
-                        LEFT JOIN role_video_area rva ON rva.role_id = sri.id
-                        LEFT JOIN video_area va ON va.id = rva.area_id
-                GROUP BY
-                    sui.id
-            ) re
+            user.id,
+            user.user_account,
+            user.user_name,
+            user.expiry_date_start,
+            user.expiry_date_end,
+            user.job_no,
+            user.address,
+            user.email,
+            user.phone,
+            org.org_name_str org_name,
+            GROUP_CONCAT(role.role_name ORDER BY user.id SEPARATOR '/') role_name,
+            user.description
+        FROM user_info user
+        LEFT JOIN role_user ru ON ru.user_id = user.id
+        LEFT JOIN role_info role ON role.id = ru.role_id
+        LEFT JOIN org_info org ON org.id = user.org_id
         <where>
             <if test="userId != null">
-                sui.id = #{userId,jdbcType=BIGINT}
+                user.id = #{userId,jdbcType=BIGINT}
             </if>
         </where>
+        GROUP BY user.id
     </select>
 
     <select id="relationSysUserInfoPage" resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
         SELECT
-            sui.id,
-            sui.user_account,
-            sui.user_name,
-            sui.email,
-            sui.phone,
-            sui.job_no,
-            sui.address,
-            sui.expiry_date_start,
-            sui.expiry_date_end,
-            sui.description,
-            sui.STATUS,
-            GROUP_CONCAT( sri.role_name ORDER BY sui.id SEPARATOR '/' ) role_name,
-            GROUP_CONCAT( va.area_name ORDER BY sui.id SEPARATOR '/' ) area_name,
-            GROUP_CONCAT( so.org_name ORDER BY sui.id SEPARATOR '/' ) org_name
+            user.id,
+            user.user_account,
+            user.user_name,
+            user.expiry_date_start,
+            user.expiry_date_end,
+            user.job_no,
+            user.address,
+            user.email,
+            user.phone,
+            org.org_name_str org_name,
+            GROUP_CONCAT(role.role_name ORDER BY user.id SEPARATOR '/') role_name,
+            user.description
+        FROM user_info user
+                 LEFT JOIN role_user ru ON ru.user_id = user.id
+                 LEFT JOIN role_info role ON role.id = ru.role_id
+                 LEFT JOIN org_info org ON org.id = user.org_id
+        WHERE user.delete_flag = 0
+        GROUP BY user.id
+        ORDER BY user.id
+    </select>
+
+    <select id="selectRoleNameByUserId" resultType="java.lang.String">
+        SELECT
+            role.role_name
+        FROM role_info role
+            LEFT JOIN role_user ru ON ru.role_id = role.id
+        <where>
+            <if test="id != null">
+                ru.user_id = #{id,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectAreaNameByUserId" resultType="java.lang.String">
+        SELECT
+            area.area_names
         FROM
-            sys_user_info sui
-                LEFT JOIN sys_role_user sru ON sru.user_id = sui.id
-                LEFT JOIN sys_role_info sri ON sri.id = sru.role_id
-                LEFT JOIN role_video_area rva ON rva.role_id = sri.id
-                LEFT JOIN video_area va ON va.id = rva.area_id
-                LEFT JOIN sys_user_org suo ON suo.user_id = sui.id
-                LEFT JOIN sys_org so ON so.id = suo.org_id
-        GROUP BY
-            sui.id
-        ORDER BY sui.id
+            video_area area
+            LEFT JOIN role_area ra ON ra.area_id = area.id
+            LEFT JOIN role_user ru ON ru.role_id = ra.role_id
+            LEFT JOIN user_info user ON user.id = ru.user_id
+        <where>
+            <if test="id != null">
+                ru.user_id = #{id,jdbcType=BIGINT}
+            </if>
+        </where>
     </select>
 </mapper>

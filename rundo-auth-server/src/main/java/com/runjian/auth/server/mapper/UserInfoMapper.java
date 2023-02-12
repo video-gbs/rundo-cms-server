@@ -24,8 +24,6 @@ import java.util.List;
 @Mapper
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
 
-    void insertUserOrg(@Param("userId") Long userId, @Param("orgId") Long orgId);
-
     void insertUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
 
     List<Long> selectRoleByUserId(@Param("userId") Long userId);
@@ -39,4 +37,6 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
     RelationSysUserInfoVO selectRelationSysUserInfoById(@Param("userId") Long userId);
 
     Page<RelationSysUserInfoVO> relationSysUserInfoPage(PageRelationSysUserInfoDTO page);
+
+    List<String> selectAreaNameByUserId(@Param("id")Long id);
 }

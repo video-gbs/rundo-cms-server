@@ -122,6 +122,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         menuInfo.setMenuPids(menuPids);
         menuInfo.setMenuName(dto.getMenuName());
         menuInfo.setMenuSort(dto.getMenuSort());
+        menuInfo.setAppId(dto.getAppId());
         // 新增菜单默认不是叶子节点
         menuInfo.setLeaf(0);
         menuInfo.setUrl(dto.getUrl());
@@ -133,10 +134,6 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         // TODO 处理租客信息
         // sysMenuInfo.setTenantId();
         menuInfoMapper.insert(menuInfo);
-        // 处理应用菜单映射管理
-        Long menuId = menuInfo.getId();
-        Long appId = dto.getAppId();
-        menuInfoMapper.saveAppMenu(menuId, appId);
     }
 
     @Override

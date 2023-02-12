@@ -49,8 +49,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         userInfo.setPassword(password);
         // sysUserInfo.setTenantId();
         userInfoMapper.insert(userInfo);
-        // 处理部门信息
-        userInfoMapper.insertUserOrg(userInfo.getId(), dto.getOrgId());
         // 处理角色信息
         List<Long> roleIds = dto.getRoleIds();
         if (roleIds.size() > 0) {
@@ -167,7 +165,11 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Override
     public RelationSysUserInfoVO findRelationById(Long id) {
-        return userInfoMapper.selectRelationSysUserInfoById(id);
+        RelationSysUserInfoVO vo = userInfoMapper.selectRelationSysUserInfoById(id);
+        List<String> areaNameList = userInfoMapper.selectAreaNameByUserId(id);
+        String areaName = String.join(",", areaNameList);
+        vo.setAreaName(areaName);
+        return vo;
     }
 
     @Override
