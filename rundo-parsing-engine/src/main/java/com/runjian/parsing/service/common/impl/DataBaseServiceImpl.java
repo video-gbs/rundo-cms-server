@@ -4,9 +4,11 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.dao.DeviceMapper;
+import com.runjian.parsing.dao.DispatchMapper;
 import com.runjian.parsing.dao.GatewayMapper;
 import com.runjian.parsing.entity.ChannelInfo;
 import com.runjian.parsing.entity.DeviceInfo;
+import com.runjian.parsing.entity.DispatchInfo;
 import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.service.common.DataBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class DataBaseServiceImpl implements DataBaseService {
 
     @Autowired
     private ChannelMapper channelMapper;
+
+    @Autowired
+    private DispatchMapper dispatchMapper;
 
     @Override
     public GatewayInfo getGatewayInfo(Long gatewayId) {
@@ -57,5 +62,14 @@ public class DataBaseServiceImpl implements DataBaseService {
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("通道%s不存在", channelId));
         }
         return channelInfoOp.get();
+    }
+
+    @Override
+    public DispatchInfo getDispatchInfo(Long dispatchId) {
+        Optional<DispatchInfo> dispatchInfoOp = dispatchMapper.selectById(dispatchId);
+        if (dispatchInfoOp.isEmpty()){
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("流媒体服务%s不存在", dispatchId));
+        }
+        return dispatchInfoOp.get();
     }
 }

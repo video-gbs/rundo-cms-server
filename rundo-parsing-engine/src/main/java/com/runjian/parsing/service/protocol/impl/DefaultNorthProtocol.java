@@ -74,8 +74,7 @@ public class DefaultNorthProtocol extends AbstractNorthProtocol {
                 deviceId = mainId;
                 mainId = deviceInfo.getGatewayId();
             case GATEWAY:
-                GatewayInfo gatewayInfo = dataBaseService.getGatewayInfo(mainId);
-                gatewayTaskService.sendMsgToGateway(gatewayInfo.getSerialNum(), gatewayInfo.getId(), deviceId, channelId, msgType, gatewayConvertDto, response);
+                gatewayTaskService.sendMsgToGateway(mainId, deviceId, channelId, msgType, gatewayConvertDto, response);
                 break;
         }
     }

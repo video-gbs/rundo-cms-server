@@ -24,7 +24,6 @@ public interface GatewayTaskService {
 
     /**
      * 发送消息
-     * @param serialNum 网关序列号
      * @param gatewayId 网关id
      * @param deviceId 设备id
      * @param channelId 通道id
@@ -32,7 +31,7 @@ public interface GatewayTaskService {
      * @param msgType 消息类型
      * @param data 数据
      */
-    void sendMsgToGateway(String serialNum,Long gatewayId, Long deviceId, Long channelId, String msgType, Object data, DeferredResult<CommonResponse<?>> response);
+    void sendMsgToGateway(Long gatewayId, Long deviceId, Long channelId, String msgType, Object data, DeferredResult<CommonResponse<?>> response);
 
     /**
      * 创建异步任务

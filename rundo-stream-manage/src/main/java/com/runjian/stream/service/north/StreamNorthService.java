@@ -10,6 +10,12 @@ import com.runjian.stream.vo.response.PostApplyStreamRsp;
  */
 public interface StreamNorthService {
 
+
+    /**
+     * 检测超时未成功播放的流
+     */
+    void checkOutTimeStream();
+
     /**
      * 申请流
      */
@@ -24,6 +30,11 @@ public interface StreamNorthService {
      * 开启录像
      */
     Boolean startRecord(String streamId);
+
+    /**
+     * 检查录像状态
+     */
+    void checkRecordState();
 
     /**
      * 关闭录像

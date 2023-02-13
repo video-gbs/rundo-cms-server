@@ -1,4 +1,4 @@
-package com.runjian.parsing.feign.request;
+package com.runjian.parsing.vo.request;
 
 import com.runjian.parsing.entity.GatewayInfo;
 import lombok.Data;

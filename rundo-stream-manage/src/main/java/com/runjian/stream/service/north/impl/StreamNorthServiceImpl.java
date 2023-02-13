@@ -5,6 +5,7 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.PlayType;
+import com.runjian.common.utils.CircleArray;
 import com.runjian.stream.dao.GatewayDispatchMapper;
 import com.runjian.stream.dao.StreamMapper;
 import com.runjian.stream.entity.DispatchInfo;
@@ -15,13 +16,14 @@ import com.runjian.stream.service.common.DataBaseService;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author Miracle
@@ -42,7 +44,41 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     @Autowired
     private DataBaseService dataBaseService;
 
+    /**
+     * 通道最大播放数
+     */
     private static final int CHANNEL_MAX_PLAY_NUM = 3;
+
+    /**
+     * 播放未响应超时时间
+     */
+    private static final long PREPARE_STREAM_OUT_TIME = 10L;
+
+    /**
+     * 心跳时钟
+     */
+    public static volatile CircleArray<String> prepareStreamOutTimeArray = new CircleArray<>(600);
+
+    @PostConstruct
+    public void init(){
+        // 清空所有“准备中”的流
+        List<Long> idList = streamMapper.selectByStreamState(CommonEnum.DISABLE.getCode());
+        if (idList.isEmpty()){
+            return;
+        }
+        streamMapper.deleteByIds(idList);
+    }
+
+    @Override
+    @Scheduled(fixedRate = 1000)
+    public void checkOutTimeStream() {
+        Set<String> idList = prepareStreamOutTimeArray.pullAndNext();
+        if (idList.isEmpty()){
+            return;
+        }
+        streamMapper.deleteByStreamIds(new ArrayList<>(idList));
+        idList.forEach(streamId -> stopRecord(streamId));
+    }
 
     @Override
     public PostApplyStreamRsp applyStreamId(Long gatewayId, Long channelId, Integer playType, Integer recordState, Integer autoCloseState) {
@@ -60,8 +96,14 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
             if (streamInfoOp.isEmpty()) {
                 streamInfo = saveStream(gatewayId, channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
+                // 设置“准备中”状态的超时时间
+                prepareStreamOutTimeArray.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
             } else {
                 streamInfo = streamInfoOp.get();
+                if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
+                    // 设置“准备中”状态的超时时间
+                    prepareStreamOutTimeArray.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
+                }
                 // 判断是否需要开启录像
                 if (!streamInfo.getRecordState().equals(recordState) || recordState.equals(CommonEnum.ENABLE.getCode())) {
                     startRecord(streamId);
@@ -74,6 +116,8 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             }
             String streamId = PlayType.getMsgByCode(playType) + "_" + channelId + "_" + System.currentTimeMillis() + new Random().nextInt(100);
             streamInfo = saveStream(gatewayId, channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
+            // 设置“准备中”状态的超时时间
+            prepareStreamOutTimeArray.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
         }
         res.setStreamId(streamInfo.getStreamId());
         return res;
@@ -101,11 +145,19 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void stopPlay(String streamId) {
-        dataBaseService.getStreamInfoByStreamId(streamId);
-        streamMapper.deleteByStreamId(streamId);
-        CommonResponse<?> commonResponse = parsingEngineApi.channelStopPlay(streamId);
+        StreamInfo streamInfo = dataBaseService.getStreamInfoByStreamId(streamId);
+
+        CommonResponse<Boolean> commonResponse = parsingEngineApi.channelStopPlay(streamId);
         if (commonResponse.getCode() != 0){
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+        if (commonResponse.getData()){
+            streamMapper.deleteByStreamId(streamId);
+        }else {
+            streamInfo.setAutoCloseState(CommonEnum.ENABLE.getCode());
+            streamInfo.setRecordState(CommonEnum.DISABLE.getCode());
+            streamInfo.setUpdateTime(LocalDateTime.now());
+            streamMapper.updateRecordAndAutoCloseState(streamInfo);
         }
 
     }
@@ -126,6 +178,11 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             streamMapper.updateRecordState(streamInfo);
         }
         return true;
+    }
+
+    @Override
+    public void checkRecordState() {
+        // todo
     }
 
     @Override

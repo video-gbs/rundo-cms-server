@@ -3,6 +3,7 @@ package com.runjian.stream.controller;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.stream.service.south.StreamSouthService;
+import com.runjian.stream.vo.request.PutStreamCloseReq;
 import com.runjian.stream.vo.request.PutStreamReceiveResultReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class StreamSouthController {
      * 接收流播放结果
      * @param req
      */
-    @PutMapping("/result")
+    @PutMapping("/play/result")
     public CommonResponse<?> receiveResult(@RequestBody PutStreamReceiveResultReq req){
         validatorService.validateRequest(req);
         streamSouthService.receiveResult(req.getStreamId(), req.getIsSuccess());
@@ -34,11 +35,11 @@ public class StreamSouthController {
 
     /**
      * 自动关闭
-     * @param streamId 流id
+     * @param req 流id
      * @return 是否关闭
      */
-    @GetMapping("/close")
-    public CommonResponse<Boolean> autoCloseHandle(@RequestParam String streamId){
-        return CommonResponse.success(streamSouthService.autoCloseHandle(streamId));
+    @GetMapping("/play/close")
+    public CommonResponse<Boolean> streamCloseHandle(@RequestBody PutStreamCloseReq req){
+        return CommonResponse.success(streamSouthService.streamCloseHandle(req.getStreamId(), req.getCanClose()));
     }
 }

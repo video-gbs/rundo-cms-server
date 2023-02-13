@@ -23,7 +23,6 @@ public interface StreamTaskService {
 
     /**
      * 发送消息
-     * @param serialNum 网关序列号
      * @param dispatchId 网关id
      * @param channelId 通道id
      * @param streamId 流id
@@ -31,7 +30,7 @@ public interface StreamTaskService {
      * @param msgType 消息类型
      * @param data 数据
      */
-    void sendMsgToGateway(String serialNum,Long dispatchId, Long channelId, String streamId, String msgType, Object data, DeferredResult<CommonResponse<?>> response);
+    void sendMsgToGateway(Long dispatchId, Long channelId, String streamId, String msgType, Object data, DeferredResult<CommonResponse<?>> response);
 
     /**
      * 创建异步任务
@@ -42,7 +41,7 @@ public interface StreamTaskService {
     /**
      * 创建任务
      */
-    Long createTask(Long dispatchId, Long channelId, String streamId, String mqId, String msgType);
+    Long createTask(Long dispatchId, Long channelId, String streamId, String mqId, String msgType, TaskState taskState);
 
     /**
      * 获取任务

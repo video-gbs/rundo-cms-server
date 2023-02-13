@@ -17,7 +17,7 @@ public interface ParsingEngineApi {
      * @return
      */
     @GetMapping("/channel/stream/stop")
-    CommonResponse<?> channelStopPlay(String streamId);
+    CommonResponse<Boolean> channelStopPlay(String streamId);
 
     /**
      * 开启录播

@@ -4,6 +4,7 @@ import com.runjian.stream.entity.StreamInfo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +36,7 @@ public interface StreamMapper {
             " (gateway_id, channel_id, stream_id, dispatch_id, playType, record_state, auto_close_state, stream_state, update_time, create_time) " +
             " VALUES " +
             " (#{gatewayId}, #{channelId}, #{streamId}, #{dispatchId}, #{playType}, #{recordState}, #{autoCloseState}, #{streamState}, #{updateTime}, #{createTime})")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(StreamInfo streamInfo);
 
     @Select(" SELECT * FROM " + STREAM_TABLE_NAME +
@@ -46,4 +48,29 @@ public interface StreamMapper {
             " , record_state = #{recordState} " +
             " WHERE id = #{id} ")
     void updateRecordState(StreamInfo streamInfo);
+
+    @Update(" UPDATE " + STREAM_TABLE_NAME +
+            " SET update_time = #{updateTime}  " +
+            " , record_state = #{recordState} " +
+            " , auto_close_state = #{autoCloseState} " +
+            " WHERE id = #{id} ")
+    void updateRecordAndAutoCloseState(StreamInfo streamInfo);
+
+    @Select(" SELECT * FROM " + STREAM_TABLE_NAME +
+            " WHERE stream_state = #{streamState} ")
+    List<Long> selectByStreamState(Integer streamState);
+
+    @Delete(" <script> " +
+            " DELETE FROM " + STREAM_TABLE_NAME +
+            " WHERE id IN " +
+            " <foreach collection='idList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void deleteByIds(List<Long> idList);
+
+    @Delete(" <script> " +
+            " DELETE FROM " + STREAM_TABLE_NAME +
+            " WHERE stream_id IN " +
+            " <foreach collection='streamIdList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void deleteByStreamIds(ArrayList<String> streamIdList);
 }

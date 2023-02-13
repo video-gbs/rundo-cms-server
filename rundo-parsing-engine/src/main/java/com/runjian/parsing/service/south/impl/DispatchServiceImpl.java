@@ -58,7 +58,7 @@ public class DispatchServiceImpl implements DispatchService {
         PostDispatchSignInReq req = new PostDispatchSignInReq(dispatchInfo, Instant.ofEpochMilli(Long.parseLong(outTime)).atZone(ZoneId.systemDefault()).toLocalDateTime());
         CommonResponse<?> response = streamManageApi.dispatchSignIn(req);
         if (response.getCode() == 0){
-            log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关注册服务", "网关注册成功", dispatchInfo.getId());
+            log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "流媒体服务注册服务", "流媒体服注册成功", dispatchInfo.getId());
         }
         signInRsp.setSignType(SignType.MQ.getMsg());
         return signInRsp;

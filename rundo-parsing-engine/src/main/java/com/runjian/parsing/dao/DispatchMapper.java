@@ -3,6 +3,7 @@ package com.runjian.parsing.dao;
 import com.runjian.parsing.entity.DispatchInfo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -27,10 +28,13 @@ public interface DispatchMapper {
             " (serial_num, sign_type, ip, port, update_time, create_time) " +
             " VALUES " +
             " (#{serialNum}, #{signType}, #{ip}, #{port}, #{updateTime}, #{createTime})")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(DispatchInfo dispatchInfo);
 
     @Select(" SELECT * FROM " + GATEWAY_DISPATCH_TABLE_NAME)
     List<DispatchInfo> selectAll();
 
+    @Select(" SELECT * FROM " + GATEWAY_DISPATCH_TABLE_NAME +
+            " WHERE id = #{dispatchId} ")
     Optional<DispatchInfo> selectById(Long dispatchId);
 }

@@ -23,7 +23,7 @@ public class MqConstant {
     /**
      * 公共消息通用MQ前缀
      */
-    public static final String PUBLIC_PREFIX = "PUBLIC";
+    public static final String PUBLIC_PREFIX = "PUBLIC_";
 
     /**
      * 网关GET,服务端SET前缀

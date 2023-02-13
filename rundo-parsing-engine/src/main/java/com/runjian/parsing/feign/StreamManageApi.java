@@ -1,14 +1,11 @@
 package com.runjian.parsing.feign;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.parsing.vo.feign.PutStreamReceiveResultReq;
 import com.runjian.parsing.vo.request.PostDispatchSignInReq;
 import com.runjian.parsing.vo.request.PutDispatchHeartbeatReq;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Miracle
@@ -18,14 +15,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface StreamManageApi {
 
     @PutMapping("/dispatch/south/heartbeat")
-    CommonResponse<?> dispatchHeartbeat(PutDispatchHeartbeatReq putDispatchHeartbeatReq);
+    CommonResponse<?> dispatchHeartbeat(@RequestBody PutDispatchHeartbeatReq putDispatchHeartbeatReq);
 
     @PostMapping("/dispatch/south/sign-in")
-    CommonResponse<?> dispatchSignIn(PostDispatchSignInReq req);
+    CommonResponse<?> dispatchSignIn(@RequestBody PostDispatchSignInReq req);
 
-    @PutMapping("/stream/south/result")
-    CommonResponse<?> streamReceiveResult(PutStreamReceiveResultReq req);
+    @PutMapping("/stream/south/play/result")
+    CommonResponse<?> streamReceiveResult(@RequestBody JSONObject req);
 
-    @GetMapping("/stream/south/close")
-    CommonResponse<?> streamCloseHandle(@RequestParam String streamId);
+    @PutMapping("/stream/south/record/result")
+    CommonResponse<?> streamReceiveRecordResult(@RequestBody JSONObject req);
+
+    @PutMapping("/stream/south/play/close")
+    CommonResponse<Boolean> streamCloseHandle(@RequestBody JSONObject req);
 }

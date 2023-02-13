@@ -9,6 +9,7 @@ import com.runjian.parsing.entity.DispatchInfo;
 import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.mq.config.RabbitMqConfig;
 import com.runjian.parsing.mq.config.RabbitMqProperties;
+import lombok.Data;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -26,6 +27,7 @@ import java.util.Objects;
  * @author Miracle
  * @date 2022/5/25 10:59
  */
+@Data
 @Configuration
 public class MqListenerConfig {
 
@@ -50,14 +52,10 @@ public class MqListenerConfig {
     @Autowired
     private RabbitMqConfig rabbitMqConfig;
 
-    @Value("${gateway.public.queue-id-get}")
-    private String publicGetQueue;
+    @Autowired
+    private MqDefaultProperties mqDefaultProperties;
 
-    @Value("${gateway.public.queue-id-set}")
-    private String signInQueueId;
-
-
-    public static Map<String, SimpleMessageListenerContainer> containerMap = new HashMap<>(2);
+    public static Map<String, SimpleMessageListenerContainer> containerMap = new HashMap<>(3);
 
     /**
      * 配置公共消息监听器
@@ -69,7 +67,7 @@ public class MqListenerConfig {
     public SimpleMessageListenerContainer publicMsgListenerContainer(ConnectionFactory connectionFactory) throws BusinessException {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(rabbitMqProperties.getQueueData(publicGetQueue).getQueueName());
+        container.setQueueNames(rabbitMqProperties.getQueueData(mqDefaultProperties.getPublicGetQueue()).getQueueName());
         container.setMessageListener(publicMsgListener);
         container.setConcurrentConsumers(10);
         container.setMaxConcurrentConsumers(10);
@@ -85,7 +83,7 @@ public class MqListenerConfig {
      * @throws BusinessException
      */
     @Bean("gatewayMsgListenerContainer")
-    public SimpleMessageListenerContainer dispatchMsgListenerContainer(ConnectionFactory connectionFactory) throws BusinessException {
+    public SimpleMessageListenerContainer gatewayMsgListenerContainer(ConnectionFactory connectionFactory) throws BusinessException {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setMessageListener(gatewayMsgListener);
@@ -94,10 +92,9 @@ public class MqListenerConfig {
         container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         containerMap.put(MqConstant.GATEWAY_PREFIX, container);
         // 将全部网关加载
-        RabbitMqProperties.QueueData queueData = rabbitMqProperties.getQueueData(signInQueueId);
         List<GatewayInfo> gatewayInfoList = gatewayMapper.selectAll();
         for (GatewayInfo gatewayInfo : gatewayInfoList){
-            addQueue(MqConstant.GATEWAY_PREFIX, queueData.getExchangeId(), MqConstant.GATEWAY_PREFIX + MqConstant.SET_GET_PREFIX + gatewayInfo.getId());
+            addQueue(MqConstant.GATEWAY_PREFIX, mqDefaultProperties.getGatewayExchangeId(), MqConstant.GATEWAY_PREFIX + MqConstant.SET_GET_PREFIX + gatewayInfo.getId());
         }
         return container;
     }
@@ -118,10 +115,9 @@ public class MqListenerConfig {
         container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
         containerMap.put(MqConstant.STREAM_PREFIX, container);
         // 将全部网关加载
-        RabbitMqProperties.QueueData queueData = rabbitMqProperties.getQueueData(signInQueueId);
         List<DispatchInfo> dispatchInfoList = dispatchMapper.selectAll();
         for (DispatchInfo dispatchInfo : dispatchInfoList){
-            addQueue(MqConstant.STREAM_PREFIX, queueData.getExchangeId(), MqConstant.STREAM_PREFIX + MqConstant.SET_GET_PREFIX + dispatchInfo.getId());
+            addQueue(MqConstant.STREAM_PREFIX, mqDefaultProperties.getStreamExchangeId(), MqConstant.STREAM_PREFIX + MqConstant.SET_GET_PREFIX + dispatchInfo.getId());
         }
         return container;
     }

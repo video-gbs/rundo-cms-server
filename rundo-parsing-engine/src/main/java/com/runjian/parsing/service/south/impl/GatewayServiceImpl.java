@@ -8,7 +8,7 @@ import com.runjian.common.constant.LogTemplate;
 import com.runjian.parsing.dao.GatewayMapper;
 import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.feign.DeviceControlApi;
-import com.runjian.parsing.feign.request.PostGatewaySignInReq;
+import com.runjian.parsing.vo.request.PostGatewaySignInReq;
 import com.runjian.parsing.service.south.GatewayService;
 import com.runjian.parsing.vo.request.PutGatewayHeartbeatReq;
 import com.runjian.parsing.vo.response.SignInRsp;

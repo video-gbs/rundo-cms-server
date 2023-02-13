@@ -87,21 +87,29 @@ mq:
   enabled: true
   queue-data-list:
     - id: PUBLIC-GS
-      routing-key: rundo.gateway.public-gs
-      queue-name: rundo.gateway.public-gs
-      exchange-id: GATEWAY
+      routing-key: rundo.public.gs
+      queue-name: rundo.public.gs
+      exchange-id: PUBLIC
     - id: PUBLIC-SG
-      routing-key: rundo.gateway.public-sg
-      queue-name: rundo.gateway.public-sg
-      exchange-id: GATEWAY
+      routing-key: rundo.public.sg
+      queue-name: rundo.public.sg
+      exchange-id: PUBLIC
   exchange-data-list:
+    - id: PUBLIC
+      name: rundo.public
+      type: topic
     - id: GATEWAY
       name: rundo.gateway
       type: topic
+    - id: STREAM
+      name: rundo.stream
+      type: topic
 
-gateway:
-  default:
-    exchange-id: GATEWAY
-  public:
-    queue-id-get: PUBLIC-SG
-    queue-id-set: PUBLIC-GS
+mq-default:
+    public:
+      queue-id-get: PUBLIC-SG
+      queue-id-set: PUBLIC-GS
+    exchange:
+      public: PUBLIC
+      gateway: GATEWAY
+      stream: STREAM

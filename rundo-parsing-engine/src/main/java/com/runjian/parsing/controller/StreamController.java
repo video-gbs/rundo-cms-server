@@ -3,7 +3,7 @@ package com.runjian.parsing.controller;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.parsing.service.north.StreamNorthService;
-import com.runjian.parsing.vo.request.PutStreamOperationReq;
+import com.runjian.parsing.vo.request.StreamControlReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -30,7 +30,7 @@ public class StreamController {
      * @return
      */
     @PutMapping("/play/stop")
-    public DeferredResult<CommonResponse<?>> streamPlayStop(@RequestBody PutStreamOperationReq req){
+    public DeferredResult<CommonResponse<?>> streamPlayStop(@RequestBody StreamControlReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
         streamNorthService.streamNorthStopPlay(req.getDispatchId(), req.getStreamId(), response);
@@ -43,7 +43,7 @@ public class StreamController {
      * @return
      */
     @PutMapping("/record/stop")
-    public DeferredResult<CommonResponse<?>> streamRecordStop(@RequestBody PutStreamOperationReq req){
+    public DeferredResult<CommonResponse<?>> streamRecordStop(@RequestBody StreamControlReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
         streamNorthService.streamNorthStopRecord(req.getDispatchId(), req.getStreamId(), response);
@@ -56,7 +56,7 @@ public class StreamController {
      * @return
      */
     @PutMapping("/record/start")
-    public DeferredResult<CommonResponse<?>> streamRecordStart(@RequestBody PutStreamOperationReq req){
+    public DeferredResult<CommonResponse<?>> streamRecordStart(@RequestBody StreamControlReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
         streamNorthService.streamNorthStartRecord(req.getDispatchId(), req.getStreamId(), response);

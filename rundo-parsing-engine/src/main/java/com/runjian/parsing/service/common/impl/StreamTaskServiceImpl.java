@@ -6,9 +6,12 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.constant.MqConstant;
 import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.dao.StreamTaskMapper;
-import com.runjian.parsing.entity.GatewayTaskInfo;
+import com.runjian.parsing.entity.DispatchInfo;
 import com.runjian.parsing.entity.StreamTaskInfo;
 import com.runjian.parsing.mq.config.RabbitMqSender;
+import com.runjian.parsing.mq.listener.MqDefaultProperties;
+import com.runjian.parsing.mq.listener.MqListenerConfig;
+import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.StreamTaskService;
 import com.runjian.parsing.vo.CommonMqDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,28 +37,37 @@ public class StreamTaskServiceImpl implements StreamTaskService {
     @Autowired
     private RabbitMqSender rabbitMqSender;
 
-    @Value("${gateway.default.exchange-id}")
-    private String gatewayExchangeId;
+    @Autowired
+    private MqDefaultProperties mqDefaultProperties;
+
+    @Autowired
+    private DataBaseService dataBaseService;
 
     private static final String OUT_TIME = "OUT_TIME";
 
     @Override
-    public void sendMsgToGateway(String serialNum, Long dispatchId, Long channelId, String streamId, String msgType, Object data, DeferredResult<CommonResponse<?>> response) {
+    public void sendMsgToGateway(Long dispatchId, Long channelId, String streamId, String msgType, Object data, DeferredResult<CommonResponse<?>> response) {
+        DispatchInfo dispatchInfo = dataBaseService.getDispatchInfo(dispatchId);
         String mqId = UUID.randomUUID().toString().replace("-", "");
-        Long taskId = createAsyncTask(dispatchId, channelId, streamId, mqId, msgType, response);
+        Long taskId;
+        if (Objects.isNull(response)){
+            taskId = createTask(dispatchId, channelId, streamId, mqId, msgType, TaskState.SUCCESS);
+        }else {
+            taskId = createAsyncTask(dispatchId, channelId, streamId, mqId, msgType, response);
+        }
         String mqKey = MqConstant.STREAM_PREFIX + MqConstant.GET_SET_PREFIX + dispatchId;
         CommonMqDto<Object> request = new CommonMqDto<>();
         request.setTime(LocalDateTime.now());
-        request.setSerialNum(serialNum);
+        request.setSerialNum(dispatchInfo.getSerialNum());
         request.setMsgId(taskId.toString());
         request.setMsgType(msgType);
         request.setData(data);
-        rabbitMqSender.sendMsgByRoutingKey(gatewayExchangeId, mqKey, mqId, request, true);
+        rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getStreamExchangeId(), mqKey, mqId, request, true);
     }
 
     @Override
     public Long createAsyncTask(Long dispatchId, Long channelId, String streamId, String mqId, String msgType, DeferredResult<CommonResponse<?>> deferredResult) {
-        Long taskId = createTask(dispatchId, channelId, streamId, mqId, msgType);
+        Long taskId = createTask(dispatchId, channelId, streamId, mqId, msgType, TaskState.RUNNING);
         asynReqMap.put(taskId, deferredResult);
         deferredResult.onTimeout(() -> {
             deferredResult.setResult(CommonResponse.failure(BusinessErrorEnums.FEIGN_REQUEST_TIME_OUT));
@@ -66,7 +79,7 @@ public class StreamTaskServiceImpl implements StreamTaskService {
 
 
     @Override
-    public Long createTask(Long dispatchId, Long channelId, String streamId, String mqId, String msgType) {
+    public Long createTask(Long dispatchId, Long channelId, String streamId, String mqId, String msgType, TaskState taskState) {
         LocalDateTime nowTime = LocalDateTime.now();
         StreamTaskInfo streamTaskInfo = new StreamTaskInfo();
         streamTaskInfo.setDispatchId(dispatchId);
@@ -76,6 +89,7 @@ public class StreamTaskServiceImpl implements StreamTaskService {
         streamTaskInfo.setMsgType(msgType);
         streamTaskInfo.setCreateTime(nowTime);
         streamTaskInfo.setUpdateTime(nowTime);
+        streamTaskInfo.setState(taskState.getCode());
         streamTaskMapper.save(streamTaskInfo);
         return streamTaskInfo.getId();
     }

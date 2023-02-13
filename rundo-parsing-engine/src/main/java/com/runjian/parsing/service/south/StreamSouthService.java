@@ -14,13 +14,13 @@ public interface StreamSouthService {
     /**
      * 流播放处理器
      */
-    void streamSouthPlayResult(String streamId, Object data);
+    void streamSouthPlayResult(Long dispatchId, String streamId, Object data);
 
     /**
      * 流关闭处理器
      * @param streamId 流id
      */
-    void streamSouthClose(String streamId);
+    void streamSouthClose(Long dispatchId, String streamId, Object data);
 
 
 

@@ -4,14 +4,13 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.rabbitmq.client.Channel;
+import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
-import com.runjian.parsing.constant.IdType;
 import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.dao.DispatchMapper;
 import com.runjian.parsing.entity.DispatchInfo;
-import com.runjian.parsing.mq.config.RabbitMqProperties;
 import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.service.south.StreamSouthService;
 import com.runjian.parsing.vo.CommonMqDto;
@@ -20,10 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,17 +43,8 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
     private StreamSouthService streamSouthService;
 
     @Autowired
-    private RabbitMqProperties rabbitMqProperties;
+    private MqDefaultProperties mqDefaultProperties;
 
-    @Value("${gateway.public.queue-id-set}")
-    private String signInQueueId;
-
-    private RabbitMqProperties.QueueData queueData;
-
-    @PostConstruct
-    public void init() {
-        queueData = rabbitMqProperties.getQueueData(signInQueueId);
-    }
 
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
@@ -70,26 +58,30 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
                 // 发送重新注册命令
                 mqResponse.setMsgType(MsgType.DISPATCH_RE_SIGN_IN.getMsg());
                 String mqId = UUID.randomUUID().toString().replace("-", "");
-                rabbitMqSender.sendMsgByRoutingKey(queueData.getExchangeId(), queueData.getRoutingKey(), mqId, mqResponse, true);
+                rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getPublicSetQueueData().getExchangeId(), mqDefaultProperties.getPublicSetQueueData().getRoutingKey(), mqId, mqResponse, true);
             }
             StreamConvertDto streamConvertDto = JSONObject.parseObject(new String(message.getBody()), StreamConvertDto.class);
+            DispatchInfo dispatchInfo = dispatchInfoOp.get();
 
+            if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "流媒体异常消息记录", mqRequest.getMsgType(), mqRequest.getMsg());
+            }
 
-             if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_RESULT.getMsg())){
-                streamSouthService.streamSouthPlayResult(streamConvertDto.getStreamId(), streamConvertDto.getDataMap());
+            if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_RESULT.getMsg())){
+                streamSouthService.streamSouthPlayResult(dispatchInfo.getId(), streamConvertDto.getStreamId(), streamConvertDto.getDataMap());
             } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CLOSE.getMsg())) {
-                streamSouthService.streamSouthClose(streamConvertDto.getStreamId());
+                streamSouthService.streamSouthClose(dispatchInfo.getId(), streamConvertDto.getStreamId(), streamConvertDto.getDataMap());
             }
 
             if (StringUtils.isNumber(mqRequest.getMsgId()) || mqRequest.getTime().plusSeconds(10).isBefore(LocalDateTime.now())){
                 // 超时的消息不再处理
             } else if (mqRequest.getCode() != 0){
                 streamSouthService.errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
-            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_STOP_PLAY.getMsg())) {
+            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_STOP.getMsg())) {
                 streamSouthService.streamSouthStopPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_START_RECORD.getMsg())) {
+            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_RECORD_START.getMsg())) {
                 streamSouthService.streamSouthStartRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_STOP_RECORD.getMsg())) {
+            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_RECORD_STOP.getMsg())) {
                 streamSouthService.streamSouthStopRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
             }
 

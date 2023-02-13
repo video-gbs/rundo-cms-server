@@ -3,6 +3,7 @@ package com.runjian.parsing.mq.listener;
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson2.JSON;
 import com.rabbitmq.client.Channel;
+import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
@@ -19,6 +20,7 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -40,17 +42,8 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
     private RabbitMqSender rabbitMqSender;
 
     @Autowired
-    private RabbitMqProperties rabbitMqProperties;
+    private MqDefaultProperties mqDefaultProperties;
 
-    @Value("${gateway.public.queue-id-set}")
-    private String signInQueueId;
-
-    private RabbitMqProperties.QueueData queueData;
-
-    @PostConstruct
-    public void init() {
-        queueData = rabbitMqProperties.getQueueData(signInQueueId);
-    }
 
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
@@ -64,9 +57,14 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
                 // 发送重新注册命令
                 mqResponse.setMsgType(MsgType.GATEWAY_RE_SIGN_IN.getMsg());
                 String mqId = UUID.randomUUID().toString().replace("-", "");
-                rabbitMqSender.sendMsgByRoutingKey(queueData.getExchangeId(), queueData.getRoutingKey(), mqId, mqResponse, true);
+                rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getPublicSetQueueData().getExchangeId(), mqDefaultProperties.getPublicSetQueueData().getRoutingKey(), mqId, mqResponse, true);
             }
             GatewayInfo gatewayInfo = gatewayInfoOp.get();
+
+            // 异常消息记录
+            if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "流媒体异常消息记录", mqRequest.getMsgType(), mqRequest.getMsg());
+            }
 
             // 主动推送消息
             if (mqRequest.getMsgType().equals(MsgType.DEVICE_SIGN_IN.getMsg())) {

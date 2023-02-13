@@ -52,14 +52,4 @@ public interface GatewayTaskMapper {
             " </script> ")
     void updateState(Long taskId, Integer state, String detail, LocalDateTime updateTime);
 
-    List<GatewayTaskInfo> selectByState(Integer code);
-
-    @Update({" <script> " +
-            " <foreach collection='taskInfoOutTimeList' item='item' separator=';'> " +
-            " UPDATE " + GATEWAY_TASK_TABLE_NAME +
-            " SET update_time = #{item.updateTime} , state = #{item.state}, detail = #{item.detail} " +
-            " WHERE id = #{item.id} "+
-            " </foreach> " +
-            " </script> "})
-    void updatesOutTime(List<GatewayTaskInfo> gatewayTaskInfoOutTimeList);
 }

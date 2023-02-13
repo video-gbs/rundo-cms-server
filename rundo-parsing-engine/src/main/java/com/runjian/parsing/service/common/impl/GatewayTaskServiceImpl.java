@@ -7,8 +7,11 @@ import com.runjian.parsing.constant.MqConstant;
 import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.dao.GatewayTaskMapper;
+import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.entity.GatewayTaskInfo;
 import com.runjian.parsing.mq.config.RabbitMqSender;
+import com.runjian.parsing.mq.listener.MqListenerConfig;
+import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.GatewayTaskService;
 import com.runjian.parsing.vo.CommonMqDto;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +39,10 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
     @Autowired
     private RabbitMqSender rabbitMqSender;
 
-    @Value("${gateway.default.exchange-id}")
+    @Autowired
+    private DataBaseService dataBaseService;
+
+    @Value("${mq-default.exchange.stream}")
     private String gatewayExchangeId;
 
 
@@ -45,7 +51,6 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
 
     /**
      * 发送消息
-     * @param serialNum 网关序列号
      * @param gatewayId 网关id
      * @param deviceId 设备id
      * @param channelId 通道id
@@ -53,13 +58,14 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
      * @param msgType 消息类型
      * @param data 数据
      */
-    public void sendMsgToGateway(String serialNum,Long gatewayId, Long deviceId, Long channelId, String msgType, Object data, DeferredResult<CommonResponse<?>> response) {
+    public void sendMsgToGateway(Long gatewayId, Long deviceId, Long channelId, String msgType, Object data, DeferredResult<CommonResponse<?>> response) {
+        GatewayInfo gatewayInfo = dataBaseService.getGatewayInfo(gatewayId);
         String mqId = UUID.randomUUID().toString().replace("-", "");
         Long taskId = createAsyncTask(gatewayId, deviceId, channelId, mqId, msgType, response);
         String mqKey = MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + gatewayId;
         CommonMqDto<Object> request = new CommonMqDto<>();
         request.setTime(LocalDateTime.now());
-        request.setSerialNum(serialNum);
+        request.setSerialNum(gatewayInfo.getSerialNum());
         request.setMsgId(taskId.toString());
         request.setMsgType(msgType);
         request.setData(data);

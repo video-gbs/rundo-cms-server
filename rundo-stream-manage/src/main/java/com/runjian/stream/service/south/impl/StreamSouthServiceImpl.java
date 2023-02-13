@@ -3,6 +3,8 @@ package com.runjian.stream.service.south.impl;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.stream.dao.StreamMapper;
 import com.runjian.stream.entity.StreamInfo;
+import com.runjian.stream.service.north.StreamNorthService;
+import com.runjian.stream.service.north.impl.StreamNorthServiceImpl;
 import com.runjian.stream.service.south.StreamSouthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,15 +33,16 @@ public class StreamSouthServiceImpl implements StreamSouthService {
             streamInfo.setStreamState(CommonEnum.ENABLE.getCode());
             streamInfo.setUpdateTime(LocalDateTime.now());
             streamMapper.updateStreamState(streamInfo);
+            StreamNorthServiceImpl.prepareStreamOutTimeArray.deleteTime(streamInfo.getStreamId());
         } else {
             streamMapper.deleteByStreamId(streamId);
         }
     }
 
     @Override
-    public Boolean autoCloseHandle(String streamId) {
+    public Boolean streamCloseHandle(String streamId, Boolean canClose) {
         Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
-        if (streamInfoOp.isEmpty() || streamInfoOp.get().getAutoCloseState().equals(CommonEnum.ENABLE.getCode())) {
+        if (streamInfoOp.isEmpty() || !canClose || streamInfoOp.get().getAutoCloseState().equals(CommonEnum.ENABLE.getCode())) {
             streamMapper.deleteByStreamId(streamId);
             return true;
         }

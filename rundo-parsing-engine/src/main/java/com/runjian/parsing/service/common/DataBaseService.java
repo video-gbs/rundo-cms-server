@@ -2,6 +2,7 @@ package com.runjian.parsing.service.common;
 
 import com.runjian.parsing.entity.ChannelInfo;
 import com.runjian.parsing.entity.DeviceInfo;
+import com.runjian.parsing.entity.DispatchInfo;
 import com.runjian.parsing.entity.GatewayInfo;
 
 /**
@@ -30,4 +31,11 @@ public interface DataBaseService {
      * @return
      */
     ChannelInfo getChannelInfo(Long channelId);
+
+    /**
+     * 获取流媒体服务
+     * @param dispatchId 流媒体服务id
+     * @return
+     */
+    DispatchInfo getDispatchInfo(Long dispatchId);
 }
