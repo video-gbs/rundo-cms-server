@@ -34,9 +34,15 @@ public class MenuInfoController {
     private MenuInfoService menuInfoService;
 
     @PostMapping("/tree")
-    @ApiOperation("获取菜单层级树")
+    @ApiOperation("获取菜单层级树，列表页或者单个应用ID使用")
     public CommonResponse<List<MenuInfoTree>> getSysMenuTree(@RequestBody QuerySysMenuInfoDTO dto) {
         return CommonResponse.success(menuInfoService.findByTree(dto));
+    }
+
+    @PostMapping("/typeTree/{appType}")
+    @ApiOperation("获取同一类应用的菜单层级树")
+    public CommonResponse<List<MenuInfoTree>> getMenuTreeByAppType(@PathVariable Integer appType){
+        return CommonResponse.success(menuInfoService.findByTreeByAppType(appType));
     }
 
 

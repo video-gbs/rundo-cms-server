@@ -25,7 +25,6 @@
             <if test="appId != null">
                 AND menu.app_id = #{appId,jdbcType=BIGINT}
             </if>
-            OR menu.app_id = 0
         </where>
         ORDER BY menu.level,menu.menu_sort,menu.id
     </select>

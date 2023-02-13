@@ -5,11 +5,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
+import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.entity.MenuInfo;
 import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
+import com.runjian.auth.server.mapper.AppInfoMapper;
 import com.runjian.auth.server.mapper.MenuInfoMapper;
-import com.runjian.auth.server.service.login.MyRBACService;
 import com.runjian.auth.server.service.system.MenuInfoService;
 import com.runjian.auth.server.util.UserUtils;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
@@ -19,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,14 +40,23 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     private UserUtils userUtils;
 
     @Autowired
-    private MyRBACService myRBACService;
+    private MenuInfoMapper menuInfoMapper;
 
     @Autowired
-    private MenuInfoMapper menuInfoMapper;
+    private AppInfoMapper appInfoMapper;
 
     @Override
     public List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
         List<MenuInfo> menuInfoList = menuInfoMapper.selectByAppId(dto.getAppId());
+        Long rootNodeId = 1L;
+        if (dto.getAppId() != null) {
+            Long rootId = 1L;
+            for (MenuInfo menuInfo : menuInfoList) {
+                if (menuInfo.getMenuPid().equals(rootId)) {
+                    rootNodeId = menuInfo.getId();
+                }
+            }
+        }
         List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
                 item -> {
                     MenuInfoTree bean = new MenuInfoTree();
@@ -53,17 +64,31 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                     return bean;
                 }
         ).collect(Collectors.toList());
-        return DataTreeUtil.buildTree(menuInfoTreeList, 1L);
+        return DataTreeUtil.buildTree(menuInfoTreeList, rootNodeId);
+    }
+
+    @Override
+    public List<MenuInfoTree> findByTreeByAppType(Integer appType) {
+        List<MenuInfoTree> menuInfoTreeByAppTypelist = new ArrayList<>();
+        LambdaQueryWrapper<AppInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(AppInfo::getAppType, appType);
+        List<AppInfo> appInfoList = appInfoMapper.selectList(queryWrapper);
+        for (AppInfo appInfo : appInfoList) {
+            QuerySysMenuInfoDTO dto = new QuerySysMenuInfoDTO();
+            dto.setAppId(appInfo.getId());
+            menuInfoTreeByAppTypelist.addAll(findByTree(dto));
+        }
+        return menuInfoTreeByAppTypelist;
     }
 
     @Override
     public void save(AddSysMenuInfoDTO dto) {
         MenuInfo menuInfo = new MenuInfo();
-        BeanUtils.copyProperties(dto,menuInfo);
+        BeanUtils.copyProperties(dto, menuInfo);
         MenuInfo parentInfo = menuInfoMapper.selectById(dto.getMenuPid());
         String menuPids = parentInfo.getMenuPids() + "[" + dto.getMenuPid() + "]";
         menuInfo.setMenuPids(menuPids);
-        if (null == dto.getMenuSort()){
+        if (null == dto.getMenuSort()) {
             menuInfo.setMenuSort(100);
         }
         menuInfo.setMenuSort(dto.getMenuSort());
@@ -85,7 +110,6 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         // 1.2 无下级菜单才可以删除
         menuInfoMapper.deleteById(id);
     }
-
 
     @Override
     public void modifyById(UpdateSysMenuInfoDTO dto) {
