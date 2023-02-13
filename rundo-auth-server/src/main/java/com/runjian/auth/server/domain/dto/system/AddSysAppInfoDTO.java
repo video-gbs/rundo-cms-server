@@ -37,6 +37,10 @@ public class AddSysAppInfoDTO {
     @NotBlank
     private Integer appPort;
 
+    @ApiModelProperty(value = "应用URL", required = true)
+    @NotBlank
+    private String appUrl;
+
     @ApiModelProperty("应用简介")
     private String appDesc;
 

@@ -3,14 +3,12 @@ package com.runjian.auth.server.service.system.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageSysAppInfoDTO;
-import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
-import com.runjian.auth.server.domain.dto.system.QuerySysAppInfoDTO;
-import com.runjian.auth.server.domain.dto.system.StatusSysAppInfoDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
+import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.mapper.AppInfoMapper;
 import com.runjian.auth.server.service.system.AppInfoService;
+import com.runjian.auth.server.service.system.MenuInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,11 +30,27 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
     @Autowired
     private AppInfoMapper appInfoMapper;
 
+    @Autowired
+    private MenuInfoService menuInfoService;
+
     @Override
     public void save(AddSysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
         BeanUtils.copyProperties(dto, appInfo);
         appInfoMapper.insert(appInfo);
+        // 向菜单表中插入一条虚拟根菜单
+        AddSysMenuInfoDTO menuInfoDTO = new AddSysMenuInfoDTO();
+        Long menuPid = 1L;
+        menuInfoDTO.setAppId(appInfo.getId());
+        menuInfoDTO.setMenuPid(menuPid);
+        menuInfoDTO.setMenuName(appInfo.getAppName());
+        menuInfoDTO.setIcon(null);
+        menuInfoDTO.setMenuSort(1);
+        menuInfoDTO.setUrl(appInfo.getAppUrl());
+        menuInfoDTO.setViewImport(null);
+        menuInfoDTO.setStatus(0);
+        menuInfoDTO.setHidden(0);
+        menuInfoService.save(menuInfoDTO);
     }
 
     @Override
