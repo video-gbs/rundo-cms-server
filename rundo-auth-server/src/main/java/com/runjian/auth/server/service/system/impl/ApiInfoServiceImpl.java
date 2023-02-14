@@ -9,7 +9,7 @@ import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
 import com.runjian.auth.server.domain.entity.ApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
-import com.runjian.auth.server.domain.vo.tree.SysApiInfoTree;
+import com.runjian.auth.server.domain.vo.tree.ApiInfoTree;
 import com.runjian.auth.server.mapper.ApiInfoMapper;
 import com.runjian.auth.server.service.system.ApiInfoService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
@@ -17,7 +17,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,17 +37,11 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
     @Override
     public void save(AddSysApiInfoDTO dto) {
         ApiInfo apiInfo = new ApiInfo();
-        apiInfo.setAppId(dto.getAppId());
-        // 减少表操作此处代表菜单页面的ID
-        apiInfo.setApiPid(dto.getApiPid());
-        // SysApiInfo parentApiInfo = sysApiInfoMapper.selectById(dto.getApiPid());
-        // sysApiInfo.setApiPids(parentApiInfo.getApiPids() + ",[" + dto.getApiPid() + "]");
-        apiInfo.setApiName(dto.getApiName());
-        apiInfo.setApiSort(dto.getApiSort());
-        // sysApiInfo.setLevel(parentApiInfo.getLevel() + 1);
-        apiInfo.setUrl(dto.getUrl());
+        BeanUtils.copyProperties(dto, apiInfo);
+        ApiInfo parentApiInfo = apiInfoMapper.selectById(dto.getApiPid());
+        apiInfo.setApiPids(parentApiInfo.getApiPids() + "[" + dto.getApiPid() + "]");
+        apiInfo.setLevel(parentApiInfo.getLevel() + 1);
         apiInfo.setLeaf(0);
-        apiInfo.setStatus(dto.getStatus());
         apiInfoMapper.insert(apiInfo);
     }
 
@@ -81,23 +74,23 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
     }
 
     @Override
-    public List<SysApiInfoTree> findByTree(QuerySysApiInfoDTO dto) {
-        List<SysApiInfoVO> sysApiInfoVOList = new ArrayList<>();
+    public List<ApiInfoTree> findByTree(QuerySysApiInfoDTO dto) {
         LambdaQueryWrapper<ApiInfo> queryWrapper = new LambdaQueryWrapper<>();
-        List<ApiInfo> apiInfoList = apiInfoMapper.selectList(queryWrapper);
-        for (ApiInfo apiInfo : apiInfoList) {
-            SysApiInfoVO sysApiInfoVO = new SysApiInfoVO();
-            BeanUtils.copyProperties(apiInfo, sysApiInfoVO);
-            sysApiInfoVOList.add(sysApiInfoVO);
+        if (null != dto.getUrl()) {
+            queryWrapper.eq(ApiInfo::getUrl, dto.getUrl());
         }
-        List<SysApiInfoTree> sysApiInfoTreeList = sysApiInfoVOList.stream().map(
+        if (null != dto.getApiName()) {
+            queryWrapper.eq(ApiInfo::getUrl, dto.getApiName());
+        }
+        List<ApiInfo> apiInfoList = apiInfoMapper.selectList(queryWrapper);
+        List<ApiInfoTree> apiInfoTreeList = apiInfoList.stream().map(
                 item -> {
-                    SysApiInfoTree bean = new SysApiInfoTree();
+                    ApiInfoTree bean = new ApiInfoTree();
                     BeanUtils.copyProperties(item, bean);
                     return bean;
                 }
         ).collect(Collectors.toList());
-        return DataTreeUtil.buildTree(sysApiInfoTreeList, 1L);
+        return DataTreeUtil.buildTree(apiInfoTreeList, 1L);
 
     }
 

@@ -12,9 +12,9 @@ import java.util.List;
  * @Description 接口树
  * @date 2023-01-31 周二 16:06
  */
-public class SysApiInfoTree extends SysApiInfoVO implements DataTree<SysApiInfoTree> {
+public class ApiInfoTree extends SysApiInfoVO implements DataTree<ApiInfoTree> {
 
-    List<SysApiInfoTree> children;
+    List<ApiInfoTree> children;
 
     @Override
     public Long getParentId() {
@@ -22,12 +22,12 @@ public class SysApiInfoTree extends SysApiInfoVO implements DataTree<SysApiInfoT
     }
 
     @Override
-    public void setChildren(List<SysApiInfoTree> children) {
+    public void setChildren(List<ApiInfoTree> children) {
         this.children = children;
     }
 
     @Override
-    public List<SysApiInfoTree> getChildren() {
+    public List<ApiInfoTree> getChildren() {
         return this.children;
     }
 }

@@ -1,8 +1,7 @@
 package com.runjian.auth.server.domain.vo.tree;
 
 import lombok.Data;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Jiang4Yu
@@ -11,10 +10,9 @@ import java.util.List;
  * @Description ID
  * @date 2023-02-08 周三 18:10
  */
+@NoArgsConstructor
 @Data
-public class RoleAppTree {
-
-    List<RoleAppInfo> roleAppInfoList;
+public class AppMenuApiVo {
 
 }
 

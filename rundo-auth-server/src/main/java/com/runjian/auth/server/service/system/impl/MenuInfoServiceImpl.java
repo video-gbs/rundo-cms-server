@@ -2,6 +2,7 @@ package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
@@ -12,8 +13,8 @@ import com.runjian.auth.server.domain.vo.system.MyMetaClass;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
 import com.runjian.auth.server.mapper.AppInfoMapper;
 import com.runjian.auth.server.mapper.MenuInfoMapper;
+import com.runjian.auth.server.service.system.ApiInfoService;
 import com.runjian.auth.server.service.system.MenuInfoService;
-import com.runjian.auth.server.util.UserUtils;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
@@ -36,15 +37,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> implements MenuInfoService {
-
-    @Autowired
-    private UserUtils userUtils;
-
     @Autowired
     private MenuInfoMapper menuInfoMapper;
 
     @Autowired
     private AppInfoMapper appInfoMapper;
+
+    @Autowired
+    private ApiInfoService apiInfoService;
 
     @Override
     public List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
@@ -100,6 +100,17 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         menuInfo.setLeaf(0);
         menuInfo.setLevel(parentInfo.getLevel() + 1);
         menuInfoMapper.insert(menuInfo);
+
+        // 向接口表插入一条虚拟挂在根节点的接口
+        AddSysApiInfoDTO apiInfoDTO = new AddSysApiInfoDTO();
+        Long apiPid = 1L;
+        apiInfoDTO.setAppId(dto.getAppId());
+        apiInfoDTO.setApiPid(apiPid);
+        apiInfoDTO.setApiName(menuInfo.getTitle());
+        apiInfoDTO.setUrl(menuInfo.getPath());
+        apiInfoDTO.setApiSort(1);
+        apiInfoDTO.setStatus(0);
+        apiInfoService.save(apiInfoDTO);
     }
 
     @Override

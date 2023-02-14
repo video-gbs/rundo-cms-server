@@ -8,7 +8,7 @@ import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
 import com.runjian.auth.server.domain.entity.ApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
-import com.runjian.auth.server.domain.vo.tree.SysApiInfoTree;
+import com.runjian.auth.server.domain.vo.tree.ApiInfoTree;
 
 import java.util.List;
 
@@ -34,5 +34,5 @@ public interface ApiInfoService extends IService<ApiInfo> {
 
     void modifyByStatus(StatusSysApiInfoDTO dto);
 
-    List<SysApiInfoTree> findByTree(QuerySysApiInfoDTO dto);
+    List<ApiInfoTree> findByTree(QuerySysApiInfoDTO dto);
 }

@@ -7,7 +7,6 @@ import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.mapper.AppInfoMapper;
-import com.runjian.auth.server.service.system.ApiInfoService;
 import com.runjian.auth.server.service.system.AppInfoService;
 import com.runjian.auth.server.service.system.MenuInfoService;
 import org.springframework.beans.BeanUtils;
@@ -34,9 +33,6 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
     @Autowired
     private MenuInfoService menuInfoService;
 
-    @Autowired
-    private ApiInfoService apiInfoService;
-
     @Override
     public void save(AddSysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
@@ -55,16 +51,6 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         menuInfoDTO.setStatus(0);
         menuInfoDTO.setHidden(0);
         menuInfoService.save(menuInfoDTO);
-        // 向接口表插入一条虚拟根接口
-        AddSysApiInfoDTO apiInfoDTO = new AddSysApiInfoDTO();
-        Long apiPid = 1L;
-        apiInfoDTO.setAppId(appInfo.getId());
-        apiInfoDTO.setApiPid(apiPid);
-        apiInfoDTO.setApiName(appInfo.getAppName());
-        apiInfoDTO.setUrl(appInfo.getAppUrl());
-        apiInfoDTO.setApiSort(1);
-        apiInfoDTO.setStatus(0);
-        apiInfoService.save(apiInfoDTO);
     }
 
     @Override

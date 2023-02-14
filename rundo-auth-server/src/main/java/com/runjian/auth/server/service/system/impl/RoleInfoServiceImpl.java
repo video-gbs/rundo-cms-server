@@ -11,16 +11,15 @@ import com.runjian.auth.server.domain.entity.*;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
-import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
-import com.runjian.auth.server.domain.vo.tree.RoleAppInfo;
-import com.runjian.auth.server.domain.vo.tree.RoleAppTree;
+import com.runjian.auth.server.domain.vo.tree.AppMenuApiVo;
 import com.runjian.auth.server.mapper.ApiInfoMapper;
 import com.runjian.auth.server.mapper.MenuInfoMapper;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.util.RundoIdUtil;
 import com.runjian.auth.server.util.UserUtils;
-import org.springframework.beans.BeanUtils;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -224,46 +223,25 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     private ApiInfoMapper apiInfoMapper;
 
     @Override
-    public RoleAppTree getAppIdTree(Integer appType) {
+    public AppMenuApiVo getAppIdTree(Integer appType) {
         // 1.当前操作用户已有角色
         List<String> roleCode = roleInfoMapper.selectRoleCodeByUserId(userUtils.getSysUserInfo().getId());
         if (CollUtil.isEmpty(roleCode)) {
-            // 当前用户没有被授权应用
-            return null;
+            // 当前用户没有被授权角色
+            throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH, "当前用户没有被授权角色");
         }
-        // 根据角色查取用户已被授权的应用数据
-        List<AppInfo> appInfoList = new ArrayList<>();
+        // 根据角色查取用户已授权应用、菜单、接口数据
+        List<AppInfo> roleAppInfoList = new ArrayList<>();
         List<MenuInfo> reloAllMenuInfoList = new ArrayList<>();
-        List<ApiInfo> apiInfoList = new ArrayList<>();
+        List<ApiInfo> roleApiInfoList = new ArrayList<>();
         for (String code : roleCode) {
-            appInfoList.addAll(roleInfoMapper.selectAppByRoleCode(code));
+            roleAppInfoList.addAll(roleInfoMapper.selectAppByRoleCode(code));
             reloAllMenuInfoList.addAll(roleInfoMapper.selectMenuByRoleCode(code));
-            apiInfoList.addAll(roleInfoMapper.selectApiInfoByRoleCode(code));
+            roleApiInfoList.addAll(roleInfoMapper.selectApiInfoByRoleCode(code));
         }
-        if (CollUtil.isEmpty(appInfoList)) {
-            return null;
+        if (CollUtil.isEmpty(roleAppInfoList)) {
+            throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH, "当前用户没有被授权应用");
         }
-        List<RoleAppInfo> roleAppInfoList = new ArrayList<>();
-        for (AppInfo appInfo : appInfoList) {
-            RoleAppInfo roleAppInfo = new RoleAppInfo();
-            List<MenuInfo> roleAppMenuList = menuInfoMapper.selectByAppId(appInfo.getId());
-            roleAppMenuList.retainAll(reloAllMenuInfoList);
-            List<MenuInfoTree> menuInfoTreeList = roleAppMenuList.stream().map(
-                    item -> {
-                        MenuInfoTree bean = new MenuInfoTree();
-                        BeanUtils.copyProperties(item, bean);
-                        return bean;
-                    }
-            ).collect(Collectors.toList());
-            roleAppInfo.setAppName(appInfo.getAppName());
-            roleAppInfo.setAppId("A_" + appInfo.getId());
-            roleAppInfo.setMenuInfo(menuInfoTreeList);
-            // List<ApiInfo> roleAppApiList = apiInfoMapper.selectByAppId(appInfo.getId());
-
-
-        }
-
-
         return null;
     }
 

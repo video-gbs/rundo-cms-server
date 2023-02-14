@@ -6,7 +6,7 @@ import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
-import com.runjian.auth.server.domain.vo.tree.RoleAppTree;
+import com.runjian.auth.server.domain.vo.tree.AppMenuApiVo;
 import com.runjian.auth.server.domain.vo.tree.ConfigIdTree;
 import com.runjian.auth.server.domain.vo.tree.DevopsIdTree;
 import com.runjian.auth.server.service.system.RoleInfoService;
@@ -96,7 +96,7 @@ public class RoleInfoController {
 
     @PostMapping("/getAppIdTree")
     @ApiOperation("新建角色时获取应用类相关ID列表")
-    public CommonResponse<List<RoleAppTree>> getAppIdTree(){
+    public CommonResponse<List<AppMenuApiVo>> getAppIdTree(){
         Integer appType = 1;
         roleInfoService.getAppIdTree(appType);
 
