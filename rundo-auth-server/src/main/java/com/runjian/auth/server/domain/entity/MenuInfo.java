@@ -40,10 +40,6 @@ public class MenuInfo implements Serializable {
     @TableField("menu_pids")
     private String menuPids;
 
-    @ApiModelProperty("菜单名称")
-    @TableField("menu_name")
-    private String menuName;
-
     @ApiModelProperty("排序")
     @TableField("menu_sort")
     private Integer menuSort;
@@ -53,12 +49,24 @@ public class MenuInfo implements Serializable {
     private Integer leaf;
 
     @ApiModelProperty("跳转URL")
-    @TableField("url")
-    private String url;
+    @TableField("path")
+    private String path;
+
+    @ApiModelProperty("前端组件import路径")
+    @TableField("component")
+    private String component;
+
+    @ApiModelProperty("path字段去掉/之后的值")
+    @TableField("name")
+    private String name;
 
     @ApiModelProperty("图标")
     @TableField("icon")
     private String icon;
+
+    @ApiModelProperty("菜单名称")
+    @TableField("title")
+    private String title;
 
     @ApiModelProperty("层级")
     @TableField("level")
@@ -71,10 +79,6 @@ public class MenuInfo implements Serializable {
     @ApiModelProperty("是否禁用;0:启用(否）,1:禁用(是)")
     @TableField("status")
     private Integer status;
-
-    @ApiModelProperty("前端组件import路径")
-    @TableField("view_import")
-    private String viewImport;
 
     @ApiModelProperty("逻辑删除")
     @TableField(value = "delete_flag", fill = FieldFill.INSERT)

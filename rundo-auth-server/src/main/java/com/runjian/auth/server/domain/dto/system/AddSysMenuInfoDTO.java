@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -28,22 +30,23 @@ public class AddSysMenuInfoDTO {
     @NotNull
     private Long menuPid;
 
-    @ApiModelProperty("菜单名称")
-    @NotNull
-    private String menuName;
-
-    @ApiModelProperty("菜单图标")
-    private String icon;
-
     @ApiModelProperty("排序")
     @NotNull
+    @Min(value = 0)
+    @Max(100)
     private Integer menuSort;
 
     @ApiModelProperty("跳转URL")
-    private String url;
+    private String path;
 
-    @ApiModelProperty(value = "前端组件Import路径")
-    private String viewImport;
+    @ApiModelProperty("前端组件import路径")
+    private String component;
+
+    @ApiModelProperty("图标")
+    private String icon;
+
+    @ApiModelProperty("菜单名称")
+    private String title;
 
     @ApiModelProperty(value = "禁用状态",notes = "0正常，1禁用")
     private Integer status;

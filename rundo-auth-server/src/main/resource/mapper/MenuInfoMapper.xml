@@ -8,14 +8,17 @@
             menu.app_id,
             menu.menu_pid,
             menu.menu_pids,
-            menu.menu_name,
-            menu.url,
-            menu.icon,
-            menu.level,
             menu.menu_sort,
+            menu.name,
+            menu.leaf,
+            menu.path,
+            menu.component,
+            menu.name,
+            menu.icon,
+            menu.title,
+            menu.level,
             menu.hidden,
-            menu.status,
-            menu.view_import
+            menu.status
         FROM
             menu_info menu
         <where>

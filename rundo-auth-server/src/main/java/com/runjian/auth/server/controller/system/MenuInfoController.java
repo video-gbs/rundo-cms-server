@@ -4,7 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
-import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
+import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
 import com.runjian.auth.server.service.system.MenuInfoService;
 import com.runjian.common.config.response.CommonResponse;
@@ -73,14 +73,14 @@ public class MenuInfoController {
 
     @GetMapping("/getById")
     @ApiOperation("通过ID获取菜单详情")
-    public CommonResponse<SysMenuInfoVO> getById(@RequestParam Long id) {
+    public CommonResponse<MenuInfoVO> getById(@RequestParam Long id) {
         return CommonResponse.success(menuInfoService.findById(id));
     }
 
 
     @GetMapping("/getList")
     @ApiOperation("获取菜单列表 无分页")
-    public CommonResponse<List<SysMenuInfoVO>> getList() {
+    public CommonResponse<List<MenuInfoVO>> getList() {
         return CommonResponse.success(menuInfoService.findByList());
     }
 

@@ -7,7 +7,8 @@ import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
 import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.entity.MenuInfo;
-import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
+import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
+import com.runjian.auth.server.domain.vo.system.MyMetaClass;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
 import com.runjian.auth.server.mapper.AppInfoMapper;
 import com.runjian.auth.server.mapper.MenuInfoMapper;
@@ -61,6 +62,10 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                 item -> {
                     MenuInfoTree bean = new MenuInfoTree();
                     BeanUtils.copyProperties(item, bean);
+                    MyMetaClass metaClass = new MyMetaClass();
+                    metaClass.setTitle(item.getTitle());
+                    metaClass.setIcon(item.getIcon());
+                    bean.setMata(metaClass);
                     return bean;
                 }
         ).collect(Collectors.toList());
@@ -117,15 +122,15 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     }
 
     @Override
-    public SysMenuInfoVO findById(Long id) {
+    public MenuInfoVO findById(Long id) {
         MenuInfo menuInfo = menuInfoMapper.selectById(id);
-        SysMenuInfoVO sysMenuInfoVO = new SysMenuInfoVO();
-        BeanUtils.copyProperties(menuInfo, sysMenuInfoVO);
-        return sysMenuInfoVO;
+        MenuInfoVO menuInfoVO = new MenuInfoVO();
+        BeanUtils.copyProperties(menuInfo, menuInfoVO);
+        return menuInfoVO;
     }
 
     @Override
-    public List<SysMenuInfoVO> findByList() {
+    public List<MenuInfoVO> findByList() {
         return null;
     }
 

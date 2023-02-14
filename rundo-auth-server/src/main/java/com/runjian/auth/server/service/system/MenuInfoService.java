@@ -5,7 +5,7 @@ import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
 import com.runjian.auth.server.domain.entity.MenuInfo;
-import com.runjian.auth.server.domain.vo.system.SysMenuInfoVO;
+import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
 
 import java.util.List;
@@ -26,9 +26,9 @@ public interface MenuInfoService extends IService<MenuInfo> {
 
     void modifyById(UpdateSysMenuInfoDTO dto);
 
-    SysMenuInfoVO findById(Long id);
+    MenuInfoVO findById(Long id);
 
-    List<SysMenuInfoVO> findByList();
+    List<MenuInfoVO> findByList();
 
     void erasureById(Long id);
 
