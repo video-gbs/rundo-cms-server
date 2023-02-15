@@ -26,13 +26,13 @@ public class AddSysRoleInfoDTO {
     //////////////////////权限配置//////////////////////
     // 1 系统权限
     // 1-1 功能应用类列表
-    @ApiModelProperty("功能应用类列表")
+    @ApiModelProperty("功能应用类列表，idStr的值")
     List<String> appIds;
     // 1-2 配置类应用列表
-    @ApiModelProperty("配置类应用列表")
+    @ApiModelProperty("配置类应用列表，idStr的值")
     List<String> configIds;
     // 1-3 运维类应用列表
-    @ApiModelProperty("运维类应用列表")
+    @ApiModelProperty("运维类应用列表，idStr的值")
     List<String> devopsIds;
     // 1-4 部门管理权限
     @ApiModelProperty("部门ID列表")
@@ -46,10 +46,10 @@ public class AddSysRoleInfoDTO {
 
     // 资源权限
     // 视频通道资源
-    @ApiModelProperty("视频通道ID列表")
-    List<Long> channelIds;
-    @ApiModelProperty("通道操作ID列表")
-    List<Long> operationIds;
+    // @ApiModelProperty("视频通道ID列表")
+    // List<Long> channelIds;
+    // @ApiModelProperty("通道操作ID列表")
+    // List<Long> operationIds;
     // 电视墙
     // 。。。。
 

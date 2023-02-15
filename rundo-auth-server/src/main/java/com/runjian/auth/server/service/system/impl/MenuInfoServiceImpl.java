@@ -2,7 +2,6 @@ package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
@@ -102,14 +101,14 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         menuInfoMapper.insert(menuInfo);
 
         // 向接口表插入一条虚拟挂在根节点的接口
-        AddSysApiInfoDTO apiInfoDTO = new AddSysApiInfoDTO();
-        apiInfoDTO.setAppId(dto.getAppId());
-        apiInfoDTO.setApiPid(menuInfo.getMenuPid());
-        apiInfoDTO.setApiName(menuInfo.getTitle());
-        apiInfoDTO.setUrl(menuInfo.getPath());
-        apiInfoDTO.setApiSort(1);
-        apiInfoDTO.setStatus(0);
-        apiInfoService.save(apiInfoDTO);
+        // AddSysApiInfoDTO apiInfoDTO = new AddSysApiInfoDTO();
+        // apiInfoDTO.setAppId(dto.getAppId());
+        // apiInfoDTO.setApiPid(menuInfo.getMenuPid());
+        // apiInfoDTO.setApiName(menuInfo.getTitle());
+        // apiInfoDTO.setUrl(menuInfo.getPath());
+        // apiInfoDTO.setApiSort(1);
+        // apiInfoDTO.setStatus(0);
+        // apiInfoService.save(apiInfoDTO);
     }
 
     @Override

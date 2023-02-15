@@ -64,11 +64,13 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<Long> orgIds = dto.getOrgIds();
         List<Long> areaIds = dto.getAreaIds();
 
+        // 筛选出与A开头的id
         List<Long> appIdList = new ArrayList<>();
         appIdList.addAll(getAppIds(appIds));
         appIdList.addAll(getAppIds(configIds));
         appIdList.addAll(getAppIds(devopsIds));
 
+        // 筛选出与M开头的id
         List<Long> menuIdList = new ArrayList<>();
         menuIdList.addAll(getMenuIds(appIds));
         menuIdList.addAll(getMenuIds(configIds));

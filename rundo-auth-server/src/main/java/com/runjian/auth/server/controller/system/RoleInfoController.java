@@ -10,6 +10,7 @@ import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class RoleInfoController {
 
     @PostMapping("/getRoleDetail/{id}")
     @ApiOperation("编辑时回显角色详细信息")
-    public CommonResponse<RoleDetailVO> getRoleDetailById(@PathVariable Long id){
+    public CommonResponse<RoleDetailVO> getRoleDetailById(@PathVariable Long id) {
         return CommonResponse.success(roleInfoService.getRoleDetailById(id));
     }
 
@@ -87,31 +88,16 @@ public class RoleInfoController {
     }
 
     @PostMapping("/getEditUserSysRoleInfoList")
-    @ApiOperation("新增编辑用户时获取角色分页列表")
+    @ApiOperation("新增与编辑用户时获取角色分页列表")
     public CommonResponse<IPage<EditUserSysRoleInfoVO>> getEditUserSysRoleInfoList(@RequestBody QueryEditUserSysRoleInfoDTO dto) {
         return CommonResponse.success(roleInfoService.getEditUserSysRoleInfoList(dto));
     }
 
-    @PostMapping("/getAppIdTree")
+    @PostMapping("/getAppMenuApiTree/{appType}")
     @ApiOperation("新建角色时获取应用类相关ID列表")
-    public CommonResponse<List<AppMenuApiTree>> getAppIdTree(){
-        Integer appType = 1;
-        // roleInfoService.getAppMenuApiTree(appType);
-
+    @ApiImplicitParam(name="appType",value="应用分类 1 应用类，2 配置类，3 运维类",required=true)
+    public CommonResponse<List<AppMenuApiTree>> getAppIdTree(@PathVariable Integer appType) {
         return CommonResponse.success(roleInfoService.getAppMenuApiTree(appType));
     }
 
-    @PostMapping("/getConfigIdTree")
-    @ApiOperation("新建角色时获取配置类的相关ID的树")
-    public CommonResponse<List<AppMenuApiTree>> getConfigIdTree(){
-        Integer appType = 2;
-        return CommonResponse.success(roleInfoService.getAppMenuApiTree(appType));
-    }
-
-    @PostMapping("/getDevopsIdTree")
-    @ApiOperation("新建角色时获取运维类的相关ID的树")
-    public CommonResponse<List<AppMenuApiTree>> getDevopsIdTree(){
-        Integer appType = 3;
-        return CommonResponse.success(roleInfoService.getAppMenuApiTree(appType));
-    }
 }

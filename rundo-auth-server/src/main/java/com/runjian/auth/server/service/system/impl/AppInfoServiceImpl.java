@@ -39,18 +39,18 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         BeanUtils.copyProperties(dto, appInfo);
         appInfoMapper.insert(appInfo);
         // 向菜单表中插入一条虚拟根菜单
-        AddSysMenuInfoDTO menuInfoDTO = new AddSysMenuInfoDTO();
-        Long menuPid = 1L;
-        menuInfoDTO.setAppId(appInfo.getId());
-        menuInfoDTO.setMenuPid(menuPid);
-        menuInfoDTO.setTitle(appInfo.getAppName());
-        menuInfoDTO.setIcon(null);
-        menuInfoDTO.setMenuSort(1);
-        menuInfoDTO.setPath(appInfo.getAppUrl());
-        menuInfoDTO.setComponent(null);
-        menuInfoDTO.setStatus(0);
-        menuInfoDTO.setHidden(0);
-        menuInfoService.save(menuInfoDTO);
+        // AddSysMenuInfoDTO menuInfoDTO = new AddSysMenuInfoDTO();
+        // Long menuPid = 1L;
+        // menuInfoDTO.setAppId(appInfo.getId());
+        // menuInfoDTO.setMenuPid(menuPid);
+        // menuInfoDTO.setTitle(appInfo.getAppName());
+        // menuInfoDTO.setIcon(null);
+        // menuInfoDTO.setMenuSort(1);
+        // menuInfoDTO.setPath(appInfo.getAppUrl());
+        // menuInfoDTO.setComponent(null);
+        // menuInfoDTO.setStatus(0);
+        // menuInfoDTO.setHidden(0);
+        // menuInfoService.save(menuInfoDTO);
     }
 
     @Override
