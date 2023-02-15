@@ -197,7 +197,6 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<VideoArea> areaList = roleInfoMapper.selectVideoAreaByRoleCode(roleInfo.getRoleCode());
         List<Long> areaIds = areaList.stream().map(VideoArea::getId).collect(Collectors.toList());
         // 查询该角色已授权的通道
-
         RoleDetailVO roleDetailVO = new RoleDetailVO();
         roleDetailVO.setId(roleInfo.getId());
         roleDetailVO.setRoleName(roleInfo.getRoleName());
@@ -210,8 +209,8 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         roleDetailVO.setDevopsIds(devopsIds);
         roleDetailVO.setOrgIds(orgIds);
         roleDetailVO.setAreaIds(areaIds);
-        roleDetailVO.setChannelIds(null);
-        roleDetailVO.setOperationIds(null);
+        // roleDetailVO.setChannelIds(null);
+        // roleDetailVO.setOperationIds(null);
 
         return roleDetailVO;
     }
@@ -309,7 +308,6 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     ) {
         // 4.拼接返回结果
         List<String> resultList = new ArrayList<>();
-
         // 1.先根据appType选出目标分类的应用
         for (AppInfo appInfo : appInfoList) {
             if (!appType.equals(appInfo.getAppType())) {

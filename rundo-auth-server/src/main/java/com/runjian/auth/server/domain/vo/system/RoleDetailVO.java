@@ -45,8 +45,8 @@ public class RoleDetailVO {
     @ApiModelProperty("安防区域")
     private List<Long> areaIds;
 
-    @ApiModelProperty("视频通道ID列表")
-    List<Long> channelIds;
-    @ApiModelProperty("通道操作ID列表")
-    List<Long> operationIds;
+    // @ApiModelProperty("视频通道ID列表")
+    // List<Long> channelIds;
+    // @ApiModelProperty("通道操作ID列表")
+    // List<Long> operationIds;
 }
