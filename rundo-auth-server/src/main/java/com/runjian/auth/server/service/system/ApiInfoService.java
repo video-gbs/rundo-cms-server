@@ -28,11 +28,11 @@ public interface ApiInfoService extends IService<ApiInfo> {
 
     SysApiInfoVO findById(Long id);
 
-    List<SysApiInfoVO> findByList();
-
     Page<SysApiInfoVO> findByPage(Integer pageNum, Integer pageSize);
 
     void modifyByStatus(StatusSysApiInfoDTO dto);
 
     List<ApiInfoTree> findByTree(QuerySysApiInfoDTO dto);
+
+    List<SysApiInfoVO> findByList(QuerySysApiInfoDTO dto);
 }

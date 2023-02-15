@@ -17,6 +17,9 @@ import lombok.Data;
 @ApiModel(value = "接口查询", description = "接口信息查询条件")
 public class QuerySysApiInfoDTO {
 
+    @ApiModelProperty("所属应用")
+    private Long appId;
+
     @ApiModelProperty("接口名称")
     private String apiName;
 

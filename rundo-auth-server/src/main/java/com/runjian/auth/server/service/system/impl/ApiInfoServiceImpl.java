@@ -75,14 +75,7 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
 
     @Override
     public List<ApiInfoTree> findByTree(QuerySysApiInfoDTO dto) {
-        LambdaQueryWrapper<ApiInfo> queryWrapper = new LambdaQueryWrapper<>();
-        if (null != dto.getUrl()) {
-            queryWrapper.eq(ApiInfo::getUrl, dto.getUrl());
-        }
-        if (null != dto.getApiName()) {
-            queryWrapper.eq(ApiInfo::getUrl, dto.getApiName());
-        }
-        List<ApiInfo> apiInfoList = apiInfoMapper.selectList(queryWrapper);
+        List<ApiInfo> apiInfoList = getByList(dto);
         List<ApiInfoTree> apiInfoTreeList = apiInfoList.stream().map(
                 item -> {
                     ApiInfoTree bean = new ApiInfoTree();
@@ -95,9 +88,29 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
     }
 
     @Override
-    public List<SysApiInfoVO> findByList() {
-        return null;
+    public List<SysApiInfoVO> findByList(QuerySysApiInfoDTO dto) {
+        return getByList(dto).stream().map(
+                item -> {
+                    SysApiInfoVO vo = new SysApiInfoVO();
+                    BeanUtils.copyProperties(item, vo);
+                    return vo;
+                }
+        ).collect(Collectors.toList());
     }
 
+
+    private List<ApiInfo> getByList(QuerySysApiInfoDTO dto) {
+        LambdaQueryWrapper<ApiInfo> queryWrapper = new LambdaQueryWrapper<>();
+        if (null != dto.getUrl()) {
+            queryWrapper.eq(ApiInfo::getUrl, dto.getUrl());
+        }
+        if (null != dto.getApiName()) {
+            queryWrapper.eq(ApiInfo::getApiName, dto.getApiName());
+        }
+        if (null != dto.getAppId()) {
+            queryWrapper.eq(ApiInfo::getAppId, dto.getAppId()).or().eq(ApiInfo::getAppId, 0L);
+        }
+        return apiInfoMapper.selectList(queryWrapper);
+    }
 
 }
