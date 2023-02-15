@@ -288,4 +288,12 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
         return channelControlApi.channelSync(deviceId);
     }
+
+    @Override
+    public DeviceChannelExpansion findOneDeviceByVideoAreaId(Long areaId) {
+        LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(DeviceChannelExpansion::getVideoAreaId,areaId);
+        queryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
+        return deviceChannelExpansionMapper.selectOne(queryWrapper);
+    }
 }

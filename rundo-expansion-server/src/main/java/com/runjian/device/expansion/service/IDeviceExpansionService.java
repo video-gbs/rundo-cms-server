@@ -59,5 +59,12 @@ public interface IDeviceExpansionService extends IService<DeviceExpansion> {
      */
     Boolean move(MoveReq deviceExpansionMoveReq);
 
+    /**
+     * 查询安防通道绑定信息
+     * @param areaId
+     * @return
+     */
+    DeviceExpansion findOneDeviceByVideoAreaId(Long areaId);
+
 
 }

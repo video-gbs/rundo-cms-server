@@ -196,4 +196,12 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
         return true;
     }
+
+    @Override
+    public DeviceExpansion findOneDeviceByVideoAreaId(Long areaId) {
+        LambdaQueryWrapper<DeviceExpansion> deviceExpansionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        deviceExpansionLambdaQueryWrapper.eq(DeviceExpansion::getVideoAreaId,areaId);
+        deviceExpansionLambdaQueryWrapper.eq(DeviceExpansion::getDeleted,0);
+        return deviceExpansionMapper.selectOne(deviceExpansionLambdaQueryWrapper);
+    }
 }

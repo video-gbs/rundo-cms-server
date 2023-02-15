@@ -73,4 +73,11 @@ public interface IDeviceChannelExpansionService extends IService<DeviceChannelEx
      */
     CommonResponse<ChannelSyncRsp> channelSync(Long deviceId);
 
+    /**
+     * 查询安防通道关联的信息
+     * @param areaId
+     * @return
+     */
+    DeviceChannelExpansion findOneDeviceByVideoAreaId(Long areaId);
+
 }
