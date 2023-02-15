@@ -38,8 +38,8 @@ public class InternalPowerController {
         DeviceExpansion oneDeviceExpansion = deviceExpansionService.findOneDeviceByVideoAreaId(areaId);
         DeviceChannelExpansion oneDeviceChannel = deviceChannelExpansionService.findOneDeviceByVideoAreaId(areaId);
         if(!ObjectUtils.isEmpty(oneDeviceExpansion) || !ObjectUtils.isEmpty(oneDeviceChannel)){
-            return CommonResponse.success(false);
+            return CommonResponse.success(true);
         }
-        return CommonResponse.success(true);
+        return CommonResponse.success(false);
     }
 }

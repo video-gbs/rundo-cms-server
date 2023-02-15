@@ -293,7 +293,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     public DeviceChannelExpansion findOneDeviceByVideoAreaId(Long areaId) {
         LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(DeviceChannelExpansion::getVideoAreaId,areaId);
-        queryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
+        queryWrapper.eq(DeviceChannelExpansion::getDeleted,0).last("limit 1");
         return deviceChannelExpansionMapper.selectOne(queryWrapper);
     }
 }
