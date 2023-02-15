@@ -103,9 +103,8 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
 
         // 向接口表插入一条虚拟挂在根节点的接口
         AddSysApiInfoDTO apiInfoDTO = new AddSysApiInfoDTO();
-        Long apiPid = 1L;
         apiInfoDTO.setAppId(dto.getAppId());
-        apiInfoDTO.setApiPid(apiPid);
+        apiInfoDTO.setApiPid(menuInfo.getMenuPid());
         apiInfoDTO.setApiName(menuInfo.getTitle());
         apiInfoDTO.setUrl(menuInfo.getPath());
         apiInfoDTO.setApiSort(1);

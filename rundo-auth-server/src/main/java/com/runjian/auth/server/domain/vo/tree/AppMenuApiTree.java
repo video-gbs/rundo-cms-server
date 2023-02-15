@@ -18,7 +18,7 @@ public class AppMenuApiTree extends AppMenuApiVO implements DataTree<AppMenuApiT
 
     @Override
     public Long getParentId() {
-        return super.getParentId();
+        return super.getPid();
     }
 
     @Override

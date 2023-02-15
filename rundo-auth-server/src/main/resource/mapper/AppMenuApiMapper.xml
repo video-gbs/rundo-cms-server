@@ -17,8 +17,8 @@
 
         FROM
             app_info app
-                LEFT JOIN menu_info menu ON menu.app_id = app.id
-                LEFt JOIN api_info api ON api.api_pid = menu.id
+            LEFT JOIN menu_info menu ON menu.app_id = app.id
+            LEFt JOIN api_info api ON api.app_id = app.id
         <where>
             app.delete_flag = 0
             <if test="appType != null">

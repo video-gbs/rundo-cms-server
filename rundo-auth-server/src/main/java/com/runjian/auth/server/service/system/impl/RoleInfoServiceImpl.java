@@ -217,63 +217,70 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
 
     @Override
     public List<AppMenuApiTree> getAppMenuApiTree(Integer appType) {
-        List<AppMenuApi> appMenuApiList = appMenuApiMapper.selectByAppType(2);
+        List<AppMenuApi> appMenuApiList = appMenuApiMapper.selectByAppType(appType);
 
         List<AppMenuApiVO> vos = new ArrayList<>();
+        // 虚拟根
+        AppMenuApiVO root = new AppMenuApiVO();
+        root.setId(1L);
+        root.setIdStr("");
+        root.setPid(0L);
+        root.setName("虚拟根");
+        vos.add(root);
         for (AppMenuApi appMenuApi : appMenuApiList) {
-            if (null != appMenuApi.getMenuId() && null != appMenuApi.getApiId()) {
-                AppMenuApiVO vo_api = new AppMenuApiVO();
-                vo_api.setId(appMenuApi.getApiId());
-                vo_api.setIdStr("U_" + appMenuApi.getApiId());
-                vo_api.setName(appMenuApi.getApiName());
-                vo_api.setParentId(appMenuApi.getMenuId());
-                vos.add(vo_api);
+            // appId !=null   menuId == null apiId ==null
+            if (null != appMenuApi.getAppId()) {
+                AppMenuApiVO vo_app = new AppMenuApiVO();
+                vo_app.setId(appMenuApi.getAppId());
+                vo_app.setIdStr("A_" + appMenuApi.getAppId());
+                vo_app.setName(appMenuApi.getAppName());
+                vo_app.setPid(1L);
+                vos.add(vo_app);
             }
 
-            if (null != appMenuApi.getApiId() && null == appMenuApi.getMenuId()) {
-                AppMenuApiVO vo_api = new AppMenuApiVO();
-                vo_api.setId(appMenuApi.getApiId());
-                vo_api.setIdStr("U_" + appMenuApi.getApiId());
-                vo_api.setName(appMenuApi.getApiName());
-                vo_api.setParentId(appMenuApi.getAppId());
-                vos.add(vo_api);
-            }
-
-            if (null != appMenuApi.getMenuId()) {
+            // appId !=null   menuId != null  apiId ==null
+            if (null != appMenuApi.getAppId() && null != appMenuApi.getMenuId()) {
                 AppMenuApiVO vo_menu = new AppMenuApiVO();
                 vo_menu.setId(appMenuApi.getMenuId());
                 vo_menu.setIdStr("M_" + appMenuApi.getMenuId());
                 vo_menu.setName(appMenuApi.getTitle());
-                vo_menu.setParentId(appMenuApi.getAppId());
+                vo_menu.setPid(appMenuApi.getAppId());
                 vos.add(vo_menu);
             }
-            AppMenuApiVO vo_app = new AppMenuApiVO();
-            vo_app.setId(appMenuApi.getAppId());
-            vo_app.setIdStr("A_" + appMenuApi.getAppId());
-            vo_app.setName(appMenuApi.getAppName());
-            vo_app.setParentId(1L);
-            vos.add(vo_app);
-            // 虚拟根
-            AppMenuApiVO root = new AppMenuApiVO();
-            root.setId(1L);
-            root.setIdStr("");
-            root.setParentId(null);
-            root.setName("虚拟根");
-            vos.add(root);
+
+            // appId !=null menuId ！= null apiId ！=null
+            if (null != appMenuApi.getAppId() && null != appMenuApi.getMenuId() && null != appMenuApi.getApiId()) {
+                AppMenuApiVO vo_api = new AppMenuApiVO();
+                vo_api.setId(appMenuApi.getApiId());
+                vo_api.setIdStr("U_" + appMenuApi.getApiId());
+                vo_api.setName(appMenuApi.getApiName());
+                vo_api.setPid(appMenuApi.getMenuId());
+                vos.add(vo_api);
+            }
+            // appId !=null menuId == null apiId ==null
+            if (null != appMenuApi.getAppId() && null == appMenuApi.getMenuId() && null != appMenuApi.getApiId()) {
+                AppMenuApiVO vo_api = new AppMenuApiVO();
+                vo_api.setId(appMenuApi.getApiId());
+                vo_api.setIdStr("U_" + appMenuApi.getApiId());
+                vo_api.setName(appMenuApi.getApiName());
+                vo_api.setPid(appMenuApi.getAppId());
+                vos.add(vo_api);
+            }
 
         }
-        vos = vos.stream().distinct().collect(Collectors.toList());
+        // List<AppMenuApiVO> treeVos = vos.stream().distinct().collect(Collectors.toList());
         log.info("{}", JSONUtil.toJsonStr(vos));
-        List<AppMenuApiTree> tree = vos.stream().map(
+        List<AppMenuApiTree> appMenuApiTreeList = vos.stream().map(
                 item -> {
                     AppMenuApiTree vo = new AppMenuApiTree();
                     vo.setId(item.getId());
                     vo.setIdStr(item.getIdStr());
+                    vo.setPid(item.getPid());
                     vo.setName(item.getName());
                     return vo;
                 }
         ).collect(Collectors.toList());
-        return DataTreeUtil.buildTree(tree, 1L);
+        return DataTreeUtil.buildTree(appMenuApiTreeList, 1L);
     }
 
     /**

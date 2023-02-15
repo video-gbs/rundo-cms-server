@@ -15,7 +15,7 @@ public class AppMenuApiVO {
     private Long id;
     private String idStr;
 
-    private Long parentId;
+    private Long pid;
 
     private String name;
 }

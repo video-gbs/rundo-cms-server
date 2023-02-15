@@ -7,8 +7,6 @@ import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
-import com.runjian.auth.server.domain.vo.tree.ConfigIdTree;
-import com.runjian.auth.server.domain.vo.tree.DevopsIdTree;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
@@ -105,17 +103,15 @@ public class RoleInfoController {
 
     @PostMapping("/getConfigIdTree")
     @ApiOperation("新建角色时获取配置类的相关ID的树")
-    public CommonResponse<List<ConfigIdTree>> getConfigIdTree(){
+    public CommonResponse<List<AppMenuApiTree>> getConfigIdTree(){
         Integer appType = 2;
-        roleInfoService.getAppMenuApiTree(appType);
-        return null;
+        return CommonResponse.success(roleInfoService.getAppMenuApiTree(appType));
     }
 
     @PostMapping("/getDevopsIdTree")
     @ApiOperation("新建角色时获取运维类的相关ID的树")
-    public CommonResponse<List<DevopsIdTree>> getDevopsIdTree(){
+    public CommonResponse<List<AppMenuApiTree>> getDevopsIdTree(){
         Integer appType = 3;
-        roleInfoService.getAppMenuApiTree(appType);
-        return null;
+        return CommonResponse.success(roleInfoService.getAppMenuApiTree(appType));
     }
 }
