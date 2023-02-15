@@ -2,24 +2,21 @@ package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysRoleInfoDto;
 import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.*;
-import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
-import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
-import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
-import com.runjian.auth.server.domain.vo.tree.AppMenuApiVo;
-import com.runjian.auth.server.mapper.ApiInfoMapper;
-import com.runjian.auth.server.mapper.MenuInfoMapper;
+import com.runjian.auth.server.domain.vo.system.*;
+import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
+import com.runjian.auth.server.mapper.AppMenuApiMapper;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.util.RundoIdUtil;
-import com.runjian.auth.server.util.UserUtils;
-import com.runjian.common.config.exception.BusinessErrorEnums;
-import com.runjian.common.config.exception.BusinessException;
+import com.runjian.auth.server.util.tree.DataTreeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +32,7 @@ import java.util.stream.Collectors;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
+@Slf4j
 @Service
 public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> implements RoleInfoService {
 
@@ -44,7 +42,8 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     private RoleInfoMapper roleInfoMapper;
 
     @Autowired
-    private UserUtils userUtils;
+    private AppMenuApiMapper appMenuApiMapper;
+
 
     @Override
     public void save(AddSysRoleInfoDTO dto) {
@@ -215,33 +214,66 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         return roleDetailVO;
     }
 
-    @Autowired
-    private MenuInfoMapper menuInfoMapper;
-
-    @Autowired
-    private ApiInfoMapper apiInfoMapper;
 
     @Override
-    public AppMenuApiVo getAppIdTree(Integer appType) {
-        // 1.当前操作用户已有角色
-        List<String> roleCode = roleInfoMapper.selectRoleCodeByUserId(userUtils.getSysUserInfo().getId());
-        if (CollUtil.isEmpty(roleCode)) {
-            // 当前用户没有被授权角色
-            throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH, "当前用户没有被授权角色");
+    public List<AppMenuApiTree> getAppMenuApiTree(Integer appType) {
+        List<AppMenuApi> appMenuApiList = appMenuApiMapper.selectByAppType(2);
+
+        List<AppMenuApiVO> vos = new ArrayList<>();
+        for (AppMenuApi appMenuApi : appMenuApiList) {
+            if (null != appMenuApi.getMenuId() && null != appMenuApi.getApiId()) {
+                AppMenuApiVO vo_api = new AppMenuApiVO();
+                vo_api.setId(appMenuApi.getApiId());
+                vo_api.setIdStr("U_" + appMenuApi.getApiId());
+                vo_api.setName(appMenuApi.getApiName());
+                vo_api.setParentId(appMenuApi.getMenuId());
+                vos.add(vo_api);
+            }
+
+            if (null != appMenuApi.getApiId() && null == appMenuApi.getMenuId()) {
+                AppMenuApiVO vo_api = new AppMenuApiVO();
+                vo_api.setId(appMenuApi.getApiId());
+                vo_api.setIdStr("U_" + appMenuApi.getApiId());
+                vo_api.setName(appMenuApi.getApiName());
+                vo_api.setParentId(appMenuApi.getAppId());
+                vos.add(vo_api);
+            }
+
+            if (null != appMenuApi.getMenuId()) {
+                AppMenuApiVO vo_menu = new AppMenuApiVO();
+                vo_menu.setId(appMenuApi.getMenuId());
+                vo_menu.setIdStr("M_" + appMenuApi.getMenuId());
+                vo_menu.setName(appMenuApi.getTitle());
+                vo_menu.setParentId(appMenuApi.getAppId());
+                vos.add(vo_menu);
+            }
+            AppMenuApiVO vo_app = new AppMenuApiVO();
+            vo_app.setId(appMenuApi.getAppId());
+            vo_app.setIdStr("A_" + appMenuApi.getAppId());
+            vo_app.setName(appMenuApi.getAppName());
+            vo_app.setParentId(1L);
+            vos.add(vo_app);
+            // 虚拟根
+            AppMenuApiVO root = new AppMenuApiVO();
+            root.setId(1L);
+            root.setIdStr("");
+            root.setParentId(null);
+            root.setName("虚拟根");
+            vos.add(root);
+
         }
-        // 根据角色查取用户已授权应用、菜单、接口数据
-        List<AppInfo> roleAppInfoList = new ArrayList<>();
-        List<MenuInfo> reloAllMenuInfoList = new ArrayList<>();
-        List<ApiInfo> roleApiInfoList = new ArrayList<>();
-        for (String code : roleCode) {
-            roleAppInfoList.addAll(roleInfoMapper.selectAppByRoleCode(code));
-            reloAllMenuInfoList.addAll(roleInfoMapper.selectMenuByRoleCode(code));
-            roleApiInfoList.addAll(roleInfoMapper.selectApiInfoByRoleCode(code));
-        }
-        if (CollUtil.isEmpty(roleAppInfoList)) {
-            throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH, "当前用户没有被授权应用");
-        }
-        return null;
+        vos = vos.stream().distinct().collect(Collectors.toList());
+        log.info("{}", JSONUtil.toJsonStr(vos));
+        List<AppMenuApiTree> tree = vos.stream().map(
+                item -> {
+                    AppMenuApiTree vo = new AppMenuApiTree();
+                    vo.setId(item.getId());
+                    vo.setIdStr(item.getIdStr());
+                    vo.setName(item.getName());
+                    return vo;
+                }
+        ).collect(Collectors.toList());
+        return DataTreeUtil.buildTree(tree, 1L);
     }
 
     /**
