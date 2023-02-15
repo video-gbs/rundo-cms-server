@@ -1,7 +1,8 @@
 package com.runjian.parsing.service.south;
 
 import com.runjian.common.config.response.CommonResponse;
-import org.springframework.web.context.request.async.DeferredResult;
+
+import java.util.Map;
 
 /**
  * @author Miracle
@@ -9,52 +10,58 @@ import org.springframework.web.context.request.async.DeferredResult;
  */
 public interface StreamSouthService {
 
-
-
     /**
      * 流播放处理器
      */
-    void streamSouthPlayResult(Long dispatchId, String streamId, Object data);
+    void streamPlayResult(Long dispatchId, Object data);
 
     /**
      * 流关闭处理器
      * @param streamId 流id
      */
-    void streamSouthClose(Long dispatchId, String streamId, Object data);
-
-
+    void streamClose(Long dispatchId, Object data);
 
     /**
-     * 停止播放南向接口
+     * 停止播放接口
      * @param taskId 流id
-     * @param data
+     * @param dataMap
      */
-    void streamSouthStopPlay(Long taskId, Object data);
-
-
+    void streamStopPlay(Long taskId, Object data);
 
     /**
-     * 停止录像北向接口
+     * 开启录像接口
      * @param taskId 流id
-     * @param data
+     * @param dataMap
      */
-    void streamSouthStartRecord(Long taskId, Object data);
-
-
+    void streamStartRecord(Long taskId, Object data);
 
     /**
-     * 停止录像南向接口
+     * 停止录像接口
      * @param taskId 流id
-     * @param data
+     * @param dataMap
      */
-    void streamSouthStopRecord(Long taskId, Object data);
+    void streamStopRecord(Long taskId, Object data);
+
+    /**
+     * 检测流录像状态
+     * @param taskId 任务id
+     * @param dataMap 数据体
+     */
+    void streamCheckRecord(Long taskId, Object data);
+
+    /**
+     * 检测录像流
+     * @param taskId 任务id
+     * @param dataMap 数据体
+     */
+    void streamCheckStream(Long taskId, Object data);
 
     /**
      * 通用消息返回
      * @param taskId
      * @param dataMap
      */
-    void customEvent(Long taskId, Object dataMap);
+    void customEvent(Long taskId, Object data);
 
     /**
      * 错误消息返回

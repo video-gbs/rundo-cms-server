@@ -56,11 +56,7 @@ public class StreamTaskServiceImpl implements StreamTaskService {
             taskId = createAsyncTask(dispatchId, channelId, streamId, mqId, msgType, response);
         }
         String mqKey = MqConstant.STREAM_PREFIX + MqConstant.GET_SET_PREFIX + dispatchId;
-        CommonMqDto<Object> request = new CommonMqDto<>();
-        request.setTime(LocalDateTime.now());
-        request.setSerialNum(dispatchInfo.getSerialNum());
-        request.setMsgId(taskId.toString());
-        request.setMsgType(msgType);
+        CommonMqDto<Object> request = new CommonMqDto<>(dispatchInfo.getSerialNum(), msgType, taskId.toString(), LocalDateTime.now());
         request.setData(data);
         rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getStreamExchangeId(), mqKey, mqId, request, true);
     }

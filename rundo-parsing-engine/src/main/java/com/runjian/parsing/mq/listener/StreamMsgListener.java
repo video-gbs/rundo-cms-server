@@ -59,8 +59,8 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
                 mqResponse.setMsgType(MsgType.DISPATCH_RE_SIGN_IN.getMsg());
                 String mqId = UUID.randomUUID().toString().replace("-", "");
                 rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getPublicSetQueueData().getExchangeId(), mqDefaultProperties.getPublicSetQueueData().getRoutingKey(), mqId, mqResponse, true);
+                return;
             }
-            StreamConvertDto streamConvertDto = JSONObject.parseObject(new String(message.getBody()), StreamConvertDto.class);
             DispatchInfo dispatchInfo = dispatchInfoOp.get();
 
             if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
@@ -68,9 +68,11 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
             }
 
             if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_RESULT.getMsg())){
-                streamSouthService.streamSouthPlayResult(dispatchInfo.getId(), streamConvertDto.getStreamId(), streamConvertDto.getDataMap());
+                streamSouthService.streamPlayResult(dispatchInfo.getId(), mqRequest.getData());
+                return;
             } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CLOSE.getMsg())) {
-                streamSouthService.streamSouthClose(dispatchInfo.getId(), streamConvertDto.getStreamId(), streamConvertDto.getDataMap());
+                streamSouthService.streamClose(dispatchInfo.getId(), mqRequest.getData());
+                return;
             }
 
             if (StringUtils.isNumber(mqRequest.getMsgId()) || mqRequest.getTime().plusSeconds(10).isBefore(LocalDateTime.now())){
@@ -78,11 +80,11 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
             } else if (mqRequest.getCode() != 0){
                 streamSouthService.errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
             } else if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_STOP.getMsg())) {
-                streamSouthService.streamSouthStopPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                streamSouthService.streamStopPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
             } else if (mqRequest.getMsgType().equals(MsgType.STREAM_RECORD_START.getMsg())) {
-                streamSouthService.streamSouthStartRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                streamSouthService.streamStartRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
             } else if (mqRequest.getMsgType().equals(MsgType.STREAM_RECORD_STOP.getMsg())) {
-                streamSouthService.streamSouthStopRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                streamSouthService.streamStopRecord(Long.parseLong(mqRequest.getMsgId()),mqRequest.getData());
             }
 
         } catch (Exception ex) {

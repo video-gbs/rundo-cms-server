@@ -1,4 +1,4 @@
-package com.runjian.parsing.vo.dto;
+package com.runjian.stream.vo;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,11 +12,17 @@ import java.util.Map;
  */
 @Data
 @NoArgsConstructor
-public class StreamConvertDto {
+public class StreamManageDto {
 
-    public StreamConvertDto(String streamId){
+    public StreamManageDto(Long dispatchId, String streamId){
+        this.dispatchId = dispatchId;
         this.streamId = streamId;
     }
+
+    /**
+     * 调度服务id
+     */
+    private Long dispatchId;
 
     /**
      * 流id

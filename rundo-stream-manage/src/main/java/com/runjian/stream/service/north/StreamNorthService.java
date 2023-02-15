@@ -1,7 +1,10 @@
 package com.runjian.stream.service.north;
 
 
+import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
+
+import java.util.List;
 
 /**
  * 流
@@ -10,11 +13,6 @@ import com.runjian.stream.vo.response.PostApplyStreamRsp;
  */
 public interface StreamNorthService {
 
-
-    /**
-     * 检测超时未成功播放的流
-     */
-    void checkOutTimeStream();
 
     /**
      * 申请流
@@ -32,13 +30,21 @@ public interface StreamNorthService {
     Boolean startRecord(String streamId);
 
     /**
-     * 检查录像状态
-     */
-    void checkRecordState();
-
-    /**
      * 关闭录像
      */
     Boolean stopRecord(String streamId);
 
+    /**
+     * 获取正在录像的streamId
+     * @param streamIds
+     * @return
+     */
+    List<String> getRecordStates(List<String> streamIds);
+
+    /**
+     * 获取正在播放的streamId
+     * @param streamIds
+     * @return
+     */
+    List<String> getStreamStates(List<String> streamIds);
 }

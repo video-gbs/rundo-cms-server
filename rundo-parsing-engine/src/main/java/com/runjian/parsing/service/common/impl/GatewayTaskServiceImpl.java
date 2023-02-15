@@ -10,6 +10,7 @@ import com.runjian.parsing.dao.GatewayTaskMapper;
 import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.entity.GatewayTaskInfo;
 import com.runjian.parsing.mq.config.RabbitMqSender;
+import com.runjian.parsing.mq.listener.MqDefaultProperties;
 import com.runjian.parsing.mq.listener.MqListenerConfig;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.GatewayTaskService;
@@ -42,8 +43,8 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
     @Autowired
     private DataBaseService dataBaseService;
 
-    @Value("${mq-default.exchange.stream}")
-    private String gatewayExchangeId;
+    @Autowired
+    private MqDefaultProperties mqDefaultProperties;
 
 
     private static final String OUT_TIME = "OUT_TIME";
@@ -63,13 +64,9 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         String mqId = UUID.randomUUID().toString().replace("-", "");
         Long taskId = createAsyncTask(gatewayId, deviceId, channelId, mqId, msgType, response);
         String mqKey = MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + gatewayId;
-        CommonMqDto<Object> request = new CommonMqDto<>();
-        request.setTime(LocalDateTime.now());
-        request.setSerialNum(gatewayInfo.getSerialNum());
-        request.setMsgId(taskId.toString());
-        request.setMsgType(msgType);
+        CommonMqDto<Object> request = new CommonMqDto<>(gatewayInfo.getSerialNum(), msgType, taskId.toString(), LocalDateTime.now());
         request.setData(data);
-        rabbitMqSender.sendMsgByRoutingKey(gatewayExchangeId, mqKey, mqId, request, true);
+        rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getGatewayExchangeId(), mqKey, mqId, request, true);
     }
 
     @Override

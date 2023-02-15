@@ -20,7 +20,7 @@ public interface StreamTaskMapper {
     @Insert(" INSERT INTO " + STREAM_TASK_TABLE_NAME +
             " (dispatch_id, channel_id, stream_id, mq_id, msg_type, state, detail, update_time, create_time) " +
             " VALUES " +
-            " (#{dispatchId}, #{channelId}, #{streamId}, #{msgType}, #{state}, #{detail}, #{mqId}, #{updateTime}, #{createTime})")
+            " (#{dispatchId}, #{channelId}, #{streamId}, #{mqId}, #{msgType}, #{state}, #{detail}, #{updateTime}, #{createTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(StreamTaskInfo streamTaskInfo);
 

@@ -36,7 +36,7 @@ public class PutChannelPlayReq {
     /**
      * 流模式 默认不传的情况下为udp {@link  com.runjian.device.constant.StreamType}
      */
-    @Size(min = 1, max = 2, message = "非法流模式")
+    @Range(min = 1, max = 2, message = "非法流模式")
     private Integer streamType;
 
 }

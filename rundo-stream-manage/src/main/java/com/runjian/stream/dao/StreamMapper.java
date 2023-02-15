@@ -4,6 +4,7 @@ import com.runjian.stream.entity.StreamInfo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,7 +34,7 @@ public interface StreamMapper {
     void updateStreamState(StreamInfo streamInfo);
 
     @Insert(" INSERT INTO " + STREAM_TABLE_NAME +
-            " (gateway_id, channel_id, stream_id, dispatch_id, playType, record_state, auto_close_state, stream_state, update_time, create_time) " +
+            " (gateway_id, channel_id, stream_id, dispatch_id, play_type, record_state, auto_close_state, stream_state, update_time, create_time) " +
             " VALUES " +
             " (#{gatewayId}, #{channelId}, #{streamId}, #{dispatchId}, #{playType}, #{recordState}, #{autoCloseState}, #{streamState}, #{updateTime}, #{createTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
@@ -58,7 +59,11 @@ public interface StreamMapper {
 
     @Select(" SELECT * FROM " + STREAM_TABLE_NAME +
             " WHERE stream_state = #{streamState} ")
-    List<Long> selectByStreamState(Integer streamState);
+    List<StreamInfo> selectByStreamState(Integer streamState);
+
+    @Select(" SELECT * FROM " + STREAM_TABLE_NAME +
+            " WHERE stream_state = #{streamState} ")
+    List<Long> selectIdByStreamState(Integer streamState);
 
     @Delete(" <script> " +
             " DELETE FROM " + STREAM_TABLE_NAME +
@@ -72,5 +77,14 @@ public interface StreamMapper {
             " WHERE stream_id IN " +
             " <foreach collection='streamIdList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
-    void deleteByStreamIds(ArrayList<String> streamIdList);
+    void deleteByStreamIds(List<String> streamIdList);
+
+    @Select(" SELECT * FROM " + STREAM_TABLE_NAME +
+            " WHERE record_state = #{recordState} AND " +
+            " stream_state = #{streamState} ")
+    List<StreamInfo> selectByRecordStateAndStreamState(Integer recordState, Integer streamState);
+
+    void batchUpdateRecordState(List<Long> noRecordIds, Integer recordState, LocalDateTime updateTime);
+
+
 }

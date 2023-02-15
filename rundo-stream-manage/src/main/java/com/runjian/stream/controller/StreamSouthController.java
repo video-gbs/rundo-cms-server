@@ -38,7 +38,7 @@ public class StreamSouthController {
      * @param req 流id
      * @return 是否关闭
      */
-    @GetMapping("/play/close")
+    @PutMapping("/play/close")
     public CommonResponse<Boolean> streamCloseHandle(@RequestBody PutStreamCloseReq req){
         return CommonResponse.success(streamSouthService.streamCloseHandle(req.getStreamId(), req.getCanClose()));
     }

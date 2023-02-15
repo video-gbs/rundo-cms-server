@@ -1,8 +1,11 @@
 package com.runjian.stream.feign;
 
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.stream.vo.StreamManageDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Miracle
@@ -13,25 +16,43 @@ public interface ParsingEngineApi {
 
     /**
      * 停止播放
-     * @param streamId 流id
+     * @param req 统一请求体
      * @return
      */
-    @GetMapping("/channel/stream/stop")
-    CommonResponse<Boolean> channelStopPlay(String streamId);
+    @PutMapping("/stream-manage/play/stop")
+    CommonResponse<Boolean> channelStopPlay(@RequestBody StreamManageDto req);
 
     /**
      * 开启录播
-     * @param streamId 流id
+     * @param req 统一请求体
      * @return
      */
-    @GetMapping("/channel/stream/record/start")
-    CommonResponse<Boolean> channelStartRecord(String streamId);
+    @PutMapping("/stream-manage/record/start")
+    CommonResponse<Boolean> channelStartRecord(@RequestBody StreamManageDto req);
 
     /**
      * 关闭录像
-     * @param streamId 流id
+     * @param req 统一请求体
      * @return
      */
-    @GetMapping("/channel/stream/record/stop")
-    CommonResponse<Boolean> channelStopRecord(String streamId);
+    @PutMapping("/stream-manage/record/stop")
+    CommonResponse<Boolean> channelStopRecord(@RequestBody StreamManageDto req);
+
+    /**
+     * 检测录像状态
+     * @param dispatchId 调度服务id
+     * @param streamIds 流id数组
+     * @return
+     */
+    @GetMapping("/stream-manage/check/record")
+    CommonResponse<List<String>> checkStreamRecordStatus(@RequestParam Long dispatchId, @RequestParam List<String> streamIds);
+
+    /**
+     * 检测流状态
+     * @param dispatchId 调度服务id
+     * @param streamIds 流id数组
+     * @return
+     */
+    @GetMapping("/stream-manage/check/stream")
+    CommonResponse<List<String>> checkStreamStreamStatus(@RequestParam Long dispatchId, @RequestParam List<String> streamIds);
 }

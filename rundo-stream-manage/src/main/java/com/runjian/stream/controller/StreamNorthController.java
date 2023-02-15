@@ -9,6 +9,8 @@ import com.runjian.stream.vo.response.PostApplyStreamRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author Miracle
  * @date 2023/2/7 20:36
@@ -66,5 +68,25 @@ public class StreamNorthController {
     public CommonResponse<Boolean> stopRecord(@RequestBody PutStreamOperationReq req){
         validatorService.validateRequest(req);
         return CommonResponse.success(streamNorthService.stopRecord(req.getStreamId()));
+    }
+
+    /**
+     * 查询录像状态
+     * @param streamIdList 流id列表
+     * @return
+     */
+    @GetMapping("/check/record")
+    public CommonResponse<List<String>> checkRecordStatus(@RequestParam List<String> streamIdList){
+        return CommonResponse.success(streamNorthService.getRecordStates(streamIdList));
+    }
+
+    /**
+     * 查询流状态
+     * @param streamIdList 流id列表
+     * @return
+     */
+    @GetMapping("/check/stream")
+    public CommonResponse<List<String>> checkStreamStatus(@RequestParam List<String> streamIdList){
+        return CommonResponse.success(streamNorthService.getStreamStates(streamIdList));
     }
 }

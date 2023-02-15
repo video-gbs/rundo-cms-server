@@ -3,6 +3,7 @@ package com.runjian.stream.service.south.impl;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.stream.dao.StreamMapper;
 import com.runjian.stream.entity.StreamInfo;
+import com.runjian.stream.service.common.StreamBaseService;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.service.north.impl.StreamNorthServiceImpl;
 import com.runjian.stream.service.south.StreamSouthService;
@@ -22,6 +23,7 @@ public class StreamSouthServiceImpl implements StreamSouthService {
     @Autowired
     private StreamMapper streamMapper;
 
+
     @Override
     public void receiveResult(String streamId, Boolean isSuccess) {
         Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
@@ -33,7 +35,7 @@ public class StreamSouthServiceImpl implements StreamSouthService {
             streamInfo.setStreamState(CommonEnum.ENABLE.getCode());
             streamInfo.setUpdateTime(LocalDateTime.now());
             streamMapper.updateStreamState(streamInfo);
-            StreamNorthServiceImpl.prepareStreamOutTimeArray.deleteTime(streamInfo.getStreamId());
+            StreamBaseService.prepareStreamOutTimeArray.deleteTime(streamInfo.getStreamId());
         } else {
             streamMapper.deleteByStreamId(streamId);
         }

@@ -13,7 +13,7 @@ import java.util.Map;
  * @date 2023/2/10 15:00
  */
 @Data
-public class StreamControlReq {
+public class StreamManageReq {
 
     /**
      * 调度服务id

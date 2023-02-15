@@ -1,6 +1,7 @@
 package com.runjian.parsing.service.north.impl;
 
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.constant.StandardName;
 import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.dao.DispatchMapper;
 import com.runjian.parsing.service.common.StreamTaskService;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,9 +21,6 @@ import java.util.Map;
  */
 @Service
 public class StreamNorthServiceImpl implements StreamNorthService {
-
-    @Autowired
-    private DispatchMapper dispatchMapper;
 
     @Autowired
     private StreamTaskService streamTaskService;
@@ -38,6 +38,20 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     @Override
     public void streamNorthStopRecord(Long dispatchId, String streamId, DeferredResult<CommonResponse<?>> response) {
         customEvent(dispatchId, streamId, null, MsgType.STREAM_RECORD_STOP, response);
+    }
+
+    @Override
+    public void checkStreamRecordStatus(Long dispatchId, List<String> streamIds, DeferredResult<CommonResponse<?>> response) {
+        Map<String, Object> mapData = new HashMap<>(streamIds.size());
+        mapData.put(StandardName.STREAM_ID_LIST, streamIds);
+        customEvent(dispatchId, null, mapData, MsgType.STREAM_CHECK_RECORD, response);
+    }
+
+    @Override
+    public void checkStreamStatus(Long dispatchId, List<String> streamIds, DeferredResult<CommonResponse<?>> response) {
+        Map<String, Object> mapData = new HashMap<>(streamIds.size());
+        mapData.put(StandardName.STREAM_ID_LIST, streamIds);
+        customEvent(dispatchId, null, mapData, MsgType.STREAM_CHECK_STREAM, response);
     }
 
     /**

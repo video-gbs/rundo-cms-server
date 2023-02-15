@@ -44,7 +44,6 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
     @Autowired
     private MqDefaultProperties mqDefaultProperties;
 
-
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
         long deliveryTag = message.getMessageProperties().getDeliveryTag();
@@ -58,6 +57,7 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
                 mqResponse.setMsgType(MsgType.GATEWAY_RE_SIGN_IN.getMsg());
                 String mqId = UUID.randomUUID().toString().replace("-", "");
                 rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getPublicSetQueueData().getExchangeId(), mqDefaultProperties.getPublicSetQueueData().getRoutingKey(), mqId, mqResponse, true);
+                return;
             }
             GatewayInfo gatewayInfo = gatewayInfoOp.get();
 
