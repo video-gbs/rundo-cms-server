@@ -75,9 +75,10 @@ public class ApiInfoController {
     }
 
     @GetMapping("/getList")
-    @ApiOperation("获取接口列表 无分页")
-    public CommonResponse<List<SysApiInfoVO>> getList() {
-        return CommonResponse.success(apiInfoService.findByList());
+    @ApiOperation("获取接口无分页列表")
+    public CommonResponse<List<SysApiInfoVO>> getList(QuerySysApiInfoDTO dto) {
+        log.info("获取接口无分页列表，前端查询条件:{}", JSONUtil.toJsonStr(dto));
+        return CommonResponse.success(apiInfoService.findByList(dto));
     }
 
     @GetMapping("/getListByPage")
