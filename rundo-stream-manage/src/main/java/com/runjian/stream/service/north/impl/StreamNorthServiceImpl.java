@@ -126,14 +126,14 @@ public class StreamNorthServiceImpl implements StreamNorthService {
 
     @Override
     public void stopPlay(String streamId) {
-        Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
+        streamMapper.selectByStreamId(streamId);
         StreamInfo streamInfo = dataBaseService.getStreamInfoByStreamId(streamId);
         streamInfo.setAutoCloseState(CommonEnum.ENABLE.getCode());
         streamInfo.setRecordState(CommonEnum.DISABLE.getCode());
         streamInfo.setUpdateTime(LocalDateTime.now());
         streamMapper.updateRecordAndAutoCloseState(streamInfo);
         CommonResponse<Boolean> commonResponse = parsingEngineApi.channelStopPlay(new StreamManageDto(streamInfo.getDispatchId(), streamId));
-        if (commonResponse.getCode() != 0){
+        if (commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
         }
         if (commonResponse.getData()){

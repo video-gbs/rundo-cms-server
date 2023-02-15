@@ -27,6 +27,7 @@ public class StreamSouthServiceImpl implements StreamSouthService {
     @Override
     public void receiveResult(String streamId, Boolean isSuccess) {
         Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
+        StreamBaseService.prepareStreamOutTimeArray.deleteTime(streamId);
         if (streamInfoOp.isEmpty()) {
             return;
         }
@@ -35,7 +36,7 @@ public class StreamSouthServiceImpl implements StreamSouthService {
             streamInfo.setStreamState(CommonEnum.ENABLE.getCode());
             streamInfo.setUpdateTime(LocalDateTime.now());
             streamMapper.updateStreamState(streamInfo);
-            StreamBaseService.prepareStreamOutTimeArray.deleteTime(streamInfo.getStreamId());
+
         } else {
             streamMapper.deleteByStreamId(streamId);
         }
