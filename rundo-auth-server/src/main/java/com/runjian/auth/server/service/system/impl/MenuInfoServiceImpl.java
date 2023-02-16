@@ -12,7 +12,6 @@ import com.runjian.auth.server.domain.vo.system.MyMetaClass;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
 import com.runjian.auth.server.mapper.AppInfoMapper;
 import com.runjian.auth.server.mapper.MenuInfoMapper;
-import com.runjian.auth.server.service.system.ApiInfoService;
 import com.runjian.auth.server.service.system.MenuInfoService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessException;
@@ -42,21 +41,10 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     @Autowired
     private AppInfoMapper appInfoMapper;
 
-    @Autowired
-    private ApiInfoService apiInfoService;
-
     @Override
     public List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
         List<MenuInfo> menuInfoList = menuInfoMapper.selectByAppId(dto.getAppId());
         Long rootNodeId = 1L;
-        if (dto.getAppId() != null) {
-            Long rootId = 1L;
-            for (MenuInfo menuInfo : menuInfoList) {
-                if (menuInfo.getMenuPid().equals(rootId)) {
-                    rootNodeId = menuInfo.getId();
-                }
-            }
-        }
         List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
                 item -> {
                     MenuInfoTree bean = new MenuInfoTree();
@@ -75,7 +63,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     public List<MenuInfoTree> findByTreeByAppType(Integer appType) {
         List<MenuInfoTree> menuInfoTreeByAppTypelist = new ArrayList<>();
         LambdaQueryWrapper<AppInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(AppInfo::getAppType, appType);
+        queryWrapper.eq(AppInfo::getAppType, appType).or();
         List<AppInfo> appInfoList = appInfoMapper.selectList(queryWrapper);
         for (AppInfo appInfo : appInfoList) {
             QuerySysMenuInfoDTO dto = new QuerySysMenuInfoDTO();

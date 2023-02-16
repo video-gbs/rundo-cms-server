@@ -26,7 +26,7 @@
             AND menu.hidden = 0
             AND menu.status = 0
             <if test="appId != null">
-                AND menu.app_id = #{appId,jdbcType=BIGINT}
+                AND menu.app_id = #{appId,jdbcType=BIGINT} OR menu.app_id = 0
             </if>
         </where>
         ORDER BY menu.level,menu.menu_sort,menu.id
