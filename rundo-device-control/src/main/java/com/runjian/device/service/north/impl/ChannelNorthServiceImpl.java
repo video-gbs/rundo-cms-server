@@ -120,7 +120,6 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                     channelInfo.setChannelType(rsp.getChannelType());
                     channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
                     channelInfo.setDeviceId(deviceId);
-                    channelInfo.setStreamMode(StreamType.UDP.getMsg());
                     channelInfo.setCreateTime(nowTime);
                     channelInfo.setUpdateTime(nowTime);
                     channelInfo.setOnlineState(CommonEnum.DISABLE.getCode());
@@ -195,18 +194,35 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIdList);
         if (channelInfoList.size() > channelIdList.size()){
             List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
-            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("缺失的数据%s", collect));
+            channelIdList.removeAll(collect);
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("缺失的数据%s", channelIdList));
         }
 
         for (ChannelInfo channelInfo : channelInfoList){
-            if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
-                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "该通道的注册状态已是成功状态");
-            }
             channelInfo.setSignState(SignState.SUCCESS.getCode());
             channelInfo.setUpdateTime(LocalDateTime.now());
         }
         channelMapper.batchUpdateSignState(channelInfoList);
 
+    }
+
+    /**
+     * 通道删除
+     * @param channelIds 通道id
+     */
+    @Override
+    public void channelDeleteByChannelId(List<Long> channelIds) {
+        List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIds);
+        if (channelIds.size() > channelInfoList.size()){
+            List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
+            channelIds.removeAll(collect);
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("缺失的数据%s", channelIds));
+        }
+        for (ChannelInfo channelInfo : channelInfoList){
+            channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
+            channelInfo.setUpdateTime(LocalDateTime.now());
+        }
+        channelMapper.batchUpdateSignState(channelInfoList);
     }
 
     /**
@@ -247,7 +263,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
      * @return
      */
     @Override
-    public VideoPlayRsp channelPlay(Long channelId, Boolean enableAudio, Boolean ssrcCheck) {
+    public VideoPlayRsp channelPlay(Long channelId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType) {
         ChannelInfo channelInfo = getChannelInfoAndValid(channelId);
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
         Map<String, Object> responseMapData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.LIVE, CommonEnum.DISABLE.getCode(), CommonEnum.ENABLE.getCode());
@@ -256,7 +272,8 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         deviceReq.setChannelId(channelId);
         deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
-        deviceReq.putData(StandardName.STREAM_MODE, channelInfo.getStreamMode());
+        deviceReq.putData(StandardName.STREAM_MODE, StreamType.getMsgByCode(streamType));
+
         deviceReq.putAllData(responseMapData);
 
         CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlay(deviceReq);
@@ -318,7 +335,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
      * @return
      */
     @Override
-    public VideoPlayRsp channelPlayback(Long channelId, Boolean enableAudio, Boolean ssrcCheck, LocalDateTime startTime, LocalDateTime endTime) {
+    public VideoPlayRsp channelPlayback(Long channelId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType, LocalDateTime startTime, LocalDateTime endTime) {
         ChannelInfo channelInfo = getChannelInfoAndValid(channelId);
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
         Map<String, Object> streamData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.RECORD, CommonEnum.DISABLE.getCode(), CommonEnum.DISABLE.getCode());
@@ -326,7 +343,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         deviceReq.setChannelId(channelId);
         deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
-        deviceReq.putData(StandardName.STREAM_MODE, channelInfo.getStreamMode());
+        deviceReq.putData(StandardName.STREAM_MODE, StreamType.getMsgByCode(streamType));
         deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         deviceReq.putAllData(streamData);

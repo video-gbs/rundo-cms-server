@@ -118,7 +118,7 @@ public class CircleArray<T> {
      * 移除数据
      * @param data 数据
      */
-    public void delTime(T data){
+    public void deleteTime(T data){
         try{
             lock.lock();
             Long position = dataIndexMap.get(data);

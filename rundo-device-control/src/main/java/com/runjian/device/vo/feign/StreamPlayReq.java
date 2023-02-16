@@ -3,6 +3,7 @@ package com.runjian.device.vo.feign;
 import lombok.Data;
 
 /**
+ * 流播放申请请求体
  * @author Miracle
  * @date 2023/1/30 14:35
  */

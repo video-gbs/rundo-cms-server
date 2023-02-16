@@ -35,10 +35,6 @@ public class ChannelInfo {
      */
     private Integer channelType;
 
-    /**
-     * 流模式: TCP & UCP {@link com.runjian.device.constant.StreamType}
-     */
-    private String streamMode;
 
     private LocalDateTime createTime;
 

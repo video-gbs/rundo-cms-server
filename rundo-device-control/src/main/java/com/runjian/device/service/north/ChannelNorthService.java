@@ -34,6 +34,12 @@ public interface ChannelNorthService {
     void channelSignSuccess(List<Long> channelId);
 
     /**
+     * 通道删除
+     * @param channelId 通道id
+     */
+    void channelDeleteByChannelId(List<Long> channelId);
+
+    /**
      * 删除设备Id
      * @param deviceId 设备id
      */
@@ -43,7 +49,7 @@ public interface ChannelNorthService {
      * 点播
      * @param chId 通道id
      */
-    VideoPlayRsp channelPlay(Long chId, Boolean enableAudio, Boolean ssrcCheck);
+    VideoPlayRsp channelPlay(Long chId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType);
 
     /**
      * 获取录像数据
@@ -62,7 +68,7 @@ public interface ChannelNorthService {
      * @param startTime 开始时间
      * @param endTime 结束时间
      */
-    VideoPlayRsp channelPlayback(Long chId, Boolean enableAudio, Boolean ssrcCheck, LocalDateTime startTime, LocalDateTime endTime);
+    VideoPlayRsp channelPlayback(Long chId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType, LocalDateTime startTime, LocalDateTime endTime);
 
     /**
      * 云台控制
@@ -73,4 +79,6 @@ public interface ChannelNorthService {
      * @param zoomSpeed 缩放速度
      */
     void channelPtzControl(Long chId, Integer commandCode, Integer horizonSpeed, Integer verticalSpeed, Integer zoomSpeed, Integer totalSpeed);
+
+
 }

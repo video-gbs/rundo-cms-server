@@ -71,7 +71,7 @@ CREATE TABLE `rundo_stream`  (
   `id` bigint(0) NOT NULL,
   `gateway_id` bigint(0) NOT NULL,
   `channel_id` bigint(0) NOT NULL,
-  `stream_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `stream_id` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `dispatch_id` bigint(0) NOT NULL,
   `play_type` tinyint(1) NOT NULL COMMENT '1-直播 2-录播 3-下载',
   `record_state` tinyint(1) NOT NULL COMMENT '录像状态 0-关闭 1-开启',

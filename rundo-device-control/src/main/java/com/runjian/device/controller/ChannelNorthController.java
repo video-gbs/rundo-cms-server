@@ -17,6 +17,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 通道北向控制器
@@ -56,11 +58,22 @@ public class ChannelNorthController {
     }
 
     /**
+     * 通道删除
+     * @param channelIds 通道id
+     * @return
+     */
+    @DeleteMapping("/delete")
+    public CommonResponse<?> channelDelete(@RequestParam(value = "channelIds") List<Long> channelIds){
+        channelNorthService.channelDeleteByChannelId(channelIds);
+        return CommonResponse.success();
+    }
+
+    /**
      * 通道注册状态转为成功
      * @param request 通道注册状态转为成功请求体
      */
     @PutMapping("/sign/success")
-    public CommonResponse channelSignSuccess(@RequestBody PutChannelSignSuccessReq request){
+    public CommonResponse<?> channelSignSuccess(@RequestBody PutChannelSignSuccessReq request){
         validatorService.validateRequest(request);
         channelNorthService.channelSignSuccess(request.getChannelIdList());
         return CommonResponse.success();
@@ -74,7 +87,7 @@ public class ChannelNorthController {
     @PostMapping("/play")
     public CommonResponse<VideoPlayRsp> videoPlay(@RequestBody PutChannelPlayReq request) {
         validatorService.validateRequest(request);
-        return CommonResponse.success(channelNorthService.channelPlay(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck()));
+        return CommonResponse.success(channelNorthService.channelPlay(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStreamType()));
     }
 
     /**
@@ -97,7 +110,7 @@ public class ChannelNorthController {
     @PostMapping("/playback")
     public CommonResponse<VideoPlayRsp> videoPlayback(@RequestBody PutChannelPlaybackReq request){
         validatorService.validateRequest(request);
-        return CommonResponse.success(channelNorthService.channelPlayback(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStartTime(), request.getEndTime()));
+        return CommonResponse.success(channelNorthService.channelPlayback(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStreamType(), request.getStartTime(), request.getEndTime()));
     }
 
     /**

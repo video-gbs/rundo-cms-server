@@ -1,12 +1,12 @@
 package com.runjian.parsing.constant;
 
-import com.runjian.parsing.entity.TaskInfo;
+import com.runjian.parsing.entity.GatewayTaskInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * 任务状态
- * @see TaskInfo#state
+ * @see GatewayTaskInfo#state
  * @author Miracle
  * @date 2023/1/13 11:44
  */

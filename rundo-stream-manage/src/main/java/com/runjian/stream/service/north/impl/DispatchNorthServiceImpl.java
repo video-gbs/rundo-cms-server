@@ -6,11 +6,13 @@ import com.runjian.stream.dao.DispatchMapper;
 import com.runjian.stream.entity.DispatchInfo;
 import com.runjian.stream.service.common.DataBaseService;
 import com.runjian.stream.service.north.DispatchNorthService;
+import com.runjian.stream.vo.response.GetDispatchNameRsp;
 import com.runjian.stream.vo.response.GetDispatchRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author Miracle
@@ -39,5 +41,10 @@ public class DispatchNorthServiceImpl implements DispatchNorthService {
         dispatchInfo.setUrl(url);
         dispatchInfo.setUpdateTime(LocalDateTime.now());
         dispatchMapper.update(dispatchInfo);
+    }
+
+    @Override
+    public List<GetDispatchNameRsp> getDispatchName() {
+        return dispatchMapper.selectAllName();
     }
 }

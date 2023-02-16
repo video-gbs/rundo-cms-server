@@ -1,7 +1,10 @@
 package com.runjian.stream.service.north;
 
 import com.github.pagehelper.PageInfo;
+import com.runjian.stream.vo.response.GetDispatchNameRsp;
 import com.runjian.stream.vo.response.GetDispatchRsp;
+
+import java.util.List;
 
 /**
  * @author Miracle
@@ -25,4 +28,10 @@ public interface DispatchNorthService {
      * @param url 可访问url
      */
     void updateExtraData(Long dispatchId, String name, String url);
+
+    /**
+     * 获取调度服务名称
+     * @return
+     */
+    List<GetDispatchNameRsp> getDispatchName();
 }
