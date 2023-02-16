@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
@@ -43,7 +44,20 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
 
     @Override
     public List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
+        AppInfo appInfo = appInfoMapper.selectById(dto.getAppId());
         List<MenuInfo> menuInfoList = menuInfoMapper.selectByAppId(dto.getAppId());
+        menuInfoList.stream().filter(bean -> {
+            if (bean.getId().equals(1L)) {
+                bean.setAppId(appInfo.getId());
+                bean.setIcon(appInfo.getAppIcon());
+                bean.setTitle(appInfo.getAppName());
+                bean.setPath(appInfo.getAppUrl());
+                bean.setComponent("Layout");
+                bean.setName(StrUtil.removePrefix(appInfo.getAppUrl(),"/"));
+                bean.setLevel(1);
+            }
+            return true;
+        }).collect(Collectors.toList());
         Long rootNodeId = 1L;
         List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
                 item -> {
@@ -63,7 +77,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     public List<MenuInfoTree> findByTreeByAppType(Integer appType) {
         List<MenuInfoTree> menuInfoTreeByAppTypelist = new ArrayList<>();
         LambdaQueryWrapper<AppInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(AppInfo::getAppType, appType).or();
+        queryWrapper.eq(AppInfo::getAppType, appType);
         List<AppInfo> appInfoList = appInfoMapper.selectList(queryWrapper);
         for (AppInfo appInfo : appInfoList) {
             QuerySysMenuInfoDTO dto = new QuerySysMenuInfoDTO();
