@@ -2,19 +2,19 @@ package com.runjian.device.expansion.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
+import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.feign.AuthServerApi;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
+import com.runjian.device.expansion.utils.RedisCommonUtil;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import com.runjian.device.expansion.vo.request.DeviceExpansionEditReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
@@ -24,14 +24,16 @@ import com.runjian.device.expansion.vo.request.MoveReq;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -42,10 +44,13 @@ import java.util.stream.Collectors;
 public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMapper, DeviceExpansion> implements IDeviceExpansionService {
     @Autowired
     DeviceExpansionMapper deviceExpansionMapper;
+    @Autowired
+    RedissonClient redissonClient;
 
     @Autowired
     DeviceControlApi deviceControlApi;
-
+    @Autowired
+    RedisTemplate redisTemplate;
     @Autowired
     AuthServerApi authServerApi;
     @Override
@@ -99,7 +104,6 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         });
         return CommonResponse.success();
     }
-
     @Override
     public  PageResp<DeviceExpansionResp> list(DeviceExpansionListReq deviceExpansionListReq) {
         //远程调用获取当前全部的节点信息
@@ -203,5 +207,36 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         deviceExpansionLambdaQueryWrapper.eq(DeviceExpansion::getVideoAreaId,areaId);
         deviceExpansionLambdaQueryWrapper.eq(DeviceExpansion::getDeleted,0).last("limit 1");
         return deviceExpansionMapper.selectOne(deviceExpansionLambdaQueryWrapper);
+    }
+
+    @Override
+    public void syncDeviceStatus() {
+        RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_ONLINE_STATE_LOCK);
+        try{
+            lock.lock(3, TimeUnit.SECONDS);
+            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_DEVICE_ONLINE_STATE);
+            if(!CollectionUtils.isEmpty(deviceMap)){
+                Set<Map.Entry<Long, Integer>> entries = deviceMap.entrySet();
+                for(Map.Entry entry:  entries){
+                    Long deviceId = (Long)entry.getKey();
+                    Integer onlineState = (Integer)entry.getValue();
+                    //获取key与value  value为BusinessSceneResp
+                    //修改device状态
+                    DeviceExpansion deviceExpansion = new DeviceExpansion();
+                    deviceExpansion.setId(deviceId);
+                    deviceExpansion.setOnlineState(onlineState);
+                    deviceExpansionMapper.updateById(deviceExpansion);
+                }
+                RedisCommonUtil.del(redisTemplate,MarkConstant.REDIS_DEVICE_ONLINE_STATE);
+            }
+
+        } catch (Exception ex){
+            ex.printStackTrace();
+            throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
+        }finally {
+            lock.unlock();
+        }
+
+
     }
 }

@@ -66,5 +66,8 @@ public interface IDeviceExpansionService extends IService<DeviceExpansion> {
      */
     DeviceExpansion findOneDeviceByVideoAreaId(Long areaId);
 
-
+    /**
+     *
+     */
+    void syncDeviceStatus();
 }
