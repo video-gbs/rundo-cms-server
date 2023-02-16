@@ -3,8 +3,8 @@ package com.runjian.auth.server.domain.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
  * @author Jiang4Yu@126.com
  * @since 2023-01-04 15:16:33
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode
 @TableName("menu_info")
 @ApiModel(value = "MenuInfo对象", description = "菜单信息表")
 public class MenuInfo implements Serializable {
@@ -55,6 +55,9 @@ public class MenuInfo implements Serializable {
     @ApiModelProperty("前端组件import路径")
     @TableField("component")
     private String component;
+    @ApiModelProperty("前端组件import路径")
+    @TableField("redirect")
+    private String redirect;
 
     @ApiModelProperty("path字段去掉/之后的值")
     @TableField("name")

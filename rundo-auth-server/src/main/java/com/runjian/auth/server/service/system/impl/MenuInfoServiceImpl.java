@@ -53,6 +53,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                 bean.setTitle(appInfo.getAppName());
                 bean.setPath(appInfo.getAppUrl());
                 bean.setComponent(appInfo.getComponent());
+                bean.setRedirect(appInfo.getRedirect());
                 bean.setName(StrUtil.removePrefix(appInfo.getAppUrl(), "/"));
                 bean.setLevel(1);
             }

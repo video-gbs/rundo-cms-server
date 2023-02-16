@@ -3,8 +3,8 @@ package com.runjian.auth.server.domain.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
  * @author Jiang4Yu@126.com
  * @since 2023-01-04 15:16:33
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode
 @TableName("org_info")
 @ApiModel(value = "OrgInfo对象", description = "组织机构表")
 public class OrgInfo implements Serializable {

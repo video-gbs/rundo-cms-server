@@ -3,12 +3,11 @@ package com.runjian.auth.server.domain.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 /**
  * <p>
@@ -18,8 +17,8 @@ import java.util.Objects;
  * @author Jiang4Yu@126.com
  * @since 2023-01-04 15:16:33
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode
 @TableName("app_info")
 @ApiModel(value = "AppInfo对象", description = "应用信息")
 public class AppInfo implements Serializable {
@@ -57,6 +56,10 @@ public class AppInfo implements Serializable {
     @TableField("component")
     private String component;
 
+    @ApiModelProperty("重定向")
+    @TableField("redirect")
+    private String redirect;
+
     @ApiModelProperty("应用简介")
     @TableField("app_desc")
     private String appDesc;
@@ -86,64 +89,4 @@ public class AppInfo implements Serializable {
     @TableField(value = "updated_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updatedTime;
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        AppInfo appInfo = (AppInfo) obj;
-        if (!Objects.equals(id, appInfo.id)) {
-            return false;
-        }
-
-        if (!Objects.equals(appType, appInfo.appType)) {
-            return false;
-        }
-        if (!Objects.equals(appName, appInfo.appName)) {
-            return false;
-        }
-        if (!Objects.equals(appIcon, appInfo.appIcon)) {
-            return false;
-        }
-        if (!Objects.equals(appIp, appInfo.appIp)) {
-            return false;
-        }
-        if (!Objects.equals(appPort, appInfo.appPort)) {
-            return false;
-        }
-        if (!Objects.equals(appUrl, appInfo.appUrl)) {
-            return false;
-        }
-        if (!Objects.equals(component, appInfo.component)) {
-            return false;
-        }
-        if (!Objects.equals(appDesc, appInfo.appDesc)) {
-            return false;
-        }
-        if (!Objects.equals(deleteFlag, appInfo.deleteFlag)) {
-            return false;
-        }
-
-        if (!Objects.equals(createdBy, appInfo.createdBy)) {
-            return false;
-        }
-
-        if (!Objects.equals(updatedBy, appInfo.updatedBy)) {
-            return false;
-        }
-        if (!Objects.equals(createdTime, appInfo.createdTime)) {
-            return false;
-        }
-
-        if (!Objects.equals(updatedTime, appInfo.updatedTime)) {
-            return false;
-        }
-        return true;
-    }
 }
