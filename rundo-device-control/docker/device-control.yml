@@ -1,7 +1,7 @@
 version: '3'
 services:
   device-control:
-    image: harbor.runjian.com/syy-open/device-control:${version}
+    image: registry.cn-hangzhou.aliyuncs.com/hyy-rundo-gms/rundo-stream-manage:${version}
     container_name: device-control
     restart: on-failure
     ports:
