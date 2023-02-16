@@ -52,8 +52,8 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                 bean.setIcon(appInfo.getAppIcon());
                 bean.setTitle(appInfo.getAppName());
                 bean.setPath(appInfo.getAppUrl());
-                bean.setComponent("Layout");
-                bean.setName(StrUtil.removePrefix(appInfo.getAppUrl(),"/"));
+                bean.setComponent(appInfo.getComponent());
+                bean.setName(StrUtil.removePrefix(appInfo.getAppUrl(), "/"));
                 bean.setLevel(1);
             }
             return true;
@@ -66,7 +66,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                     MyMetaClass metaClass = new MyMetaClass();
                     metaClass.setTitle(item.getTitle());
                     metaClass.setIcon(item.getIcon());
-                    bean.setMata(metaClass);
+                    bean.setMeta(metaClass);
                     return bean;
                 }
         ).collect(Collectors.toList());

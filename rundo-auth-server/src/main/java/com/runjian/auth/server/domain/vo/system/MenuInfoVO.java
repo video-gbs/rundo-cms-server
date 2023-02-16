@@ -56,5 +56,5 @@ public class MenuInfoVO {
     private String redirect;
 
     @ApiModelProperty("meta")
-    private MyMetaClass mata;
+    private MyMetaClass meta;
 }

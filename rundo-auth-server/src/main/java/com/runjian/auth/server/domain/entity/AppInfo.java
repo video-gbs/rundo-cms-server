@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * <p>
@@ -52,6 +53,10 @@ public class AppInfo implements Serializable {
     @TableField("app_url")
     private String appUrl;
 
+    @ApiModelProperty("前端组件import路径")
+    @TableField("component")
+    private String component;
+
     @ApiModelProperty("应用简介")
     @TableField("app_desc")
     private String appDesc;
@@ -81,5 +86,64 @@ public class AppInfo implements Serializable {
     @TableField(value = "updated_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updatedTime;
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        AppInfo appInfo = (AppInfo) obj;
+        if (!Objects.equals(id, appInfo.id)) {
+            return false;
+        }
 
+        if (!Objects.equals(appType, appInfo.appType)) {
+            return false;
+        }
+        if (!Objects.equals(appName, appInfo.appName)) {
+            return false;
+        }
+        if (!Objects.equals(appIcon, appInfo.appIcon)) {
+            return false;
+        }
+        if (!Objects.equals(appIp, appInfo.appIp)) {
+            return false;
+        }
+        if (!Objects.equals(appPort, appInfo.appPort)) {
+            return false;
+        }
+        if (!Objects.equals(appUrl, appInfo.appUrl)) {
+            return false;
+        }
+        if (!Objects.equals(component, appInfo.component)) {
+            return false;
+        }
+        if (!Objects.equals(appDesc, appInfo.appDesc)) {
+            return false;
+        }
+        if (!Objects.equals(deleteFlag, appInfo.deleteFlag)) {
+            return false;
+        }
+
+        if (!Objects.equals(createdBy, appInfo.createdBy)) {
+            return false;
+        }
+
+        if (!Objects.equals(updatedBy, appInfo.updatedBy)) {
+            return false;
+        }
+        if (!Objects.equals(createdTime, appInfo.createdTime)) {
+            return false;
+        }
+
+        if (!Objects.equals(updatedTime, appInfo.updatedTime)) {
+            return false;
+        }
+        return true;
+    }
 }
