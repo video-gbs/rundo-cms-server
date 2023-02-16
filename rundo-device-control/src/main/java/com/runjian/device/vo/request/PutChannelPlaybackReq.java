@@ -26,11 +26,13 @@ public class PutChannelPlaybackReq {
     /**
      * 是否播放音频
      */
+    @NotNull(message = "播放音频选项不能为空")
     private Boolean enableAudio;
 
     /**
      * 是否使用ssrc
      */
+    @NotNull(message = "ssrc选项不能为空")
     private Boolean ssrcCheck;
 
     /**
@@ -52,5 +54,17 @@ public class PutChannelPlaybackReq {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime endTime;
+
+    /**
+     * 流是否开启录像
+     */
+    @Range(min = 0, max = 1, message = "非法录像状态")
+    private Integer recordState;
+
+    /**
+     * 流是否无人观看自动关闭
+     */
+    @Range(min = 0, max = 1, message = "非法自动关闭状态")
+    private Integer autoCloseState;
 
 }

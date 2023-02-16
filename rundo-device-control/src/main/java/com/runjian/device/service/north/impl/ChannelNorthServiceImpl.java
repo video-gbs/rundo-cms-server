@@ -263,10 +263,10 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
      * @return
      */
     @Override
-    public VideoPlayRsp channelPlay(Long channelId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType) {
+    public VideoPlayRsp channelPlay(Long channelId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType, Integer recordState, Integer autoCloseState) {
         ChannelInfo channelInfo = getChannelInfoAndValid(channelId);
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
-        Map<String, Object> responseMapData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.LIVE, CommonEnum.DISABLE.getCode(), CommonEnum.ENABLE.getCode());
+        Map<String, Object> responseMapData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.LIVE, recordState, autoCloseState);
 
         DeviceControlReq deviceReq = new DeviceControlReq();
         deviceReq.setChannelId(channelId);
@@ -335,10 +335,10 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
      * @return
      */
     @Override
-    public VideoPlayRsp channelPlayback(Long channelId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType, LocalDateTime startTime, LocalDateTime endTime) {
+    public VideoPlayRsp channelPlayback(Long channelId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType, LocalDateTime startTime, LocalDateTime endTime, Integer recordState, Integer autoCloseState) {
         ChannelInfo channelInfo = getChannelInfoAndValid(channelId);
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
-        Map<String, Object> streamData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.RECORD, CommonEnum.DISABLE.getCode(), CommonEnum.DISABLE.getCode());
+        Map<String, Object> streamData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.RECORD, recordState, autoCloseState);
         DeviceControlReq deviceReq = new DeviceControlReq();
         deviceReq.setChannelId(channelId);
         deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
