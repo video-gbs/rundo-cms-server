@@ -1,0 +1,33 @@
+version: '3'
+services:
+  device-control:
+    image: harbor.runjian.com/syy-open/device-control:${version}
+    container_name: device-control
+    restart: on-failure
+    ports:
+      - 8090:8090
+    volumes:
+      - /logs/:/opt/device-control/logs/
+      - /config/application.yml:/opt/device-control/config/application.yml
+    environment:
+      TZ: Asia/Shanghai
+      SERVER_PORT: 8090
+      PROFILES_ACTIVE: "prod"
+      REDIS_HOST: 124.71.21.11
+      REDIS_PORT: 6379
+      REDIS_DB: 6
+      REDIS_PWD: rundoredis
+      DATABASE_USER: root
+      DATABASE_PWD: rundomysql
+      DATABASE_HOST: 124.71.21.11
+      DATABASE_PORT: 3306
+      DATABASE_NAME: rundo_device_control
+      NACOS_SERVER: 124.71.21.11
+      NACOS_NAMESPACE: public
+      NACOS_USERNAME:
+      NACOS_PASSWORD:
+    logging:
+      options:
+        max-size: '12m'
+        max-file: '10'
+
