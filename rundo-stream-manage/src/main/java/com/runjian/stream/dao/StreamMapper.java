@@ -84,7 +84,23 @@ public interface StreamMapper {
             " stream_state = #{streamState} ")
     List<StreamInfo> selectByRecordStateAndStreamState(Integer recordState, Integer streamState);
 
+    @Update(" <script> " +
+            " <foreach collection='noRecordIds' item='item' separator=';'> " +
+            " UPDATE " + STREAM_TABLE_NAME +
+            " SET update_time = #{updateTime}  " +
+            " , record_state = #{recordState} " +
+            " WHERE id = #{item} "+
+            " </foreach> " +
+            " </script> ")
     void batchUpdateRecordState(List<Long> noRecordIds, Integer recordState, LocalDateTime updateTime);
 
 
+    @Select(" <script> " +
+            " SELECT * FROM " + STREAM_TABLE_NAME +
+            " WHERE stream_id IN " +
+            " <foreach collection='streamIdList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " <if test=\"recordState != null\" > AND record_state = #{recordState} </if> " +
+            " <if test=\"streamState != null\" > AND stream_state = #{streamState} </if> " +
+            " </script> ")
+    List<StreamInfo> selectByStreamIdsAndRecordStateAndStreamState(List<String> streamIdList, Integer recordState, Integer streamState);
 }

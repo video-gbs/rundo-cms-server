@@ -156,10 +156,10 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                     detailUpdateList.add(detailInfo);
                 }
             }
-            RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_ONLINE_STATE_LOCK);
+            RLock lock = redissonClient.getLock(MarkConstant.REDIS_CHANNEL_ONLINE_STATE_LOCK);
             try {
                 lock.lock(3, TimeUnit.SECONDS);
-                redissonClient.getMap(MarkConstant.REDIS_DEVICE_ONLINE_STATE).putAll(channelOnlineMap);
+                redissonClient.getMap(MarkConstant.REDIS_CHANNEL_ONLINE_STATE).putAll(channelOnlineMap);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
@@ -302,7 +302,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         streamReq.setAutoCloseState(autoCloseState);
 
         CommonResponse<Map<String, Object>> response = streamManageApi.applyPlay(streamReq);
-        if (response.getCode() != 0){
+        if (response.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }

@@ -44,9 +44,6 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
     private ChannelNorthService channelNorthService;
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
-
-    @Autowired
     private RedissonClient redissonClient;
 
     /**
@@ -99,7 +96,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
                 if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                    redisTemplate.opsForHash().put(MarkConstant.REDIS_DEVICE_ONLINE_STATE, deviceInfo.getId(), deviceInfo.getOnlineState());
+                    redissonClient.getMap(MarkConstant.REDIS_DEVICE_ONLINE_STATE).put(deviceInfo.getId(), deviceInfo.getOnlineState());
                 }
                 channelMapper.updateOnlineStateByDeviceId(id, onlineState, nowTime);
             }

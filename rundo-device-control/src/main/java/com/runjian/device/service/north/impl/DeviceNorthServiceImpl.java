@@ -96,7 +96,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         req.putData(StandardName.COM_USERNAME, username);
         req.putData(StandardName.COM_PASSWORD, password);
         CommonResponse<Long> response = parsingEngineApi.deviceAdd(req);
-        if (response.getCode() != 0){
+        if (response.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备注册失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
@@ -172,7 +172,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         }
         // 请求解析引擎，进行设备同步
         CommonResponse<DeviceSyncRsp> response = parsingEngineApi.deviceSync(deviceId);
-        if (response.getCode() != 0){
+        if (response.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备同步失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }

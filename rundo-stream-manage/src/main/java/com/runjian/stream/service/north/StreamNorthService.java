@@ -35,16 +35,12 @@ public interface StreamNorthService {
     Boolean stopRecord(String streamId);
 
     /**
-     * 获取正在录像的streamId
-     * @param streamIds
+     * 获取流信息
+     * @param streamIds 流id数组
+     * @param recordState 录像状态
+     * @param streamState 流状态
      * @return
      */
-    List<String> getRecordStates(List<String> streamIds);
+    List<StreamInfo> getRecordStates(List<String> streamIds, Integer recordState, Integer streamState);
 
-    /**
-     * 获取正在播放的streamId
-     * @param streamIds
-     * @return
-     */
-    List<String> getStreamStates(List<String> streamIds);
 }

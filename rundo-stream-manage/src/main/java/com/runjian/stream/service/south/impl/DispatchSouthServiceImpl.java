@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public class DispatchSouthServiceImpl implements DispatchSouthService {
     @Scheduled(fixedRate = 1000)
     public void heartbeat() {
         Set<Long> dispatchIds = heartbeatArray.pullAndNext();
-        if (dispatchIds.isEmpty()){
+        if (Objects.isNull(dispatchIds) || dispatchIds.isEmpty()){
             return;
         }
         dispatchMapper.batchUpdateOnlineState(dispatchIds, CommonEnum.DISABLE.getCode(), LocalDateTime.now());
