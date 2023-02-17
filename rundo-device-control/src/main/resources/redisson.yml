@@ -12,13 +12,13 @@ singleServerConfig:
   # 命令重试发送时间间隔，单位：毫秒
   retryInterval: 1500
   # 密码
-  password:
+  password: rundoredis
   # 单个连接最大订阅数量
   subscriptionsPerConnection: 5
   # 客户端名称
-  clientName: axin
+  clientName: device-control
   #  # 节点地址
-  address: redis://127.0.0.1:6379
+  address: redis://124.71.21.11:6379
   # 发布和订阅连接的最小空闲连接数
   subscriptionConnectionMinimumIdleSize: 1
   # 发布和订阅连接池大小
