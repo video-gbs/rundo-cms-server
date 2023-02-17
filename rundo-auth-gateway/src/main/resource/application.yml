@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: rundo-auth-gateway
+    name: auth-gateway
   cloud:
     nacos:
       server-addr: rundo-nacos:8848
