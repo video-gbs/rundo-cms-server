@@ -31,8 +31,8 @@ public class CorsConfig {
         // 允许所有请求方法
         config.addAllowedMethod("*");
         // 允许所有域
-        config.addAllowedOrigin("*");
-        // config.addAllowedOriginPattern("*");
+        // config.addAllowedOrigin("*");
+        config.addAllowedOriginPattern("*");
         // 允许全部请求头
         config.addAllowedHeader("*");
         //设置预检请求的缓存时间（秒），在这个时间段里，对于相同的跨域请求不会再预检了
