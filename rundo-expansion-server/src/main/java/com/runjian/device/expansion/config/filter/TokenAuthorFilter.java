@@ -35,7 +35,6 @@ public class TokenAuthorFilter implements Filter {
         HttpServletResponse rep = (HttpServletResponse) response;
 
         HttpSession session = req.getSession();
-        log.info("sessionId:{}", session.getId());
         //LOG.info("Origin:{}", req.getHeader("Origin"));
 
         //设置允许跨域的配置

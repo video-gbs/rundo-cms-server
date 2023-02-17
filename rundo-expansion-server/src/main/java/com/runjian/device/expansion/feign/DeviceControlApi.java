@@ -1,14 +1,15 @@
 package com.runjian.device.expansion.feign;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.DeviceControlApiFallbackFactory;
 import com.runjian.device.expansion.vo.feign.request.DeviceReq;
+import com.runjian.device.expansion.vo.feign.request.PlayBackFeignReq;
+import com.runjian.device.expansion.vo.feign.request.PlayFeignReq;
 import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
 import com.runjian.device.expansion.vo.feign.response.PageListResp;
-import com.runjian.device.expansion.vo.response.PageResp;
+import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -75,4 +76,20 @@ public interface DeviceControlApi {
      */
     @DeleteMapping(value = "/channel/north/delete")
     CommonResponse<Boolean> channelDelete(@RequestParam List<Long> channelIds);
+
+    /**
+     * 点播接口
+     * @param playFeignReq
+     * @return
+     */
+    @PostMapping(value = "/channel/north/play",produces = MediaType.APPLICATION_JSON_VALUE)
+    CommonResponse<StreamInfo> play(@RequestBody PlayFeignReq playFeignReq);
+
+    /**
+     * 回放接口
+     * @param playBackReq
+     * @return
+     */
+    @PostMapping(value = "/channel/north/playback",produces = MediaType.APPLICATION_JSON_VALUE)
+    CommonResponse<StreamInfo> playBack(@RequestBody PlayBackFeignReq playBackReq);
 }

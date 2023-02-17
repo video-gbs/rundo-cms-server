@@ -1,16 +1,17 @@
 package com.runjian.device.expansion.feign.fallback;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.vo.feign.request.DeviceReq;
+import com.runjian.device.expansion.vo.feign.request.PlayBackFeignReq;
+import com.runjian.device.expansion.vo.feign.request.PlayFeignReq;
 import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
 import com.runjian.device.expansion.vo.feign.response.PageListResp;
-import com.runjian.device.expansion.vo.response.PageResp;
+import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -62,6 +63,18 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
             @Override
             public CommonResponse<Boolean> channelDelete(List<Long> channelId) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--通道删除失败",channelId, throwable);
+                return CommonResponse.failure(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
+            }
+
+            @Override
+            public CommonResponse<StreamInfo> play(PlayFeignReq playFeignReq) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--通道播放失败", playFeignReq, throwable);
+                return CommonResponse.failure(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
+            }
+
+            @Override
+            public CommonResponse<StreamInfo> playBack(PlayBackFeignReq playBackReq) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--通道播放失败",playBackReq, throwable);
                 return CommonResponse.failure(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
             }
         };
