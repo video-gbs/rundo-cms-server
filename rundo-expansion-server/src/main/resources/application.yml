@@ -11,6 +11,9 @@ spring:
         password: nacos
         server-addr: rundo-nacos:8848
         namespace: public
+    inetutils:
+      ignored-interfaces:
+
   # REDIS数据库配置
   redis:
     # [必须修改] Redis服务器IP, REDIS安装在本机的,使用127.0.0.1
