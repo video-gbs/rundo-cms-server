@@ -81,14 +81,14 @@ server:
 feign:
   circuitbreaker:
     enabled: true # 上面无效 使用下面 服务降级
-
-
   client:
     config:
       default:
-        connectTimeout: 5000
-        readTimeout: 5000
+        connectTimeout: 50000
+        readTimeout: 50000
         loggerLevel: basic
+
+
 
 
 # [可选] 日志配置, 一般不需要改
