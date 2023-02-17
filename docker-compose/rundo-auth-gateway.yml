@@ -4,7 +4,7 @@ services:
     image: registry.cn-hangzhou.aliyuncs.com/hyy-rundo-gms/rundo-auth-gateway:latest
     container_name: rundo-auth-gateway
     ports:
-      - 7720:7720
+      - 8070:8070
     volumes:
       - /tmp:/tmp
     extra_hosts:
