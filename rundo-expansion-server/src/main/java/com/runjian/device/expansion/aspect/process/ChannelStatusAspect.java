@@ -18,23 +18,22 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Aspect
-public class DeviceStatusAspect {
+public class ChannelStatusAspect {
     @Autowired
     RedisTemplate redisTemplate;
 
     @Autowired
     IDeviceExpansionService deviceExpansionService;
 
-    @Pointcut("@annotation(com.runjian.device.expansion.aspect.annotation.DeviceStatusPoint)")
+    @Pointcut("@annotation(com.runjian.device.expansion.aspect.annotation.ChannelStatusPoint)")
     public void pointCut() {
 
     }
 
-
     @Around("pointCut()")
     public Object arount(ProceedingJoinPoint joinPoint) throws Throwable {
         //获取redis缓存中的数据 然后进行数据的更新
-        boolean b = RedisCommonUtil.hasKey(redisTemplate, MarkConstant.REDIS_DEVICE_ONLINE_STATE);
+        boolean b = RedisCommonUtil.hasKey(redisTemplate, MarkConstant.REDIS_CHANNEL_ONLINE_STATE);
         if(b){
             //进行redis清空和数据库数据状态更新
             deviceExpansionService.syncDeviceStatus();

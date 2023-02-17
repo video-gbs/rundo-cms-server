@@ -9,6 +9,7 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
+import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.feign.AuthServerApi;
@@ -16,6 +17,7 @@ import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
+import com.runjian.device.expansion.utils.RedisCommonUtil;
 import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
@@ -27,7 +29,10 @@ import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
@@ -37,6 +42,9 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -62,6 +70,12 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Autowired
     AuthServerApi authServerApi;
+
+    @Autowired
+    RedissonClient redissonClient;
+
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @Override
     public CommonResponse<Boolean> add(FindChannelListReq findChannelListReq) {
@@ -295,5 +309,34 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         queryWrapper.eq(DeviceChannelExpansion::getVideoAreaId,areaId);
         queryWrapper.eq(DeviceChannelExpansion::getDeleted,0).last("limit 1");
         return deviceChannelExpansionMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public void syncChannelStatus() {
+        RLock lock = redissonClient.getLock(MarkConstant.REDIS_CHANNEL_ONLINE_STATE);
+        try{
+            lock.lock(3, TimeUnit.SECONDS);
+            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_CHANNEL_ONLINE_STATE_LOCK);
+            if(!CollectionUtils.isEmpty(deviceMap)){
+                Set<Map.Entry<Long, Integer>> entries = deviceMap.entrySet();
+                for(Map.Entry entry:  entries){
+                    Long deviceId = (Long)entry.getKey();
+                    Integer onlineState = (Integer)entry.getValue();
+                    //获取key与value  value为BusinessSceneResp
+                    //修改device状态
+                    DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
+                    channelExpansion.setId(deviceId);
+                    channelExpansion.setOnlineState(onlineState);
+                    deviceChannelExpansionMapper.updateById(channelExpansion);
+                }
+                RedisCommonUtil.del(redisTemplate,MarkConstant.REDIS_DEVICE_ONLINE_STATE);
+            }
+
+        } catch (Exception ex){
+            log.error(LogTemplate.ERROR_LOG_TEMPLATE,"通道状态更新","更新失败",ex.getMessage());
+            throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
+        }finally {
+            lock.unlock();
+        }
     }
 }

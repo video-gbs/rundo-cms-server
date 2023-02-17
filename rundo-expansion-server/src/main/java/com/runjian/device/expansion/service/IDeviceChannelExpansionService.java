@@ -80,4 +80,9 @@ public interface IDeviceChannelExpansionService extends IService<DeviceChannelEx
      */
     DeviceChannelExpansion findOneDeviceByVideoAreaId(Long areaId);
 
+    /**
+     * 通道状态同步
+     */
+    void syncChannelStatus();
+
 }

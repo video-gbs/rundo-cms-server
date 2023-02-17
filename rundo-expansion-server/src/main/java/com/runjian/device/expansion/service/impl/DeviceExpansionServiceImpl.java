@@ -231,7 +231,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             }
 
         } catch (Exception ex){
-            ex.printStackTrace();
+            log.error(LogTemplate.ERROR_LOG_TEMPLATE,"设备状态更新","更新失败",ex.getMessage());
             throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
         }finally {
             lock.unlock();
