@@ -3,9 +3,9 @@ package com.runjian.auth.gateway.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-import org.springframework.web.util.pattern.PathPatternParser;
 
 /**
  * @author Jiang4Yu
@@ -18,28 +18,27 @@ import org.springframework.web.util.pattern.PathPatternParser;
 public class CorsConfig {
 
     @Bean
-    public CorsWebFilter corsWebFilter() {
+    public CorsWebFilter corsFilter() {
+        return new CorsWebFilter(corsConfigurationSource());
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        // 允许cookies跨域
+        // 允许携带 Cookie 等用户凭证
         config.setAllowCredentials(true);
-        // 允许向该服务器提交请求的URI，*表示全部允许，在SpringMVC中，如果设成*，会自动转成当前请求头中的Origin
+        // 允许所有请求方法
+        config.addAllowedMethod("*");
+        // 允许所有域
         config.addAllowedOrigin("*");
-        // 允许访问的头信息,*表示全部
+        // config.addAllowedOriginPattern("*");
+        // 允许全部请求头
         config.addAllowedHeader("*");
-        // 预检请求的缓存时间（秒），即在这个时间段里，对于相同的跨域请求不会再预检了
+        //设置预检请求的缓存时间（秒），在这个时间段里，对于相同的跨域请求不会再预检了
         config.setMaxAge(18000L);
-        // 允许提交请求的方法类型，*表示全部允许
-        config.addAllowedMethod("OPTIONS");
-        config.addAllowedMethod("HEAD");
-        config.addAllowedMethod("GET");
-        config.addAllowedMethod("PUT");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("DELETE");
-        config.addAllowedMethod("PATCH");
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(new PathPatternParser());
+        // 允许全部请求路径
         source.registerCorsConfiguration("/**", config);
-
-        return new CorsWebFilter(source);
+        return source;
     }
 }

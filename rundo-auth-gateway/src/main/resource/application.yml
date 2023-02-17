@@ -10,28 +10,8 @@ spring:
       discovery:
         namespace: public
       config:
-        file-extension: yaml
-        timeout: 5000
-        namespace: public
-        group: DEFAULT_GROUP
-
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      routes:
-        - id: rundo-auth-server
-          uri: lb://rundo-auth-server
-          predicates:
-            - Path=/rundoAuthServer/**
-
-#  cloud:
-#    nacos:
-#      server-addr: rundo-nacos:8848
-
-#
-#  config:
-#    import:
-#      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
+        file-extension: yml
+  config:
+    import:
+      - optional:nacos:${spring.application.name}
 
