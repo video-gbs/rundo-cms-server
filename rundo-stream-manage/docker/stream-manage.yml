@@ -30,4 +30,8 @@ services:
       options:
         max-size: '12m'
         max-file: '10'
-
+    networks:
+      - proxynet
+networks:
+  proxynet:
+    name: rundo_network
