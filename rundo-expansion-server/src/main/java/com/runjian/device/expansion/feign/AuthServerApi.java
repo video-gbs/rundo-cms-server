@@ -26,7 +26,7 @@ public interface AuthServerApi {
      * @param areaId
      * @return
      */
-    @PostMapping(value = "/rundoAuthServer/videoArae/getList")
+    @PostMapping(value = "/auth/videoArae/getList")
     CommonResponse<List<VideoAreaResp>> getVideoAraeList(@RequestParam(value = "areaId",required = false) Integer areaId);
 
     /**
@@ -34,6 +34,6 @@ public interface AuthServerApi {
      * @param id
      * @return
      */
-    @GetMapping(value = "/rundoAuthServer/videoArae/getById/{id}")
+    @GetMapping(value = "/auth/videoArae/getById/{id}")
     CommonResponse<VideoAreaResp> getVideoAraeInfo(@PathVariable(value = "id") Integer id);
 }
