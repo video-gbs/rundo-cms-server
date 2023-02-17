@@ -35,12 +35,6 @@ public class GatewaySouthServiceImpl implements GatewaySouthService {
      */
     private static volatile CircleArray<Long> heartbeatArray = new CircleArray<>(600);
 
-    @PostConstruct
-    public void init(){
-        // 将所有的网关设置为离线状态
-        gatewayMapper.setAllOnlineState(CommonEnum.DISABLE.getCode(), LocalDateTime.now());
-    }
-
     /**
      * 定时任务-网关心跳处理
      */
@@ -87,11 +81,15 @@ public class GatewaySouthServiceImpl implements GatewaySouthService {
      * @param outTime 过期时间
      */
     @Override
-    public void updateHeartbeat(Long gatewayId, LocalDateTime outTime) {
+    public Boolean updateHeartbeat(Long gatewayId, LocalDateTime outTime) {
+        Optional<GatewayInfo> gatewayInfoOptional = gatewayMapper.selectById(gatewayId);
+        if (gatewayInfoOptional.isEmpty()){
+            return false;
+        }
         LocalDateTime nowTime = LocalDateTime.now();
         // 判断两个时间的先后
         if (nowTime.isAfter(outTime)){
-            return;
+            return true;
         }
         // 获取两个时间的相差秒数
         Duration dur = Duration.between(nowTime, outTime);
@@ -102,5 +100,6 @@ public class GatewaySouthServiceImpl implements GatewaySouthService {
         }
         heartbeatArray.addOrUpdateTime(gatewayId, betweenSecond);
         gatewayMapper.updateOnlineState(gatewayId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
+        return true;
     }
 }

@@ -7,6 +7,7 @@ package com.runjian.device.service.common;
 public interface GatewayBaseService {
 
     /**
-     * 启动关闭所有网关
+     * 系统启动时关闭所有网关
      */
+    void systemStart();
 }

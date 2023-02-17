@@ -76,9 +76,12 @@ public class DispatchServiceImpl implements DispatchService {
         PutDispatchHeartbeatReq putDispatchHeartbeatReq = new PutDispatchHeartbeatReq();
         putDispatchHeartbeatReq.setOutTime(Instant.ofEpochMilli(Long.parseLong(heartbeatTime)).atZone(ZoneId.systemDefault()).toLocalDateTime());
         putDispatchHeartbeatReq.setDispatchId(dispatchInfoOp.get().getId());
-        CommonResponse<?> response = streamManageApi.dispatchHeartbeat(putDispatchHeartbeatReq);
+        CommonResponse<Boolean> response = streamManageApi.dispatchHeartbeat(putDispatchHeartbeatReq);
         if (response.getCode() != 0){
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
+        }
+        if (!response.getData()){
+            return null;
         }
         return dispatchInfoOp.get().getId();
     }
