@@ -1,14 +1,14 @@
 version: '3'
 services:
   stream-manage:
-    image: registry.cn-hangzhou.aliyuncs.com/hyy-rundo-gms/rundo_stream_manage:${version}
+    image: registry.cn-hangzhou.aliyuncs.com/hyy-rundo-gms/rundo-stream-manage:${version}
     container_name: stream-manage
     restart: on-failure
     ports:
       - 8092:8092
     volumes:
-      - /logs/:/opt/stream-manage/logs/
-      - /config/application.yml:/opt/stream-manage/config/application.yml
+      - ./logs/:/opt/stream-manage/logs/
+      - ./config/application.yml:/opt/stream-manage/config/application.yml
     environment:
       TZ: Asia/Shanghai
       SERVER_PORT: 8092

@@ -4,8 +4,8 @@ spring:
   cloud:
     nacos:
       discovery:
-        username: ${NACOS_USERNAME:""}
-        password: ${NACOS_PASSWORD:""}
+        username: ${NACOS_USERNAME}
+        password: ${NACOS_PASSWORD}
         server-addr: ${NACOS_SERVER:124.71.21.11}
         namespace: ${NACOS_NAMESPACE:public}
   web:
@@ -24,9 +24,6 @@ spring:
     # [可选] 超时时间
     timeout: 10000
     # [可选] jdbc数据库配置, 项目使用sqlite作为数据库，一般不需要配置
-    # redisson
-    redisson:
-      file: classpath:redisson.yml
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
