@@ -17,7 +17,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -87,7 +86,7 @@ public class ChannelNorthController {
     @PostMapping("/play")
     public CommonResponse<VideoPlayRsp> videoPlay(@RequestBody PutChannelPlayReq request) {
         validatorService.validateRequest(request);
-        return CommonResponse.success(channelNorthService.channelPlay(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStreamType()));
+        return CommonResponse.success(channelNorthService.channelPlay(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStreamType(), request.getRecordState(), request.getAutoCloseState()));
     }
 
     /**
@@ -110,7 +109,7 @@ public class ChannelNorthController {
     @PostMapping("/playback")
     public CommonResponse<VideoPlayRsp> videoPlayback(@RequestBody PutChannelPlaybackReq request){
         validatorService.validateRequest(request);
-        return CommonResponse.success(channelNorthService.channelPlayback(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStreamType(), request.getStartTime(), request.getEndTime()));
+        return CommonResponse.success(channelNorthService.channelPlayback(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStreamType(), request.getStartTime(), request.getEndTime(), request.getRecordState(), request.getAutoCloseState()));
     }
 
     /**

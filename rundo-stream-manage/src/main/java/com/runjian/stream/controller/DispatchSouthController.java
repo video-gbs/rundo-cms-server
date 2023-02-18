@@ -41,10 +41,9 @@ public class DispatchSouthController {
      * @return
      */
     @PutMapping("/heartbeat")
-    public CommonResponse<?> heartbeat(@RequestBody PutHeartbeatReq request){
+    public CommonResponse<Boolean> heartbeat(@RequestBody PutHeartbeatReq request){
         validatorService.validateRequest(request);
-        dispatchSouthService.updateHeartbeat(request.getDispatchId(), request.getOutTime());
-        return CommonResponse.success();
+        return CommonResponse.success(dispatchSouthService.updateHeartbeat(request.getDispatchId(), request.getOutTime()));
     }
 
 }

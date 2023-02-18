@@ -33,5 +33,5 @@ public interface DispatchSouthService {
      * @param dispatchId 网关ID
      * @param outTime 过期时间
      */
-    void updateHeartbeat(Long dispatchId, LocalDateTime outTime);
+    Boolean updateHeartbeat(Long dispatchId, LocalDateTime outTime);
 }

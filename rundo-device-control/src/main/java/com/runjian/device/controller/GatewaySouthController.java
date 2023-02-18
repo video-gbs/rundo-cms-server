@@ -41,9 +41,8 @@ public class GatewaySouthController {
      * @return
      */
     @PutMapping("/heartbeat")
-    public CommonResponse heartbeat(@RequestBody PutHeartbeatReq request){
+    public CommonResponse<Boolean> heartbeat(@RequestBody PutHeartbeatReq request){
         validatorService.validateRequest(request);
-        gatewaySouthService.updateHeartbeat(request.getGatewayId(), request.getOutTime());
-        return CommonResponse.success();
+        return CommonResponse.success(gatewaySouthService.updateHeartbeat(request.getGatewayId(), request.getOutTime()));
     }
 }

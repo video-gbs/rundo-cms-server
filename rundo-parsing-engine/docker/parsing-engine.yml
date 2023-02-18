@@ -1,0 +1,37 @@
+version: '3'
+services:
+  parsing-engine:
+    image: registry.cn-hangzhou.aliyuncs.com/hyy-rundo-gms/rundo-parsing-engine:${version}
+    container_name: parsing-engine
+    restart: on-failure
+    ports:
+      - 8091:8091
+    volumes:
+      - ./logs/:/opt/parsing-engine/logs/
+      - ./config/application.yml:/opt/parsing-engine/config/application.yml
+    environment:
+      TZ: Asia/Shanghai
+      SERVER_PORT: 8091
+      PROFILES_ACTIVE: "prod"
+      REDIS_HOST: 124.71.21.11
+      REDIS_PORT: 6379
+      REDIS_DB: 6
+      REDIS_PWD: rundoredis
+      DATABASE_USER: root
+      DATABASE_PWD: rundomysql
+      DATABASE_HOST: 124.71.21.11
+      DATABASE_PORT: 3306
+      DATABASE_NAME: rundo_parsing_engine
+      RABBITMQ_HOST: 124.71.21.11
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: wvp
+      RABBITMQ_PASSWORD: wvp12345678
+    logging:
+      options:
+        max-size: '12m'
+        max-file: '10'
+    networks:
+      - proxynet
+networks:
+  proxynet:
+    name: rundo_network

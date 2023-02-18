@@ -17,7 +17,7 @@ public interface DeviceControlApi {
     CommonResponse<?> gatewaySignIn(@RequestBody PostGatewaySignInReq req);
 
     @PutMapping("/gateway/south/heartbeat")
-    CommonResponse<?> gatewayHeartbeat(@RequestBody PutGatewayHeartbeatReq req);
+    CommonResponse<Boolean> gatewayHeartbeat(@RequestBody PutGatewayHeartbeatReq req);
 
     @PostMapping("/device/south/sign-in")
     CommonResponse<?> deviceSignIn(JSONObject req);

@@ -4,6 +4,7 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
+import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.PlayType;
 import com.runjian.common.utils.CircleArray;
 import com.runjian.stream.dao.DispatchMapper;
@@ -18,6 +19,7 @@ import com.runjian.stream.service.common.StreamBaseService;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.StreamManageDto;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ import java.util.*;
  * @author Miracle
  * @date 2023/2/6 11:17
  */
+@Slf4j
 @Service
 public class StreamNorthServiceImpl implements StreamNorthService {
 
@@ -56,10 +59,6 @@ public class StreamNorthServiceImpl implements StreamNorthService {
      * 播放未响应超时时间
      */
     private static final long PREPARE_STREAM_OUT_TIME = 10L;
-
-
-
-
 
 
     @Override
@@ -126,17 +125,22 @@ public class StreamNorthServiceImpl implements StreamNorthService {
 
     @Override
     public void stopPlay(String streamId) {
-        streamMapper.selectByStreamId(streamId);
-        StreamInfo streamInfo = dataBaseService.getStreamInfoByStreamId(streamId);
+        Optional<StreamInfo> streamInfoOP = streamMapper.selectByStreamId(streamId);
+        if (streamInfoOP.isEmpty()){
+            return;
+        }
+        StreamInfo streamInfo = streamInfoOP.get();
         streamInfo.setAutoCloseState(CommonEnum.ENABLE.getCode());
         streamInfo.setRecordState(CommonEnum.DISABLE.getCode());
         streamInfo.setUpdateTime(LocalDateTime.now());
         streamMapper.updateRecordAndAutoCloseState(streamInfo);
         CommonResponse<Boolean> commonResponse = parsingEngineApi.channelStopPlay(new StreamManageDto(streamInfo.getDispatchId(), streamId));
-        if (commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        if (commonResponse.isError()){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向服务", "流媒体交互失败", streamId, commonResponse.getMsg());
+            return;
         }
-        if (commonResponse.getData()){
+        Boolean isSuccess = commonResponse.getData();
+        if (Objects.nonNull(isSuccess) && isSuccess){
             streamMapper.deleteByStreamId(streamId);
         }
     }
@@ -148,10 +152,9 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             return true;
         }
         CommonResponse<Boolean> response = parsingEngineApi.channelStartRecord(new StreamManageDto(streamInfo.getDispatchId(), streamId));
-        if (response.getCode() != 0){
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
-        }
-        if (response.getData()){
+        response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+        Boolean isSuccess = response.getData();
+        if (Objects.nonNull(isSuccess) && isSuccess){
             streamInfo.setRecordState(CommonEnum.ENABLE.getCode());
             streamInfo.setUpdateTime(LocalDateTime.now());
             streamMapper.updateRecordState(streamInfo);
@@ -166,10 +169,9 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             return true;
         }
         CommonResponse<Boolean> response = parsingEngineApi.channelStopRecord(new StreamManageDto(streamInfo.getDispatchId(), streamId));
-        if (response.getCode() != 0){
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
-        }
-        if (response.getData()){
+        response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+        Boolean isSuccess = response.getData();
+        if (Objects.nonNull(isSuccess) && isSuccess){
             streamInfo.setRecordState(CommonEnum.DISABLE.getCode());
             streamInfo.setUpdateTime(LocalDateTime.now());
             streamMapper.updateRecordState(streamInfo);
@@ -178,14 +180,11 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     }
 
     @Override
-    public List<String> getRecordStates(List<String> streamIds) {
-
-        return null;
-    }
-
-    @Override
-    public List<String> getStreamStates(List<String> streamIds) {
-        return null;
+    public List<StreamInfo> getRecordStates(List<String> streamIds, Integer recordState, Integer streamState) {
+        if (streamIds.size() == 0){
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "流id不能为空");
+        }
+        return streamMapper.selectByStreamIdsAndRecordStateAndStreamState(streamIds, recordState, streamState);
     }
 
 }

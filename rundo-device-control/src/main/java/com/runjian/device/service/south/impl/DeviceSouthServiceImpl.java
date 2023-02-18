@@ -44,9 +44,6 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
     private ChannelNorthService channelNorthService;
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
-
-    @Autowired
     private RedissonClient redissonClient;
 
     /**
@@ -72,6 +69,9 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             deviceInfo.setUpdateTime(nowTime);
             deviceInfo.setSignState(SignState.TO_BE_ADD.getCode());
             deviceMapper.save(deviceInfo);
+            if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                redissonClient.getMap(MarkConstant.REDIS_DEVICE_ONLINE_STATE).put(deviceInfo.getId(), deviceInfo.getOnlineState());
+            }
         }else {
             DeviceInfo deviceInfo = deviceInfoOp.get();
             // 修改设备状态
@@ -82,16 +82,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
                 if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                    RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_ONLINE_STATE_LOCK);
-                    try{
-                        lock.lock(3, TimeUnit.SECONDS);
-                        redissonClient.getMap(MarkConstant.REDIS_DEVICE_ONLINE_STATE).put(deviceInfo.getId(), deviceInfo.getOnlineState());
-                    } catch (Exception ex){
-                        ex.printStackTrace();
-                        throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
-                    }finally {
-                        lock.unlock();
-                    }
+                    uploadDeviceOnlineStateToRedis(deviceInfo.getId(), deviceInfo.getOnlineState());
                     channelNorthService.channelSync(deviceInfo.getId());
                 }
             } else if (onlineState.equals(CommonEnum.DISABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.ENABLE.getCode())) {
@@ -99,7 +90,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
                 if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                    redisTemplate.opsForHash().put(MarkConstant.REDIS_DEVICE_ONLINE_STATE, deviceInfo.getId(), deviceInfo.getOnlineState());
+                    uploadDeviceOnlineStateToRedis(deviceInfo.getId(), deviceInfo.getOnlineState());
                 }
                 channelMapper.updateOnlineStateByDeviceId(id, onlineState, nowTime);
             }
@@ -122,6 +113,24 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             detailInfo.setPort(port);
             detailInfo.setUpdateTime(nowTime);
             detailMapper.update(detailInfo);
+        }
+    }
+
+    /**
+     * 更新设备状态到设备
+     * @param deviceId
+     * @param onlineState
+     */
+    private void uploadDeviceOnlineStateToRedis(Long deviceId,  Integer onlineState) {
+        RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_ONLINE_STATE_LOCK);
+        try{
+            lock.lock(3, TimeUnit.SECONDS);
+            redissonClient.getMap(MarkConstant.REDIS_DEVICE_ONLINE_STATE).put(deviceId, onlineState);
+        } catch (Exception ex){
+            ex.printStackTrace();
+            throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
+        }finally {
+            lock.unlock();
         }
     }
 

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public interface StreamManageApi {
 
     @PutMapping("/dispatch/south/heartbeat")
-    CommonResponse<?> dispatchHeartbeat(@RequestBody PutDispatchHeartbeatReq putDispatchHeartbeatReq);
+    CommonResponse<Boolean> dispatchHeartbeat(@RequestBody PutDispatchHeartbeatReq putDispatchHeartbeatReq);
 
     @PostMapping("/dispatch/south/sign-in")
     CommonResponse<?> dispatchSignIn(@RequestBody PostDispatchSignInReq req);
