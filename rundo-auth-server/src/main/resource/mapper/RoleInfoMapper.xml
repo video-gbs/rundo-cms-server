@@ -174,4 +174,34 @@
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
         AND t.area_id = #{areaId,jdbcType=BIGINT}
     </delete>
+
+    <select id="findAppIdList" resultType="java.lang.Long">
+        SELECT app_id
+        FROM role_app
+        WHERE role_app.role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <select id="findMenuIdList" resultType="java.lang.Long">
+        SELECT menu_id
+        FROM role_menu
+        WHERE role_menu.role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <select id="findApiIdList" resultType="java.lang.Long">
+        SELECT api_id
+        FROM role_api
+        WHERE role_api.role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <select id="findOrgIdList" resultType="java.lang.Long">
+        SELECT org_id
+        FROM role_org
+        WHERE role_org.role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <select id="findAreaIdList" resultType="java.lang.Long">
+        SELECT area_id
+        FROM role_area
+        WHERE role_area.role_id = #{roleId,jdbcType=BIGINT}
+    </select>
 </mapper>

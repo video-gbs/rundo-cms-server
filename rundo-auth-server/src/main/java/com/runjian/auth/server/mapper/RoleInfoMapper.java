@@ -103,5 +103,11 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
 
     void removeRoleArea(@Param("roleId") Long roleId, @Param("areaId") Long areaId);
 
+    List<Long> findAppIdList(@Param("roleId") Long roleId);
+    List<Long> findMenuIdList(@Param("roleId") Long roleId);
+    List<Long> findApiIdList(@Param("roleId") Long roleId);
+    List<Long> findOrgIdList(@Param("roleId") Long roleId);
+    List<Long> findAreaIdList(@Param("roleId") Long roleId);
+
 
 }

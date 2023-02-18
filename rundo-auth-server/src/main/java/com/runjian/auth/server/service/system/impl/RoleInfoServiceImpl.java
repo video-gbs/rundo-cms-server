@@ -75,7 +75,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         menuIdList.addAll(getMenuIds(appIds));
         menuIdList.addAll(getMenuIds(configIds));
         menuIdList.addAll(getMenuIds(devopsIds));
-
+        // 筛选出与U开头的id
         List<Long> apiIdList = new ArrayList<>();
         apiIdList.addAll(getApiIds(appIds));
         apiIdList.addAll(getApiIds(configIds));
@@ -117,6 +117,158 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
 
     @Override
     public void modifyById(UpdateSysRoleInfoDTO dto) {
+        // 1 查取原始角色
+        RoleInfo roleInfo = roleInfoMapper.selectById(dto.getId());
+        roleInfo.setRoleName(dto.getRoleName());
+        roleInfo.setRoleDesc(dto.getRoleDesc());
+        roleInfoMapper.updateById(roleInfo);
+        // 获取原始已授权的ID备用
+        List<Long> oldAppIdList = roleInfoMapper.findAppIdList(dto.getId());
+        List<Long> oldMenuIdList = roleInfoMapper.findMenuIdList(dto.getId());
+        List<Long> oldApiIdList = roleInfoMapper.findApiIdList(dto.getId());
+        List<Long> oldOrgIdList = roleInfoMapper.findOrgIdList(dto.getId());
+        List<Long> oldAreaIdList = roleInfoMapper.findAreaIdList(dto.getId());
+        // 处理传输过来的ID
+        // 筛选出与A开头的id 应用
+        List<Long> appIdList = new ArrayList<>();
+        appIdList.addAll(getAppIds(dto.getAppIds()));
+        appIdList.addAll(getAppIds(dto.getConfigIds()));
+        appIdList.addAll(getAppIds(dto.getDevopsIds()));
+        // 筛选出与M开头的id 菜单
+        List<Long> menuIdList = new ArrayList<>();
+        menuIdList.addAll(getMenuIds(dto.getAppIds()));
+        menuIdList.addAll(getMenuIds(dto.getConfigIds()));
+        menuIdList.addAll(getMenuIds(dto.getDevopsIds()));
+        // 筛选出与U开头的id 接口
+        List<Long> apiIdList = new ArrayList<>();
+        apiIdList.addAll(getApiIds(dto.getAppIds()));
+        apiIdList.addAll(getApiIds(dto.getConfigIds()));
+        apiIdList.addAll(getApiIds(dto.getDevopsIds()));
+        // 部门
+        List<Long> orgIdList = dto.getOrgIds();
+        // 区域
+        List<Long> areaIdList = dto.getAreaIds();
+
+        ///////////应用///////////////////
+        if (CollUtil.isEmpty(oldAppIdList)) {
+            // 原始授权应用为空，本次为新增
+            for (Long appId : appIdList) {
+                roleInfoMapper.insertRoleApp(dto.getId(), appId);
+            }
+        }
+        if (CollUtil.isEmpty(apiIdList)) {
+            // 如果提交的应用为空，则删除所有的角色关联应用
+            roleInfoMapper.removeRoleApp(dto.getId(), null);
+        }
+        // 提交的应用与原始应用均不为空，采取Lambda表达式取得相同的应用
+        List<Long> commonApp = oldAppIdList.stream().filter(appIdList::contains).collect(Collectors.toList());
+        // 原始应用列表剔除相同部分后进行删除
+        oldAppIdList.retainAll(commonApp);
+        for (Long appId : oldAppIdList) {
+            roleInfoMapper.removeRoleApp(dto.getId(), appId);
+        }
+        // 新提交的应用列表剔除相同部分后新增授权
+        appIdList.removeAll(commonApp);
+        for (Long appId : appIdList) {
+            roleInfoMapper.insertRoleApp(dto.getId(), appId);
+        }
+
+        ///////////菜单///////////////////
+        if (CollUtil.isEmpty(oldMenuIdList)) {
+            // 原始授权菜单为空，本次为新增
+            for (Long menuId : menuIdList) {
+                roleInfoMapper.insertRoleMenu(dto.getId(), menuId);
+            }
+        }
+        if (CollUtil.isEmpty(menuIdList)) {
+            // 如果提交的菜单为空，则删除所有的角色关联菜单
+            roleInfoMapper.removeRoleMenu(dto.getId(), null);
+        }
+        // 提交的应用与原始应用均不为空，采取Lambda表达式取得相同的应用
+        List<Long> commonMenu = oldMenuIdList.stream().filter(menuIdList::contains).collect(Collectors.toList());
+        // 原始菜单列表剔除相同部分后进行删除
+        oldMenuIdList.retainAll(commonMenu);
+        for (Long menuId : oldMenuIdList) {
+            roleInfoMapper.removeRoleMenu(dto.getId(), menuId);
+        }
+        // 新提交的菜单列表剔除相同部分后新增授权
+        menuIdList.removeAll(commonMenu);
+        for (Long menuId : menuIdList) {
+            roleInfoMapper.insertRoleMenu(dto.getId(), menuId);
+        }
+
+        ///////////接口///////////////////
+        if (CollUtil.isEmpty(oldApiIdList)) {
+            // 原始授权接口为空，本次为新增
+            for (Long apiId : apiIdList) {
+                roleInfoMapper.insertRoleApi(dto.getId(), apiId);
+            }
+        }
+        if (CollUtil.isEmpty(apiIdList)) {
+            // 如果提交的接口为空，则删除所有的角色关联接口
+            roleInfoMapper.removeRoleApi(dto.getId(), null);
+        }
+        // 提交的接口与原始接口均不为空，采取Lambda表达式取得相同的应用
+        List<Long> commonApi = oldApiIdList.stream().filter(apiIdList::contains).collect(Collectors.toList());
+        // 原始应用列表剔除相同部分后进行删除
+        oldApiIdList.retainAll(commonApi);
+        for (Long apiId : oldApiIdList) {
+            roleInfoMapper.removeRoleApi(dto.getId(), apiId);
+        }
+        // 新提交的应用列表剔除相同部分后新增授权
+        apiIdList.removeAll(commonApi);
+        for (Long apiId : apiIdList) {
+            roleInfoMapper.insertRoleApi(dto.getId(), apiId);
+        }
+
+        ///////////组织///////////////////
+        if (CollUtil.isEmpty(oldOrgIdList)) {
+            // 原始授权应用为空，本次为新增
+            for (Long orgId : orgIdList) {
+                roleInfoMapper.insertRoleOrg(dto.getId(), orgId);
+            }
+        }
+        if (CollUtil.isEmpty(orgIdList)) {
+            // 如果提交的应用为空，则删除所有的角色关联应用
+            roleInfoMapper.removeRoleOrg(dto.getId(), null);
+        }
+        // 提交的应用与原始应用均不为空，采取Lambda表达式取得相同的应用
+        List<Long> commonOrg = oldOrgIdList.stream().filter(orgIdList::contains).collect(Collectors.toList());
+        // 原始应用列表剔除相同部分后进行删除
+        oldOrgIdList.retainAll(commonOrg);
+        for (Long apiId : oldOrgIdList) {
+            roleInfoMapper.removeRoleOrg(dto.getId(), apiId);
+        }
+        // 新提交的应用列表剔除相同部分后新增授权
+        orgIdList.removeAll(commonOrg);
+        for (Long apiId : apiIdList) {
+            roleInfoMapper.insertRoleOrg(dto.getId(), apiId);
+        }
+
+        ///////////区域///////////////////
+        if (CollUtil.isEmpty(oldAreaIdList)) {
+            // 原始授权应用为空，本次为新增
+            for (Long areaId : areaIdList) {
+                roleInfoMapper.insertRoleArea(dto.getId(), areaId);
+            }
+        }
+        if (CollUtil.isEmpty(orgIdList)) {
+            // 如果提交的应用为空，则删除所有的角色关联应用
+            roleInfoMapper.removeRoleArea(dto.getId(), null);
+        }
+        // 提交的应用与原始应用均不为空，采取Lambda表达式取得相同的应用
+        List<Long> commonArea = oldOrgIdList.stream().filter(areaIdList::contains).collect(Collectors.toList());
+        // 原始应用列表剔除相同部分后进行删除
+        oldOrgIdList.retainAll(commonArea);
+        for (Long areaId : oldOrgIdList) {
+            roleInfoMapper.removeRoleArea(dto.getId(), areaId);
+        }
+        // 新提交的应用列表剔除相同部分后新增授权
+        orgIdList.removeAll(commonArea);
+        for (Long areaId : apiIdList) {
+            roleInfoMapper.insertRoleArea(dto.getId(), areaId);
+        }
+
 
     }
 
