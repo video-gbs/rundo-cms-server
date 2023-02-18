@@ -2,33 +2,38 @@ package com.runjian.device.expansion.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
+import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.feign.AuthServerApi;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
+import com.runjian.device.expansion.utils.RedisCommonUtil;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import com.runjian.device.expansion.vo.request.DeviceExpansionEditReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
-import com.runjian.device.expansion.vo.request.DeviceExpansionMoveReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionReq;
 import com.runjian.device.expansion.vo.feign.request.DeviceReq;
+import com.runjian.device.expansion.vo.request.MoveReq;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
+import com.runjian.device.expansion.vo.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -39,10 +44,13 @@ import java.util.stream.Collectors;
 public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMapper, DeviceExpansion> implements IDeviceExpansionService {
     @Autowired
     DeviceExpansionMapper deviceExpansionMapper;
+    @Autowired
+    RedissonClient redissonClient;
 
     @Autowired
     DeviceControlApi deviceControlApi;
-
+    @Autowired
+    RedisTemplate redisTemplate;
     @Autowired
     AuthServerApi authServerApi;
     @Override
@@ -96,9 +104,8 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         });
         return CommonResponse.success();
     }
-
     @Override
-    public List<DeviceExpansionResp> list(DeviceExpansionListReq deviceExpansionListReq) {
+    public  PageResp<DeviceExpansionResp> list(DeviceExpansionListReq deviceExpansionListReq) {
         //远程调用获取当前全部的节点信息
         //安防区域的节点id
         List<Long> areaIdsArr = new ArrayList<>();
@@ -106,12 +113,10 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         List<VideoAreaResp> videoAreaRespList = new ArrayList<>();
         if(deviceExpansionListReq.getIncludeEquipment()){
             //安防区域不得为空
-            if(ObjectUtils.isEmpty(deviceExpansionListReq.getVideoAreaId())){
-                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
-            }
+
             CommonResponse<List<VideoAreaResp>> videoAraeList = authServerApi.getVideoAraeList(deviceExpansionListReq.getVideoAreaId());
             if(CollectionUtils.isEmpty(videoAraeList.getData())){
-                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
+                throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH);
 
             }
             videoAreaRespList = videoAraeList.getData();
@@ -122,7 +127,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             }
             CommonResponse<VideoAreaResp> videoAraeInfo = authServerApi.getVideoAraeInfo(deviceExpansionListReq.getVideoAreaId());
             if(ObjectUtils.isEmpty(videoAraeInfo.getData())){
-                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
+                throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH);
 
             }
             videoAreaData = videoAraeInfo.getData();
@@ -147,18 +152,20 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         queryWrapper.orderByDesc(DeviceExpansion::getCreatedAt);
         Page<DeviceExpansion> page = new Page<>(deviceExpansionListReq.getPageNum(), deviceExpansionListReq.getPageSize());
         Page<DeviceExpansion> deviceExpansionPage = deviceExpansionMapper.selectPage(page, queryWrapper);
+
         List<DeviceExpansion> records = deviceExpansionPage.getRecords();
-        ArrayList<DeviceExpansionResp> deviceExpansionRespList = new ArrayList<>();
+        List<DeviceExpansionResp> deviceExpansionRespList = new ArrayList<>();
         if(!CollectionUtils.isEmpty(records)){
             //拼接所属区域
-            DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
             if(deviceExpansionListReq.getIncludeEquipment()){
 
                 for (DeviceExpansion deviceExpansion: records){
+                    DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
                     BeanUtil.copyProperties(deviceExpansion,deviceExpansionResp);
                     for (VideoAreaResp videoAreaResp: videoAreaRespList){
                         if(videoAreaResp.getId().equals(deviceExpansion.getVideoAreaId())){
                             deviceExpansionResp.setAreaNames(videoAreaResp.getAreaNames());
+
                         }
                     }
                     deviceExpansionRespList.add(deviceExpansionResp);
@@ -166,6 +173,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
             }else {
                 for (DeviceExpansion deviceExpansion: records){
+                    DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
                     BeanUtil.copyProperties(deviceExpansion,deviceExpansionResp);
                     deviceExpansionResp.setAreaNames(videoAreaData.getAreaNames());
                     deviceExpansionRespList.add(deviceExpansionResp);
@@ -173,11 +181,16 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             }
 
         }
-        return deviceExpansionRespList;
+        PageResp<DeviceExpansionResp> listPageResp = new PageResp<>();
+        listPageResp.setCurrent(deviceExpansionPage.getCurrent());
+        listPageResp.setSize(deviceExpansionPage.getSize());
+        listPageResp.setTotal(deviceExpansionPage.getTotal());
+        listPageResp.setRecords(deviceExpansionRespList);
+        return listPageResp;
     }
 
     @Override
-    public Boolean move(DeviceExpansionMoveReq deviceExpansionMoveReq) {
+    public Boolean move(MoveReq deviceExpansionMoveReq) {
         DeviceExpansion deviceExpansion = new DeviceExpansion();
         deviceExpansionMoveReq.getIdList().forEach(id->{
             deviceExpansion.setVideoAreaId(deviceExpansionMoveReq.getVideoAreaId());
@@ -186,5 +199,44 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         });
 
         return true;
+    }
+
+    @Override
+    public DeviceExpansion findOneDeviceByVideoAreaId(Long areaId) {
+        LambdaQueryWrapper<DeviceExpansion> deviceExpansionLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        deviceExpansionLambdaQueryWrapper.eq(DeviceExpansion::getVideoAreaId,areaId);
+        deviceExpansionLambdaQueryWrapper.eq(DeviceExpansion::getDeleted,0).last("limit 1");
+        return deviceExpansionMapper.selectOne(deviceExpansionLambdaQueryWrapper);
+    }
+
+    @Override
+    public void syncDeviceStatus() {
+        RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_ONLINE_STATE_LOCK);
+        try{
+            lock.lock(3, TimeUnit.SECONDS);
+            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_DEVICE_ONLINE_STATE);
+            if(!CollectionUtils.isEmpty(deviceMap)){
+                Set<Map.Entry<Long, Integer>> entries = deviceMap.entrySet();
+                for(Map.Entry entry:  entries){
+                    Long deviceId = (Long)entry.getKey();
+                    Integer onlineState = (Integer)entry.getValue();
+                    //获取key与value  value为BusinessSceneResp
+                    //修改device状态
+                    DeviceExpansion deviceExpansion = new DeviceExpansion();
+                    deviceExpansion.setId(deviceId);
+                    deviceExpansion.setOnlineState(onlineState);
+                    deviceExpansionMapper.updateById(deviceExpansion);
+                }
+                RedisCommonUtil.del(redisTemplate,MarkConstant.REDIS_DEVICE_ONLINE_STATE);
+            }
+
+        } catch (Exception ex){
+            log.error(LogTemplate.ERROR_LOG_TEMPLATE,"设备状态更新","更新失败",ex.getMessage());
+            throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
+        }finally {
+            lock.unlock();
+        }
+
+
     }
 }

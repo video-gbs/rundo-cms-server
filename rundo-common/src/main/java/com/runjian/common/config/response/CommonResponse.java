@@ -2,6 +2,7 @@ package com.runjian.common.config.response;
 
 
 import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,16 @@ public class CommonResponse<T> implements Serializable {
      * 数据
      */
     private T data;
+
+    /**
+     * 如果有异常进行报错
+     * @param businessErrorEnums
+     */
+    public void ifErrorThrowException(BusinessErrorEnums businessErrorEnums){
+        if (code != BusinessErrorEnums.SUCCESS.getErrCode()){
+            throw new BusinessException(businessErrorEnums, msg);
+        }
+    }
 
 
     /**

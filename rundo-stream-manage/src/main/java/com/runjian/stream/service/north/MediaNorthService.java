@@ -5,4 +5,6 @@ package com.runjian.stream.service.north;
  * @date 2023/2/7 19:53
  */
 public interface MediaNorthService {
+
+
 }

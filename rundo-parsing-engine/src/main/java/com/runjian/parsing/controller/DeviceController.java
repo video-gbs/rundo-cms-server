@@ -5,11 +5,10 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.parsing.constant.IdType;
-import com.runjian.parsing.service.ProtocolService;
+import com.runjian.parsing.service.common.ProtocolService;
 import com.runjian.parsing.vo.request.DeviceControlReq;
 import com.runjian.parsing.vo.request.DeviceCustomEventReq;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -21,6 +20,7 @@ import java.util.Objects;
  * @date 2023/1/12 10:00
  */
 @RestController
+@RequestMapping("/device-control")
 public class DeviceController {
 
     private static final long OUT_TIME = 10000L;

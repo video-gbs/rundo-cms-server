@@ -2,7 +2,9 @@ package com.runjian.parsing.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.runjian.common.config.response.CommonResponse;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
  * 网关传输消息体
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommonMqDto<T> extends CommonResponse<T> {
 
 

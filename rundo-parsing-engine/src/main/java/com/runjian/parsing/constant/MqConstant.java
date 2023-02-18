@@ -16,6 +16,16 @@ public class MqConstant {
     public static final String GATEWAY_PREFIX = "GATEWAY_";
 
     /**
+     * 流媒体服务通用MQ前缀
+     */
+    public static final String STREAM_PREFIX = "STREAM_";
+
+    /**
+     * 公共消息通用MQ前缀
+     */
+    public static final String PUBLIC_PREFIX = "PUBLIC_";
+
+    /**
      * 网关GET,服务端SET前缀
      */
     public static final String GET_SET_PREFIX = "GS_";

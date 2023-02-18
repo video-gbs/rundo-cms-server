@@ -5,8 +5,11 @@ import com.runjian.common.validator.ValidatorService;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.request.PostStreamApplyStreamReq;
 import com.runjian.stream.vo.request.PutStreamOperationReq;
+import com.runjian.stream.vo.response.PostApplyStreamRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Miracle
@@ -28,7 +31,7 @@ public class StreamNorthController {
      * @return
      */
     @PostMapping("/play/apply")
-    public CommonResponse<String> applyStreamId(@RequestBody PostStreamApplyStreamReq req){
+    public CommonResponse<PostApplyStreamRsp> applyStreamId(@RequestBody PostStreamApplyStreamReq req){
         validatorService.validateRequest(req);
         return CommonResponse.success(streamNorthService.applyStreamId(req.getGatewayId(), req.getChannelId(), req.getPlayType(), req.getRecordState(), req.getAutoCloseState()));
     }
@@ -65,5 +68,25 @@ public class StreamNorthController {
     public CommonResponse<Boolean> stopRecord(@RequestBody PutStreamOperationReq req){
         validatorService.validateRequest(req);
         return CommonResponse.success(streamNorthService.stopRecord(req.getStreamId()));
+    }
+
+    /**
+     * 查询录像状态
+     * @param streamIdList 流id列表
+     * @return
+     */
+    @GetMapping("/check/record")
+    public CommonResponse<List<String>> checkRecordStatus(@RequestParam List<String> streamIdList){
+        return CommonResponse.success(streamNorthService.getRecordStates(streamIdList));
+    }
+
+    /**
+     * 查询流状态
+     * @param streamIdList 流id列表
+     * @return
+     */
+    @GetMapping("/check/stream")
+    public CommonResponse<List<String>> checkStreamStatus(@RequestParam List<String> streamIdList){
+        return CommonResponse.success(streamNorthService.getStreamStates(streamIdList));
     }
 }

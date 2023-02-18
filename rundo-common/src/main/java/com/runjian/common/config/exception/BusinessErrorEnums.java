@@ -18,6 +18,8 @@ public enum BusinessErrorEnums {
 
     UNKNOWN_ERROR(500,-1,"SYSTEM_ERROR"),
 
+
+
     /**************************** 数据校验类异常,PREFIX:VALID CODE:10xxx ****************************/
 
     VALID_NO_OBJECT_FOUND(400,10001, "请求对象不存在"),
@@ -41,6 +43,8 @@ public enum BusinessErrorEnums {
     VALID_ILLEGAL_OPERATION(400, 10010, "非法的操作"),
 
     VALID_REPETITIVE_OPERATION_ERROR(400, 10011, "短时间重复的操作"),
+
+    VALID_REQUEST_TIME_OUT(500,10012,"请求超时"),
 
     /**************************** FEIGN第三方访问相关,PREFIX:FEIGN CODE:15xxx ****************************/
 

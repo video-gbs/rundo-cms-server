@@ -2,8 +2,10 @@ package com.runjian.device.vo.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -17,6 +19,8 @@ public class PutChannelPlaybackReq {
     /**
      * 通道id
      */
+    @NotNull(message = "通道id不能为空")
+    @Range(min = 1, message = "非法通道id")
     private Long channelId;
 
     /**
@@ -28,6 +32,12 @@ public class PutChannelPlaybackReq {
      * 是否使用ssrc
      */
     private Boolean ssrcCheck;
+
+    /**
+     * 流模式
+     */
+    @Range(min = 1, max = 2, message = "非法流模式")
+    private Integer streamType;
 
     /**
      * 开始时间

@@ -23,6 +23,11 @@ public class MediaInfo {
     private Long dispatchId;
 
     /**
+     * 类型 1-zlm
+     */
+    private Integer type;
+
+    /**
      * ip
      */
     private String ip;

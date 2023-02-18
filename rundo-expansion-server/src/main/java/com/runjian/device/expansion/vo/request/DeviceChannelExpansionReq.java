@@ -16,17 +16,16 @@ import java.util.Date;
  * @author chenjialing
  */
 @Data
-@TableName("rundo_device_channel_expansion")
-@ApiModel(value = "设备通道信息表", description = "接口信息表")
 public class DeviceChannelExpansionReq {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("主键ID")
+    @NotNull(message = "通道id不能为空")
     private Long id;
 
-    @ApiModelProperty("编码器id")
-    @NotNull(message = "编码器id不能为空")
-    @Range(min = 1, message = "非法编码器id")
+    @ApiModelProperty("通道id")
+    @NotNull(message = "通道id不能为空")
+    @Range(min = 1, message = "非法通道id")
     private Long deviceExpansionId;
 
     @ApiModelProperty("通道名称")
@@ -65,7 +64,7 @@ public class DeviceChannelExpansionReq {
 
 
     @ApiModelProperty("安装地点")
-    private String instalLocation;
+    private String installLocation;
 
     @ApiModelProperty("高度")
     private double height;

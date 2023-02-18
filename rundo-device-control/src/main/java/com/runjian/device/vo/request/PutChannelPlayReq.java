@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * 通道点播请求
@@ -31,5 +32,11 @@ public class PutChannelPlayReq {
      */
     @NotNull(message = "ssrc选项不能为空")
     private Boolean ssrcCheck;
+
+    /**
+     * 流模式 默认不传的情况下为udp {@link  com.runjian.device.constant.StreamType}
+     */
+    @Range(min = 1, max = 2, message = "非法流模式")
+    private Integer streamType;
 
 }

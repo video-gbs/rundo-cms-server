@@ -70,6 +70,21 @@ public class StandardName {
      */
     public static final String STREAM_MODE = "streamMode";
 
+    /**
+     * 流id
+     */
+    public static final String STREAM_ID = "streamId";
+
+    /**
+     * 流id表
+     */
+    public static final String STREAM_ID_LIST = "streamIdList";
+
+    /**
+     * 流媒体服务id
+     */
+    public static final String STREAM_DISPATCH_ID = "dispatchId";
+
     /***************************云台控制类标准名称****************************/
 
     /**
@@ -138,5 +153,12 @@ public class StandardName {
      * 标准端口名称
      */
     public static final String COM_PORT = "port";
+
+
+    /**
+     * 响应
+     */
+    public static final String COM_RESULT = "result";
+
 
 }

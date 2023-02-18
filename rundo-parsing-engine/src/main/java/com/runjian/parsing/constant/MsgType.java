@@ -43,13 +43,19 @@ public enum MsgType {
     CHANNEL_RECORD_INFO("CHANNEL_RECORD_INFO"),
 
     /****************** 流媒体管理服务相关消息 ******************/
-    STREAM_SIGN_IN("STREAM_SIGN_IN"),
-    STREAM_HEARTBEAT("STREAM_HEARTBEAT"),
+    STREAM_PLAY_RESULT("STREAM_PLAY_RESULT"),
+    STREAM_CLOSE("STREAM_CLOSE"),
+    STREAM_PLAY_STOP("STREAM_PLAY_STOP"),
+    STREAM_RECORD_START("STREAM_RECORD_START"),
+    STREAM_RECORD_STOP("STREAM_RECORD_STOP"),
+    STREAM_CHECK_RECORD("STREAM_CHECK_RECORD"),
+    STREAM_CHECK_STREAM("STREAM_CHECK_STREAM"),
 
     /****************** 其他 ******************/
     ERROR("ERROR"),
 
     ;
+
     private final String msg;
 
 }

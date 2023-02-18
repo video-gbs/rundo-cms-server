@@ -3,7 +3,7 @@ package com.runjian.parsing.feign;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.parsing.feign.request.PostGatewaySignInReq;
+import com.runjian.parsing.vo.request.PostGatewaySignInReq;
 import com.runjian.parsing.vo.request.PutGatewayHeartbeatReq;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;

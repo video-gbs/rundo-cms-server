@@ -1,12 +1,14 @@
 package com.runjian.device.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.GatewayNorthService;
+import com.runjian.device.vo.request.PutGatewayReq;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
+import com.runjian.device.vo.response.GetGatewayPageRsp;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,9 +23,39 @@ public class GatewayNorthController {
     @Autowired
     private GatewayNorthService gatewayNorthService;
 
+    @Autowired
+    private ValidatorService validatorService;
 
+    /**
+     * 分页获取网关信息
+     * @param page 页码
+     * @param num 每页数据量
+     * @param name 网关名称
+     * @return
+     */
+    @GetMapping("/page")
+    public CommonResponse<PageInfo<GetGatewayPageRsp>> getGatewayByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, String name){
+        return CommonResponse.success(gatewayNorthService.getGatewayByPage(page, num, name));
+    }
+
+    /**
+     * 获取网关所有名称
+     * @return
+     */
     @GetMapping("/name")
     public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(){
         return CommonResponse.success(gatewayNorthService.getGatewayNameList());
+    }
+
+    /**
+     * 修改网关信息
+     * @param req 修改网关信息请求体
+     * @return
+     */
+    @PutMapping("/update")
+    public CommonResponse<?> updateGateway(@RequestBody PutGatewayReq req){
+        validatorService.validateRequest(req);
+        gatewayNorthService.updateGateway(req.getGatewayId(), req.getName());
+        return CommonResponse.success();
     }
 }

@@ -1,6 +1,7 @@
 package com.runjian.device.dao;
 
 import com.runjian.device.entity.ChannelInfo;
+import com.runjian.device.vo.response.GetChannelByPageRsp;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -20,8 +21,8 @@ public interface ChannelMapper {
     String CHANNEL_TABLE_NAME = "rundo_channel";
 
     @Insert({" <script> " +
-            " INSERT INTO " + CHANNEL_TABLE_NAME + "(id, device_id, sign_state, online_state, channel_type, stream_mode, update_time, create_time) values " +
-            " <foreach collection='saveList' item='item' separator=','>(#{item.id}, #{item.deviceId}, #{item.signState}, #{item.onlineState}, #{item.channelType}, #{item.streamMode}, #{item.updateTime}, #{item.createTime})</foreach> " +
+            " INSERT INTO " + CHANNEL_TABLE_NAME + "(id, device_id, sign_state, online_state, channel_type, update_time, create_time) values " +
+            " <foreach collection='saveList' item='item' separator=','>(#{item.id}, #{item.deviceId}, #{item.signState}, #{item.onlineState}, #{item.channelType}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>"})
     void batchSave(List<ChannelInfo> saveList);
 
@@ -68,4 +69,24 @@ public interface ChannelMapper {
             " </foreach> " +
             " </script> ")
     void batchUpdateOnlineState(List<ChannelInfo> channelInfoList);
+
+    @Select(" <script> " +
+            " SELECT ch.id AS channelId, ch.device_id, dt.name AS channelName, ch.sign_state, ch.online_state, ch.create_time, " +
+            " dt.origin_id, dt.ip, dt.port, dt.manufacturer, dt.model, dt.firmware, dt.ptz_type, dt.username, dt.password  FROM " + CHANNEL_TABLE_NAME + " ch " +
+            " LEFT JOIN " + DetailMapper.DETAIL_TABLE_NAME + " dt ON ch.id = dt.dc_id AND type = 2 " +
+            " WHERE ch.sign_state = 1 AND ch.device_id IN "  +
+            " <foreach collection='deviceIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " <if test=\"nameOrOriginId != null\" >  AND (dt.name LIKE CONCAT('%', #{nameOrOriginId}, '%')  OR dt.origin_id LIKE CONCAT('%', #{nameOrOriginId}, '%')) </if> " +
+            " ORDER BY ch.create_time desc " +
+            " </script> ")
+    List<GetChannelByPageRsp> selectByPage(List<Long> deviceIds, String nameOrOriginId);
+
+
+    @Select(" <script> " +
+            " SELECT id FROM " + CHANNEL_TABLE_NAME +
+            " WHERE id IN " +
+            " <foreach collection='channelIdList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    List<ChannelInfo> selectByIds(List<Long> channelIdList);
+
 }
