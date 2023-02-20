@@ -1,6 +1,8 @@
 package com.runjian.device.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.runjian.common.aspect.annotation.BlankStringValid;
+import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.GatewayNorthService;
@@ -34,6 +36,8 @@ public class GatewayNorthController {
      * @return
      */
     @GetMapping("/page")
+    @BlankStringValid
+    @IllegalStringValid
     public CommonResponse<PageInfo<GetGatewayPageRsp>> getGatewayByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, String name){
         return CommonResponse.success(gatewayNorthService.getGatewayByPage(page, num, name));
     }

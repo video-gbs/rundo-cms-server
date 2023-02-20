@@ -4,8 +4,8 @@ package com.runjian.device.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
-import com.runjian.common.config.exception.BusinessErrorEnums;
-import com.runjian.common.config.exception.BusinessException;
+import com.runjian.common.aspect.annotation.BlankStringValid;
+import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.DeviceNorthService;
@@ -41,6 +41,8 @@ public class DeviceNorthController {
      * @return
      */
     @GetMapping("/page")
+    @BlankStringValid
+    @IllegalStringValid
     public CommonResponse<PageInfo<GetDevicePageRsp>> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Integer signState, String deviceName, String ip){
         return CommonResponse.success(deviceNorthService.getDeviceByPage(page, num, signState, deviceName, ip));
     }
@@ -53,7 +55,7 @@ public class DeviceNorthController {
     @PostMapping("/add")
     public CommonResponse<Long> deviceAdd(@RequestBody PostDeviceAddReq req){
         validatorService.validateRequest(req);
-        throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+        return CommonResponse.success(deviceNorthService.deviceAdd(req.getDeviceId(), req.getGatewayId(), req.getDeviceType(), req.getIp(), req.getPort(), req.getName(), req.getManufacturer(), req.getModel(), req.getFirmware(), req.getPtzType(), req.getUsername(), req.getPassword()));
     }
 
     /**

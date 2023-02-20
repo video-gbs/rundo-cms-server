@@ -1,6 +1,8 @@
 package com.runjian.device.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.runjian.common.aspect.annotation.BlankStringValid;
+import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.ChannelNorthService;
@@ -42,6 +44,8 @@ public class ChannelNorthController {
      * @return
      */
     @GetMapping("/page")
+    @BlankStringValid
+    @IllegalStringValid
     public CommonResponse<PageInfo<GetChannelByPageRsp>> getChannelByPage(@RequestParam(defaultValue = "1")int page, @RequestParam(defaultValue = "10") int num, String nameOrOriginId){
         return CommonResponse.success(channelNorthService.getChannelByPage(page, num, nameOrOriginId));
     }
