@@ -17,7 +17,7 @@ import java.util.List;
  * @author Miracle
  * @date 2023/1/11 10:32
  */
-@FeignClient(value = "rundo-auth-server",fallbackFactory= AuthServerApiFallbackFactory.class)
+@FeignClient(value = "auth-server",fallbackFactory= AuthServerApiFallbackFactory.class)
 public interface AuthServerApi {
 
 
