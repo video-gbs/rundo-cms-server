@@ -36,15 +36,26 @@ public class CommonResponse<T> implements Serializable {
     private T data;
 
     /**
+     * 检查异常是否为指定类型异常
+     * @param checkError 检查的异常
+     * @param msg 消息
+     */
+    public Boolean isError(){
+        if (code != BusinessErrorEnums.SUCCESS.getErrCode()){
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 如果有异常进行报错
      * @param businessErrorEnums
      */
     public void ifErrorThrowException(BusinessErrorEnums businessErrorEnums){
-        if (code != BusinessErrorEnums.SUCCESS.getErrCode()){
+        if (isError()){
             throw new BusinessException(businessErrorEnums, msg);
         }
     }
-
 
     /**
      * 成功无数据返回

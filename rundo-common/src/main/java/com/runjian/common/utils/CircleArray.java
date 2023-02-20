@@ -151,10 +151,10 @@ public class CircleArray<T> {
                 }
                 return dataSet;
             }
-            return Collections.EMPTY_SET;
+            return null;
         }catch (Exception ex){
             ex.printStackTrace();
-            return Collections.EMPTY_SET;
+            return null;
         }finally {
             this.currentIndex = (this.currentIndex + 1) % circleSize;
             lock.unlock();

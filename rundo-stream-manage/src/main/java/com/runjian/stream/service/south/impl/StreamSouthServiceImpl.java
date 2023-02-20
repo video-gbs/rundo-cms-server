@@ -36,7 +36,6 @@ public class StreamSouthServiceImpl implements StreamSouthService {
             streamInfo.setStreamState(CommonEnum.ENABLE.getCode());
             streamInfo.setUpdateTime(LocalDateTime.now());
             streamMapper.updateStreamState(streamInfo);
-
         } else {
             streamMapper.deleteByStreamId(streamId);
         }

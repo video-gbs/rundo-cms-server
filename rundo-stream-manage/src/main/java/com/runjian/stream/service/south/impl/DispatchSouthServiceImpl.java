@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public class DispatchSouthServiceImpl implements DispatchSouthService {
     @Scheduled(fixedRate = 1000)
     public void heartbeat() {
         Set<Long> dispatchIds = heartbeatArray.pullAndNext();
-        if (dispatchIds.isEmpty()){
+        if (Objects.isNull(dispatchIds) || dispatchIds.isEmpty()){
             return;
         }
         dispatchMapper.batchUpdateOnlineState(dispatchIds, CommonEnum.DISABLE.getCode(), LocalDateTime.now());
@@ -78,11 +79,15 @@ public class DispatchSouthServiceImpl implements DispatchSouthService {
 
 
     @Override
-    public void updateHeartbeat(Long dispatchId, LocalDateTime outTime) {
+    public Boolean updateHeartbeat(Long dispatchId, LocalDateTime outTime) {
+        Optional<DispatchInfo> dispatchInfoOp = dispatchMapper.selectById(dispatchId);
+        if (dispatchInfoOp.isEmpty()){
+            return false;
+        }
         LocalDateTime nowTime = LocalDateTime.now();
         // 判断两个时间的先后
         if (nowTime.isAfter(outTime)){
-            return;
+            return true;
         }
         // 获取两个时间的相差秒数
         Duration dur = Duration.between(nowTime, outTime);
@@ -93,5 +98,6 @@ public class DispatchSouthServiceImpl implements DispatchSouthService {
         }
         heartbeatArray.addOrUpdateTime(dispatchId, betweenSecond);
         dispatchMapper.updateOnlineState(dispatchId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
+        return true;
     }
 }

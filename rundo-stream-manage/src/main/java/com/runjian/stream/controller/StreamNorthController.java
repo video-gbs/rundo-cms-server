@@ -2,6 +2,7 @@ package com.runjian.stream.controller;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
+import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.request.PostStreamApplyStreamReq;
 import com.runjian.stream.vo.request.PutStreamOperationReq;
@@ -75,18 +76,9 @@ public class StreamNorthController {
      * @param streamIdList 流id列表
      * @return
      */
-    @GetMapping("/check/record")
-    public CommonResponse<List<String>> checkRecordStatus(@RequestParam List<String> streamIdList){
-        return CommonResponse.success(streamNorthService.getRecordStates(streamIdList));
+    @GetMapping("/stream/data")
+    public CommonResponse<List<StreamInfo>> getStream(@RequestParam List<String> streamIdList, @RequestParam Integer recordState, @RequestParam Integer streamState){
+        return CommonResponse.success(streamNorthService.getRecordStates(streamIdList, recordState, streamState));
     }
 
-    /**
-     * 查询流状态
-     * @param streamIdList 流id列表
-     * @return
-     */
-    @GetMapping("/check/stream")
-    public CommonResponse<List<String>> checkStreamStatus(@RequestParam List<String> streamIdList){
-        return CommonResponse.success(streamNorthService.getStreamStates(streamIdList));
-    }
 }

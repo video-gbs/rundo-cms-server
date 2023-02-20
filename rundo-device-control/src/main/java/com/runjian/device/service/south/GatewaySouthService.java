@@ -35,6 +35,6 @@ public interface GatewaySouthService {
      * @param gatewayId 网关ID
      * @param outTime 过期时间
      */
-    void updateHeartbeat(Long gatewayId, LocalDateTime outTime);
+    Boolean updateHeartbeat(Long gatewayId, LocalDateTime outTime);
 
 }
