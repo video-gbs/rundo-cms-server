@@ -4,6 +4,8 @@ package com.runjian.device.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
+import com.runjian.common.aspect.annotation.BlankStringValid;
+import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.DeviceNorthService;
@@ -39,6 +41,8 @@ public class DeviceNorthController {
      * @return
      */
     @GetMapping("/page")
+    @BlankStringValid
+    @IllegalStringValid
     public CommonResponse<PageInfo<GetDevicePageRsp>> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Integer signState, String deviceName, String ip){
         return CommonResponse.success(deviceNorthService.getDeviceByPage(page, num, signState, deviceName, ip));
     }

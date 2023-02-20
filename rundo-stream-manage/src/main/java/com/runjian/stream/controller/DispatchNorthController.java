@@ -1,6 +1,8 @@
 package com.runjian.stream.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.runjian.common.aspect.annotation.BlankStringValid;
+import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.stream.service.north.DispatchNorthService;
@@ -43,6 +45,8 @@ public class DispatchNorthController {
      * @return 分页数据
      */
     @GetMapping("/page")
+    @BlankStringValid
+    @IllegalStringValid
     public CommonResponse<PageInfo<GetDispatchRsp>> getDispatchByPage(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer num, String name){
         return CommonResponse.success(dispatchNorthService.getDispatchByPage(page, num, name));
     }
