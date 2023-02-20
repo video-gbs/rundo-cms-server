@@ -8,8 +8,7 @@ import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.service.login.HomeSevice;
 import com.runjian.auth.server.service.login.MyRBACService;
 import com.runjian.auth.server.util.UserUtils;
-import com.runjian.common.config.exception.BusinessErrorEnums;
-import com.runjian.common.config.exception.BusinessException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,7 @@ import java.util.List;
  * @Description 门户首页
  * @date 2023-02-08 周三 11:53
  */
+@Slf4j
 @Service
 public class HomeServiceImpl implements HomeSevice {
 
@@ -40,7 +40,8 @@ public class HomeServiceImpl implements HomeSevice {
         // 通过登录的用户查取该用户已授权的角色信息
         List<String> roleCodeList = myRBACService.findRoleInfoByUserAccount(userId);
         if (CollUtil.isEmpty(roleCodeList)) {
-            throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH, "未对用户进行角色授权");
+            log.info("未对用户{}，进行角色授权", userId);
+            return null;
         }
         // 查取角色已经授权的应用
         List<AppInfo> roleAppInfoList = new ArrayList<>();
@@ -48,7 +49,8 @@ public class HomeServiceImpl implements HomeSevice {
             roleAppInfoList.addAll(myRBACService.findAppIdByRoleCode(roleCode));
         }
         if (CollUtil.isEmpty(roleAppInfoList)) {
-            throw new BusinessException("未对用户进行应用授权");
+            log.info("未对用户{}，进行应用授权", userId);
+            return null;
         }
         // 去重
         List<AppInfo> appInfoList = CollUtil.distinct(roleAppInfoList);
@@ -86,6 +88,5 @@ public class HomeServiceImpl implements HomeSevice {
         homeVO.setConfigList(configList);
         homeVO.setDevOpsList(devOpsList);
         return homeVO;
-
     }
 }
