@@ -23,6 +23,7 @@ import com.runjian.device.service.north.DeviceNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
+import com.runjian.device.vo.response.PostDeviceAddRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,7 +84,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long deviceAdd(String originId, Long gatewayId, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password) {
+    public PostDeviceAddRsp deviceAdd(String originId, Long gatewayId, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password) {
         LocalDateTime nowTime = LocalDateTime.now();
 
         // 发送注册请求，返回数据ID
@@ -107,7 +108,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         if (deviceInfoOp.isPresent()){
             DeviceInfo deviceInfo = deviceInfoOp.get();
             if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "设备已添加，请勿重复添加");
+                return new PostDeviceAddRsp(id, deviceInfo.getOnlineState());
             }
             if (deviceInfo.getSignState().equals(SignState.TO_BE_ADD.getCode())){
                 throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "设备已存在，等待注册中");
@@ -115,7 +116,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             deviceInfo.setSignState(SignState.SUCCESS.getCode());
             deviceInfo.setUpdateTime(nowTime);
             deviceMapper.updateSignState(deviceInfo);
-            return id;
+            return new PostDeviceAddRsp(id, deviceInfo.getOnlineState());
         }
 
         DeviceInfo deviceInfo = new DeviceInfo();
@@ -130,7 +131,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         deviceMapper.save(deviceInfo);
         // 保存详细信息
         detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime);
-        return id;
+        return new PostDeviceAddRsp(id, deviceInfo.getOnlineState());
     }
 
 

@@ -13,6 +13,7 @@ import com.runjian.device.vo.request.PostDeviceAddReq;
 import com.runjian.device.vo.request.PutDeviceSignSuccessReq;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
+import com.runjian.device.vo.response.PostDeviceAddRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +54,7 @@ public class DeviceNorthController {
      * @return
      */
     @PostMapping("/add")
-    public CommonResponse<Long> deviceAdd(@RequestBody PostDeviceAddReq req){
+    public CommonResponse<PostDeviceAddRsp> deviceAdd(@RequestBody PostDeviceAddReq req){
         validatorService.validateRequest(req);
         return CommonResponse.success(deviceNorthService.deviceAdd(req.getDeviceId(), req.getGatewayId(), req.getDeviceType(), req.getIp(), req.getPort(), req.getName(), req.getManufacturer(), req.getModel(), req.getFirmware(), req.getPtzType(), req.getUsername(), req.getPassword()));
     }
