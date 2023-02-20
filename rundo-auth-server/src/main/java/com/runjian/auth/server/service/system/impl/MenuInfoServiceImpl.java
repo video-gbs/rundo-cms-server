@@ -44,21 +44,23 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
 
     @Override
     public List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
-        AppInfo appInfo = appInfoMapper.selectById(dto.getAppId());
         List<MenuInfo> menuInfoList = menuInfoMapper.selectByAppId(dto.getAppId());
-        menuInfoList.stream().filter(bean -> {
-            if (bean.getId().equals(1L)) {
-                bean.setAppId(appInfo.getId());
-                bean.setIcon(appInfo.getAppIcon());
-                bean.setTitle(appInfo.getAppName());
-                bean.setPath(appInfo.getAppUrl());
-                bean.setComponent(appInfo.getComponent());
-                bean.setRedirect(appInfo.getRedirect());
-                bean.setName(StrUtil.removePrefix(appInfo.getAppUrl(), "/"));
-                bean.setLevel(1);
-            }
-            return true;
-        }).collect(Collectors.toList());
+        if(null != dto.getAppId()){
+            AppInfo appInfo = appInfoMapper.selectById(dto.getAppId());
+            menuInfoList.stream().filter(bean -> {
+                if (bean.getId().equals(1L)) {
+                    bean.setAppId(appInfo.getId());
+                    bean.setIcon(appInfo.getAppIcon());
+                    bean.setTitle(appInfo.getAppName());
+                    bean.setPath(appInfo.getAppUrl());
+                    bean.setComponent(appInfo.getComponent());
+                    bean.setRedirect(appInfo.getRedirect());
+                    bean.setName(StrUtil.removePrefix(appInfo.getAppUrl(), "/"));
+                    bean.setLevel(1);
+                }
+                return true;
+            }).collect(Collectors.toList());
+        }
         Long rootNodeId = 1L;
         List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
                 item -> {
@@ -140,11 +142,5 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         BeanUtils.copyProperties(menuInfo, menuInfoVO);
         return menuInfoVO;
     }
-
-    @Override
-    public List<MenuInfoVO> findByList() {
-        return null;
-    }
-
 
 }

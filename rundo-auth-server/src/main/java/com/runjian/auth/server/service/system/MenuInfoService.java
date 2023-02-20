@@ -28,8 +28,6 @@ public interface MenuInfoService extends IService<MenuInfo> {
 
     MenuInfoVO findById(Long id);
 
-    List<MenuInfoVO> findByList();
-
     void erasureById(Long id);
 
 

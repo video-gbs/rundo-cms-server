@@ -78,11 +78,4 @@ public class MenuInfoController {
     }
 
 
-    @GetMapping("/getList")
-    @ApiOperation("获取菜单列表 无分页")
-    public CommonResponse<List<MenuInfoVO>> getList() {
-        return CommonResponse.success(menuInfoService.findByList());
-    }
-
-
 }
