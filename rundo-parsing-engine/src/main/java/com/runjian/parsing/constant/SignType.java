@@ -14,7 +14,7 @@ import lombok.Getter;
 public enum SignType {
 
     MQ(1, "MQ"),
-    RESTFUL(2, "RESTFUL");
+    RESTFUL(2, "HTTP");
 
     private final Integer code;
 

@@ -126,10 +126,7 @@ public class MqListenerConfig {
         if (Objects.isNull(containerName)) {
             throw new BusinessException(BusinessErrorEnums.MQ_CONTAINER_NOT_FOUND);
         }
-        Queue queue = new Queue(queueKey, true, false, false);
-        AbstractExchange exchange = rabbitMqProperties.getExchangeDataMap().get(exchangeId).getExchange();
-        Binding binding = BindingBuilder.bind(queue).to(exchange).with(queueKey).noargs();
-        rabbitMqConfig.addQueue(queue, binding);
+        Queue queue = rabbitMqConfig.addQueue(exchangeId, queueKey, 15000);
         MqListenerConfig.containerMap.get(containerName).addQueues(queue);
     }
 

@@ -4,10 +4,10 @@ spring:
   cloud:
     nacos:
       discovery:
-        username: ${NACOS_USERNAME:nacos}
-        password: ${NACOS_PASSWORD:nacos}
-        server-addr: ${NACOS_SERVER:127.0.0.1}
-        namespace: ${NACOS_NAMESPACE:public}
+        username: ${NACOS_USERNAME}
+        password: ${NACOS_PASSWORD}
+        server-addr: ${NACOS_SERVER:124.71.21.11}
+        namespace: ${NACOS_NAMESPACE:dev}
   web:
     resources:
       static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:./static
@@ -90,10 +90,12 @@ mq:
       routing-key: rundo.public.gs
       queue-name: rundo.public.gs
       exchange-id: PUBLIC
+      ttl: 15000
     - id: PUBLIC-SG
       routing-key: rundo.public.sg
       queue-name: rundo.public.sg
       exchange-id: PUBLIC
+      ttl: 15000
   exchange-data-list:
     - id: PUBLIC
       name: rundo.public

@@ -107,18 +107,18 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
         if (deviceInfoOp.isPresent()){
             DeviceInfo deviceInfo = deviceInfoOp.get();
-            if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                return new PostDeviceAddRsp(id, deviceInfo.getOnlineState());
-            }
             if (deviceInfo.getSignState().equals(SignState.TO_BE_ADD.getCode())){
                 throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "设备已存在，等待注册中");
+            }
+            if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                return new PostDeviceAddRsp(id, deviceInfo.getOnlineState());
             }
             deviceInfo.setSignState(SignState.SUCCESS.getCode());
             deviceInfo.setUpdateTime(nowTime);
             deviceMapper.updateSignState(deviceInfo);
+            Constant.poolExecutor.execute(() -> channelNorthService.channelSync(id));
             return new PostDeviceAddRsp(id, deviceInfo.getOnlineState());
         }
-
         DeviceInfo deviceInfo = new DeviceInfo();
         deviceInfo.setId(id);
         deviceInfo.setGatewayId(gatewayId);

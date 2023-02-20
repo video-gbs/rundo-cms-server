@@ -8,12 +8,14 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.device.dao.GatewayMapper;
 import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.service.north.GatewayNorthService;
+import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -46,5 +48,14 @@ public class GatewayNorthServiceImpl implements GatewayNorthService {
         GatewayInfo gatewayInfo = gatewayInfoOptional.get();
         gatewayInfo.setName(name);
         gatewayMapper.update(gatewayInfo);
+    }
+
+    @Override
+    public PageInfo<GetGatewayByIdsRsp> getGatewayByIds(int page, int num, List<Long> gatewayIds, Boolean isIn, String name) {
+        if (Objects.isNull(gatewayIds) || gatewayIds.size() == 0 || Objects.isNull(isIn)){
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
+        }
+        PageHelper.startPage(page, num);
+        return new PageInfo<>(gatewayMapper.selectByIds(gatewayIds, isIn, name));
     }
 }

@@ -67,4 +67,8 @@ public interface GatewayDispatchMapper {
             " <foreach collection='gatewayIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
     void deleteByDispatchIdAndNotInGatewayIds(Long dispatchId, Set<Long> gatewayIds);
+
+    @Select(" SELECT gateway_id FROM " + GATEWAY_DISPATCH_TABLE_NAME +
+            " WHERE dispatch_id = #{dispatchId} ")
+    List<Long> selectGatewayIdByDispatchId(Long dispatchId);
 }

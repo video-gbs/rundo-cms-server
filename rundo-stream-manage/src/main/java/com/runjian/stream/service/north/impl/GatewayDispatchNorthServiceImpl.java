@@ -1,9 +1,17 @@
 package com.runjian.stream.service.north.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
+import com.runjian.common.config.response.CommonResponse;
 import com.runjian.stream.dao.GatewayDispatchMapper;
 import com.runjian.stream.entity.GatewayDispatchInfo;
+import com.runjian.stream.feign.DeviceControlApi;
 import com.runjian.stream.service.common.DataBaseService;
 import com.runjian.stream.service.north.GatewayDispatchNorthService;
+import com.runjian.stream.vo.request.PostGetGatewayByDispatchReq;
+import com.runjian.stream.vo.response.GetGatewayByIdsRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +31,35 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
 
     @Autowired
     private DataBaseService dataBaseService;
+
+    @Autowired
+    private DeviceControlApi deviceControlApi;
+
+    @Override
+    public Long getDispatchIdByGatewayId(Long gatewayId) {
+        Optional<GatewayDispatchInfo> gatewayDispatchInfoOp = gatewayDispatchMapper.selectByGatewayId(gatewayId);
+        return gatewayDispatchInfoOp.map(GatewayDispatchInfo::getDispatchId).orElse(null);
+    }
+
+    @Override
+    public PageInfo<GetGatewayByIdsRsp> getGatewayBindingDispatchId(int page, int num, Long dispatchId, String name) {
+        List<Long> gatewayIds = gatewayDispatchMapper.selectGatewayIdByDispatchId(dispatchId);
+        CommonResponse<PageInfo<GetGatewayByIdsRsp>> response = deviceControlApi.getGatewayByIds(new PostGetGatewayByDispatchReq(page, num, gatewayIds, true, name));
+        if (response.isError()){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
+        }
+        return response.getData();
+    }
+
+    @Override
+    public PageInfo<GetGatewayByIdsRsp> getGatewayNotBindingDispatchId(int page, int num, Long dispatchId, String name) {
+        List<Long> gatewayIds = gatewayDispatchMapper.selectGatewayIdByDispatchId(dispatchId);
+        CommonResponse<PageInfo<GetGatewayByIdsRsp>> response = deviceControlApi.getGatewayByIds(new PostGetGatewayByDispatchReq(page, num, gatewayIds, false, name));
+        if (response.isError()){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
+        }
+        return response.getData();
+    }
 
     @Override
     public void gatewayBindingDispatch(Long gatewayId, Long dispatchId) {
