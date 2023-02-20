@@ -15,6 +15,7 @@ import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.utils.RedisCommonUtil;
+import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import com.runjian.device.expansion.vo.request.DeviceExpansionEditReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
@@ -54,20 +55,22 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     @Autowired
     AuthServerApi authServerApi;
     @Override
-    public CommonResponse<Long> add(DeviceExpansionReq deviceExpansionReq) {
+    public CommonResponse<DeviceAddResp> add(DeviceExpansionReq deviceExpansionReq) {
         DeviceReq deviceReq = new DeviceReq();
         BeanUtil.copyProperties(deviceExpansionReq,deviceReq);
 
-        CommonResponse<Long> longCommonResponse = deviceControlApi.deviceAdd(deviceReq);
+        CommonResponse<DeviceAddResp> longCommonResponse = deviceControlApi.deviceAdd(deviceReq);
         if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",deviceReq, longCommonResponse);
             return longCommonResponse;
         }
+        DeviceAddResp data = longCommonResponse.getData();
+
         DeviceExpansion deviceExpansion = new DeviceExpansion();
         BeanUtil.copyProperties(deviceExpansionReq,deviceExpansion);
-
-        deviceExpansion.setId(longCommonResponse.getData());
+        deviceExpansion.setId(data.getId());
+        deviceExpansion.setOnlineState(data.getOnlineState());
         deviceExpansionMapper.insert(deviceExpansion);
         return CommonResponse.success();
     }

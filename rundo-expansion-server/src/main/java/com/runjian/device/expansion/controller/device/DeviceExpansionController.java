@@ -4,6 +4,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.expansion.aspect.annotation.DeviceStatusPoint;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
+import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
@@ -34,7 +35,7 @@ public class DeviceExpansionController {
 
     @PostMapping(value = "/add",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("添加接口")
-    public CommonResponse<Long> save(@RequestBody DeviceExpansionReq request) {
+    public CommonResponse<DeviceAddResp> save(@RequestBody DeviceExpansionReq request) {
 
         validatorService.validateRequest(request);
         return deviceExpansionService.add(request);
