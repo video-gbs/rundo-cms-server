@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,10 +10,12 @@ import com.runjian.auth.server.domain.entity.VideoArea;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
+import com.runjian.auth.server.feign.ExpansionClient;
 import com.runjian.auth.server.mapper.VideoAraeMapper;
 import com.runjian.auth.server.service.system.VideoAreaSaervice;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessException;
+import com.runjian.common.config.response.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,9 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Autowired
     private VideoAraeMapper videoAraeMapper;
+
+    @Autowired
+    private ExpansionClient expansionClient;
 
     @Override
     public VideoAreaVO save(AddVideoAreaDTO dto) {
@@ -81,15 +87,17 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.likeRight(VideoArea::getAreaPids, "[" + videoArea.getAreaPid() + "]");
         List<VideoArea> videoAreaChildren = videoAraeMapper.selectList(queryWrapper);
-        // 3.删除子代节点
-        for (VideoArea area : videoAreaChildren) {
-            // 调用远端确认是否可以删除
-            videoAraeMapper.deleteById(area.getId());
+        if (CollUtil.isNotEmpty(videoAreaChildren)){
+            return "操作成功,不能删除含有下级节点的安防区域!";
         }
-        // 4.删除目标节点
-        // 调用远端确认是否可以删除
-        videoAraeMapper.deleteById(id);
-        return "删除安防区域，操作成功";
+        // 3.调用远端确认是否可以删除
+        CommonResponse<Boolean> commonResponse = expansionClient.videoAreaBindCheck(id);
+        if (!commonResponse.getData()) {
+            videoAraeMapper.deleteById(id);
+            return "删除安防区域，操作成功";
+        } else {
+            return "操作成功,不能删除已绑定设备的安防区域!";
+        }
     }
 
     @Override
