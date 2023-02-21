@@ -95,6 +95,7 @@ public class MqListenerConfig {
         List<GatewayInfo> gatewayInfoList = gatewayMapper.selectAll();
         for (GatewayInfo gatewayInfo : gatewayInfoList){
             addQueue(MqConstant.GATEWAY_PREFIX, mqDefaultProperties.getGatewayExchangeId(), MqConstant.GATEWAY_PREFIX + MqConstant.SET_GET_PREFIX + gatewayInfo.getId());
+            addQueue(MqConstant.GATEWAY_PREFIX, mqDefaultProperties.getGatewayExchangeId(), MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + gatewayInfo.getId());
         }
         return container;
     }
@@ -118,6 +119,7 @@ public class MqListenerConfig {
         List<DispatchInfo> dispatchInfoList = dispatchMapper.selectAll();
         for (DispatchInfo dispatchInfo : dispatchInfoList){
             addQueue(MqConstant.STREAM_PREFIX, mqDefaultProperties.getStreamExchangeId(), MqConstant.STREAM_PREFIX + MqConstant.SET_GET_PREFIX + dispatchInfo.getId());
+            addQueue(MqConstant.STREAM_PREFIX, mqDefaultProperties.getStreamExchangeId(), MqConstant.STREAM_PREFIX + MqConstant.GET_SET_PREFIX + dispatchInfo.getId());
         }
         return container;
     }
