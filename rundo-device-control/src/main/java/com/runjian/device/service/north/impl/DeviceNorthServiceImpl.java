@@ -107,7 +107,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
         if (deviceInfoOp.isPresent()){
             DeviceInfo deviceInfo = deviceInfoOp.get();
-            if (deviceInfo.getSignState().equals(SignState.TO_BE_ADD.getCode())){
+            if (deviceInfo.getSignState().equals(SignState.TO_BE_SIGN_IN.getCode())){
                 throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "设备已存在，等待注册中");
             }
             if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){

@@ -74,6 +74,9 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             }
         }else {
             DeviceInfo deviceInfo = deviceInfoOp.get();
+            if (deviceInfo.getSignState().equals(SignState.TO_BE_SIGN_IN.getCode())){
+                deviceInfo.setSignState(SignState.SUCCESS.getCode());
+            }
             // 修改设备状态
             deviceInfo.setUpdateTime(nowTime);
             // 设备从离线到在线，进行通道同步
