@@ -141,7 +141,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         MenuInfoVO menuInfoVO = new MenuInfoVO();
         BeanUtils.copyProperties(menuInfo, menuInfoVO);
         MenuInfo parentMenuInfo = menuInfoMapper.selectById(menuInfo.getMenuPid());
-        menuInfoVO.setParentName(parentMenuInfo.getName());
+        menuInfoVO.setParentName(parentMenuInfo.getTitle());
         return menuInfoVO;
     }
 
