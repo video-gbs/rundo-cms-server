@@ -2,6 +2,7 @@ package com.runjian.device.expansion.controller.channel;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
+import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.request.*;
@@ -91,4 +92,10 @@ public class DeviceChannelExpansionController {
         return deviceChannelExpansionService.channelSync(deviceId);
     }
 
+    @GetMapping(value = "/playList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation("播放列表")
+    public CommonResponse<List<DeviceChannelExpansion>> playList(@RequestParam Long videoAreaId) {
+
+        return CommonResponse.success(deviceChannelExpansionService.playList(videoAreaId));
+    }
 }

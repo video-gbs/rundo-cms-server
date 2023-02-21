@@ -339,4 +339,13 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             lock.unlock();
         }
     }
+
+    @Override
+    public List<DeviceChannelExpansion> playList(Long videoAreaId) {
+        LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(DeviceChannelExpansion::getVideoAreaId,videoAreaId);
+        queryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
+
+        return deviceChannelExpansionMapper.selectList(queryWrapper);
+    }
 }
