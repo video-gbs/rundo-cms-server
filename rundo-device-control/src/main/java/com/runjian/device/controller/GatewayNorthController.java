@@ -43,6 +43,7 @@ public class GatewayNorthController {
         return CommonResponse.success(gatewayNorthService.getGatewayByIds(page, num, gatewayIds, isIn, name));
     }
 
+
     /**
      * 分页获取网关信息
      * @param page 页码

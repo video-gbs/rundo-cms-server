@@ -44,4 +44,5 @@ public interface GatewayNorthService {
      * @return
      */
     PageInfo<GetGatewayByIdsRsp> getGatewayByIds(int page, int num, List<Long> gatewayIds, Boolean isIn, String name);
+
 }

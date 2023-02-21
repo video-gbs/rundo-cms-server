@@ -20,4 +20,7 @@ public interface DeviceControlApi {
 
     @GetMapping("/gateway/north/data/ids")
     CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByIds(@SpringQueryMap PostGetGatewayByDispatchReq req);
+
+    @GetMapping("/gateway/north/page")
+    CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByName(@RequestParam int page, @RequestParam int num, @RequestParam(required = false) String name);
 }

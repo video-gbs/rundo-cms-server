@@ -14,6 +14,7 @@ import com.runjian.stream.vo.request.PostGetGatewayByDispatchReq;
 import com.runjian.stream.vo.response.GetGatewayByIdsRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -44,6 +45,9 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
     @Override
     public PageInfo<GetGatewayByIdsRsp> getGatewayBindingDispatchId(int page, int num, Long dispatchId, String name) {
         List<Long> gatewayIds = gatewayDispatchMapper.selectGatewayIdByDispatchId(dispatchId);
+        if (gatewayIds.isEmpty()){
+            return new PageInfo<>();
+        }
         CommonResponse<PageInfo<GetGatewayByIdsRsp>> response = deviceControlApi.getGatewayByIds(new PostGetGatewayByDispatchReq(page, num, gatewayIds, true, name));
         if (response.isError()){
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
@@ -54,6 +58,13 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
     @Override
     public PageInfo<GetGatewayByIdsRsp> getGatewayNotBindingDispatchId(int page, int num, Long dispatchId, String name) {
         List<Long> gatewayIds = gatewayDispatchMapper.selectGatewayIdByDispatchId(dispatchId);
+        if (Objects.isNull(gatewayIds) || gatewayIds.isEmpty()){
+            CommonResponse<PageInfo<GetGatewayByIdsRsp>> response = deviceControlApi.getGatewayByName(page, num, name);
+            if (response.isError()){
+                throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
+            }
+            return response.getData();
+        }
         CommonResponse<PageInfo<GetGatewayByIdsRsp>> response = deviceControlApi.getGatewayByIds(new PostGetGatewayByDispatchReq(page, num, gatewayIds, false, name));
         if (response.isError()){
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
@@ -62,6 +73,7 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void gatewayBindingDispatch(Long gatewayId, Long dispatchId) {
         if (Objects.isNull(dispatchId)){
             gatewayDispatchMapper.deleteByGatewayId(gatewayId);
@@ -86,10 +98,17 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void dispatchBindingGateway(Long dispatchId, Set<Long> gatewayIds) {
         dataBaseService.getDispatchInfo(dispatchId);
         // 删除已去掉的数据
-        gatewayDispatchMapper.deleteByDispatchIdAndNotInGatewayIds(dispatchId, gatewayIds);
+        if(gatewayIds.isEmpty()){
+            gatewayDispatchMapper.deleteByDispatchId(dispatchId);
+            return;
+        }else {
+            gatewayDispatchMapper.deleteByDispatchIdAndNotInGatewayIds(dispatchId, gatewayIds);
+        }
+
         List<GatewayDispatchInfo> gatewayDispatchInfoList = gatewayDispatchMapper.selectByGatewayIds(gatewayIds);
         LocalDateTime nowTime = LocalDateTime.now();
         // 判断数据是否已经存在
@@ -103,14 +122,15 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
 
         // 判断数据是否不存在
         if (gatewayIds.size() > gatewayDispatchInfoList.size()){
-            List<Long> existGatewayIds = gatewayDispatchInfoList.stream().map(GatewayDispatchInfo::getDispatchId).collect(Collectors.toList());
+            Set<Long> existGatewayIds = gatewayDispatchInfoList.stream().map(GatewayDispatchInfo::getGatewayId).collect(Collectors.toSet());
             existGatewayIds.forEach(gatewayIds::remove);
             ArrayList<GatewayDispatchInfo> gatewayDispatchInfos = new ArrayList<>(existGatewayIds.size());
-            for (Long gatewayId : existGatewayIds){
+            for (Long gatewayId : gatewayIds){
                 GatewayDispatchInfo gatewayDispatchInfo  = new GatewayDispatchInfo();
                 gatewayDispatchInfo.setGatewayId(gatewayId);
                 gatewayDispatchInfo.setDispatchId(dispatchId);
                 gatewayDispatchInfo.setCreateTime(nowTime);
+                gatewayDispatchInfo.setUpdateTime(nowTime);
                 gatewayDispatchInfos.add(gatewayDispatchInfo);
             }
             gatewayDispatchMapper.saveAll(gatewayDispatchInfos);

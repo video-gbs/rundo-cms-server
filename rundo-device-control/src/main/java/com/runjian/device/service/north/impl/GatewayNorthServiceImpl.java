@@ -58,4 +58,5 @@ public class GatewayNorthServiceImpl implements GatewayNorthService {
         PageHelper.startPage(page, num);
         return new PageInfo<>(gatewayMapper.selectByIds(gatewayIds, isIn, name));
     }
+
 }

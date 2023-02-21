@@ -74,7 +74,7 @@ public interface GatewayMapper {
     @Select(" <script> " +
             " SELECT * FROM " + GATEWAY_TABLE_NAME +
             " WHERE 1=1 " +
-            "<if test=\"name != null\" > AND name = #{name} </if>" +
+            "<if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%')</if>" +
             " </script> ")
     List<GetGatewayPageRsp> selectByPage(String name);
 
@@ -87,4 +87,12 @@ public interface GatewayMapper {
             " <if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%') </if>" +
             " </script> ")
     List<GetGatewayByIdsRsp> selectByIds(List<Long> gatewayIds, Boolean isIn, String name);
+
+
+    @Select(" <script> " +
+            " SELECT * FROM " + GATEWAY_TABLE_NAME +
+            " WHERE 1=1 "+
+            " <if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%') </if>" +
+            " </script> ")
+    List<GetGatewayByIdsRsp> selectByName(String name);
 }
