@@ -1,5 +1,6 @@
 package com.runjian.auth.server.domain.dto.system;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -24,10 +25,12 @@ public class AddSysMenuInfoDTO {
 
     @ApiModelProperty("所属应用ID")
     @NotNull
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long appId;
 
     @ApiModelProperty("上级菜单ID")
     @NotNull
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long menuPid;
 
     @ApiModelProperty("排序")

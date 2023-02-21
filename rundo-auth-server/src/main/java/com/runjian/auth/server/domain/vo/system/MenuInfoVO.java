@@ -17,13 +17,16 @@ public class MenuInfoVO {
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
 
-    @ApiModelProperty("直接父级菜单ID")
+    @ApiModelProperty("所属应用ID")
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long appId;
 
     @ApiModelProperty("直接父级菜单ID")
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long menuPid;
+
+    @ApiModelProperty("父级菜单名称")
+    private String parentName;
 
     @ApiModelProperty("图标")
     private String icon;
