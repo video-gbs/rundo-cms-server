@@ -54,7 +54,7 @@ public interface DeviceMapper {
     void updateSignState(DeviceInfo deviceInfo);
 
     @Select(value = {" <script> " +
-            " SELECT de.id AS deviceId, ga.id AS gatewayId, dt.name AS deviceName, ga.name AS gatewayName, de.sign_state, de.online_state, de.create_time, de.device_type" +
+            " SELECT de.id AS deviceId, ga.id AS gatewayId, dt.name AS deviceName, ga.name AS gatewayName, de.sign_state, de.online_state, de.create_time, de.device_type," +
             " dt.origin_id, dt.ip, dt.port, dt.manufacturer, dt.model, dt.firmware, dt.ptz_type, dt.username, dt.password  FROM " + DEVICE_TABLE_NAME + " de " +
             " LEFT JOIN " + DetailMapper.DETAIL_TABLE_NAME + " dt ON de.id = dt.dc_id AND type = 1 " +
             " LEFT JOIN " + GatewayMapper.GATEWAY_TABLE_NAME + " ga ON ga.id = de.gateway_id " +

@@ -7,12 +7,14 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.GatewayNorthService;
 import com.runjian.device.vo.request.PutGatewayReq;
+import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Miracle
@@ -27,6 +29,20 @@ public class GatewayNorthController {
 
     @Autowired
     private ValidatorService validatorService;
+
+    /**
+     * 根据网关id获取数据
+     * @param gatewayIds
+     * @param isIn
+     * @return
+     */
+    @GetMapping("/data/ids")
+    public CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByIds(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
+                                                                        @RequestParam List<Long> gatewayIds, @RequestParam Boolean isIn, String name){
+
+        return CommonResponse.success(gatewayNorthService.getGatewayByIds(page, num, gatewayIds, isIn, name));
+    }
+
 
     /**
      * 分页获取网关信息

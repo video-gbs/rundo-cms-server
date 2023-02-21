@@ -36,11 +36,11 @@ public class Gb28181NorthProtocol extends DefaultNorthProtocol {
 
     @Override
     public void deviceAdd(Long gatewayId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
-        GatewayInfo gatewayInfo = dataBaseService.getGatewayInfo(gatewayId);
+        dataBaseService.getGatewayInfo(gatewayId);
         String originId = dataMap.get(StandardName.DEVICE_ID).toString();
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, originId);
         if (deviceInfoOp.isPresent()){
-            response.setResult(CommonResponse.failure(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, String.format("设备'%s'在网关'%s:%s'上已存在", originId, gatewayInfo.getProtocol(), gatewayInfo.getId())));
+            response.setResult(CommonResponse.success(deviceInfoOp.get().getId()));
             return;
         }
         DeviceInfo deviceInfo = new DeviceInfo();

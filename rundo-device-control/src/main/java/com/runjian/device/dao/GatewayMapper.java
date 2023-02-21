@@ -1,6 +1,7 @@
 package com.runjian.device.dao;
 
 import com.runjian.device.entity.GatewayInfo;
+import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
 import org.apache.ibatis.annotations.Insert;
@@ -73,7 +74,25 @@ public interface GatewayMapper {
     @Select(" <script> " +
             " SELECT * FROM " + GATEWAY_TABLE_NAME +
             " WHERE 1=1 " +
-            "<if test=\"name != null\" > AND name = #{name} </if>" +
+            "<if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%')</if>" +
             " </script> ")
     List<GetGatewayPageRsp> selectByPage(String name);
+
+    @Select(" <script> " +
+            " SELECT * FROM " + GATEWAY_TABLE_NAME +
+            " WHERE "+
+            " <if test=\"isIn == true\" > id IN </if>" +
+            " <if test=\"isIn == false\" > id NOT IN </if> " +
+            " <foreach collection='gatewayIds'  item='item'  open='(' separator=',' close=')' > #{item} </foreach> " +
+            " <if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%') </if>" +
+            " </script> ")
+    List<GetGatewayByIdsRsp> selectByIds(List<Long> gatewayIds, Boolean isIn, String name);
+
+
+    @Select(" <script> " +
+            " SELECT * FROM " + GATEWAY_TABLE_NAME +
+            " WHERE 1=1 "+
+            " <if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%') </if>" +
+            " </script> ")
+    List<GetGatewayByIdsRsp> selectByName(String name);
 }

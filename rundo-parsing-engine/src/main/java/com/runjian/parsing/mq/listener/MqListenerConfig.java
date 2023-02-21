@@ -95,6 +95,7 @@ public class MqListenerConfig {
         List<GatewayInfo> gatewayInfoList = gatewayMapper.selectAll();
         for (GatewayInfo gatewayInfo : gatewayInfoList){
             addQueue(MqConstant.GATEWAY_PREFIX, mqDefaultProperties.getGatewayExchangeId(), MqConstant.GATEWAY_PREFIX + MqConstant.SET_GET_PREFIX + gatewayInfo.getId());
+            addQueue(MqConstant.GATEWAY_PREFIX, mqDefaultProperties.getGatewayExchangeId(), MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + gatewayInfo.getId());
         }
         return container;
     }
@@ -118,6 +119,7 @@ public class MqListenerConfig {
         List<DispatchInfo> dispatchInfoList = dispatchMapper.selectAll();
         for (DispatchInfo dispatchInfo : dispatchInfoList){
             addQueue(MqConstant.STREAM_PREFIX, mqDefaultProperties.getStreamExchangeId(), MqConstant.STREAM_PREFIX + MqConstant.SET_GET_PREFIX + dispatchInfo.getId());
+            addQueue(MqConstant.STREAM_PREFIX, mqDefaultProperties.getStreamExchangeId(), MqConstant.STREAM_PREFIX + MqConstant.GET_SET_PREFIX + dispatchInfo.getId());
         }
         return container;
     }
@@ -126,10 +128,7 @@ public class MqListenerConfig {
         if (Objects.isNull(containerName)) {
             throw new BusinessException(BusinessErrorEnums.MQ_CONTAINER_NOT_FOUND);
         }
-        Queue queue = new Queue(queueKey, true, false, false);
-        AbstractExchange exchange = rabbitMqProperties.getExchangeDataMap().get(exchangeId).getExchange();
-        Binding binding = BindingBuilder.bind(queue).to(exchange).with(queueKey).noargs();
-        rabbitMqConfig.addQueue(queue, binding);
+        Queue queue = rabbitMqConfig.addQueue(exchangeId, queueKey, 15000);
         MqListenerConfig.containerMap.get(containerName).addQueues(queue);
     }
 

@@ -4,23 +4,23 @@ spring:
   cloud:
     nacos:
       discovery:
-        username: ${NACOS_USERNAME:nacos}
-        password: ${NACOS_PASSWORD:nacos}
-        server-addr: ${NACOS_SERVER:127.0.0.1}
-        namespace: ${NACOS_NAMESPACE:public}
+        username: ${NACOS_USERNAME}
+        password: ${NACOS_PASSWORD}
+        server-addr: ${NACOS_SERVER:124.71.21.11}
+        namespace: ${NACOS_NAMESPACE:dev}
   web:
     resources:
       static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:./static
   # REDIS数据库配置
   redis:
     # [必须修改] Redis服务器IP, REDIS安装在本机的,使用127.0.0.1
-    host: ${REDIS_HOST:127.0.0.1}
+    host: ${REDIS_HOST:124.71.21.11}
     # [必须修改] 端口号
     port: ${REDIS_PORT:6379}
     # [可选] 数据库 DB
     database: ${REDIS_DB:6}
     # [可选] 访问密码,若你的redis服务器没有设置密码，就不需要用密码去连接
-    password:
+    password: ${REDIS_PWD:rundoredis}
     # [可选] 超时时间
     timeout: 10000
     # [可选] jdbc数据库配置, 项目使用sqlite作为数据库，一般不需要配置
@@ -30,9 +30,9 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DATABASE_HOST:127.0.0.1}:${DATABASE_PORT:3306}/${DATABASE_NAME:rundo_device_control}?useUnicode=true&characterEncoding=UTF8&rewriteBatchedStatements=true&serverTimezone=PRC&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://${DATABASE_HOST:124.71.21.11}:${DATABASE_PORT:3306}/${DATABASE_NAME:rundo_device_control}?useUnicode=true&characterEncoding=UTF8&rewriteBatchedStatements=true&serverTimezone=PRC&useSSL=false&allowMultiQueries=true
     username: ${DATABASE_USER:root}
-    password: ${DATABASE_PWD:abc123}
+    password: ${DATABASE_PWD:rundomysql}
     druid:
       initialSize: 10                       # 连接池初始化连接数
       maxActive: 200                        # 连接池最大连接数
