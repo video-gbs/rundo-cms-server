@@ -8,10 +8,7 @@ import com.runjian.device.expansion.vo.feign.request.DeviceReq;
 import com.runjian.device.expansion.vo.feign.request.PlayBackFeignReq;
 import com.runjian.device.expansion.vo.feign.request.PlayFeignReq;
 import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
-import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
-import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
-import com.runjian.device.expansion.vo.feign.response.PageListResp;
-import com.runjian.device.expansion.vo.feign.response.StreamInfo;
+import com.runjian.device.expansion.vo.feign.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
@@ -31,7 +28,7 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
     public DeviceControlApi create(Throwable throwable) {
         return new DeviceControlApi() {
             @Override
-            public CommonResponse<Long> deviceAdd(DeviceReq deviceReq) {
+            public CommonResponse<DeviceAddResp> deviceAdd(DeviceReq deviceReq) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",deviceReq, throwable);
                 return CommonResponse.failure(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
             }

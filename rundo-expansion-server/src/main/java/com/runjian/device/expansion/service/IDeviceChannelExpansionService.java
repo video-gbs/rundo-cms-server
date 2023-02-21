@@ -85,4 +85,10 @@ public interface IDeviceChannelExpansionService extends IService<DeviceChannelEx
      */
     void syncChannelStatus();
 
+    /**
+     * 分页获取编码器
+     * @param videoAreaId
+     * @return
+     */
+    List<DeviceChannelExpansion> playList(Long videoAreaId);
 }

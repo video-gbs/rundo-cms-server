@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.entity.DeviceExpansion;
+import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
 import com.runjian.device.expansion.vo.request.DeviceExpansionEditReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionReq;
@@ -23,7 +24,7 @@ public interface IDeviceExpansionService extends IService<DeviceExpansion> {
      * @param deviceExpansionReq
      * @return
      */
-    CommonResponse<Long> add(DeviceExpansionReq deviceExpansionReq);
+    CommonResponse<DeviceAddResp> add(DeviceExpansionReq deviceExpansionReq);
 
     /**
      * 设备信息编辑

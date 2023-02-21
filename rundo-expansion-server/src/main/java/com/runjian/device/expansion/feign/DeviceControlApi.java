@@ -6,10 +6,7 @@ import com.runjian.device.expansion.vo.feign.request.DeviceReq;
 import com.runjian.device.expansion.vo.feign.request.PlayBackFeignReq;
 import com.runjian.device.expansion.vo.feign.request.PlayFeignReq;
 import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
-import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
-import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
-import com.runjian.device.expansion.vo.feign.response.PageListResp;
-import com.runjian.device.expansion.vo.feign.response.StreamInfo;
+import com.runjian.device.expansion.vo.feign.response.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +28,7 @@ public interface DeviceControlApi {
      * @return
      */
     @PostMapping(value = "/device/north/add",produces = MediaType.APPLICATION_JSON_VALUE)
-    CommonResponse<Long> deviceAdd(@RequestBody DeviceReq deviceReq);
+    CommonResponse<DeviceAddResp> deviceAdd(@RequestBody DeviceReq deviceReq);
 
     /**
      * 控制服务 设备删除
