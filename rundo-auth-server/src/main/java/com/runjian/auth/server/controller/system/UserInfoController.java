@@ -107,6 +107,7 @@ public class UserInfoController {
     @PostMapping("/getRelationSysUserInfoList")
     @ApiOperation("关联用户用户列表")
     public CommonResponse<IPage<RelationSysUserInfoVO>> getRelationSysUserInfoList(@RequestBody QueryRelationSysUserInfoDTO dto) {
+        log.info("关联用户用户列表前端传参{}", JSONUtil.toJsonStr(dto));
         return CommonResponse.success(userInfoService.findRelationList(dto));
     }
 

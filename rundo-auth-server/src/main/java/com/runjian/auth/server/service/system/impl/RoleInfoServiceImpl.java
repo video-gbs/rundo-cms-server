@@ -475,7 +475,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     @Override
     public Page<RelationSysUserInfoVO> listRelationUser(QueryRoleRelationSysUserInfoDTO dto) {
         PageRoleRelationSysUserInfoDTO page = new PageRoleRelationSysUserInfoDTO();
-        if (null != dto.getUserAccount() && "".equals(dto.getUserAccount())) {
+        if (null != dto.getUserAccount() && !"".equals(dto.getUserAccount())) {
             page.setUserAccount(dto.getUserAccount());
         }
         if (null != dto.getRoleId()) {
