@@ -3,20 +3,17 @@ package com.runjian.device.service.south.impl;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.CommonEnum;
-import com.runjian.device.utils.CircleArray;
 import com.runjian.device.dao.GatewayMapper;
 import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.service.south.GatewaySouthService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Set;
+
+import static com.runjian.device.service.common.GatewayBaseService.heartbeatArray;
 
 /**
  * 网关南向服务
@@ -30,23 +27,7 @@ public class GatewaySouthServiceImpl implements GatewaySouthService {
     @Autowired
     private GatewayMapper gatewayMapper;
 
-    /**
-     * 心跳时钟
-     */
-    private static volatile CircleArray<Long> heartbeatArray = new CircleArray<>(600);
 
-    /**
-     * 定时任务-网关心跳处理
-     */
-    @Override
-    @Scheduled(fixedRate = 1000)
-    public void heartbeat() {
-        Set<Long> gatewayIds = heartbeatArray.pullAndNext();
-        if (gatewayIds.isEmpty()){
-            return;
-        }
-        gatewayMapper.batchUpdateOnlineState(gatewayIds, CommonEnum.DISABLE.getCode(), LocalDateTime.now());
-    }
 
     /**
      * 网关注册

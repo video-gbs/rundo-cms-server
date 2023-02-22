@@ -131,8 +131,8 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
 
     /**
      * 更新设备状态到设备
-     * @param deviceId
-     * @param onlineState
+     * @param deviceId 设备id
+     * @param onlineState 在线状态
      */
     private void uploadDeviceOnlineStateToRedis(Long deviceId,  Integer onlineState) {
         RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_ONLINE_STATE_LOCK);

@@ -33,12 +33,24 @@ public class GatewayNorthServiceImpl implements GatewayNorthService {
         return gatewayMapper.selectAllNameAndId();
     }
 
+    /**
+     * 获取网关信息分页
+     * @param page 页码
+     * @param num 每页数量
+     * @param name 网关名称
+     * @return
+     */
     @Override
     public PageInfo<GetGatewayPageRsp> getGatewayByPage(int page, int num, String name) {
         PageHelper.startPage(page, num);
         return new PageInfo<>(gatewayMapper.selectByPage(name));
     }
 
+    /**
+     * 修改网关名称
+     * @param gatewayId 网关id
+     * @param name 名称
+     */
     @Override
     public void updateGateway(Long gatewayId, String name) {
         Optional<GatewayInfo> gatewayInfoOptional = gatewayMapper.selectById(gatewayId);
@@ -50,6 +62,15 @@ public class GatewayNorthServiceImpl implements GatewayNorthService {
         gatewayMapper.update(gatewayInfo);
     }
 
+    /**
+     * 根据网关id数组和名称分页查找网关信息
+     * @param page 页码
+     * @param num 每页数据量
+     * @param gatewayIds 网关id数组
+     * @param isIn 包含还是不包含
+     * @param name 名称
+     * @return
+     */
     @Override
     public PageInfo<GetGatewayByIdsRsp> getGatewayByIds(int page, int num, List<Long> gatewayIds, Boolean isIn, String name) {
         if (Objects.isNull(gatewayIds) || gatewayIds.size() == 0 || Objects.isNull(isIn)){
