@@ -1,0 +1,17 @@
+spring:
+  devtools:
+    restart:
+      enabled: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: rundo-nacos:8848
+        namespace: dev
+        group: DEFAULT_GROUP
+      config:
+        server-addr: rundo-nacos:8848
+        group: DEFAULT_GROUP
+        namespace: dev
+  config:
+    import:
+      - optional:nacos:${spring.application.name}-${spring.profiles.active}.yml

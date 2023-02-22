@@ -44,8 +44,9 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
 
     @Override
     public List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
-        List<MenuInfo> menuInfoList = menuInfoMapper.selectByAppId(dto.getAppId());
-        if(null != dto.getAppId()){
+        List<MenuInfo> menuInfoList = new ArrayList<>();
+        if (null != dto.getAppId()) {
+            menuInfoList = menuInfoMapper.selectByAppId(dto.getAppId());
             AppInfo appInfo = appInfoMapper.selectById(dto.getAppId());
             menuInfoList.stream().filter(bean -> {
                 if (bean.getId().equals(1L)) {
@@ -60,6 +61,8 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                 }
                 return true;
             }).collect(Collectors.toList());
+        } else {
+            menuInfoList = menuInfoMapper.selectByAppId(null);
         }
         Long rootNodeId = 1L;
         List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
@@ -97,6 +100,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         MenuInfo parentInfo = menuInfoMapper.selectById(dto.getMenuPid());
         String menuPids = parentInfo.getMenuPids() + "[" + dto.getMenuPid() + "]";
         menuInfo.setMenuPids(menuPids);
+        menuInfo.setParentName(parentInfo.getTitle());
         if (null == dto.getMenuSort()) {
             menuInfo.setMenuSort(100);
         }
@@ -104,16 +108,6 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         menuInfo.setLeaf(0);
         menuInfo.setLevel(parentInfo.getLevel() + 1);
         menuInfoMapper.insert(menuInfo);
-
-        // 向接口表插入一条虚拟挂在根节点的接口
-        // AddSysApiInfoDTO apiInfoDTO = new AddSysApiInfoDTO();
-        // apiInfoDTO.setAppId(dto.getAppId());
-        // apiInfoDTO.setApiPid(menuInfo.getMenuPid());
-        // apiInfoDTO.setApiName(menuInfo.getTitle());
-        // apiInfoDTO.setUrl(menuInfo.getPath());
-        // apiInfoDTO.setApiSort(1);
-        // apiInfoDTO.setStatus(0);
-        // apiInfoService.save(apiInfoDTO);
     }
 
     @Override
@@ -132,7 +126,9 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
 
     @Override
     public void modifyById(UpdateSysMenuInfoDTO dto) {
-
+        MenuInfo menuInfo = new MenuInfo();
+        BeanUtils.copyProperties(dto, menuInfo);
+        menuInfoMapper.updateById(menuInfo);
     }
 
     @Override

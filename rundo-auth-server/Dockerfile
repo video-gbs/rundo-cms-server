@@ -9,4 +9,4 @@ ADD ./target/rundo-auth-server.jar /home/rundo/rundo-auth-server.jar
 VOLUME /tmp
 
 # 执行命令
-CMD ["java","-jar","/home/rundo/rundo-auth-server.jar"]
+CMD ["java","-jar","/home/rundo/rundo-auth-server.jar","--spring.profiles.active=${env}","-c"]
