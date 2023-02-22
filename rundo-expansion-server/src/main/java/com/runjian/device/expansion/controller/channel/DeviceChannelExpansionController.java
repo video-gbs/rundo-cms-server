@@ -85,7 +85,7 @@ public class DeviceChannelExpansionController {
         return CommonResponse.success(deviceChannelExpansionService.move(moveReq));
     }
 
-    @DeleteMapping(value = "/channelSync",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/channelSync",produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("设备通道同步")
     public CommonResponse<ChannelSyncRsp> channelSync(@RequestParam Long deviceId) {
 
