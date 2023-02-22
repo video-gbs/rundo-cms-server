@@ -218,25 +218,25 @@
 
     <select id="relationSysUserInfoPage" resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
         SELECT
-            user.id,
-            user.user_account,
-            user.user_name,
-            user.expiry_date_start,
-            user.expiry_date_end,
-            user.job_no,
-            user.address,
-            user.email,
-            user.phone,
+            userInfo.id,
+            userInfo.user_account,
+            userInfo.user_name,
+            userInfo.expiry_date_start,
+            userInfo.expiry_date_end,
+            userInfo.job_no,
+            userInfo.address,
+            userInfo.email,
+            userInfo.phone,
             org.org_name_str org_name,
-            GROUP_CONCAT(role.role_name ORDER BY user.id SEPARATOR '/') role_name,
-            user.description
-        FROM user_info user
-            LEFT JOIN role_user ru ON ru.user_id = user.id
+        GROUP_CONCAT( role.role_name ORDER BY userInfo.id SEPARATOR '/' ) role_name,
+        userInfo.description
+        FROM user_info userInfo
+            LEFT JOIN role_user ru ON ru.user_id = userInfo.id
             LEFT JOIN role_info role ON role.id = ru.role_id
-            LEFT JOIN org_info org ON org.id = user.org_id
+            LEFT JOIN org_info org ON org.id = userInfo.org_id
         WHERE user.delete_flag = 0
         <if test="userAccount != null and userAccount != ''">
-            AND user.user_account = #{userAccount,jdbcType=VARCHAR}
+            AND userInfo.user_account = #{userAccount,jdbcType=VARCHAR}
         </if>
         <if test="roleId != null">
             AND ru.role_id = #{roleId,jdbcType=BIGINT}

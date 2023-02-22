@@ -3,6 +3,7 @@ package com.runjian.auth.server.filter;
 import com.runjian.auth.server.domain.dto.login.LoginUser;
 import com.runjian.auth.server.util.JwtUtil;
 import com.runjian.auth.server.util.RedisCache;
+import com.runjian.common.config.exception.BusinessException;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +43,16 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        // 2.解析token
-        Claims claims = JwtUtil.parseJWT(token);
-        if (null == claims) {
-            log.info("非法token{}",token);
-            return;
+        // 3. 判断jwt是否过期
+        if (JwtUtil.isTokenExpired(token)) {
+            throw new BusinessException("token 过期，请重新登录");
         }
+        // 2.判断jwt是否被篡改、是否解析异常
+        Claims claims = JwtUtil.parseJWT(token);
+        if (Objects.isNull(claims)) {
+            throw new BusinessException("token 异常");
+        }
+
         String userid = claims.getSubject();
         // 3.获取userId,从redis中获取用户信息
         String redisKey = "login:" + userid;

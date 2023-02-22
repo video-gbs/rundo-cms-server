@@ -347,19 +347,24 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         // 查询该角色已授权的部门列表
         List<OrgInfo> orgList = roleInfoMapper.selectOrgInfoByRoleCode(roleInfo.getRoleCode());
         List<Long> orgIds = orgList.stream().map(OrgInfo::getId).collect(Collectors.toList());
+        orgIds = orgIds.stream().distinct().collect(Collectors.toList());
         // 查询该角色已授权的安防区域
         List<VideoArea> areaList = roleInfoMapper.selectVideoAreaByRoleCode(roleInfo.getRoleCode());
         List<Long> areaIds = areaList.stream().map(VideoArea::getId).collect(Collectors.toList());
+        areaIds = areaIds.stream().distinct().collect(Collectors.toList());
         // 查询该角色已授权的通道
         RoleDetailVO roleDetailVO = new RoleDetailVO();
         roleDetailVO.setId(roleInfo.getId());
         roleDetailVO.setRoleName(roleInfo.getRoleName());
         roleDetailVO.setRoleDesc(roleInfo.getRoleDesc());
         List<String> appIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 1);
+        appIds = appIds.stream().distinct().collect(Collectors.toList());
         roleDetailVO.setAppIds(appIds);
         List<String> configIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 2);
+        configIds = configIds.stream().distinct().collect(Collectors.toList());
         roleDetailVO.setConfigIds(configIds);
         List<String> devopsIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 3);
+        devopsIds = devopsIds.stream().distinct().collect(Collectors.toList());
         roleDetailVO.setDevopsIds(devopsIds);
         roleDetailVO.setOrgIds(orgIds);
         roleDetailVO.setAreaIds(areaIds);
@@ -423,9 +428,9 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             }
 
         }
-        // List<AppMenuApiVO> treeVos = vos.stream().distinct().collect(Collectors.toList());
+        List<AppMenuApiVO> treeVos = vos.stream().distinct().collect(Collectors.toList());
         log.info("{}", JSONUtil.toJsonStr(vos));
-        List<AppMenuApiTree> appMenuApiTreeList = vos.stream().map(
+        List<AppMenuApiTree> appMenuApiTreeList = treeVos.stream().map(
                 item -> {
                     AppMenuApiTree vo = new AppMenuApiTree();
                     vo.setId(item.getId());
@@ -444,7 +449,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         // 1.根据角色ID查取以往关联的用户列表
         List<Long> oldUserIds = roleInfoMapper.findUserIdList(dto.getRoleId());
         // 如果旧关联为空，则本次为新关联
-        if (CollUtil.isEmpty(oldUserIds)){
+        if (CollUtil.isEmpty(oldUserIds)) {
             // 直接关联
             for (Long userId : dto.getUserIdList()) {
                 roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
@@ -452,7 +457,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             return;
         }
         // 如果新关联为空，则是取消关联
-        if (CollUtil.isEmpty(dto.getUserIdList())){
+        if (CollUtil.isEmpty(dto.getUserIdList())) {
             //
             roleInfoMapper.removeRoleUser(dto.getRoleId(), null);
             return;
@@ -561,28 +566,28 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<String> resultList = new ArrayList<>();
         // 1.先根据appType选出目标分类的应用
         for (AppInfo appInfo : appInfoList) {
-            if (!appType.equals(appInfo.getAppType())) {
-                appInfoList.remove(appInfo);
-            } else {
+            if (appType.equals(appInfo.getAppType())) {
                 resultList.add("A_" + appInfo.getId());
             }
         }
         // 2.根据目标分类的结果过滤掉不属于这个应用分类的菜单
         for (MenuInfo menuInfo : menuInfoList) {
+            if (menuInfo.getId().equals(1L)) {
+                continue;
+            }
             for (AppInfo appInfo : appInfoList) {
-                if (!menuInfo.getAppId().equals(appInfo.getId())) {
-                    menuInfoList.remove(menuInfo);
-                } else {
+                if (menuInfo.getAppId().equals(appInfo.getId())) {
                     resultList.add("M_" + appInfo.getId());
                 }
             }
         }
         // 3.根据目标分类的结果过滤掉不属于这个应用分类的接口
         for (ApiInfo apiInfo : apiInfoList) {
+            if (apiInfo.getId().equals(1L)) {
+                continue;
+            }
             for (AppInfo appInfo : appInfoList) {
-                if (!apiInfo.getAppId().equals(appInfo.getId())) {
-                    apiInfoList.remove(apiInfo);
-                } else {
+                if (apiInfo.getAppId().equals(appInfo.getId())) {
                     resultList.add("U_" + appInfo.getId());
                 }
             }

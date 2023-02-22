@@ -76,6 +76,14 @@ public class JwtUtil {
         return claims;
     }
 
+    public static Boolean isTokenExpired(String jwt) {
+        SecretKey secretKey = generalKey();
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build().parseClaimsJws(jwt).getBody()
+                .getExpiration().before(new Date());
+    }
+
     private static JwtBuilder getJwtBuilder(String subject, Long ttlMillis, String uuid) {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
