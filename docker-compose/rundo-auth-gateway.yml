@@ -4,6 +4,8 @@ services:
     image: registry.cn-hangzhou.aliyuncs.com/hyy-rundo-gms/rundo-auth-gateway:latest
     container_name: rundo-auth-gateway
     restart: always
+    environment:
+      - TZ=Asia/Shanghai
     ports:
       - 8071:8071
     volumes:
