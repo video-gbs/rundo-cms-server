@@ -17,7 +17,8 @@ import javax.validation.constraints.NotNull;
  * @ClassName SysMenuInfoDTO
  * @Description 添加菜单
  * @date 2023-01-10 周二 10:38
- */@Data
+ */
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ApiModel(value = "添加菜单", description = "菜单信息")

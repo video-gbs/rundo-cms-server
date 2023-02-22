@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Jiang4Yu
@@ -15,9 +16,10 @@ import lombok.EqualsAndHashCode;
  * @date 2023-02-03 周五 9:14
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
-@ApiModel(value = "字典分页查询", description = "应用信息查询条件")
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@ApiModel(value = "关联用户查询参数", description = "关联用户查询参数")
 public class QueryRelationSysUserInfoDTO extends CommonPage {
     @ApiModelProperty("用户账户")
     private String userAccount;

@@ -3,7 +3,9 @@ package com.runjian.auth.server.domain.dto.system;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -17,6 +19,8 @@ import java.util.List;
  * @date 2023-01-10 周二 9:30
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(value = "新建用户", description = "用户信息")
 public class AddSysUserInfoDTO {
 

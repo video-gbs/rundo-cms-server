@@ -2,7 +2,9 @@ package com.runjian.auth.server.domain.dto.system;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -14,6 +16,8 @@ import java.util.List;
  * @date 2023-01-10 周二 14:02
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(value = "添加角色", description = "角色信息")
 public class AddSysRoleInfoDTO {
 

@@ -2,7 +2,9 @@ package com.runjian.auth.server.domain.dto.system;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Jiang4Yu
@@ -12,6 +14,8 @@ import lombok.Data;
  * @date 2023-01-09 周一 18:26
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(value = "新建部门", description = "部门信息")
 public class AddSysOrgDTO {
 

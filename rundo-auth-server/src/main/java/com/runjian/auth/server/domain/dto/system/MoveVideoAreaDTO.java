@@ -2,7 +2,9 @@ package com.runjian.auth.server.domain.dto.system;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Jiang4Yu
@@ -12,6 +14,8 @@ import lombok.Data;
  * @date 2023-02-01 周三 14:21
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(value = "移动安防区域", description = "移动安防区域")
 public class MoveVideoAreaDTO {
 

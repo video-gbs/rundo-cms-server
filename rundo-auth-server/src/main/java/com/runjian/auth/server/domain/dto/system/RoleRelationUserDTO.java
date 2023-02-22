@@ -1,7 +1,9 @@
 package com.runjian.auth.server.domain.dto.system;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
  * @date 2023-02-22 周三 11:47
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoleRelationUserDTO {
 
     @ApiModelProperty("角色编号ID")

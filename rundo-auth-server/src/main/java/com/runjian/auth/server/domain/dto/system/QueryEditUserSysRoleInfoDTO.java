@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Jiang4Yu
@@ -15,8 +16,9 @@ import lombok.EqualsAndHashCode;
  */
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "新增编辑用户时的角色分页参数", description = "新增编辑用户时的角色分页参数")
 public class QueryEditUserSysRoleInfoDTO extends CommonPage {
 }

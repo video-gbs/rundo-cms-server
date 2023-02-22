@@ -2,7 +2,9 @@ package com.runjian.auth.server.domain.dto.system;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Jiang4Yu
@@ -12,6 +14,8 @@ import lombok.Data;
  * @date 2023-01-13 周五 14:34
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(value = "VideoArea对象", description = "安保区域")
 public class AddVideoAreaDTO {
 
