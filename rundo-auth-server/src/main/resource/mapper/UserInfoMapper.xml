@@ -116,6 +116,9 @@
                  LEFT JOIN role_info role ON role.id = ru.role_id
                  LEFT JOIN org_info org ON org.id = user.org_id
         WHERE user.delete_flag = 0
+            <if test="userAccount != null and userAccount != ''">
+                AND user.user_account = #{userAccount,jdbcType=VARCHAR}
+            </if>
         GROUP BY user.id
         ORDER BY user.id
     </select>

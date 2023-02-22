@@ -175,6 +175,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public Page<RelationSysUserInfoVO> findRelationList(QueryRelationSysUserInfoDTO dto) {
         PageRelationSysUserInfoDTO page = new PageRelationSysUserInfoDTO();
+        if (null != dto.getUserAccount() && "".equals(dto.getUserAccount())){
+            page.setUserAccount(dto.getUserAccount());
+        }
         if (null != dto.getCurrent() && dto.getCurrent() > 0) {
             page.setCurrent(dto.getCurrent());
         } else {
