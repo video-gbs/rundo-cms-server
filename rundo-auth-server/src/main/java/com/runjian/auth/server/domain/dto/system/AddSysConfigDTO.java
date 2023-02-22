@@ -2,7 +2,6 @@ package com.runjian.auth.server.domain.dto.system;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author Jiang4Yu
@@ -13,6 +12,5 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class AddSysConfigDTO {
 }
