@@ -4,6 +4,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
+import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
@@ -80,6 +81,21 @@ public class RoleInfoController {
         return CommonResponse.success();
     }
 
+    @PostMapping("/relationUser/add")
+    @ApiOperation("提交关联用户列表")
+    public CommonResponse<?> addRelationUser(@RequestBody RoleRelationUserDTO dto) {
+        log.info("提交关联用户列表前端传参{}", JSONUtil.toJsonStr(dto));
+        roleInfoService.addRelationUser(dto);
+        return CommonResponse.success();
+    }
+
+    @PostMapping("/relationUserByRole")
+    @ApiOperation("查询已关联用户列表")
+    public CommonResponse<IPage<RelationSysUserInfoVO>> listRelationUser(@RequestBody QueryRoleRelationSysUserInfoDTO dto) {
+        log.info("查询已关联用户列表传参{}", JSONUtil.toJsonStr(dto));
+        return CommonResponse.success(roleInfoService.listRelationUser(dto));
+    }
+
 
     @PostMapping("/getListByPage")
     @ApiOperation("获取角色分页列表")
@@ -95,7 +111,7 @@ public class RoleInfoController {
 
     @PostMapping("/getAppMenuApiTree/{appType}")
     @ApiOperation("新建角色时获取应用类相关ID列表")
-    @ApiImplicitParam(name="appType",value="应用分类 1 应用类，2 配置类，3 运维类",required=true)
+    @ApiImplicitParam(name = "appType", value = "应用分类 1 应用类，2 配置类，3 运维类", required = true)
     public CommonResponse<List<AppMenuApiTree>> getAppIdTree(@PathVariable Integer appType) {
         return CommonResponse.success(roleInfoService.getAppMenuApiTree(appType));
     }

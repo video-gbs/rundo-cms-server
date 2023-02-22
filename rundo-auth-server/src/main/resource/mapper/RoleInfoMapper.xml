@@ -145,6 +145,11 @@
         VALUES (#{roleId,jdbcType=BIGINT}, #{areaId,jdbcType=BIGINT});
     </insert>
 
+    <insert id="insertRoleUser">
+        INSERT INTO role_user (role_id, user_id)
+        VALUES (#{roleId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT});
+    </insert>
+
     <delete id="removeRoleApp">
         DELETE FROM role_app t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
@@ -173,6 +178,12 @@
         DELETE FROM role_area t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
         AND t.area_id = #{areaId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="removeRoleUser">
+        DELETE FROM role_user t
+        WHERE t.role_id = #{roleId,jdbcType=BIGINT}
+        AND t.user_id = #{userId,jdbcType=BIGINT}
     </delete>
 
     <select id="findAppIdList" resultType="java.lang.Long">
@@ -204,4 +215,45 @@
         FROM role_area
         WHERE role_area.role_id = #{roleId,jdbcType=BIGINT}
     </select>
+
+    <select id="relationSysUserInfoPage" resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
+        SELECT
+            user.id,
+            user.user_account,
+            user.user_name,
+            user.expiry_date_start,
+            user.expiry_date_end,
+            user.job_no,
+            user.address,
+            user.email,
+            user.phone,
+            org.org_name_str org_name,
+            GROUP_CONCAT(role.role_name ORDER BY user.id SEPARATOR '/') role_name,
+            user.description
+        FROM user_info user
+            LEFT JOIN role_user ru ON ru.user_id = user.id
+            LEFT JOIN role_info role ON role.id = ru.role_id
+            LEFT JOIN org_info org ON org.id = user.org_id
+        WHERE user.delete_flag = 0
+        <if test="userAccount != null and userAccount != ''">
+            AND user.user_account = #{userAccount,jdbcType=VARCHAR}
+        </if>
+        <if test="roleId != null">
+            AND ru.role_id = #{roleId,jdbcType=BIGINT}
+        </if>
+        GROUP BY user.id
+        ORDER BY user.id
+    </select>
+
+    <select id="findUserIdList" resultType="java.lang.Long">
+        SELECT
+            ru.user_id userId
+        FROM role_user ru
+        <where>
+            <if test="roleId != null">
+                ru.role_id = #{roleId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
 </mapper>

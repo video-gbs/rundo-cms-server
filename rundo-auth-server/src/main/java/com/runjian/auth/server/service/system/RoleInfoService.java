@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.RoleInfo;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
+import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
@@ -36,4 +37,7 @@ public interface RoleInfoService extends IService<RoleInfo> {
     void modifyByStatus(StatusSysRoleInfoDTO dto);
 
     List<AppMenuApiTree> getAppMenuApiTree(Integer appType);
+
+    void addRelationUser(RoleRelationUserDTO dto);
+    Page<RelationSysUserInfoVO>  listRelationUser(QueryRoleRelationSysUserInfoDTO dto);
 }

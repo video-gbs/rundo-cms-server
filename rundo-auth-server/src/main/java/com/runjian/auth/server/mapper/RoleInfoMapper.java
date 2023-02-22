@@ -3,9 +3,11 @@ package com.runjian.auth.server.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.page.PageRoleRelationSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysRoleInfoDto;
 import com.runjian.auth.server.domain.entity.*;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
+import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -93,6 +95,8 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
 
     void insertRoleArea(@Param("roleId") Long roleId, @Param("areaId") Long areaId);
 
+    void insertRoleUser(@Param("roleId") Long roleId, @Param("userId") Long userId);
+
     void removeRoleApp(@Param("roleId") Long roleId, @Param("appId") Long appId);
 
     void removeRoleMenu(@Param("roleId") Long roleId, @Param("menuId") Long menuId);
@@ -103,11 +107,20 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
 
     void removeRoleArea(@Param("roleId") Long roleId, @Param("areaId") Long areaId);
 
+    void removeRoleUser(@Param("roleId") Long roleId, @Param("userId") Long userId);
+
     List<Long> findAppIdList(@Param("roleId") Long roleId);
+
     List<Long> findMenuIdList(@Param("roleId") Long roleId);
+
     List<Long> findApiIdList(@Param("roleId") Long roleId);
+
     List<Long> findOrgIdList(@Param("roleId") Long roleId);
+
     List<Long> findAreaIdList(@Param("roleId") Long roleId);
 
+    List<Long> findUserIdList(@Param("roleId") Long roleId);
+
+    Page<RelationSysUserInfoVO> relationSysUserInfoPage(PageRoleRelationSysUserInfoDTO page);
 
 }

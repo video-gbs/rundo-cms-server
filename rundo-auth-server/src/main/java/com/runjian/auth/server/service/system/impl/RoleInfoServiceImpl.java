@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
+import com.runjian.auth.server.domain.dto.page.PageRoleRelationSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysRoleInfoDto;
 import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.*;
@@ -435,6 +436,63 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                 }
         ).collect(Collectors.toList());
         return DataTreeUtil.buildTree(appMenuApiTreeList, 1L);
+    }
+
+
+    @Override
+    public void addRelationUser(RoleRelationUserDTO dto) {
+        // 1.根据角色ID查取以往关联的用户列表
+        List<Long> oldUserIds = roleInfoMapper.findUserIdList(dto.getRoleId());
+        // 如果旧关联为空，则本次为新关联
+        if (CollUtil.isEmpty(oldUserIds)){
+            // 直接关联
+            for (Long userId : dto.getUserIdList()) {
+                roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
+            }
+            return;
+        }
+        // 如果新关联为空，则是取消关联
+        if (CollUtil.isEmpty(dto.getUserIdList())){
+            //
+            roleInfoMapper.removeRoleUser(dto.getRoleId(), null);
+            return;
+        }
+        // 2.求取新旧的相同点
+        List<Long> commonUserId = oldUserIds.stream().filter(dto.getUserIdList()::contains).collect(Collectors.toList());
+        // 原始应用列表剔除相同部分后进行删除
+        oldUserIds.retainAll(commonUserId);
+        for (Long userId : oldUserIds) {
+            roleInfoMapper.removeRoleUser(dto.getRoleId(), userId);
+        }
+        // 新提交的应用列表剔除相同部分后新增授权
+        dto.getUserIdList().removeAll(commonUserId);
+        for (Long userId : dto.getUserIdList()) {
+            roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
+        }
+
+    }
+
+    @Override
+    public Page<RelationSysUserInfoVO> listRelationUser(QueryRoleRelationSysUserInfoDTO dto) {
+        PageRoleRelationSysUserInfoDTO page = new PageRoleRelationSysUserInfoDTO();
+        if (null != dto.getUserAccount() && "".equals(dto.getUserAccount())) {
+            page.setUserAccount(dto.getUserAccount());
+        }
+        if (null != dto.getRoleId()) {
+            page.setRoleId(dto.getRoleId());
+        }
+        if (null != dto.getCurrent() && dto.getCurrent() > 0) {
+            page.setCurrent(dto.getCurrent());
+        } else {
+            page.setCurrent(1);
+        }
+        if (null != dto.getPageSize() && dto.getPageSize() > 0) {
+            page.setSize(dto.getPageSize());
+        } else {
+            page.setSize(20);
+        }
+        return roleInfoMapper.relationSysUserInfoPage(page);
+
     }
 
     /**
