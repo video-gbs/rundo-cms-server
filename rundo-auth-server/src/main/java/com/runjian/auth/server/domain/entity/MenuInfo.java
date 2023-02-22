@@ -36,6 +36,9 @@ public class MenuInfo implements Serializable {
     @TableField("menu_pid")
     private Long menuPid;
 
+    @ApiModelProperty("父级菜单名称")
+    @TableField("parent_name")
+    private String parentName;
     @ApiModelProperty("当前菜单所有父菜单")
     @TableField("menu_pids")
     private String menuPids;
