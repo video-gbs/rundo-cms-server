@@ -1,10 +1,7 @@
 package com.runjian.auth.server.util;
 
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.SecretKey;
@@ -72,8 +69,9 @@ public class JwtUtil {
             claims = Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build().parseClaimsJws(jwt).getBody();
-        } catch (Exception e) {
+        } catch (JwtException e) {
             claims = null;
+            e.printStackTrace();
         }
         return claims;
     }

@@ -43,13 +43,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             return;
         }
         // 2.解析token
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            throw new RuntimeException("token非法");
+        Claims claims = JwtUtil.parseJWT(token);
+        if (null == claims) {
+            log.info("非法token{}",token);
+            return;
         }
+        String userid = claims.getSubject();
         // 3.获取userId,从redis中获取用户信息
         String redisKey = "login:" + userid;
         LoginUser loginUser = redisCache.getCacheObject(redisKey);
@@ -58,7 +57,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
         // 4.封装Authentication
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUser,null, loginUser.getAuthorities());
+                new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
         // 5.存入SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         // 6.放行，让后面的过滤器执行
