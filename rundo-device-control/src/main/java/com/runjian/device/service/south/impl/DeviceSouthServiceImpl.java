@@ -125,7 +125,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         List<DeviceInfo> updateDeviceList = new ArrayList<>(oldDeviceInfoList.size());
         List<DeviceInfo> saveDeviceList = new ArrayList<>(postDeviceSignInReqMap.size() - oldDeviceInfoList.size());
         List<DetailInfo> detailInfoList = new ArrayList<>(postDeviceSignInReqMap.size());
-        List<Long> offLineDeviceId = new ArrayList<>(oldDeviceInfoList.size());
+        List<Long> offLineDeviceIdList = new ArrayList<>(oldDeviceInfoList.size());
         List<Long> needChannelSyncDevice = new ArrayList<>(oldDeviceInfoList.size());
         Map<Long, Integer> updateDeviceRedisMap = new HashMap<>(postDeviceSignInReqMap.size());
 
@@ -158,9 +158,10 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
                     updateDeviceRedisMap.put(deviceInfo.getId(), deviceInfo.getOnlineState());
                 }
-                offLineDeviceId.add(deviceInfo.getId());
+                offLineDeviceIdList.add(deviceInfo.getId());
             }
             detailInfoList.add(getNewDetailInfo(postDeviceSignInReq, nowTime));
+            // 移除已处理的修改数据
             postDeviceSignInReqMap.remove(deviceInfo.getId());
         }
 
@@ -181,11 +182,16 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             detailInfoList.add(getNewDetailInfo(request, nowTime));
         }
 
-        deviceMapper.batchUpdateOnlineState(updateDeviceList);
-        deviceMapper.batchSave(saveDeviceList);
-        detailBaseService.batchSaveOrUpdate(detailInfoList);
-        redisBaseService.batchUpdateDeviceOnlineState(updateDeviceRedisMap);
-        channelMapper.batchUpdateOnlineStateByDeviceIds(offLineDeviceId, CommonEnum.DISABLE.getCode(), nowTime);
+        if (updateDeviceList.size() > 0)
+            deviceMapper.batchUpdateOnlineState(updateDeviceList);
+        if (saveDeviceList.size() > 0)
+            deviceMapper.batchSave(saveDeviceList);
+        if (detailInfoList.size() > 0)
+            detailBaseService.batchSaveOrUpdate(detailInfoList);
+        if (updateDeviceRedisMap.size() > 0)
+            redisBaseService.batchUpdateDeviceOnlineState(updateDeviceRedisMap);
+        if (offLineDeviceIdList.size() > 0)
+            channelMapper.batchUpdateOnlineStateByDeviceIds(offLineDeviceIdList, CommonEnum.DISABLE.getCode(), nowTime);
         for (Long deviceId : needChannelSyncDevice){
             Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceId));
         }
