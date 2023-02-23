@@ -5,7 +5,6 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
-import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.dao.GatewayMapper;
 import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.feign.DeviceControlApi;
@@ -21,7 +20,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -32,10 +30,6 @@ public class GatewayServiceImpl implements GatewayService {
 
     @Autowired
     private DeviceControlApi deviceControlApi;
-
-    @Autowired
-    private GatewayTaskService gatewayTaskService;
-
 
     /**
      * 网关注册
@@ -106,14 +100,4 @@ public class GatewayServiceImpl implements GatewayService {
         return gatewayInfoOp.get().getId();
     }
 
-    /**
-     * 全量同步消息发送
-     * @param gatewayIds 网关id数组
-     */
-    @Override
-    public void totalSync(Set<Long> gatewayIds) {
-        for (Long gatewayId : gatewayIds){
-            gatewayTaskService.sendMsgToGateway(gatewayId, null, null, MsgType.DEVICE_TOTAL_SYNC.getMsg(), null, null);
-        }
-    }
 }

@@ -38,9 +38,16 @@ public class DeviceController {
     private ValidatorService validatorService;
 
 
-    @GetMapping("/gateway/total-sync")
+    /**
+     *
+     * @param gatewayIds
+     * @return
+     */
+    @GetMapping("/device/total-sync")
     public CommonResponse<?> gatewayTotalSync(@RequestParam Set<Long> gatewayIds){
-        gatewayService.totalSync(gatewayIds);
+        for (Long gatewayId : gatewayIds){
+            protocolService.getNorthProtocol(gatewayId, IdType.GATEWAY).deviceTotalSync(gatewayId);
+        }
         return CommonResponse.success();
     }
 

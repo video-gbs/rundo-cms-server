@@ -34,7 +34,7 @@ public class DeviceSouthController {
      * @return
      */
     @PostMapping("/sign-in")
-    public CommonResponse signIn(@RequestBody PostDeviceSignInReq req){
+    public CommonResponse<?> signIn(@RequestBody PostDeviceSignInReq req){
         validatorService.validateRequest(req);
         deviceSouthService.signIn(req.getDeviceId(), req.getGatewayId(), req.getOriginId(), req.getOnlineState(), req.getDeviceType(), req.getIp(), req.getPort(),
                 req.getName(), req.getManufacturer(), req.getModel(), req.getFirmware(), req.getPtzType(), req.getUsername(), req.getPassword());
@@ -47,7 +47,7 @@ public class DeviceSouthController {
      * @return
      */
     @PostMapping("/sign-in-batch")
-    public CommonResponse signInBatch(@RequestBody List<PostDeviceSignInReq> req){
+    public CommonResponse<?> signInBatch(@RequestBody List<PostDeviceSignInReq> req){
         validatorService.validateRequest(req);
         deviceSouthService.signInBatch(req);
         return CommonResponse.success();

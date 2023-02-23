@@ -23,7 +23,7 @@ public interface ParsingEngineApi {
      * 网关全量同步
      * @param gatewayIds 网关id数组
      */
-    @GetMapping("/device-control/gateway/total-sync")
+    @GetMapping("/device-control/device/total-sync")
     void deviceTotalSync(Set<Long> gatewayIds);
 
     /**

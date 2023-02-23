@@ -27,9 +27,4 @@ public interface GatewayService {
      */
     Long heartbeat(String serialNum, String heartbeatTime);
 
-    /**
-     * 网关全量同步
-     * @param gatewayIds 网关id数组
-     */
-    void totalSync(Set<Long> gatewayIds);
 }

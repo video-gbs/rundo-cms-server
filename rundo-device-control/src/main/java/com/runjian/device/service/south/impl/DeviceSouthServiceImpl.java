@@ -1,14 +1,11 @@
 package com.runjian.device.service.south.impl;
 
-import com.runjian.common.config.exception.BusinessErrorEnums;
-import com.runjian.common.config.exception.BusinessException;
+
 import com.runjian.common.constant.CommonEnum;
-import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
 import com.runjian.device.dao.ChannelMapper;
-import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
@@ -17,15 +14,12 @@ import com.runjian.device.service.common.RedisBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.south.DeviceSouthService;
 import com.runjian.device.vo.request.PostDeviceSignInReq;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
