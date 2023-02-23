@@ -70,6 +70,7 @@ public class SecurityConfig {
                 .antMatchers("/captchaImage").anonymous()
                 // 放行 swagger knife4j，druid资源
                 .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/profile/**").permitAll()
                 .antMatchers("/v2/**").permitAll()

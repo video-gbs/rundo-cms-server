@@ -55,6 +55,17 @@ public class JwtUtil {
         return builder.compact();
     }
 
+    /**
+     * 判断token是否过期
+     *
+     * @param jwt
+     * @return
+     */
+    public static Boolean isTokenExpired(String jwt) {
+        Claims claims = parseJWT(jwt);
+        Date expiration = claims.getExpiration();
+        return new Date(System.currentTimeMillis()).after(expiration);
+    }
 
     /**
      * 解析token
@@ -69,20 +80,12 @@ public class JwtUtil {
             claims = Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build().parseClaimsJws(jwt).getBody();
-        } catch (JwtException e) {
-            claims = null;
-            e.printStackTrace();
+        } catch (ExpiredJwtException e) {
+            claims = e.getClaims();
         }
         return claims;
     }
 
-    public static Boolean isTokenExpired(String jwt) {
-        SecretKey secretKey = generalKey();
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build().parseClaimsJws(jwt).getBody()
-                .getExpiration().before(new Date());
-    }
 
     private static JwtBuilder getJwtBuilder(String subject, Long ttlMillis, String uuid) {
         long nowMillis = System.currentTimeMillis();

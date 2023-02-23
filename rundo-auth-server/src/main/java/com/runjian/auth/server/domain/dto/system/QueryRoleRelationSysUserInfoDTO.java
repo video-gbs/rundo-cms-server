@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "关联用户查询参数", description = "关联用户查询参数")
+@ApiModel(value = "查询已关联用户查询参数", description = "关联用户查询参数")
 public class QueryRoleRelationSysUserInfoDTO extends CommonPage {
     @ApiModelProperty("角色ID")
     private Long roleId;

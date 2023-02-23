@@ -3,6 +3,7 @@ package com.runjian.auth.server.filter;
 import com.runjian.auth.server.domain.dto.login.LoginUser;
 import com.runjian.auth.server.util.JwtUtil;
 import com.runjian.auth.server.util.RedisCache;
+import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +45,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             return;
         }
         // 3. 判断jwt是否过期
-        if (JwtUtil.isTokenExpired(token)) {
-            throw new BusinessException("token 过期，请重新登录");
+        Boolean flag = JwtUtil.isTokenExpired(token);
+        if (flag) {
+            throw new BusinessException(BusinessErrorEnums.TOKEN_IS_EXPIRE);
         }
         // 2.判断jwt是否被篡改、是否解析异常
         Claims claims = JwtUtil.parseJWT(token);
@@ -58,7 +60,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         String redisKey = "login:" + userid;
         LoginUser loginUser = redisCache.getCacheObject(redisKey);
         if (Objects.isNull(loginUser)) {
-            throw new RuntimeException("用户未登录");
+            throw new BusinessException(BusinessErrorEnums.USER_LOGIN_FAILURE);
         }
         // 4.封装Authentication
         UsernamePasswordAuthenticationToken authenticationToken =
