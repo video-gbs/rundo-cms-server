@@ -81,6 +81,23 @@ public class RoleInfoController {
         return CommonResponse.success();
     }
 
+    @PostMapping("/relationUser/right")
+    @ApiOperation("右移提交关联用户列表")
+    public CommonResponse<?> rightRelationUser(@RequestBody RoleRelationUserDTO dto) {
+        log.info("右移提交关联用户列表前端传参{}", JSONUtil.toJsonStr(dto));
+        roleInfoService.rightRelationUser(dto);
+        return CommonResponse.success();
+    }
+
+    @PostMapping("/relationUser/left")
+    @ApiOperation("左移提交关联用户列表")
+    public CommonResponse<?> leftRelationUser(@RequestBody RoleRelationUserDTO dto) {
+        log.info("左移提交关联用户列表前端传参{}", JSONUtil.toJsonStr(dto));
+        roleInfoService.leftRelationUser(dto);
+        return CommonResponse.success();
+    }
+
+
     @PostMapping("/relationUser/add")
     @ApiOperation("提交关联用户列表")
     public CommonResponse<?> addRelationUser(@RequestBody RoleRelationUserDTO dto) {

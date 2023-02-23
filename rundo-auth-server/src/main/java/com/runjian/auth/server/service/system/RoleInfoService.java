@@ -40,4 +40,8 @@ public interface RoleInfoService extends IService<RoleInfo> {
 
     void addRelationUser(RoleRelationUserDTO dto);
     Page<RelationSysUserInfoVO>  listRelationUser(QueryRoleRelationSysUserInfoDTO dto);
+
+    void rightRelationUser(RoleRelationUserDTO dto);
+
+    void leftRelationUser(RoleRelationUserDTO dto);
 }
