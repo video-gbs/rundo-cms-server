@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,7 +60,7 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
     @Scheduled(fixedRate = 1000)
     public void heartbeat() {
         Set<Long> gatewayIds = heartbeatArray.pullAndNext();
-        if (gatewayIds.isEmpty()){
+        if (Objects.isNull(gatewayIds) || gatewayIds.isEmpty()){
             return;
         }
         gatewayOffline(gatewayIds);
