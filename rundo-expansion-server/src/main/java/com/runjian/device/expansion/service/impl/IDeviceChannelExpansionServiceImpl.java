@@ -189,33 +189,15 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             videoAreaData = videoAraeInfo.getData();
             areaIdsArr.add(videoAreaData.getId());
         }
-
-        LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
-        if(!ObjectUtils.isEmpty(deviceChannelExpansionListReq.getName())){
-            queryWrapper.like(DeviceChannelExpansion::getChannelName,deviceChannelExpansionListReq.getName());
-        }
-        if(!ObjectUtils.isEmpty(deviceChannelExpansionListReq.getPtzType())){
-            queryWrapper.eq(DeviceChannelExpansion::getPtzType,deviceChannelExpansionListReq.getPtzType());
-        }
-        if(!ObjectUtils.isEmpty(deviceChannelExpansionListReq.getIp())){
-            queryWrapper.like(DeviceChannelExpansion::getIp,deviceChannelExpansionListReq.getIp());
-        }
-        if(!ObjectUtils.isEmpty(deviceChannelExpansionListReq.getOnlineState())){
-            queryWrapper.eq(DeviceChannelExpansion::getOnlineState,deviceChannelExpansionListReq.getOnlineState());
-        }
-        queryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
-        queryWrapper.in(DeviceChannelExpansion::getVideoAreaId,areaIdsArr);
-        queryWrapper.orderByDesc(DeviceChannelExpansion::getCreatedAt);
         Page<DeviceChannelExpansion> page = new Page<>(deviceChannelExpansionListReq.getPageNum(), deviceChannelExpansionListReq.getPageSize());
-        Page<DeviceChannelExpansion> channelExpansionPage = deviceChannelExpansionMapper.selectPage(page, queryWrapper);
+        Page<DeviceChannelExpansionResp> channelExpansionPage = deviceChannelExpansionMapper.listPage(page,deviceChannelExpansionListReq,areaIdsArr);
 
-        List<DeviceChannelExpansion> records = channelExpansionPage.getRecords();
-        List<DeviceChannelExpansionResp> channelRespList = new ArrayList<>();
+        List<DeviceChannelExpansionResp> records = channelExpansionPage.getRecords();
         if(!CollectionUtils.isEmpty(records)){
             //拼接所属区域
             if(deviceChannelExpansionListReq.getIncludeEquipment()){
 
-                for (DeviceChannelExpansion channelExpansion: records){
+                for (DeviceChannelExpansionResp channelExpansion: records){
                     DeviceChannelExpansionResp channelExpansionResp = new DeviceChannelExpansionResp();
                     BeanUtil.copyProperties(channelExpansion,channelExpansionResp);
                     for (VideoAreaResp videoAreaResp: videoAreaRespList){
@@ -224,15 +206,13 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
                         }
                     }
-                    channelRespList.add(channelExpansionResp);
                 }
 
             }else {
-                for (DeviceChannelExpansion channelExpansion: records){
+                for (DeviceChannelExpansionResp channelExpansion: records){
                     DeviceChannelExpansionResp channelExpansionResp = new DeviceChannelExpansionResp();
                     BeanUtil.copyProperties(channelExpansion,channelExpansionResp);
                     channelExpansionResp.setAreaNames(videoAreaData.getAreaNames());
-                    channelRespList.add(channelExpansionResp);
                 }
             }
 
@@ -241,7 +221,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         listPageResp.setCurrent(channelExpansionPage.getCurrent());
         listPageResp.setSize(channelExpansionPage.getSize());
         listPageResp.setTotal(channelExpansionPage.getTotal());
-        listPageResp.setRecords(channelRespList);
+        listPageResp.setRecords(records);
         return listPageResp;
     }
 
