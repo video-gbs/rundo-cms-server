@@ -81,21 +81,16 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         }else {
             DeviceInfo deviceInfo = deviceInfoOp.get();
             deviceInfo.setUpdateTime(nowTime);
+            boolean isAutoSignIn = false;
             // 判断是否是待注册状态
             if (deviceInfo.getSignState().equals(SignState.TO_BE_SIGN_IN.getCode())){
                 // 注册成功
                 deviceInfo.setSignState(SignState.SUCCESS.getCode());
-                // 判断设备是否上线
-                if (onlineState.equals(CommonEnum.ENABLE.getCode())){
-                    deviceInfo.setOnlineState(onlineState);
-                    deviceMapper.update(deviceInfo);
-                    redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
-                    Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceInfo.getId()));
-                }
+                isAutoSignIn = true;
             }
 
             // 设备从离线到在线，进行通道同步
-            if (onlineState.equals(CommonEnum.ENABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+            if (isAutoSignIn || (onlineState.equals(CommonEnum.ENABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode()))){
                 // 对通道同步
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
@@ -113,7 +108,6 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 channelMapper.updateOnlineStateByDeviceId(id, onlineState, nowTime);
             }
         }
-
         detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model,firmware,ptzType,nowTime);
     }
 
@@ -124,6 +118,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             return;
         }
         Map<Long, PostDeviceSignInReq> postDeviceSignInReqMap = req.stream().collect(Collectors.toMap(PostDeviceSignInReq::getDeviceId, postDeviceSignInReq -> postDeviceSignInReq));
+        // 查询已存在的设备信息
         List<DeviceInfo> oldDeviceInfoList = deviceMapper.selectByIds(postDeviceSignInReqMap.keySet());
 
         // 初始化批量处理容器
@@ -139,21 +134,16 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         for (DeviceInfo deviceInfo : oldDeviceInfoList){
             PostDeviceSignInReq postDeviceSignInReq = postDeviceSignInReqMap.get(deviceInfo.getId());
             deviceInfo.setUpdateTime(nowTime);
+            boolean isAutoSignIn = false;
             // 判断是否是待注册状态
             if (deviceInfo.getSignState().equals(SignState.TO_BE_SIGN_IN.getCode())){
                 // 注册成功
                 deviceInfo.setSignState(SignState.SUCCESS.getCode());
-                // 判断设备是否上线
-                if (postDeviceSignInReq.getOnlineState().equals(CommonEnum.ENABLE.getCode())){
-                    deviceInfo.setOnlineState(postDeviceSignInReq.getOnlineState());
-                    updateDeviceList.add(deviceInfo);
-                    updateDeviceRedisMap.put(deviceInfo.getId(), deviceInfo.getOnlineState());
-                    needChannelSyncDevice.add(deviceInfo.getId());
-                }
+                isAutoSignIn = true;
             }
 
             // 设备从离线到在线，进行通道同步
-            if (postDeviceSignInReq.getOnlineState().equals(CommonEnum.ENABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+            if (isAutoSignIn || (postDeviceSignInReq.getOnlineState().equals(CommonEnum.ENABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode()))){
                 // 对通道同步
                 deviceInfo.setOnlineState(postDeviceSignInReq.getOnlineState());
                 updateDeviceList.add(deviceInfo);
