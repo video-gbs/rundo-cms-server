@@ -57,7 +57,7 @@ public interface ParsingEngineApi {
      * @return 是否成功
      */
     @PutMapping("/device-control/channel/ptz/control")
-    CommonResponse<Boolean> channelPtzControl(@RequestBody DeviceControlReq req);
+    CommonResponse<?> channelPtzControl(@RequestBody DeviceControlReq req);
 
     /**
      * 通道播放

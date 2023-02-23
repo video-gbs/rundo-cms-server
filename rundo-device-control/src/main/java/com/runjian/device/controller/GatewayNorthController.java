@@ -32,8 +32,8 @@ public class GatewayNorthController {
 
     /**
      * 根据网关id获取数据
-     * @param gatewayIds
-     * @param isIn
+     * @param gatewayIds 网关id数组
+     * @param isIn 是否包含
      * @return
      */
     @GetMapping("/data/ids")

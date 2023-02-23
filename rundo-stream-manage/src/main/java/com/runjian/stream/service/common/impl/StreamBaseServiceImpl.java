@@ -1,7 +1,5 @@
 package com.runjian.stream.service.common.impl;
 
-import com.runjian.common.config.exception.BusinessErrorEnums;
-import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
@@ -44,14 +42,14 @@ public class StreamBaseServiceImpl implements StreamBaseService {
 
     @Override
     @PostConstruct
-    public void systemStart() {
+    public void init() {
         initClearPrepareStream();
     }
 
     @Override
     @Scheduled(fixedRate = 1000)
     public void checkOutTimeStream() {
-        Set<String> idList = prepareStreamOutTimeArray.pullAndNext();
+        Set<String> idList = STREAM_OUT_TIME_ARRAY.pullAndNext();
         if (Objects.isNull(idList) || idList.isEmpty()){
             return;
         }

@@ -12,11 +12,6 @@ import java.time.LocalDateTime;
 public interface GatewaySouthService {
 
     /**
-     * 网关心跳处理
-     */
-    void heartbeat();
-
-    /**
      * 网关注册
      * @param gatewayInfo 网关信息
      */

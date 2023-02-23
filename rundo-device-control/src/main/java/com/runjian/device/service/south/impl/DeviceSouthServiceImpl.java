@@ -4,6 +4,7 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.MarkConstant;
+import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
 import com.runjian.device.dao.ChannelMapper;
@@ -74,11 +75,20 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             }
         }else {
             DeviceInfo deviceInfo = deviceInfoOp.get();
-            if (deviceInfo.getSignState().equals(SignState.TO_BE_SIGN_IN.getCode())){
-                deviceInfo.setSignState(SignState.SUCCESS.getCode());
-            }
-            // 修改设备状态
             deviceInfo.setUpdateTime(nowTime);
+            // 判断是否是待注册状态
+            if (deviceInfo.getSignState().equals(SignState.TO_BE_SIGN_IN.getCode())){
+                // 注册成功
+                deviceInfo.setSignState(SignState.SUCCESS.getCode());
+                // 判断设备是否上线
+                if (onlineState.equals(CommonEnum.ENABLE.getCode())){
+                    deviceInfo.setOnlineState(onlineState);
+                    deviceMapper.update(deviceInfo);
+                    uploadDeviceOnlineStateToRedis(deviceInfo.getId(), deviceInfo.getOnlineState());
+                    Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceInfo.getId()));
+                }
+            }
+
             // 设备从离线到在线，进行通道同步
             if (onlineState.equals(CommonEnum.ENABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
                 // 对通道同步
@@ -86,7 +96,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 deviceMapper.update(deviceInfo);
                 if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
                     uploadDeviceOnlineStateToRedis(deviceInfo.getId(), deviceInfo.getOnlineState());
-                    channelNorthService.channelSync(deviceInfo.getId());
+                    Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceInfo.getId()));
                 }
             } else if (onlineState.equals(CommonEnum.DISABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.ENABLE.getCode())) {
                 // 将通道全部离线
@@ -121,8 +131,8 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
 
     /**
      * 更新设备状态到设备
-     * @param deviceId
-     * @param onlineState
+     * @param deviceId 设备id
+     * @param onlineState 在线状态
      */
     private void uploadDeviceOnlineStateToRedis(Long deviceId,  Integer onlineState) {
         RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_ONLINE_STATE_LOCK);

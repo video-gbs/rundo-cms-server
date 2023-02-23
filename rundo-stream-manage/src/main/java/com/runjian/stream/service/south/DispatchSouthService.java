@@ -10,13 +10,6 @@ import java.time.LocalDateTime;
 public interface DispatchSouthService {
 
     /**
-     * 调度服务心跳处理
-     */
-    void heartbeat();
-
-
-
-    /**
      * 调度服务注册
      * @param dispatchId 调度服务id
      * @param serialNum 调度服务序列号

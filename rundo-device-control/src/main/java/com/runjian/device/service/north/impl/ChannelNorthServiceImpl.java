@@ -72,7 +72,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     public PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String name) {
         List<Long> deviceIds = deviceMapper.selectIdBySignState(SignState.SUCCESS.getCode());
         if (deviceIds.size() == 0){
-            return new PageInfo<>(Collections.EMPTY_LIST);
+            return new PageInfo<>();
         }
         PageHelper.startPage(page, num);
         return new PageInfo<>(channelMapper.selectByPage(deviceIds, name));
@@ -389,7 +389,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         req.putData(StandardName.PTZ_VERTICAL_SPEED, verticalSpeed);
         req.putData(StandardName.PTZ_ZOOM_SPEED, zoomSpeed);
         req.putData(StandardName.PTZ_TOTAL_SPEED, totalSpeed);
-        CommonResponse<Boolean> response = parsingEngineApi.channelPtzControl(req);
+        CommonResponse<?> response = parsingEngineApi.channelPtzControl(req);
         if (response.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "云台控制失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
