@@ -26,13 +26,13 @@ public class AuthServerApiFallbackFactory implements FallbackFactory<AuthServerA
     public AuthServerApi create(Throwable throwable) {
         return new AuthServerApi() {
             @Override
-            public CommonResponse<List<VideoAreaResp>> getVideoAraeList(Integer areaId) {
+            public CommonResponse<List<VideoAreaResp>> getVideoAraeList(Long areaId) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"权限服务","feign--编码器获取安防通道信息列表失败",areaId, throwable);
                 return CommonResponse.failure(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
             }
 
             @Override
-            public CommonResponse<VideoAreaResp> getVideoAraeInfo(Integer areaId) {
+            public CommonResponse<VideoAreaResp> getVideoAraeInfo(Long areaId) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"权限服务","feign--编码器获取安防通道信息失败",areaId, throwable);
                 return CommonResponse.failure(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
             }

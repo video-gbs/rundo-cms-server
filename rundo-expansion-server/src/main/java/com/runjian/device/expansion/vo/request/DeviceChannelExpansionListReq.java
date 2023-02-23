@@ -23,7 +23,7 @@ public class DeviceChannelExpansionListReq {
     private Integer onlineState;
 
     @ApiModelProperty("安放区域id")
-    private Integer videoAreaId;
+    private Long videoAreaId;
 
     @ApiModelProperty("是否包含下级组织")
     private Boolean includeEquipment = true;
