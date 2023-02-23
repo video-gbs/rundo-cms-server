@@ -1,6 +1,9 @@
 package com.runjian.device.service.common;
 
+import com.runjian.device.entity.DetailInfo;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 设备或通道详情基础服务
@@ -23,4 +26,10 @@ public interface DetailBaseService {
      * @param nowTime 更新时间
      */
     void saveOrUpdateDetail(Long id, String originId, Integer type, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, LocalDateTime nowTime);
+
+    /**
+     * 批量保存
+     * @param detailInfoList
+     */
+    void batchSaveOrUpdate(List<DetailInfo> detailInfoList);
 }

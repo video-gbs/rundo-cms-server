@@ -60,4 +60,39 @@ public class PostDeviceSignInReq {
     @Size(max = 10, message = "非法端口号")
     private String port;
 
+    /**
+     * 名称
+     */
+    private String name;
+
+    /**
+     * 厂商
+     */
+    private String manufacturer;
+
+    /**
+     * 型号
+     */
+    private String model;
+
+    /**
+     * 固件版本
+     */
+    private String firmware;
+
+    /**
+     * 云台类型
+     */
+    private Integer ptzType;
+
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 密码
+     */
+    private String password;
+
 }

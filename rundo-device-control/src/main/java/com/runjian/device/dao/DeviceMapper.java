@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 设备数据库操作类
@@ -69,4 +70,35 @@ public interface DeviceMapper {
     @Select(" SELECT id FROM " + DEVICE_TABLE_NAME +
             " WHERE sign_state = #{signState} ")
     List<Long> selectIdBySignState(Integer signState);
+
+    @Select(value = {" <script> " +
+            " SELECT * FROM " + DEVICE_TABLE_NAME +
+            " WHERE gateway_id IN" +
+            " <foreach collection='gatewayIds'  item='item'  open='(' separator=',' close=')' > #{item} </foreach> " +
+            " AND online_state = #{onlineState} " +
+            " </script> "})
+    List<DeviceInfo> selectByGatewayIdsAndOnlineState(Set<Long> gatewayIds, Integer onlineState);
+
+    @Update(" <script> " +
+            " <foreach collection='deviceInfoList' item='item' separator=';'> " +
+            " UPDATE " + DEVICE_TABLE_NAME +
+            " SET update_time = #{item.updateTime}  " +
+            " , online_state = #{item.onlineState} " +
+            " WHERE id = #{item.id} "+
+            " </foreach> " +
+            " </script> ")
+    void batchUpdateOnlineState(List<DeviceInfo> deviceInfoList);
+
+    @Select(value = {" <script> " +
+            " SELECT * FROM " + DEVICE_TABLE_NAME +
+            " WHERE id IN" +
+            " <foreach collection='deviceIds'  item='item'  open='(' separator=',' close=')' > #{item} </foreach> " +
+            " </script> "})
+    List<DeviceInfo> selectByIds(Set<Long> deviceIds);
+
+    @Insert({" <script> " +
+            " INSERT INTO " + DEVICE_TABLE_NAME + "(id, gateway_id, sign_state, device_type, online_state, update_time, create_time) values " +
+            " <foreach collection='saveList' item='item' separator=','>(#{item.id}, #{item.gatewayId}, #{item.signState}, #{item.deviceType}, #{item.onlineState}, #{item.updateTime}, #{item.createTime})</foreach> " +
+            " </script>"})
+    void batchSave(List<DeviceInfo> saveList);
 }

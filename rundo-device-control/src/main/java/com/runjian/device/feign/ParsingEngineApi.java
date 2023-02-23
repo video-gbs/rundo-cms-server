@@ -7,8 +7,9 @@ import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.VideoPlayRsp;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 /**
  * 解析引擎远程调用
@@ -18,6 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(value = "parsing-engine")
 public interface ParsingEngineApi {
 
+    /**
+     * 网关全量同步
+     * @param gatewayIds 网关id数组
+     */
+    @GetMapping("/device-control/gateway/total-sync")
+    void deviceTotalSync(Set<Long> gatewayIds);
 
     /**
      * 设备信息同步
@@ -82,4 +89,6 @@ public interface ParsingEngineApi {
      */
     @PostMapping("/device-control/channel/video/playback")
     CommonResponse<VideoPlayRsp> channelPlayback(@RequestBody DeviceControlReq req);
+
+
 }

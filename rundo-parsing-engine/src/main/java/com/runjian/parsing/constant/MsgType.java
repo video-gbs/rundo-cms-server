@@ -20,7 +20,9 @@ public enum MsgType {
     GATEWAY_RE_SIGN_IN("GATEWAY_RE_SIGN_IN"),
     GATEWAY_HEARTBEAT("GATEWAY_HEARTBEAT"),
 
+
     /****************** 调度相关消息 ******************/
+    DEVICE_TOTAL_SYNC("DEVICE_TOTAL_SYNC"),
 
     DISPATCH_SIGN_IN("DISPATCH_SIGN_IN"),
 

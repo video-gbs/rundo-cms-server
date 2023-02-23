@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -62,7 +63,12 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
     public void sendMsgToGateway(Long gatewayId, Long deviceId, Long channelId, String msgType, Object data, DeferredResult<CommonResponse<?>> response) {
         GatewayInfo gatewayInfo = dataBaseService.getGatewayInfo(gatewayId);
         String mqId = UUID.randomUUID().toString().replace("-", "");
-        Long taskId = createAsyncTask(gatewayId, deviceId, channelId, mqId, msgType, response);
+        Long taskId;
+        if (Objects.isNull(response)){
+            taskId = createTask(gatewayId, deviceId, channelId, mqId, msgType, TaskState.SUCCESS);
+        }else {
+            taskId = createAsyncTask(gatewayId, deviceId, channelId, mqId, msgType, response);
+        }
         String mqKey = MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + gatewayId;
         CommonMqDto<Object> request = new CommonMqDto<>(gatewayInfo.getSerialNum(), msgType, taskId.toString(), LocalDateTime.now());
         request.setData(data);
@@ -71,7 +77,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
 
     @Override
     public Long createAsyncTask(Long gatewayId, Long deviceId, Long channelId, String mqId, String msgType, DeferredResult<CommonResponse<?>> deferredResult) {
-        Long taskId = createTask(gatewayId, deviceId, channelId, mqId, msgType);
+        Long taskId = createTask(gatewayId, deviceId, channelId, mqId, msgType, TaskState.RUNNING);
         asynReqMap.put(taskId, deferredResult);
         deferredResult.onTimeout(() -> {
             deferredResult.setResult(CommonResponse.failure(BusinessErrorEnums.FEIGN_REQUEST_TIME_OUT));
@@ -82,7 +88,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
     }
 
     @Override
-    public Long createTask(Long gatewayId, Long deviceId, Long channelId, String mqId, String msgType) {
+    public Long createTask(Long gatewayId, Long deviceId, Long channelId, String mqId, String msgType, TaskState taskState) {
         LocalDateTime nowTime = LocalDateTime.now();
         GatewayTaskInfo gatewayTaskInfo = new GatewayTaskInfo();
         gatewayTaskInfo.setGatewayId(gatewayId);
@@ -92,7 +98,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         gatewayTaskInfo.setMsgType(msgType);
         gatewayTaskInfo.setCreateTime(nowTime);
         gatewayTaskInfo.setUpdateTime(nowTime);
-        gatewayTaskInfo.setState(TaskState.RUNNING.getCode());
+        gatewayTaskInfo.setState(taskState.getCode());
         gatewayTaskMapper.save(gatewayTaskInfo);
         return gatewayTaskInfo.getId();
     }

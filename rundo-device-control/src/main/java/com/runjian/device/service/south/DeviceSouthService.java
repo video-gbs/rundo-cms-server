@@ -1,6 +1,9 @@
 package com.runjian.device.service.south;
 
 import com.runjian.device.entity.DeviceInfo;
+import com.runjian.device.vo.request.PostDeviceSignInReq;
+
+import java.util.List;
 
 /**
  * 设备南向服务
@@ -19,6 +22,12 @@ public interface DeviceSouthService {
      * @param ip ip地址
      * @param port 端口
      */
-    void signIn(Long id, Long gatewayId, String originId, Integer onlineState, Integer deviceType, String ip, String port);
+    void signIn(Long id, Long gatewayId, String originId, Integer onlineState, Integer deviceType, String ip, String port,
+                String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password);
 
+    /**
+     * 批量注册
+     * @param req
+     */
+    void signInBatch(List<PostDeviceSignInReq> req);
 }

@@ -23,9 +23,9 @@ services:
       DATABASE_PORT: 3306
       DATABASE_NAME: rundo_stream_manage
       NACOS_SERVER: 124.71.21.11
-      NACOS_NAMESPACE: public
-      NACOS_USERNAME:
-      NACOS_PASSWORD:
+      NACOS_NAMESPACE: test
+      NACOS_USERNAME: nacos
+      NACOS_PASSWORD: rundo@nacos*2023
     logging:
       options:
         max-size: '12m'

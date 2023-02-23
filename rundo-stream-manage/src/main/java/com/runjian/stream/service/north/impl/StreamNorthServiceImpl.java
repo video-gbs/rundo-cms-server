@@ -60,7 +60,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (dispatchIdOp.isEmpty()) {
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("该网关模块%s未绑定流媒体模块，无法播放", gatewayId));
         }
-        DispatchInfo dispatchInfo = dataBaseService.getDispatchInfo(dispatchIdOp.get().getDispatchId());
+        DispatchInfo dispatchInfo = dataBaseService.getOnlineDispatchInfo(dispatchIdOp.get().getDispatchId());
         PostApplyStreamRsp res = new PostApplyStreamRsp();
         res.setDispatchUrl(dispatchInfo.getUrl());
         res.setRecordState(recordState);

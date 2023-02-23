@@ -19,22 +19,19 @@ import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.feign.StreamManageApi;
 import com.runjian.device.service.common.DataBaseService;
+import com.runjian.device.service.common.RedisBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.feign.StreamPlayReq;
 import com.runjian.device.vo.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -66,7 +63,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     private DataBaseService dataBaseService;
 
     @Autowired
-    private RedissonClient redissonClient;
+    private RedisBaseService redisBaseService;
 
     @Override
     public PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String name) {
@@ -156,17 +153,8 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                     detailUpdateList.add(detailInfo);
                 }
             }
-            RLock lock = redissonClient.getLock(MarkConstant.REDIS_CHANNEL_ONLINE_STATE_LOCK);
-            try {
-                lock.lock(3, TimeUnit.SECONDS);
-                redissonClient.getMap(MarkConstant.REDIS_CHANNEL_ONLINE_STATE).putAll(channelOnlineMap);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
-            } finally {
-                lock.unlock();
-            }
-
+            // 更新通道的在线状态
+            redisBaseService.batchUpdateChannelOnlineState(channelOnlineMap);
             // 对数据进行批量保存
             if (channelSaveList.size() > 0) {
                 channelMapper.batchSave(channelSaveList);

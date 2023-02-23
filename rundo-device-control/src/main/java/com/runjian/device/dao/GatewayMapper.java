@@ -95,4 +95,10 @@ public interface GatewayMapper {
             " <if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%') </if>" +
             " </script> ")
     List<GetGatewayByIdsRsp> selectByName(String name);
+
+    @Select(" <script> " +
+            " SELECT id FROM " + GATEWAY_TABLE_NAME +
+            " WHERE online_state = #{onlineState} "+
+            " </script> ")
+    Set<Long> selectIdByOnlineState(Integer onlineState);
 }

@@ -61,12 +61,6 @@ public interface GatewayDispatchMapper {
             " WHERE gateway_id = #{gatewayId} ")
     void deleteByGatewayId(Long gatewayId);
 
-    @Delete(" <script> " +
-            " DELETE FROM " + GATEWAY_DISPATCH_TABLE_NAME +
-            " WHERE dispatch_id = #{dispatchId} AND gateway_id NOT IN " +
-            " <foreach collection='gatewayIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
-            " </script> ")
-    void deleteByDispatchIdAndNotInGatewayIds(Long dispatchId, Set<Long> gatewayIds);
 
     @Select(" SELECT gateway_id FROM " + GATEWAY_DISPATCH_TABLE_NAME +
             " WHERE dispatch_id = #{dispatchId} ")
@@ -75,4 +69,11 @@ public interface GatewayDispatchMapper {
     @Delete(" DELETE FROM " + GATEWAY_DISPATCH_TABLE_NAME +
             " WHERE dispatch_id = #{dispatchId} ")
     void deleteByDispatchId(Long dispatchId);
+
+    @Delete(" <script> " +
+            " DELETE FROM " + GATEWAY_DISPATCH_TABLE_NAME +
+            " WHERE dispatch_id = #{dispatchId} AND gateway_id IN " +
+            " <foreach collection='gatewayIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void deleteByDispatchIdAndInGatewayIds(Long dispatchId, Set<Long> gatewayIds);
 }

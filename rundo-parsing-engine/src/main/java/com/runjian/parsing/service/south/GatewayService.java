@@ -2,6 +2,8 @@ package com.runjian.parsing.service.south;
 
 import com.runjian.parsing.vo.response.SignInRsp;
 
+import java.util.Set;
+
 public interface GatewayService {
 
     /**
@@ -25,4 +27,9 @@ public interface GatewayService {
      */
     Long heartbeat(String serialNum, String heartbeatTime);
 
+    /**
+     * 网关全量同步
+     * @param gatewayIds 网关id数组
+     */
+    void totalSync(Set<Long> gatewayIds);
 }
