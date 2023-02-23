@@ -1,9 +1,7 @@
 package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
-import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
-import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
+import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
 import com.runjian.auth.server.service.system.MenuInfoService;
@@ -59,6 +57,22 @@ public class MenuInfoController {
     public CommonResponse<?> updateSysMenu(@RequestBody UpdateSysMenuInfoDTO dto) {
         log.info("编辑菜单前端传参信息{}", JSONUtil.toJsonStr(dto));
         menuInfoService.modifyById(dto);
+        return CommonResponse.success();
+    }
+
+    @PostMapping("/status/change")
+    @ApiOperation("禁用状态切换")
+    public CommonResponse<?> statusChange(@RequestBody StatusChangeDTO dto) {
+        log.info("菜单禁用状态切换前端传参信息{}", JSONUtil.toJsonStr(dto));
+        menuInfoService.modifyByStatus(dto);
+        return CommonResponse.success();
+    }
+
+    @PostMapping("/hidden/change")
+    @ApiOperation("隐藏状态切换")
+    public CommonResponse<?> hiddenChange(@RequestBody HiddenChangeDTO dto) {
+        log.info("菜单隐藏状态切换前端传参信息{}", JSONUtil.toJsonStr(dto));
+        menuInfoService.modifyByHidden(dto);
         return CommonResponse.success();
     }
 

@@ -1,9 +1,7 @@
 package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
-import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
+import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.MenuInfo;
 import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
@@ -32,4 +30,8 @@ public interface MenuInfoService extends IService<MenuInfo> {
 
 
     List<MenuInfoTree> findByTreeByAppType(Integer appType);
+
+    void modifyByStatus(StatusChangeDTO dto);
+
+    void modifyByHidden(HiddenChangeDTO dto);
 }

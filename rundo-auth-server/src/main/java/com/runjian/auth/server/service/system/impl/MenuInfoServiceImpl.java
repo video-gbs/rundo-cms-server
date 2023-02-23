@@ -3,9 +3,7 @@ package com.runjian.auth.server.service.system.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.dto.system.AddSysMenuInfoDTO;
-import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysMenuInfoDTO;
+import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.entity.MenuInfo;
 import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
@@ -91,6 +89,20 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
             menuInfoTreeByAppTypelist.addAll(findByTree(dto));
         }
         return menuInfoTreeByAppTypelist;
+    }
+
+    @Override
+    public void modifyByStatus(StatusChangeDTO dto) {
+        MenuInfo menuInfo = menuInfoMapper.selectById(dto.getId());
+        menuInfo.setStatus(dto.getStatus());
+        menuInfoMapper.updateById(menuInfo);
+    }
+
+    @Override
+    public void modifyByHidden(HiddenChangeDTO dto) {
+        MenuInfo menuInfo = menuInfoMapper.selectById(dto.getId());
+        menuInfo.setHidden(dto.getHidden());
+        menuInfoMapper.updateById(menuInfo);
     }
 
     @Override
