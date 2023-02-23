@@ -2,16 +2,16 @@ server:
   port: 8070
 
 spring:
+  profiles:
+    active: '@env@'
   application:
     name: auth-gateway
-  cloud:
-    nacos:
-      server-addr: rundo-nacos:8848
-      discovery:
-        namespace: public
-      config:
-        file-extension: yml
-  config:
-    import:
-      - optional:nacos:${spring.application.name}
-
+  main:
+    allow-bean-definition-overriding: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jackson:
+    default-property-inclusion: NON_NULL
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
