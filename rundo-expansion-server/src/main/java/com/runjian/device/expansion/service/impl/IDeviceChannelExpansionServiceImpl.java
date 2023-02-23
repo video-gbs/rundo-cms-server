@@ -198,11 +198,9 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             if(deviceChannelExpansionListReq.getIncludeEquipment()){
 
                 for (DeviceChannelExpansionResp channelExpansion: records){
-                    DeviceChannelExpansionResp channelExpansionResp = new DeviceChannelExpansionResp();
-                    BeanUtil.copyProperties(channelExpansion,channelExpansionResp);
                     for (VideoAreaResp videoAreaResp: videoAreaRespList){
                         if(videoAreaResp.getId().equals(channelExpansion.getVideoAreaId())){
-                            channelExpansionResp.setAreaNames(videoAreaResp.getAreaNames());
+                            channelExpansion.setAreaNames(videoAreaResp.getAreaNames());
 
                         }
                     }
@@ -210,9 +208,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
             }else {
                 for (DeviceChannelExpansionResp channelExpansion: records){
-                    DeviceChannelExpansionResp channelExpansionResp = new DeviceChannelExpansionResp();
-                    BeanUtil.copyProperties(channelExpansion,channelExpansionResp);
-                    channelExpansionResp.setAreaNames(videoAreaData.getAreaNames());
+                    channelExpansion.setAreaNames(videoAreaData.getAreaNames());
                 }
             }
 
