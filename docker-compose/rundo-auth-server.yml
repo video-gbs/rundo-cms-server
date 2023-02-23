@@ -20,5 +20,6 @@ services:
       - proxynet
 networks:
   proxynet:
-    name: rundo_network
+    external:
+      name: rundo_network
 

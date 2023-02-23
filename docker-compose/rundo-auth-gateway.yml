@@ -10,6 +10,7 @@ services:
     ports:
       - 8071:8071
     volumes:
+      - ./logs:/logs
       - /tmp:/tmp
     extra_hosts:
       - "rundo-mysql:192.168.0.84"
@@ -19,4 +20,5 @@ services:
       - proxynet
 networks:
   proxynet:
-    name: rundo_network
+    external:
+      name: rundo_network
