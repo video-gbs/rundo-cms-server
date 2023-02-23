@@ -2,7 +2,6 @@ package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
@@ -151,7 +150,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<Long> areaIdList = dto.getAreaIds();
 
         ///////////应用///////////////////
-        if (CollUtil.isEmpty(oldAppIdList)) {
+        if (CollUtil.isEmpty(oldAppIdList) && CollUtil.isNotEmpty(appIdList)) {
             // 原始授权应用为空，本次为新增
             for (Long appId : appIdList) {
                 roleInfoMapper.insertRoleApp(dto.getId(), appId);
@@ -175,7 +174,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
 
         ///////////菜单///////////////////
-        if (CollUtil.isEmpty(oldMenuIdList)) {
+        if (CollUtil.isEmpty(oldMenuIdList) && CollUtil.isNotEmpty(menuIdList)) {
             // 原始授权菜单为空，本次为新增
             for (Long menuId : menuIdList) {
                 roleInfoMapper.insertRoleMenu(dto.getId(), menuId);
@@ -199,7 +198,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
 
         ///////////接口///////////////////
-        if (CollUtil.isEmpty(oldApiIdList)) {
+        if (CollUtil.isEmpty(oldApiIdList) && CollUtil.isNotEmpty(apiIdList)) {
             // 原始授权接口为空，本次为新增
             for (Long apiId : apiIdList) {
                 roleInfoMapper.insertRoleApi(dto.getId(), apiId);
@@ -223,7 +222,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
 
         ///////////组织///////////////////
-        if (CollUtil.isEmpty(oldOrgIdList)) {
+        if (CollUtil.isEmpty(oldOrgIdList) && CollUtil.isNotEmpty(orgIdList)) {
             // 原始授权应用为空，本次为新增
             for (Long orgId : orgIdList) {
                 roleInfoMapper.insertRoleOrg(dto.getId(), orgId);
@@ -247,7 +246,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
 
         ///////////区域///////////////////
-        if (CollUtil.isEmpty(oldAreaIdList)) {
+        if (CollUtil.isEmpty(oldAreaIdList) && CollUtil.isNotEmpty(areaIdList)) {
             // 原始授权应用为空，本次为新增
             for (Long areaId : areaIdList) {
                 roleInfoMapper.insertRoleArea(dto.getId(), areaId);
@@ -346,11 +345,11 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<ApiInfo> apiInfoList = roleInfoMapper.selectApiInfoByRoleCode(roleInfo.getRoleCode());
         // 查询该角色已授权的部门列表
         List<OrgInfo> orgList = roleInfoMapper.selectOrgInfoByRoleCode(roleInfo.getRoleCode());
-        List<Long> orgIds = orgList.stream().map(OrgInfo::getId).collect(Collectors.toList());
+        List<String> orgIds = orgList.stream().map(item -> item.getId().toString()).collect(Collectors.toList());
         orgIds = orgIds.stream().distinct().collect(Collectors.toList());
         // 查询该角色已授权的安防区域
         List<VideoArea> areaList = roleInfoMapper.selectVideoAreaByRoleCode(roleInfo.getRoleCode());
-        List<Long> areaIds = areaList.stream().map(VideoArea::getId).collect(Collectors.toList());
+        List<String> areaIds = areaList.stream().map(item -> item.getId().toString()).collect(Collectors.toList());
         areaIds = areaIds.stream().distinct().collect(Collectors.toList());
         // 查询该角色已授权的通道
         RoleDetailVO roleDetailVO = new RoleDetailVO();
@@ -429,7 +428,6 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
 
         }
         List<AppMenuApiVO> treeVos = vos.stream().distinct().collect(Collectors.toList());
-        log.info("{}", JSONUtil.toJsonStr(vos));
         List<AppMenuApiTree> appMenuApiTreeList = treeVos.stream().map(
                 item -> {
                     AppMenuApiTree vo = new AppMenuApiTree();
@@ -480,6 +478,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     @Override
     public Page<RelationSysUserInfoVO> listRelationUser(QueryRoleRelationSysUserInfoDTO dto) {
         PageRoleRelationSysUserInfoDTO page = new PageRoleRelationSysUserInfoDTO();
+
         if (null != dto.getUserAccount() && !"".equals(dto.getUserAccount())) {
             page.setUserAccount(dto.getUserAccount());
         }
@@ -551,8 +550,8 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<Long> appIds = new ArrayList<>();
         if (CollUtil.isNotEmpty(stringList)) {
             for (String str : stringList) {
-                if (str.startsWith("a_")) {
-                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "a_"));
+                if (str.startsWith("A_")) {
+                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "A_"));
                     appIds.add(menuId);
                 }
             }

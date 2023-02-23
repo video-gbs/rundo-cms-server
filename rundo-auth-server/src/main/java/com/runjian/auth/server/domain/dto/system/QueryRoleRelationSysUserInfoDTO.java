@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Jiang4Yu
  * @version V1.0.0
@@ -22,6 +24,7 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "查询已关联用户查询参数", description = "关联用户查询参数")
 public class QueryRoleRelationSysUserInfoDTO extends CommonPage {
     @ApiModelProperty("角色ID")
+    @NotNull
     private Long roleId;
     @ApiModelProperty("用户账户")
     private String userAccount;

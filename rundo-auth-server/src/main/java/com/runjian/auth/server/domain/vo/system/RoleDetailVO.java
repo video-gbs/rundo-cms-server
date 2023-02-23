@@ -40,10 +40,10 @@ public class RoleDetailVO {
     private List<String> devopsIds;
 
     @ApiModelProperty("部门权限")
-    private List<Long> orgIds;
+    private List<String> orgIds;
 
     @ApiModelProperty("安防区域")
-    private List<Long> areaIds;
+    private List<String> areaIds;
 
     // @ApiModelProperty("视频通道ID列表")
     // List<Long> channelIds;
