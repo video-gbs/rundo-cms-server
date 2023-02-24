@@ -17,6 +17,13 @@ public interface DataBaseService {
     DispatchInfo getDispatchInfo(Long dispatchId);
 
     /**
+     * 获取调度服务信息
+     * @param dispatchId
+     * @return
+     */
+    DispatchInfo getOnlineDispatchInfo(Long dispatchId);
+
+    /**
      * 通过流id获取流信息
      * @param streamId
      * @return

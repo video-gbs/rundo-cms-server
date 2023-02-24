@@ -101,14 +101,6 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
     @Transactional(rollbackFor = Exception.class)
     public void dispatchBindingGateway(Long dispatchId, Set<Long> gatewayIds) {
         dataBaseService.getDispatchInfo(dispatchId);
-        // 删除已去掉的数据
-        if(gatewayIds.isEmpty()){
-            gatewayDispatchMapper.deleteByDispatchId(dispatchId);
-            return;
-        }else {
-            gatewayDispatchMapper.deleteByDispatchIdAndNotInGatewayIds(dispatchId, gatewayIds);
-        }
-
         List<GatewayDispatchInfo> gatewayDispatchInfoList = gatewayDispatchMapper.selectByGatewayIds(gatewayIds);
         LocalDateTime nowTime = LocalDateTime.now();
         // 判断数据是否已经存在
@@ -135,5 +127,14 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
             }
             gatewayDispatchMapper.saveAll(gatewayDispatchInfos);
         }
+    }
+
+    @Override
+    public void dispatchUnBindingGateway(Long dispatchId, Set<Long> gatewayIds) {
+        if (gatewayIds.size() == 0){
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "网关数组不能为空");
+        }
+        dataBaseService.getDispatchInfo(dispatchId);
+        gatewayDispatchMapper.deleteByDispatchIdAndInGatewayIds(dispatchId, gatewayIds);
     }
 }

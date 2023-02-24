@@ -5,6 +5,7 @@ import com.runjian.parsing.constant.IdType;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 南向协议定义
@@ -20,6 +21,12 @@ public interface NorthProtocol {
      * @return
      */
     String getProtocolName();
+
+    /**
+     * 设备全量同步
+     * @param gatewayId 网关id数组
+     */
+    void deviceTotalSync(Long gatewayId);
 
     /**
      * 规范化：设备同步

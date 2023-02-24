@@ -88,5 +88,16 @@ public class GatewayDispatchNorthController {
         return CommonResponse.success();
     }
 
+    /**
+     * 调度服务取消绑定网关
+     * @param req 流媒体服务绑定网关请求体
+     * @return
+     */
+    @PostMapping("/dispatch/unbinding")
+    public CommonResponse<?> dispatchUnBindingGateway(@RequestBody PostDispatchBindingGatewayReq req){
+        validatorService.validateRequest(req);
+        gatewayDispatchNorthService.dispatchUnBindingGateway(req.getDispatchId(), req.getGatewayIds());
+        return CommonResponse.success();
+    }
 
 }

@@ -2,6 +2,8 @@ package com.runjian.parsing.service.south;
 
 import com.runjian.parsing.vo.response.SignInRsp;
 
+import java.util.Set;
+
 public interface GatewayService {
 
     /**

@@ -48,4 +48,11 @@ public interface GatewayDispatchNorthService {
      * @param gatewayIds 网关id
      */
     void dispatchBindingGateway(Long dispatchId, Set<Long> gatewayIds);
+
+    /**
+     * 流媒体解除绑定网关
+     * @param dispatchId 调度服务id
+     * @param gatewayIds 网关id
+     */
+    void dispatchUnBindingGateway(Long dispatchId, Set<Long> gatewayIds);
 }

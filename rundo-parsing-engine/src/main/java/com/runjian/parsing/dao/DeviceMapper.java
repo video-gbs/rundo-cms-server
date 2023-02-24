@@ -4,6 +4,7 @@ import com.runjian.parsing.entity.DeviceInfo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -36,4 +37,10 @@ public interface DeviceMapper {
             " WHERE gateway_id = #{gatewayId} AND origin_id = #{originId} " +
             " </script>")
     Optional<DeviceInfo> selectByGatewayIdAndOriginId(Long gatewayId, String originId);
+
+    @Insert({" <script> " +
+            " INSERT INTO " + DEVICE_TABLE_NAME + "(id, gateway_id, origin_id, update_time, create_time) values " +
+            " <foreach collection='deviceInfoList' item='item' separator=','>(#{item.id}, #{item.gatewayId}, #{item.originId}, #{item.updateTime}, #{item.createTime})</foreach> " +
+            " </script>"})
+    void batchSave(List<DeviceInfo> deviceInfoList);
 }

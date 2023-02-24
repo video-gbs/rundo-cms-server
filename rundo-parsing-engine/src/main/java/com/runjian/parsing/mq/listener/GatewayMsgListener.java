@@ -11,7 +11,6 @@ import com.runjian.parsing.constant.IdType;
 import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.dao.GatewayMapper;
 import com.runjian.parsing.entity.GatewayInfo;
-import com.runjian.parsing.mq.config.RabbitMqProperties;
 import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.service.common.ProtocolService;
 import com.runjian.parsing.vo.CommonMqDto;
@@ -19,11 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -70,7 +66,9 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
             if (mqRequest.getMsgType().equals(MsgType.DEVICE_SIGN_IN.getMsg())) {
                 protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceSignIn(gatewayInfo.getId(), mqRequest.getData());
                 return;
-            } else if (!StringUtils.isNumber(mqRequest.getMsgId())) {
+            } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_TOTAL_SYNC.getMsg())){
+                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceBatchSignIn(gatewayInfo.getId(), mqRequest.getData());
+            }else if (!StringUtils.isNumber(mqRequest.getMsgId())) {
                 protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).commonEvent(gatewayInfo.getId(), mqRequest.getMsgId(), mqRequest.getMsgType(), mqRequest.getData());
                 return;
             }

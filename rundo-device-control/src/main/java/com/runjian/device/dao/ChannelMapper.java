@@ -89,4 +89,20 @@ public interface ChannelMapper {
             " </script> ")
     List<ChannelInfo> selectByIds(List<Long> channelIdList);
 
+    @Select(value = {" <script> " +
+            " SELECT * FROM " + CHANNEL_TABLE_NAME +
+            " WHERE device_id IN" +
+            " <foreach collection='deviceIds'  item='item'  open='(' separator=',' close=')' > #{item} </foreach> " +
+            " AND online_state = #{onlineState} " +
+            " </script> "})
+    List<ChannelInfo> selectByDeviceIdsAndOnlineState(List<Long> deviceIds, Integer onlineState);
+
+    @Update(" <script> " +
+            " UPDATE " + CHANNEL_TABLE_NAME +
+            " SET update_time = #{item.updateTime}  " +
+            " , online_state = #{item.onlineState} " +
+            " WHERE device_id IN "+
+            " <foreach collection='deviceIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void batchUpdateOnlineStateByDeviceIds(List<Long> deviceIds, Integer onlineState, LocalDateTime updateTime);
 }

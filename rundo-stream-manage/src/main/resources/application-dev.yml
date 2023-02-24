@@ -4,9 +4,9 @@ spring:
   cloud:
     nacos:
       discovery:
-        username: ${NACOS_USERNAME}
-        password: ${NACOS_PASSWORD}
-        server-addr: ${NACOS_SERVER:124.71.21.11}
+        username: ${NACOS_USERNAME:nacos}
+        password: ${NACOS_PASSWORD:rundo@nacos*2023}
+        server-addr: ${NACOS_SERVER:124.71.21.11:8848}
         namespace: ${NACOS_NAMESPACE:dev}
   web:
     resources:

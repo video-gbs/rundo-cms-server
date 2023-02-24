@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -56,6 +57,19 @@ public class DetailBaseServiceImpl implements DetailBaseService {
         } else {
             detailMapper.update(detailInfo);
         }
+    }
+
+    @Override
+    public void batchSaveOrUpdate(List<DetailInfo> detailInfoList) {
+        for (DetailInfo detailInfo : detailInfoList){
+            Optional<DetailInfo> detailInfoOp = detailMapper.selectByDcIdAndType(detailInfo.getDcId(), detailInfo.getType());
+            if (detailInfoOp.isEmpty()){
+                detailMapper.save(detailInfo);
+            }else {
+                detailMapper.update(detailInfo);
+            }
+        }
+
     }
 
 }

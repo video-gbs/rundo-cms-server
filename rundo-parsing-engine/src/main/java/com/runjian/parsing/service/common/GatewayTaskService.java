@@ -42,7 +42,7 @@ public interface GatewayTaskService {
     /**
      * 创建任务
      */
-    Long createTask(Long gatewayId, Long deviceId, Long channelId, String mqId, String msgType);
+    Long createTask(Long gatewayId, Long deviceId, Long channelId, String mqId, String msgType, TaskState taskState);
 
     /**
      * 获取任务
