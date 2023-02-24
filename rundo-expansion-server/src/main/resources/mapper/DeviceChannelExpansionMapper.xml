@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.runjian.device.expansion.mapper.DeviceExpansionMapper">
+<mapper namespace="com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper">
 
 
     <select id="listPage" resultType="com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp">
@@ -12,7 +12,26 @@
 	left join
 			rundo_device_expansion t2 on t1.device_expansion_id=t2.id
 	WHERE
-			t1.deleted = 0
+			t1.deleted = 0 and t1.video_area_id in
+			<foreach collection="videaAreaIdList" item="areaId" index="index" open="(" close=")" separator=",">
+				#{areaId}
+			</foreach>
+
+			<if test="deviceChannelExpansionListReq.name != null and deviceChannelExpansionListReq.name !=''">
+				and t1.channel_name like concat('%',#{deviceChannelExpansionListReq.name},'%')
+			</if>
+			<if test="deviceChannelExpansionListReq.ip != null and deviceChannelExpansionListReq.ip !=''">
+				and t1.ip like concat('%',#{deviceChannelExpansionListReq.ip},'%')
+			</if>
+			<if test="deviceChannelExpansionListReq.ptzType != null">
+				and t1.ptz_type = #{deviceChannelExpansionListReq.ptzType}
+			</if>
+			<if test="deviceChannelExpansionListReq.onlineState != null">
+				and t1.online_state = #{deviceChannelExpansionListReq.onlineState}
+			</if>
+
+			order by t1.created_at Desc
+
 
 
     </select>

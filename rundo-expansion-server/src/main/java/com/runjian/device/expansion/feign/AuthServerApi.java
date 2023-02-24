@@ -27,7 +27,7 @@ public interface AuthServerApi {
      * @return
      */
     @PostMapping(value = "/auth/videoArae/getList")
-    CommonResponse<List<VideoAreaResp>> getVideoAraeList(@RequestParam(value = "areaId",required = false) Integer areaId);
+    CommonResponse<List<VideoAreaResp>> getVideoAraeList(@RequestParam(value = "areaId",required = false) Long areaId);
 
     /**
      * 控制服务 设备添加
@@ -35,5 +35,5 @@ public interface AuthServerApi {
      * @return
      */
     @GetMapping(value = "/auth/videoArae/getById/{id}")
-    CommonResponse<VideoAreaResp> getVideoAraeInfo(@PathVariable(value = "id") Integer id);
+    CommonResponse<VideoAreaResp> getVideoAraeInfo(@PathVariable(value = "id") Long id);
 }

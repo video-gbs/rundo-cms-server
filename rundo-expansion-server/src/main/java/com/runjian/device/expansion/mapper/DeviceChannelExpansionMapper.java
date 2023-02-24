@@ -15,6 +15,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 通道信息表
@@ -27,6 +28,6 @@ public interface DeviceChannelExpansionMapper extends BaseMapper<DeviceChannelEx
      * @param deviceChannelExpansionListReq
      * @return
      */
-    Page<DeviceChannelExpansionResp> listPage(Page<DeviceChannelExpansion> page, DeviceChannelExpansionListReq deviceChannelExpansionListReq);
+    Page<DeviceChannelExpansionResp> listPage(Page<DeviceChannelExpansion> page, DeviceChannelExpansionListReq deviceChannelExpansionListReq, List<Long> videaAreaIdList);
 
 }

@@ -67,7 +67,7 @@ public class DeviceChannelExpansionController {
     @PostMapping(value = "/list", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("列表")
     public CommonResponse<PageResp<DeviceChannelExpansionResp>> list(@RequestBody DeviceChannelExpansionListReq request) {
-
+        validatorService.validateRequest(request);
         return CommonResponse.success(deviceChannelExpansionService.list(request));
     }
 

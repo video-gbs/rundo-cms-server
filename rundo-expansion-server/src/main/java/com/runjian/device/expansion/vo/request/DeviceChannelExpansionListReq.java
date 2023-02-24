@@ -11,22 +11,19 @@ import javax.validation.constraints.NotNull;
 @Data
 public class DeviceChannelExpansionListReq {
     @ApiModelProperty("设备通道名称")
-    @NotNull(message = "设备通道名称不能为空")
     private String name;
 
     @ApiModelProperty("设备通道类型")
-    @NotNull(message = "设备通道类型不能为空")
     private Integer ptzType;
 
     @ApiModelProperty("ip")
-    @NotNull(message = "ip不能为空")
     private String ip;
 
     @ApiModelProperty("状态值")
     private Integer onlineState;
 
     @ApiModelProperty("安放区域id")
-    private Integer videoAreaId;
+    private Long videoAreaId;
 
     @ApiModelProperty("是否包含下级组织")
     private Boolean includeEquipment = true;
