@@ -1,6 +1,6 @@
 @echo off
 if not exist .env (
-  echo version.txt file not exist
+  echo .env file not exist
   goto end
 )
 
