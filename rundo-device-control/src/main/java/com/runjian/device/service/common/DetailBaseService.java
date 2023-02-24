@@ -1,5 +1,6 @@
 package com.runjian.device.service.common;
 
+import com.runjian.device.constant.DetailType;
 import com.runjian.device.entity.DetailInfo;
 
 import java.time.LocalDateTime;
@@ -31,5 +32,5 @@ public interface DetailBaseService {
      * 批量保存
      * @param detailInfoList
      */
-    void batchSaveOrUpdate(List<DetailInfo> detailInfoList);
+    void batchSaveOrUpdate(List<DetailInfo> detailInfoList, DetailType detailType);
 }

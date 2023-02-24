@@ -18,7 +18,7 @@ public interface GatewayBaseService {
     /**
      * 系统启动时关闭所有网关
      */
-    void systemStart();
+    void init();
 
     /**
      * 心跳

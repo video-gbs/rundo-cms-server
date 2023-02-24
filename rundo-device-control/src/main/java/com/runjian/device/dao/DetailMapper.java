@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 设备或者通道的详细信息数据库操作类
@@ -79,4 +80,12 @@ public interface DetailMapper {
             " AND type = #{type} " +
             " </script>")
     void deleteByDcIdsAndType(List<Long> channelInfoIdList, Integer type);
+
+    @Select(" <script> " +
+            " SELECT * FROM " + DETAIL_TABLE_NAME +
+            " WHERE dc_id IN " +
+            " <foreach collection='dcIds' item='item' open='(' separator=',' close=')' >#{item}</foreach> " +
+            " AND type = #{detailType} " +
+            " </script>")
+    List<DetailInfo> selectByDcIdsAndType(Set<Long> dcIds, Integer detailType);
 }

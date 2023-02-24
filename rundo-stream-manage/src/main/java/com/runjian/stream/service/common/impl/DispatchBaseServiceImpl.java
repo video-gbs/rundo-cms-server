@@ -25,7 +25,8 @@ public class DispatchBaseServiceImpl implements DispatchBaseService {
     @Override
     @PostConstruct
     public void init(){
-        dispatchMapper.setAllOnlineState(CommonEnum.DISABLE.getCode(), LocalDateTime.now());
+        Set<Long> gatewayIds =  dispatchMapper.selectIdByOnlineState(CommonEnum.ENABLE.getCode());
+        HEARTBEAT_ARRAY.addOrUpdateTime(gatewayIds, 60L);
     }
 
     @Override
