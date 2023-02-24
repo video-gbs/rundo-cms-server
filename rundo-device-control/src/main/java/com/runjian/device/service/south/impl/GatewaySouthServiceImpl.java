@@ -27,8 +27,6 @@ public class GatewaySouthServiceImpl implements GatewaySouthService {
     @Autowired
     private GatewayMapper gatewayMapper;
 
-
-
     /**
      * 网关注册
      * @param gatewayInfo 网关信息

@@ -126,7 +126,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         LocalDateTime nowTime = LocalDateTime.now();
         // 修改
         for (DeviceInfo deviceInfo : oldDeviceInfoList){
-            PostDeviceSignInReq postDeviceSignInReq = postDeviceSignInReqMap.get(deviceInfo.getId());
+            PostDeviceSignInReq postDeviceSignInReq = postDeviceSignInReqMap.remove(deviceInfo.getId());
             deviceInfo.setUpdateTime(nowTime);
             boolean isAutoSignIn = false;
             // 判断是否是待注册状态
@@ -155,8 +155,6 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 offLineDeviceIdList.add(deviceInfo.getId());
             }
             detailInfoList.add(getNewDetailInfo(postDeviceSignInReq, nowTime));
-            // 移除已处理的修改数据
-            postDeviceSignInReqMap.remove(deviceInfo.getId());
         }
 
         // 新增
@@ -181,7 +179,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         if (saveDeviceList.size() > 0)
             deviceMapper.batchSave(saveDeviceList);
         if (detailInfoList.size() > 0)
-            detailBaseService.batchSaveOrUpdate(detailInfoList);
+            detailBaseService.batchSaveOrUpdate(detailInfoList, DetailType.DEVICE);
         if (updateDeviceRedisMap.size() > 0)
             redisBaseService.batchUpdateDeviceOnlineState(updateDeviceRedisMap);
         if (offLineDeviceIdList.size() > 0)

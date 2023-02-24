@@ -1,15 +1,20 @@
 package com.runjian.device.service.common.impl;
 
+import com.runjian.device.constant.DetailType;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.service.common.DetailBaseService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Miracle
@@ -60,16 +65,19 @@ public class DetailBaseServiceImpl implements DetailBaseService {
     }
 
     @Override
-    public void batchSaveOrUpdate(List<DetailInfo> detailInfoList) {
-        for (DetailInfo detailInfo : detailInfoList){
-            Optional<DetailInfo> detailInfoOp = detailMapper.selectByDcIdAndType(detailInfo.getDcId(), detailInfo.getType());
-            if (detailInfoOp.isEmpty()){
-                detailMapper.save(detailInfo);
-            }else {
-                detailMapper.update(detailInfo);
-            }
+    public void batchSaveOrUpdate(List<DetailInfo> detailInfoList, DetailType detailType) {
+        Map<Long, DetailInfo> detailInfoMap = detailInfoList.stream().collect(Collectors.toMap(DetailInfo::getDcId, detailInfo -> detailInfo));
+        List<DetailInfo> updateList = detailMapper.selectByDcIdsAndType(detailInfoMap.keySet(), detailType.getCode());
+        for (DetailInfo oldDetailInfo : updateList){
+            DetailInfo detailInfo = detailInfoMap.remove(oldDetailInfo.getDcId());
+            detailInfo.setId(oldDetailInfo.getId());
+            detailInfo.setCreateTime(oldDetailInfo.getCreateTime());
+            detailInfo.setOriginId(oldDetailInfo.getOriginId());
+            BeanUtils.copyProperties(detailInfo, oldDetailInfo);
         }
 
-    }
+        detailMapper.batchUpdate(updateList);
+        detailMapper.batchSave(new ArrayList<>(detailInfoMap.values()));
 
+    }
 }

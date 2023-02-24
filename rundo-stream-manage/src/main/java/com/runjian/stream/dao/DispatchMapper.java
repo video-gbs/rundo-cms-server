@@ -79,4 +79,7 @@ public interface DispatchMapper {
     @Select(" SELECT id as dispatchId, name FROM " + DISPATCH_TABLE_NAME )
     List<GetDispatchNameRsp> selectAllName();
 
+    @Select(" SELECT id FROM " + DISPATCH_TABLE_NAME +
+            " WHERE online_state = #{onlineState} ")
+    Set<Long> selectIdByOnlineState(Integer onlineState);
 }

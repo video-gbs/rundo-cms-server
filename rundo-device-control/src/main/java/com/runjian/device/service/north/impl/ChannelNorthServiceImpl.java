@@ -156,18 +156,14 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             // 更新通道的在线状态
             redisBaseService.batchUpdateChannelOnlineState(channelOnlineMap);
             // 对数据进行批量保存
-            if (channelSaveList.size() > 0) {
+            if (channelSaveList.size() > 0)
                 channelMapper.batchSave(channelSaveList);
-            }
-            if (channelUpdateList.size() > 0) {
+            if (channelUpdateList.size() > 0)
                 channelMapper.batchUpdateOnlineState(channelUpdateList);
-            }
-            if (detailSaveList.size() > 0) {
+            if (detailSaveList.size() > 0)
                 detailMapper.batchSave(detailSaveList);
-            }
-            if (detailUpdateList.size() > 0) {
+            if (detailUpdateList.size() > 0)
                 detailMapper.batchUpdate(detailUpdateList);
-            }
         }
         return channelSyncRsp;
     }
