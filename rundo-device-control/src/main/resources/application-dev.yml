@@ -63,6 +63,12 @@ mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
 
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
 # [可选] 日志配置, 一般不需要改
 logging:
   config: classpath:logback-spring.xml

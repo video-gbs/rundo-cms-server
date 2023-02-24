@@ -1,9 +1,5 @@
 package com.runjian.device.dao;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.github.pagehelper.PageInfo;
-import com.runjian.device.constant.SignState;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.vo.response.GetDevicePageRsp;
 import org.apache.ibatis.annotations.*;

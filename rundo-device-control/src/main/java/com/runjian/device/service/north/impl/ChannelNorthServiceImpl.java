@@ -25,7 +25,6 @@ import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.feign.StreamPlayReq;
 import com.runjian.device.vo.response.*;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -339,7 +338,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         return videoPlayRspCommonResponse.getData();
     }
 
-    @NotNull
+
     private ChannelInfo getChannelInfoAndValid(Long chId) {
         ChannelInfo channelInfo = dataBaseService.getChannelInfo(chId);
         // 检测通道是否在线
