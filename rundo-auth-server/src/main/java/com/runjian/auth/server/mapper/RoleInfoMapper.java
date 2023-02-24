@@ -2,6 +2,7 @@ package com.runjian.auth.server.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.runjian.auth.server.domain.dto.common.BatchDTO;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageRoleRelationSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysRoleInfoDto;
@@ -86,16 +87,21 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
     Page<SysRoleInfoVO> MySelectPage(PageSysRoleInfoDto page);
 
     void insertRoleApp(@Param("roleId") Long roleId, @Param("appId") Long appId);
+    void batchInsertRoleApp(List<BatchDTO> list);
 
     void insertRoleMenu(@Param("roleId") Long roleId, @Param("menuId") Long menuId);
 
+    void batchInsertRoleMenu(List<BatchDTO> batchDTOList);
+
     void insertRoleApi(@Param("roleId") Long roleId, @Param("apiId") Long apiId);
 
+    void batchInsertRoleApi(List<BatchDTO> batchDTOList);
     void insertRoleOrg(@Param("roleId") Long roleId, @Param("orgId") Long orgId);
-
+    void batchInsertRoleOrg(List<BatchDTO> batchDTOList);
     void insertRoleArea(@Param("roleId") Long roleId, @Param("areaId") Long areaId);
-
+    void batchInsertRoleArea(List<BatchDTO> batchDTOList);
     void insertRoleUser(@Param("roleId") Long roleId, @Param("userId") Long userId);
+    void batchInsertRoleUser(List<BatchDTO> batchDTOList);
 
     void removeRoleApp(@Param("roleId") Long roleId, @Param("appId") Long appId);
 

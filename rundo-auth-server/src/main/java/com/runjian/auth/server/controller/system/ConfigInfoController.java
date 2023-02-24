@@ -54,11 +54,4 @@ public class ConfigInfoController {
         return CommonResponse.success(configInfoService.findByList());
     }
 
-    @GetMapping("/getListByPage")
-    @ApiOperation("获取系统参数配置列表 含分页")
-    public CommonResponse getListByPage(@RequestBody Long id) {
-        // TODO 分页获取系统参数配置列表
-        return CommonResponse.success(configInfoService.list());
-    }
-
 }

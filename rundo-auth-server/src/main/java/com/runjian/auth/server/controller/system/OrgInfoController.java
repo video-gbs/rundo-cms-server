@@ -85,12 +85,5 @@ public class OrgInfoController {
         return CommonResponse.success(orgInfoService.findByList());
     }
 
-    // @GetMapping("/getListByPage")
-    // @ApiOperation("分页获取部门列表")
-    // public CommonResponse<IPage<SysOrgVO>> getListByPage() {
-    //     // TODO 分页获取应用列表
-    //     return CommonResponse.create(200, "操作成功", sysOrgService.getListByPage(pageNum, pageSize));
-    // }
-
 
 }

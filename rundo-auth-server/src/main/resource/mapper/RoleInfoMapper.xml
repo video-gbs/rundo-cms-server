@@ -124,66 +124,122 @@
         INSERT INTO role_app (role_id, app_id)
         VALUES (#{roleId,jdbcType=BIGINT}, #{appId,jdbcType=BIGINT});
     </insert>
-
+    <select id="batchInsertRoleApp" resultType="void">
+        INSERT INTO role_app (role_id, app_id)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
+        </foreach>
+    </select>
     <insert id="insertRoleMenu">
         INSERT INTO role_menu (role_id, menu_id)
         VALUES (#{roleId,jdbcType=BIGINT}, #{menuId,jdbcType=BIGINT});
     </insert>
+    <select id="batchInsertRoleMenu" resultType="void">
+        INSERT INTO role_menu (role_id, menu_id)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
+        </foreach>
+    </select>
 
     <insert id="insertRoleApi">
         INSERT INTO role_api (role_id, api_id)
         VALUES (#{roleId,jdbcType=BIGINT}, #{apiId,jdbcType=BIGINT});
     </insert>
+    <select id="batchInsertRoleApi" resultType="void">
+        INSERT INTO role_api (role_id, api_id)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
+        </foreach>
+    </select>
 
     <insert id="insertRoleOrg">
         INSERT INTO role_org (role_id, org_id)
         VALUES (#{roleId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT});
     </insert>
 
+    <select id="batchInsertRoleOrg" resultType="void">
+        INSERT INTO role_org (role_id, org_id)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
+        </foreach>
+    </select>
+
     <insert id="insertRoleArea">
         INSERT INTO role_area (role_id, area_id)
         VALUES (#{roleId,jdbcType=BIGINT}, #{areaId,jdbcType=BIGINT});
     </insert>
+
+    <select id="batchInsertRoleArea" resultType="void">
+        INSERT INTO role_area (role_id, area_id)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
+        </foreach>
+    </select>
 
     <insert id="insertRoleUser">
         INSERT INTO role_user (role_id, user_id)
         VALUES (#{roleId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT});
     </insert>
 
+    <select id="batchInsertRoleUser" resultType="void">
+        INSERT INTO role_user (role_id, user_id)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
+        </foreach>
+    </select>
+
     <delete id="removeRoleApp">
         DELETE FROM role_app t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
-        AND t.app_id = #{appId,jdbcType=BIGINT}
+        <if test="appId != null">
+            AND t.app_id = #{appId,jdbcType=BIGINT}
+        </if>
     </delete>
 
     <delete id="removeRoleMenu">
         DELETE FROM role_menu t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
-        AND t.menu_id = #{menuId,jdbcType=BIGINT}
+        <if test="menuId != null">
+            AND t.menu_id = #{menuId,jdbcType=BIGINT}
+        </if>
     </delete>
 
     <delete id="removeRoleApi">
         DELETE FROM role_api t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
-        AND t.api_id = #{apiId,jdbcType=BIGINT}
+        <if test="apiId != null">
+            AND t.api_id = #{apiId,jdbcType=BIGINT}
+        </if>
     </delete>
 
     <delete id="removeRoleOrg">
         DELETE FROM role_org t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
-        AND t.org_id = #{orgId,jdbcType=BIGINT}
+        <if test="roleId != null">
+            AND t.org_id = #{orgId,jdbcType=BIGINT}
+        </if>
     </delete>
 
     <delete id="removeRoleArea">
         DELETE FROM role_area t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
-        AND t.area_id = #{areaId,jdbcType=BIGINT}
+        <if test="areaId != null">
+            AND t.area_id = #{areaId,jdbcType=BIGINT}
+        </if>
     </delete>
 
     <delete id="removeRoleUser">
         DELETE FROM role_user t
         WHERE t.role_id = #{roleId,jdbcType=BIGINT}
-        AND t.user_id = #{userId,jdbcType=BIGINT}
+        <if test="userId != null">
+            AND t.user_id = #{userId,jdbcType=BIGINT}
+        </if>
     </delete>
 
     <select id="findAppIdList" resultType="java.lang.Long">
@@ -255,5 +311,6 @@
             </if>
         </where>
     </select>
+
 
 </mapper>

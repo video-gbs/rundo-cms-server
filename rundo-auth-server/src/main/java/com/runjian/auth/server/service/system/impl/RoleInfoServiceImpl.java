@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.domain.dto.common.BatchDTO;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageRoleRelationSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysRoleInfoDto;
@@ -81,35 +82,64 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         apiIdList.addAll(getApiIds(configIds));
         apiIdList.addAll(getApiIds(devopsIds));
 
-        // TODO 下面的操作后期要优化为批量接口
         if (CollUtil.isNotEmpty(appIdList)) {
+            List<BatchDTO> batchAppIdList = new ArrayList<>();
             for (Long appId : appIdList) {
-                roleInfoMapper.insertRoleApp(roleId, appId);
+                // roleInfoMapper.insertRoleApp(roleId, appId);
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setRoleId(roleId);
+                batchDTO.setObjId(appId);
+                batchAppIdList.add(batchDTO);
             }
+            roleInfoMapper.batchInsertRoleApp(batchAppIdList);
         }
 
         if (CollUtil.isNotEmpty(menuIdList)) {
+            List<BatchDTO> batchMenuIdList = new ArrayList<>();
             for (Long menuId : menuIdList) {
-                roleInfoMapper.insertRoleMenu(roleId, menuId);
+                // roleInfoMapper.insertRoleMenu(roleId, menuId);
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setRoleId(roleId);
+                batchDTO.setObjId(menuId);
+                batchMenuIdList.add(batchDTO);
             }
+            roleInfoMapper.batchInsertRoleMenu(batchMenuIdList);
         }
 
         if (CollUtil.isNotEmpty(apiIdList)) {
+            List<BatchDTO> batchApiIdList = new ArrayList<>();
             for (Long apiId : apiIdList) {
-                roleInfoMapper.insertRoleApi(roleId, apiId);
+                // roleInfoMapper.insertRoleApi(roleId, apiId);
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setRoleId(roleId);
+                batchDTO.setObjId(apiId);
+                batchApiIdList.add(batchDTO);
             }
+            roleInfoMapper.batchInsertRoleApi(batchApiIdList);
         }
 
         if (CollUtil.isNotEmpty(orgIds)) {
+            List<BatchDTO> batchOrgIdList = new ArrayList<>();
             for (Long orgId : orgIds) {
-                roleInfoMapper.insertRoleOrg(roleId, orgId);
+                // roleInfoMapper.insertRoleOrg(roleId, orgId);
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setRoleId(roleId);
+                batchDTO.setObjId(orgId);
+                batchOrgIdList.add(batchDTO);
             }
+            roleInfoMapper.batchInsertRoleOrg(batchOrgIdList);
         }
 
         if (CollUtil.isNotEmpty(areaIds)) {
+            List<BatchDTO> batchAreaIdList = new ArrayList<>();
             for (Long areaId : areaIds) {
-                roleInfoMapper.insertRoleArea(roleId, areaId);
+                // roleInfoMapper.insertRoleArea(roleId, areaId);
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setRoleId(roleId);
+                batchDTO.setObjId(areaId);
+                batchAreaIdList.add(batchDTO);
             }
+            roleInfoMapper.batchInsertRoleArea(batchAreaIdList);
         }
 
 
@@ -149,12 +179,20 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         // 区域
         List<Long> areaIdList = dto.getAreaIds();
 
-        ///////////应用///////////////////
+        /**
+         * 应用
+         */
         if (CollUtil.isEmpty(oldAppIdList) && CollUtil.isNotEmpty(appIdList)) {
             // 原始授权应用为空，本次为新增
+            List<BatchDTO> batchAppIdList = new ArrayList<>();
             for (Long appId : appIdList) {
-                roleInfoMapper.insertRoleApp(dto.getId(), appId);
+                // roleInfoMapper.insertRoleApp(dto.getId(), appId);
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setRoleId(dto.getId());
+                batchDTO.setObjId(appId);
+                batchAppIdList.add(batchDTO);
             }
+            roleInfoMapper.batchInsertRoleApp(batchAppIdList);
         }
         if (CollUtil.isEmpty(apiIdList)) {
             // 如果提交的应用为空，则删除所有的角色关联应用
@@ -169,16 +207,30 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
         // 新提交的应用列表剔除相同部分后新增授权
         appIdList.removeAll(commonApp);
+        List<BatchDTO> batchAppIdList = new ArrayList<>();
         for (Long appId : appIdList) {
-            roleInfoMapper.insertRoleApp(dto.getId(), appId);
+            // roleInfoMapper.insertRoleApp(dto.getId(), appId);
+            BatchDTO batchDTO = new BatchDTO();
+            batchDTO.setRoleId(dto.getId());
+            batchDTO.setObjId(appId);
+            batchAppIdList.add(batchDTO);
         }
+        roleInfoMapper.batchInsertRoleApp(batchAppIdList);
 
-        ///////////菜单///////////////////
+        /**
+         * 菜单
+         */
         if (CollUtil.isEmpty(oldMenuIdList) && CollUtil.isNotEmpty(menuIdList)) {
             // 原始授权菜单为空，本次为新增
+            List<BatchDTO> batchMenuIdList = new ArrayList<>();
             for (Long menuId : menuIdList) {
-                roleInfoMapper.insertRoleMenu(dto.getId(), menuId);
+                // roleInfoMapper.insertRoleMenu(dto.getId(), menuId);
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setRoleId(dto.getId());
+                batchDTO.setObjId(menuId);
+                batchAppIdList.add(batchDTO);
             }
+            roleInfoMapper.batchInsertRoleMenu(batchMenuIdList);
         }
         if (CollUtil.isEmpty(menuIdList)) {
             // 如果提交的菜单为空，则删除所有的角色关联菜单
@@ -192,17 +244,31 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             roleInfoMapper.removeRoleMenu(dto.getId(), menuId);
         }
         // 新提交的菜单列表剔除相同部分后新增授权
+        List<BatchDTO> batchMenuIdList = new ArrayList<>();
         menuIdList.removeAll(commonMenu);
         for (Long menuId : menuIdList) {
-            roleInfoMapper.insertRoleMenu(dto.getId(), menuId);
+            // roleInfoMapper.insertRoleMenu(dto.getId(), menuId);
+            BatchDTO batchDTO = new BatchDTO();
+            batchDTO.setRoleId(dto.getId());
+            batchDTO.setObjId(menuId);
+            batchAppIdList.add(batchDTO);
         }
+        roleInfoMapper.batchInsertRoleMenu(batchMenuIdList);
 
-        ///////////接口///////////////////
+        /**
+         * 接口
+         */
         if (CollUtil.isEmpty(oldApiIdList) && CollUtil.isNotEmpty(apiIdList)) {
             // 原始授权接口为空，本次为新增
+            List<BatchDTO> batchApiIdList = new ArrayList<>();
             for (Long apiId : apiIdList) {
-                roleInfoMapper.insertRoleApi(dto.getId(), apiId);
+                // roleInfoMapper.insertRoleApi(dto.getId(), apiId);
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setRoleId(dto.getId());
+                batchDTO.setObjId(apiId);
+                batchAppIdList.add(batchDTO);
             }
+            roleInfoMapper.batchInsertRoleApi(batchApiIdList);
         }
         if (CollUtil.isEmpty(apiIdList)) {
             // 如果提交的接口为空，则删除所有的角色关联接口
@@ -217,16 +283,30 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
         // 新提交的应用列表剔除相同部分后新增授权
         apiIdList.removeAll(commonApi);
+        List<BatchDTO> batchApiIdList = new ArrayList<>();
         for (Long apiId : apiIdList) {
-            roleInfoMapper.insertRoleApi(dto.getId(), apiId);
+            // roleInfoMapper.insertRoleApi(dto.getId(), apiId);
+            BatchDTO batchDTO = new BatchDTO();
+            batchDTO.setRoleId(dto.getId());
+            batchDTO.setObjId(apiId);
+            batchAppIdList.add(batchDTO);
         }
+        roleInfoMapper.batchInsertRoleApi(batchApiIdList);
 
-        ///////////组织///////////////////
+        /**
+         * 组织
+         */
         if (CollUtil.isEmpty(oldOrgIdList) && CollUtil.isNotEmpty(orgIdList)) {
             // 原始授权应用为空，本次为新增
+            List<BatchDTO> batchOrgIdList = new ArrayList<>();
             for (Long orgId : orgIdList) {
-                roleInfoMapper.insertRoleOrg(dto.getId(), orgId);
+                // roleInfoMapper.insertRoleOrg(dto.getId(), orgId);
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setRoleId(dto.getId());
+                batchDTO.setObjId(orgId);
+                batchAppIdList.add(batchDTO);
             }
+            roleInfoMapper.batchInsertRoleApi(batchOrgIdList);
         }
         if (CollUtil.isEmpty(orgIdList)) {
             // 如果提交的应用为空，则删除所有的角色关联应用
@@ -240,17 +320,30 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             roleInfoMapper.removeRoleOrg(dto.getId(), apiId);
         }
         // 新提交的应用列表剔除相同部分后新增授权
+        List<BatchDTO> batchOrgIdList = new ArrayList<>();
         orgIdList.removeAll(commonOrg);
-        for (Long apiId : apiIdList) {
-            roleInfoMapper.insertRoleOrg(dto.getId(), apiId);
+        for (Long orgId : orgIdList) {
+            BatchDTO batchDTO = new BatchDTO();
+            batchDTO.setRoleId(dto.getId());
+            batchDTO.setObjId(orgId);
+            batchAppIdList.add(batchDTO);
         }
+        roleInfoMapper.batchInsertRoleApi(batchOrgIdList);
 
-        ///////////区域///////////////////
+        /**
+         * 区域
+         */
         if (CollUtil.isEmpty(oldAreaIdList) && CollUtil.isNotEmpty(areaIdList)) {
             // 原始授权应用为空，本次为新增
+            List<BatchDTO> batchAreaIdList = new ArrayList<>();
             for (Long areaId : areaIdList) {
-                roleInfoMapper.insertRoleArea(dto.getId(), areaId);
+                // roleInfoMapper.insertRoleArea(dto.getId(), areaId);
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setRoleId(dto.getId());
+                batchDTO.setObjId(areaId);
+                batchAppIdList.add(batchDTO);
             }
+            roleInfoMapper.batchInsertRoleApi(batchAreaIdList);
         }
         if (CollUtil.isEmpty(orgIdList)) {
             // 如果提交的应用为空，则删除所有的角色关联应用
@@ -264,10 +357,16 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             roleInfoMapper.removeRoleArea(dto.getId(), areaId);
         }
         // 新提交的应用列表剔除相同部分后新增授权
+        List<BatchDTO> batchAreaIdList = new ArrayList<>();
         orgIdList.removeAll(commonArea);
         for (Long areaId : apiIdList) {
             roleInfoMapper.insertRoleArea(dto.getId(), areaId);
+            BatchDTO batchDTO = new BatchDTO();
+            batchDTO.setRoleId(dto.getId());
+            batchDTO.setObjId(areaId);
+            batchAppIdList.add(batchDTO);
         }
+        roleInfoMapper.batchInsertRoleApi(batchAreaIdList);
 
 
     }
@@ -307,7 +406,6 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     @Override
     public void erasureBatch(List<Long> ids) {
         roleInfoMapper.deleteBatchIds(ids);
-
     }
 
     @Override
@@ -448,10 +546,15 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<Long> oldUserIds = roleInfoMapper.findUserIdList(dto.getRoleId());
         // 如果旧关联为空，则本次为新关联
         if (CollUtil.isEmpty(oldUserIds)) {
-            // 直接关联
+            List<BatchDTO> batchUserIdList = new ArrayList<>();
             for (Long userId : dto.getUserIdList()) {
-                roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
+                // roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
+                BatchDTO batchDTO = new BatchDTO();
+                batchDTO.setRoleId(dto.getRoleId());
+                batchDTO.setObjId(userId);
+                batchUserIdList.add(batchDTO);
             }
+            roleInfoMapper.batchInsertRoleUser(batchUserIdList);
             return;
         }
         // 如果新关联为空，则是取消关联
@@ -468,10 +571,16 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             roleInfoMapper.removeRoleUser(dto.getRoleId(), userId);
         }
         // 新提交的应用列表剔除相同部分后新增授权
+        List<BatchDTO> batchUserIdList = new ArrayList<>();
         dto.getUserIdList().removeAll(commonUserId);
         for (Long userId : dto.getUserIdList()) {
-            roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
+            // roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
+            BatchDTO batchDTO = new BatchDTO();
+            batchDTO.setRoleId(dto.getRoleId());
+            batchDTO.setObjId(userId);
+            batchUserIdList.add(batchDTO);
         }
+        roleInfoMapper.batchInsertRoleUser(batchUserIdList);
 
     }
 

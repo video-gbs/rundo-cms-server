@@ -78,7 +78,6 @@ public class DictInfoController {
     @PostMapping("/getListByPage")
     @ApiOperation("分页获取数据字典列表")
     public CommonResponse<IPage<SysDictVO>> getListByPage(@RequestBody @Valid QureySysDictDTO dto) {
-        // TODO 分页获取数据字典列表
         return CommonResponse.success(dictInfoService.findByPage(dto));
     }
 }
