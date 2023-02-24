@@ -84,7 +84,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             }
 
             // 设备从离线到在线，进行通道同步
-            if (isAutoSignIn || (onlineState.equals(CommonEnum.ENABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode()))){
+            if (onlineState.equals(CommonEnum.ENABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
                 // 对通道同步
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
@@ -100,6 +100,11 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                     redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
                 }
                 channelMapper.updateOnlineStateByDeviceId(id, onlineState, nowTime);
+            } else if (isAutoSignIn && onlineState.equals(CommonEnum.ENABLE.getCode())){
+                deviceInfo.setOnlineState(onlineState);
+                deviceMapper.update(deviceInfo);
+                redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
+                Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceInfo.getId()));
             }
         }
         detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model,firmware,ptzType,nowTime);
@@ -137,7 +142,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             }
 
             // 设备从离线到在线，进行通道同步
-            if (isAutoSignIn || (postDeviceSignInReq.getOnlineState().equals(CommonEnum.ENABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode()))){
+            if (postDeviceSignInReq.getOnlineState().equals(CommonEnum.ENABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
                 // 对通道同步
                 deviceInfo.setOnlineState(postDeviceSignInReq.getOnlineState());
                 updateDeviceList.add(deviceInfo);
@@ -153,6 +158,11 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                     updateDeviceRedisMap.put(deviceInfo.getId(), deviceInfo.getOnlineState());
                 }
                 offLineDeviceIdList.add(deviceInfo.getId());
+            } else if (isAutoSignIn && postDeviceSignInReq.getOnlineState().equals(CommonEnum.ENABLE.getCode())){
+                deviceInfo.setOnlineState(postDeviceSignInReq.getOnlineState());
+                updateDeviceList.add(deviceInfo);
+                updateDeviceRedisMap.put(deviceInfo.getId(), deviceInfo.getOnlineState());
+                needChannelSyncDevice.add(deviceInfo.getId());
             }
             detailInfoList.add(getNewDetailInfo(postDeviceSignInReq, nowTime));
         }
