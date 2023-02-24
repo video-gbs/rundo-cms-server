@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 public class JavaLongAutoConfiguration {
 
     @Bean
-    Jackson2ObjectMapperBuilderCustomizer customizeLocalDateTimeFormat() {
+    Jackson2ObjectMapperBuilderCustomizer customizeLongFormat() {
         return jacksonObjectMapperBuilder -> jacksonObjectMapperBuilder.serializerByType(Long.class, ToStringSerializer.instance);
     }
 }
