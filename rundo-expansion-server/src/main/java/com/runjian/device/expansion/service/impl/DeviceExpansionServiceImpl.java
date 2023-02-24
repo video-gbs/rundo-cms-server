@@ -15,6 +15,7 @@ import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.utils.RedisCommonUtil;
+import com.runjian.device.expansion.vo.feign.request.PutDeviceSignSuccessReq;
 import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import com.runjian.device.expansion.vo.request.DeviceExpansionEditReq;
@@ -77,9 +78,27 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
     @Override
     public CommonResponse<Long> edit(DeviceExpansionEditReq deviceExpansionEditReq) {
-        DeviceExpansion deviceExpansion = new DeviceExpansion();
-        BeanUtil.copyProperties(deviceExpansionEditReq,deviceExpansion);
-        deviceExpansionMapper.updateById(deviceExpansion);
+        DeviceExpansion deviceExpansionDb = deviceExpansionMapper.selectById(deviceExpansionEditReq.getId());
+        if(ObjectUtils.isEmpty(deviceExpansionDb)){
+            // 来自待注册列表的数据操作，编辑/恢复
+            PutDeviceSignSuccessReq putDeviceSignSuccessReq = new PutDeviceSignSuccessReq();
+            putDeviceSignSuccessReq.setDeviceId(deviceExpansionEditReq.getId());
+            CommonResponse longCommonResponse = deviceControlApi.deviceSignSuccess(putDeviceSignSuccessReq);
+            if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                //调用失败
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器状态通知失败",deviceExpansionEditReq, longCommonResponse);
+                return longCommonResponse;
+            }
+            DeviceExpansion deviceExpansion = new DeviceExpansion();
+            BeanUtil.copyProperties(deviceExpansionEditReq,deviceExpansion);
+            deviceExpansionMapper.insert(deviceExpansion);
+        }else {
+            DeviceExpansion deviceExpansion = new DeviceExpansion();
+            BeanUtil.copyProperties(deviceExpansionEditReq,deviceExpansion);
+            deviceExpansionMapper.updateById(deviceExpansion);
+        }
+
+
         return CommonResponse.success();
     }
 
