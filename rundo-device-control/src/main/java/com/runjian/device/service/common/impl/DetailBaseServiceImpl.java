@@ -75,9 +75,11 @@ public class DetailBaseServiceImpl implements DetailBaseService {
             detailInfo.setOriginId(oldDetailInfo.getOriginId());
             BeanUtils.copyProperties(detailInfo, oldDetailInfo);
         }
-
-        detailMapper.batchUpdate(updateList);
-        detailMapper.batchSave(new ArrayList<>(detailInfoMap.values()));
-
+        if (updateList.size() > 0){
+            detailMapper.batchUpdate(updateList);
+        }
+        if (detailInfoMap.size() > 0){
+            detailMapper.batchSave(new ArrayList<>(detailInfoMap.values()));
+        }
     }
 }

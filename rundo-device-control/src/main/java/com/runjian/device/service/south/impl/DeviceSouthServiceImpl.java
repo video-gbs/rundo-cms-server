@@ -116,7 +116,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         if (req.isEmpty()){
             return;
         }
-        Map<Long, PostDeviceSignInReq> postDeviceSignInReqMap = req.stream().collect(Collectors.toMap(PostDeviceSignInReq::getDeviceId, postDeviceSignInReq -> postDeviceSignInReq));
+        Map<Long, PostDeviceSignInReq> postDeviceSignInReqMap = req.stream().collect(Collectors.toMap(PostDeviceSignInReq::getId, postDeviceSignInReq -> postDeviceSignInReq));
         // 查询已存在的设备信息
         List<DeviceInfo> oldDeviceInfoList = deviceMapper.selectByIds(postDeviceSignInReqMap.keySet());
 
@@ -170,7 +170,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         // 新增
         for (PostDeviceSignInReq request : postDeviceSignInReqMap.values()){
             DeviceInfo deviceInfo = new DeviceInfo();
-            deviceInfo.setId(request.getDeviceId());
+            deviceInfo.setId(request.getId());
             deviceInfo.setGatewayId(request.getGatewayId());
             deviceInfo.setDeviceType(request.getDeviceType());
             deviceInfo.setOnlineState(request.getOnlineState());
@@ -202,7 +202,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
 
     private DetailInfo getNewDetailInfo(PostDeviceSignInReq req, LocalDateTime nowTime){
         DetailInfo detailInfo = new DetailInfo();
-        detailInfo.setDcId(req.getDeviceId());
+        detailInfo.setDcId(req.getId());
         detailInfo.setOriginId(req.getOriginId());
         detailInfo.setType(DetailType.DEVICE.getCode());
         detailInfo.setIp(req.getIp());

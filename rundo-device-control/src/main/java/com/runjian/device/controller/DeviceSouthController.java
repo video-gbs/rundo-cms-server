@@ -36,7 +36,7 @@ public class DeviceSouthController {
     @PostMapping("/sign-in")
     public CommonResponse<?> signIn(@RequestBody PostDeviceSignInReq req){
         validatorService.validateRequest(req);
-        deviceSouthService.signIn(req.getDeviceId(), req.getGatewayId(), req.getOriginId(), req.getOnlineState(), req.getDeviceType(), req.getIp(), req.getPort(),
+        deviceSouthService.signIn(req.getId(), req.getGatewayId(), req.getOriginId(), req.getOnlineState(), req.getDeviceType(), req.getIp(), req.getPort(),
                 req.getName(), req.getManufacturer(), req.getModel(), req.getFirmware(), req.getPtzType(), req.getUsername(), req.getPassword());
         return CommonResponse.success();
     }

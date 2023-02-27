@@ -50,7 +50,7 @@ public interface DetailMapper {
     void deleteByDcIdAndType(Long dcId, Integer type);
 
     @Insert({" <script> " +
-            " INSERT INTO " + DETAIL_TABLE_NAME + "(dc_id, origin_id, type, ip, port, name, manufacturer, model, firmware, ptz_type, username, password, update_time, create_time) values " +
+            " INSERT INTO " + DETAIL_TABLE_NAME + "(dc_id, origin_id, type, ip, port, name, manufacturer, model, firmware, ptz_type, username, password, update_time, create_time) VALUES " +
             " <foreach collection='detailSaveList' item='item' separator=','>(#{item.dcId}, #{item.originId}, #{item.type}, #{item.ip}, #{item.port}, #{item.name}, #{item.manufacturer}, #{item.model}, #{item.firmware}, #{item.ptzType}, #{item.username}, #{item.password}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>"})
     void batchSave(List<DetailInfo> detailSaveList);

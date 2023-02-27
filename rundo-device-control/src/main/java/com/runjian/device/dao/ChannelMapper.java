@@ -99,8 +99,8 @@ public interface ChannelMapper {
 
     @Update(" <script> " +
             " UPDATE " + CHANNEL_TABLE_NAME +
-            " SET update_time = #{item.updateTime}  " +
-            " , online_state = #{item.onlineState} " +
+            " SET update_time = #{updateTime}  " +
+            " , online_state = #{onlineState} " +
             " WHERE device_id IN "+
             " <foreach collection='deviceIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
