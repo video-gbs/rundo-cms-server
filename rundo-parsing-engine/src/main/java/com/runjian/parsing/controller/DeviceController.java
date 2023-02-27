@@ -31,10 +31,6 @@ public class DeviceController {
     private ProtocolService protocolService;
 
     @Autowired
-    private GatewayService gatewayService;
-
-
-    @Autowired
     private ValidatorService validatorService;
 
 
