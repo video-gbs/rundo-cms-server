@@ -59,7 +59,16 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol {
      */
     @Override
     public void deviceSignIn(Long gatewayId, Object data) {
-        JSONObject jsonObject = JSONObject.parseObject(data.toString());
+        JSONObject jsonObject = saveDevice(JSONObject.parseObject(data.toString()), gatewayId);
+        CommonResponse<?> commonResponse = deviceControlApi.deviceSignIn(jsonObject);
+        if (commonResponse.getCode() != 0) {
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+    }
+
+
+    public JSONObject saveDevice(JSONObject data, Long gatewayId) {
+        JSONObject jsonObject = data;
         String deviceOriginId = jsonObject.getString(StandardName.DEVICE_ID);
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
         DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
@@ -74,36 +83,15 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol {
         jsonObject.put(StandardName.DEVICE_ID, deviceInfo.getId());
         jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
         jsonObject.put(StandardName.ORIGIN_ID, deviceInfo.getOriginId());
-        CommonResponse<?> commonResponse = deviceControlApi.deviceSignIn(jsonObject);
-        if (commonResponse.getCode() != 0) {
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
-        }
+        return jsonObject;
     }
 
 
     @Override
     public void deviceBatchSignIn(Long gatewayId, Object data) {
         JSONArray jsonArray = JSONArray.parseArray(data.toString());
-        List<DeviceInfo> deviceInfoList = new ArrayList<>(jsonArray.size());
         for (int i = 0; i < jsonArray.size(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            String deviceOriginId = jsonObject.getString(StandardName.DEVICE_ID);
-            Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
-            DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
-            if (deviceInfoOp.isEmpty()) {
-                LocalDateTime nowTime = LocalDateTime.now();
-                deviceInfo.setOriginId(deviceOriginId);
-                deviceInfo.setGatewayId(gatewayId);
-                deviceInfo.setUpdateTime(nowTime);
-                deviceInfo.setCreateTime(nowTime);
-                deviceInfoList.add(deviceInfo);
-            }
-            jsonObject.put(StandardName.DEVICE_ID, deviceInfo.getId());
-            jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
-            jsonObject.put(StandardName.ORIGIN_ID, deviceInfo.getOriginId());
-        }
-        if (deviceInfoList.size() > 0){
-            deviceMapper.batchSave(deviceInfoList);
+            saveDevice(jsonArray.getJSONObject(i), gatewayId);
         }
         CommonResponse<?> commonResponse = deviceControlApi.deviceBatchSignIn(jsonArray);
         if (commonResponse.getCode() != 0) {

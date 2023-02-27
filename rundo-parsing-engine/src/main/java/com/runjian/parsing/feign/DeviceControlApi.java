@@ -21,11 +21,11 @@ public interface DeviceControlApi {
     CommonResponse<Boolean> gatewayHeartbeat(@RequestBody PutGatewayHeartbeatReq req);
 
     @PostMapping("/device/south/sign-in")
-    CommonResponse<?> deviceSignIn(JSONObject req);
+    CommonResponse<?> deviceSignIn(@RequestBody JSONObject req);
 
     @PostMapping("/common/south/event")
-    CommonResponse<?> commonEvent(JSONObject req);
+    CommonResponse<?> commonEvent(@RequestBody JSONObject req);
 
     @PostMapping("/device/south/sign-in-batch")
-    CommonResponse<?> deviceBatchSignIn(JSONArray jsonArray);
+    CommonResponse<?> deviceBatchSignIn(@RequestBody Object jsonArray);
 }
