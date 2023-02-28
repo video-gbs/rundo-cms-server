@@ -4,6 +4,7 @@ import com.runjian.common.config.response.CommonResponse;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -49,4 +50,10 @@ public interface StreamNorthService {
      * @return
      */
     void checkStreamStatus(Long dispatchId, List<String> streamIds, DeferredResult<CommonResponse<?>> response);
+
+    /**
+     * 删除所有的流
+     * @param dispatchIds 流媒体id数组
+     */
+    void stopAllStream(Set<Long> dispatchIds);
 }

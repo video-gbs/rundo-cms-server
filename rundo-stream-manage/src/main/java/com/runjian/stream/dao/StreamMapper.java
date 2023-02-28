@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -103,4 +104,15 @@ public interface StreamMapper {
             " <if test=\"streamState != null\" > AND stream_state = #{streamState} </if> " +
             " </script> ")
     List<StreamInfo> selectByStreamIdsAndRecordStateAndStreamState(List<String> streamIdList, Integer recordState, Integer streamState);
+
+    @Delete(" DELETE FROM " + STREAM_TABLE_NAME +
+            " WHERE dispatch_id = #{dispatchId} ")
+    void deleteByDispatchId(Long dispatchId);
+
+    @Delete(" <script> " +
+            " DELETE FROM " + STREAM_TABLE_NAME +
+            " WHERE dispatch_id IN " +
+            " <foreach collection='dispatchIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void deleteByDispatchIds(Set<Long> dispatchIds);
 }
