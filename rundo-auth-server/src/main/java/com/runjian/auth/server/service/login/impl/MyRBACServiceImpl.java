@@ -5,9 +5,9 @@ import com.runjian.auth.server.domain.entity.*;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.login.MyRBACService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -19,10 +19,10 @@ import java.util.List;
  */
 @Service
 public class MyRBACServiceImpl implements MyRBACService {
-    @Autowired
+    @Resource
     private UserInfoMapper userInfoMapper;
 
-    @Autowired
+    @Resource
     private RoleInfoMapper roleInfoMapper;
 
 
