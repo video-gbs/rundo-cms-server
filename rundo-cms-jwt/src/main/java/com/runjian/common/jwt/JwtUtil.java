@@ -1,4 +1,4 @@
-package com.runjian.auth.server.util;
+package com.runjian.common.jwt;
 
 
 import io.jsonwebtoken.*;

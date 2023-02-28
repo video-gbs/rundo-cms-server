@@ -1,13 +1,12 @@
 package com.runjian.auth.server.service.login.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.runjian.auth.server.domain.entity.AppInfo;
-import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.HomeVO;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.login.HomeSevice;
-import com.runjian.auth.server.util.UserUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -29,13 +28,10 @@ public class HomeServiceImpl implements HomeSevice {
 
     @Resource
     private RoleInfoMapper roleInfoMapper;
-    @Resource
-    private UserUtils userUtils;
 
     @Override
     public HomeVO getIndex() {
-        UserInfo userInfo = userUtils.getSysUserInfo();
-        Long userId = userInfo.getId();
+        Long userId =(Long) StpUtil.getLoginId();
         // 通过登录的用户查取该用户已授权的角色信息
         List<String> roleCodeList = roleInfoMapper.selectRoleCodeByUserId(userId);
         if (CollUtil.isEmpty(roleCodeList)) {

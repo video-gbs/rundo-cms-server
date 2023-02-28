@@ -1,6 +1,6 @@
 package com.runjian.auth.server;
 
-import com.runjian.auth.server.util.JwtUtil;
+import com.runjian.common.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

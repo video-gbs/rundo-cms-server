@@ -24,6 +24,7 @@
         <module>rundo-auth-server</module>
         <module>rundo-generator</module>
         <module>rundo-expansion-server</module>
+        <module>rundo-cms-jwt</module>
     </modules>
 
 
@@ -40,9 +41,9 @@
         <spring-cloud-alibaba.version>2021.0.4.0</spring-cloud-alibaba.version>
         <nacos.client.version>2.2.0</nacos.client.version>
         <!--ORM框架 MybatisPlus-->
+        <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <mybatis.version>3.0.1</mybatis.version>
         <pagehelper.version>1.4.6</pagehelper.version>
-        <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <!-- Minio 分布式文件存储依赖 -->
         <minio.version>8.4.6</minio.version>
         <okhttp.version>4.10.0</okhttp.version>
@@ -52,13 +53,15 @@
         <guava.version>31.1-jre</guava.version>
         <!-- HuTool开发工具包 -->
         <hutool.version>5.8.10</hutool.version>
+        <!--sa-token-->
+        <sa-token.version>1.34.0</sa-token.version>
         <!--JWT工具包-->
         <jjwt.version>0.11.5</jjwt.version>
         <!--easy-captcha 验证码-->
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <!--文档工具包-->
-        <japidocs.version>1.4.4</japidocs.version>
         <knife4j.version>3.0.3</knife4j.version>
+        <japidocs.version>1.4.4</japidocs.version>
 
     </properties>
 
@@ -88,6 +91,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!--认证鉴权-->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-dependencies</artifactId>
+                <version>${sa-token.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!--文档工具-->
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
@@ -96,6 +107,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt-api</artifactId>
@@ -197,7 +209,11 @@
                 <artifactId>rundo-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.runjian</groupId>
+                <artifactId>rundo-cms-jwt</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!--项目产生的通用依赖 End-->
         </dependencies>
     </dependencyManagement>
