@@ -84,12 +84,15 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
             channelInfo.setSignState(CommonEnum.DISABLE.getCode());
             channelInfo.setUpdateTime(nowTime);
         });
-        // 修改通道的在线状态
-        channelMapper.batchUpdateOnlineState(channelInfoList);
 
         // redis同步设备和通道的在线状态
         redisBaseService.batchUpdateDeviceOnlineState(deviceInfoList.stream().collect(Collectors.toMap(DeviceInfo::getId, DeviceInfo::getOnlineState)));
-        redisBaseService.batchUpdateChannelOnlineState(channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
+        // 修改通道的在线状态
+        if (channelInfoList.size() > 0){
+            channelMapper.batchUpdateOnlineState(channelInfoList);
+            redisBaseService.batchUpdateChannelOnlineState(channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
+        }
+
     }
 
     @Override
@@ -99,6 +102,5 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
         // 发送全量同步消息
         parsingEngineApi.deviceTotalSync(gatewayIds);
     }
-
 
 }
