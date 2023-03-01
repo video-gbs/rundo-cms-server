@@ -61,6 +61,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         BeanUtil.copyProperties(deviceExpansionReq,deviceReq);
 
         CommonResponse<DeviceAddResp> longCommonResponse = deviceControlApi.deviceAdd(deviceReq);
+        log.info(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加返回",deviceReq, longCommonResponse);
         if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",deviceReq, longCommonResponse);
@@ -84,6 +85,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             PutDeviceSignSuccessReq putDeviceSignSuccessReq = new PutDeviceSignSuccessReq();
             putDeviceSignSuccessReq.setDeviceId(deviceExpansionEditReq.getId());
             CommonResponse longCommonResponse = deviceControlApi.deviceSignSuccess(putDeviceSignSuccessReq);
+            log.info(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器编辑返回",deviceExpansionEditReq, longCommonResponse);
             if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
                 //调用失败
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器状态通知失败",deviceExpansionEditReq, longCommonResponse);
@@ -238,6 +240,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             lock.lock(3, TimeUnit.SECONDS);
             Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_DEVICE_ONLINE_STATE);
             if(!CollectionUtils.isEmpty(deviceMap)){
+                log.info(LogTemplate.PROCESS_LOG_TEMPLATE,"设备缓存状态同步",deviceMap);
                 Set<Map.Entry<Long, Integer>> entries = deviceMap.entrySet();
                 for(Map.Entry entry:  entries){
                     Long deviceId = (Long)entry.getKey();

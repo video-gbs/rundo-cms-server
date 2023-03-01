@@ -294,6 +294,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             lock.lock(3, TimeUnit.SECONDS);
             Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_CHANNEL_ONLINE_STATE_LOCK);
             if(!CollectionUtils.isEmpty(deviceMap)){
+                log.info(LogTemplate.PROCESS_LOG_TEMPLATE,"通道缓存状态同步",deviceMap);
                 Set<Map.Entry<Long, Integer>> entries = deviceMap.entrySet();
                 for(Map.Entry entry:  entries){
                     Long deviceId = (Long)entry.getKey();
