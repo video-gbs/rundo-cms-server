@@ -67,24 +67,26 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "流媒体异常消息记录", mqRequest.getMsgType(), mqRequest.getMsg());
             }
 
-            if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_RESULT.getMsg())){
-                streamSouthService.streamPlayResult(dispatchInfo.getId(), mqRequest.getData());
-                return;
-            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CLOSE.getMsg())) {
-                streamSouthService.streamClose(dispatchInfo.getId(), mqRequest.getData());
-                return;
-            }
-
-            if (StringUtils.isNumber(mqRequest.getMsgId()) || mqRequest.getTime().plusSeconds(10).isBefore(LocalDateTime.now())){
-                // 超时的消息不再处理
-            } else if (mqRequest.getCode() != 0){
-                streamSouthService.errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
-            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_STOP.getMsg())) {
-                streamSouthService.streamStopPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_RECORD_START.getMsg())) {
-                streamSouthService.streamStartRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else if (mqRequest.getMsgType().equals(MsgType.STREAM_RECORD_STOP.getMsg())) {
-                streamSouthService.streamStopRecord(Long.parseLong(mqRequest.getMsgId()),mqRequest.getData());
+            if (!StringUtils.isNumber(mqRequest.getMsgId())){
+                if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_RESULT.getMsg())){
+                    streamSouthService.streamPlayResult(dispatchInfo.getId(), mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CLOSE.getMsg())) {
+                    streamSouthService.streamClose(dispatchInfo.getId(), mqRequest.getData());
+                }
+            }else {
+                if (mqRequest.getCode() != 0){
+                    streamSouthService.errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
+                } else if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_STOP.getMsg())) {
+                    streamSouthService.streamStopPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.STREAM_RECORD_START.getMsg())) {
+                    streamSouthService.streamStartRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.STREAM_RECORD_STOP.getMsg())) {
+                    streamSouthService.streamStopRecord(Long.parseLong(mqRequest.getMsgId()),mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CHECK_STREAM.getMsg())) {
+                    streamSouthService.streamCheckStream(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CHECK_RECORD.getMsg())) {
+                    streamSouthService.streamCheckRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                }
             }
 
         } catch (Exception ex) {

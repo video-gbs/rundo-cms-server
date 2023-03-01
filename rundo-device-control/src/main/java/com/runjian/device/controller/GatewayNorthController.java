@@ -39,7 +39,6 @@ public class GatewayNorthController {
     @GetMapping("/data/ids")
     public CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByIds(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
                                                                         @RequestParam List<Long> gatewayIds, @RequestParam Boolean isIn, String name){
-
         return CommonResponse.success(gatewayNorthService.getGatewayByIds(page, num, gatewayIds, isIn, name));
     }
 
@@ -63,9 +62,10 @@ public class GatewayNorthController {
      * @return
      */
     @GetMapping("/name")
-    public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(){
-        return CommonResponse.success(gatewayNorthService.getGatewayNameList());
+    public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(Long gatewayId){
+        return CommonResponse.success(gatewayNorthService.getGatewayNameList(gatewayId));
     }
+
 
     /**
      * 修改网关信息

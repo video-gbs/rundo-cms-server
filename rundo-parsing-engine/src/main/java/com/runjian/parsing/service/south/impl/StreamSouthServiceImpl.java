@@ -77,6 +77,7 @@ public class StreamSouthServiceImpl implements StreamSouthService {
 
     @Override
     public void streamCheckStream(Long taskId, Object data) {
+        System.out.println(data.toString());
         customEvent(taskId, data);
     }
 

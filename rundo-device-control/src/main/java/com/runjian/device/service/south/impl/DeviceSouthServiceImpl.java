@@ -7,6 +7,7 @@ import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DeviceMapper;
+import com.runjian.device.entity.ChannelInfo;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.service.common.DetailBaseService;
@@ -96,10 +97,12 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 // 将通道全部离线
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
-                if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                    redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
-                }
                 channelMapper.updateOnlineStateByDeviceId(id, onlineState, nowTime);
+                if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                    redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), CommonEnum.DISABLE.getCode());
+                    Map<Long, Integer> channelInfoMap = channelMapper.selectByDeviceIdAndSignState(deviceInfo.getId(), SignState.SUCCESS.getCode()).stream().collect(Collectors.toMap(ChannelInfo::getId, channelInfo -> CommonEnum.DISABLE.getCode()));
+                    redisBaseService.batchUpdateChannelOnlineState(channelInfoMap);
+                }
             } else if (isAutoSignIn && onlineState.equals(CommonEnum.ENABLE.getCode())){
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);

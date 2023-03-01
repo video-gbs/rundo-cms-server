@@ -68,8 +68,12 @@ public interface GatewayMapper {
             " online_state = #{onlineState} ")
     void setAllOnlineState(Integer onlineState, LocalDateTime updateTime);
 
-    @Select(" SELECT id, name FROM " + GATEWAY_TABLE_NAME)
-    List<GetGatewayNameRsp> selectAllNameAndId();
+    @Select(" <script> " +
+            " SELECT id, name, protocol FROM " + GATEWAY_TABLE_NAME+
+            " WHERE 1=1 " +
+            " <if test=\"gatewayId != null\" > AND id = #{gatewayId} </if> " +
+            " </script> ")
+    List<GetGatewayNameRsp> selectAllNameAndId(Long gatewayId);
 
     @Select(" <script> " +
             " SELECT * FROM " + GATEWAY_TABLE_NAME +

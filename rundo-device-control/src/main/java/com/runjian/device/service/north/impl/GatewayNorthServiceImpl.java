@@ -28,8 +28,8 @@ public class GatewayNorthServiceImpl implements GatewayNorthService {
     private GatewayMapper gatewayMapper;
 
     @Override
-    public List<GetGatewayNameRsp> getGatewayNameList() {
-        return gatewayMapper.selectAllNameAndId();
+    public List<GetGatewayNameRsp> getGatewayNameList(Long gatewayId) {
+        return gatewayMapper.selectAllNameAndId(gatewayId);
     }
 
     /**

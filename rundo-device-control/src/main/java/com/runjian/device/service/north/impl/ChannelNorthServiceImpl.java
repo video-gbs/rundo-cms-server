@@ -127,7 +127,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                 // 更新通道在线状态
                 if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode()) && !Objects.equals(rsp.getOnlineState(), channelInfo.getOnlineState())) {
                     // 对通道在线状态缓存
-                    channelOnlineMap.put(channelInfo.getId(), channelInfo.getOnlineState());
+                    channelOnlineMap.put(channelInfo.getId(), rsp.getOnlineState());
                 }
                 channelInfo.setOnlineState(rsp.getOnlineState());
 
@@ -175,7 +175,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Transactional(rollbackFor = Exception.class)
     public void channelSignSuccess(List<Long> channelIdList) {
         List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIdList);
-        if (channelInfoList.size() > channelIdList.size()){
+        if (channelIdList.size() > channelInfoList.size()){
             List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
             channelIdList.removeAll(collect);
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("缺失的数据%s", channelIdList));
@@ -186,7 +186,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             channelInfo.setUpdateTime(LocalDateTime.now());
         }
         channelMapper.batchUpdateSignState(channelInfoList);
-
+        redisBaseService.batchUpdateChannelOnlineState(channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
     }
 
     /**
