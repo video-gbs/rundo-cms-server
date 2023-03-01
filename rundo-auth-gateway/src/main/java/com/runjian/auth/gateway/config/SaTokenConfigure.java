@@ -1,16 +1,14 @@
 package com.runjian.auth.gateway.config;
 
-import cn.dev33.satoken.context.SaHolder;
-import cn.dev33.satoken.reactor.context.SaReactorSyncHolder;
+import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.reactor.filter.SaReactorFilter;
-import cn.dev33.satoken.router.SaHttpMethod;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.server.ServerWebExchange;
 
 /**
  * @author Jiang4Yu
@@ -30,22 +28,24 @@ public class SaTokenConfigure {
     public SaReactorFilter getSaReactorFilter() {
         return new SaReactorFilter()
                 // 拦截地址
-                .addExclude("/**")
+                .addInclude("/**")
                 // 开放地址
-                .addExclude("/auth/swagger-ui",
-                        "/auth/swagger-resources",
-                        "/auth/profile",
-                        "/auth/v2",
-                        "/auth/v3",
-                        "/auth/doc.html",
-                        "/auth/webjars",
-                        "/auth/druid",
-                        "/auth/api/v1"
+                .addExclude(
+                        "/favicon.ico",
+                        "/doc.html",
+                        "/webjars/**",
+                        "/swagger-resources",
+                        "/swagger-resources/**",
+                        "/auth/**",
+                        "/auth/v3/**",
+                        "/expserver/**",
+                        "/expserver/v3/**"
                 )
                 // 鉴权方法：每次访问进入
                 .setAuth(obj -> {
                     // 登录校验 -- 拦截所有路由，并排除/user/doLogin 用于开放登录
-                    SaRouter.match("/**", "/auth/user/login", r -> StpUtil.checkLogin());
+                    SaRouter.match("/**").check(r -> StpUtil.checkLogin());
+                    Object loginId = StpUtil.getLoginId();
 
                     // 角色认证
                     // SaRouter.match("/admin/**",  r -> StpUtil.checkRoleOr("admin","super-admin"));
@@ -60,20 +60,14 @@ public class SaTokenConfigure {
                 })
                 // 异常处理方法：每次setAuth函数出现异常时进入
                 .setError(e -> {
-                    ServerWebExchange exchange = SaReactorSyncHolder.getContext();
-                    exchange.getResponse().getHeaders().set("Content-Type", "application/json; charset=utf-8");
+                    log.info(e.getMessage(), e);
+                    if (e instanceof NotPermissionException){
+                        // 无权限异常
+                    }
+                    if (e instanceof NotLoginException){
+                        // 未能通过登录认证
+                    }
                     return SaResult.error(e.getMessage());
-                })
-                .setBeforeAuth(obj -> {
-                    SaHolder.getResponse()
-                            //
-                            .setHeader("Access-Control-Allow-Origin", "*")
-                            .setHeader("Access-Control-Allow-Methods", "GET,HEAD,POST,PUT,PATCH,DELETE,OPTIONS,TRACE")
-                            .setHeader("Access-Control-Max-Age", "3600")
-                            .setHeader("Access-Control-Headers", "*");
-                    SaRouter.match(SaHttpMethod.OPTIONS)
-                            .free(r -> log.info("OPTIONS预检请求，不做处理"))
-                            .back();
                 });
     }
 }

@@ -38,6 +38,6 @@ public class SaTokenConfigure implements WebMvcConfigurer {
             // SaRouter.match("/orders/**", r -> StpUtil.checkPermission("orders"));
             // SaRouter.match("/notice/**", r -> StpUtil.checkPermission("notice"));
             // SaRouter.match("/comment/**", r -> StpUtil.checkPermission("comment"));
-        })).addPathPatterns("/**");
+        }));
     }
 }

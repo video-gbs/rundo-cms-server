@@ -80,12 +80,8 @@
 
         <!--API接口文档-->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <groupId>com.runjian</groupId>
+            <artifactId>rundo-cms-doc</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

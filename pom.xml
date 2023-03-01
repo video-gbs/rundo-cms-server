@@ -25,6 +25,7 @@
         <module>rundo-generator</module>
         <module>rundo-expansion-server</module>
         <module>rundo-cms-jwt</module>
+        <module>rundo-cms-doc</module>
     </modules>
 
 
@@ -207,6 +208,11 @@
             <dependency>
                 <groupId>com.runjian</groupId>
                 <artifactId>rundo-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.runjian</groupId>
+                <artifactId>rundo-cms-doc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
