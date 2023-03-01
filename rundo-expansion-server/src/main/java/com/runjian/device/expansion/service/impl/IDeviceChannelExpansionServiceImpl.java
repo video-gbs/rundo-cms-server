@@ -289,10 +289,10 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Override
     public void syncChannelStatus() {
-        RLock lock = redissonClient.getLock(MarkConstant.REDIS_CHANNEL_ONLINE_STATE);
+        RLock lock = redissonClient.getLock(MarkConstant.REDIS_CHANNEL_ONLINE_STATE_LOCK);
         try{
             lock.lock(3, TimeUnit.SECONDS);
-            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_CHANNEL_ONLINE_STATE_LOCK);
+            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_CHANNEL_ONLINE_STATE);
             if(!CollectionUtils.isEmpty(deviceMap)){
                 log.info(LogTemplate.PROCESS_LOG_TEMPLATE,"通道缓存状态同步",deviceMap);
                 Set<Map.Entry<Long, Integer>> entries = deviceMap.entrySet();
