@@ -50,7 +50,9 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
     public void init() {
         // 将所有的网关设置为离线状态
         Set<Long> gatewayIds =  gatewayMapper.selectIdByOnlineState(CommonEnum.ENABLE.getCode());
-        heartbeatArray.addOrUpdateTime(gatewayIds, 60L);
+        if (gatewayIds.size() > 0){
+            heartbeatArray.addOrUpdateTime(gatewayIds, 60L);
+        }
     }
 
     /**
@@ -100,7 +102,9 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
     public void deviceTotalSync() {
         Set<Long> gatewayIds =  gatewayMapper.selectIdByOnlineState(CommonEnum.ENABLE.getCode());
         // 发送全量同步消息
-        parsingEngineApi.deviceTotalSync(gatewayIds);
+        if (gatewayIds.size() > 0){
+            parsingEngineApi.deviceTotalSync(gatewayIds);
+        }
     }
 
 }
