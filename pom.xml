@@ -24,7 +24,6 @@
         <module>rundo-auth-server</module>
         <module>rundo-generator</module>
         <module>rundo-expansion-server</module>
-        <module>rundo-cms-jwt</module>
         <module>rundo-cms-doc</module>
     </modules>
 
@@ -45,6 +44,7 @@
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <mybatis.version>3.0.1</mybatis.version>
         <pagehelper.version>1.4.6</pagehelper.version>
+        <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <!-- Minio 分布式文件存储依赖 -->
         <minio.version>8.4.6</minio.version>
         <okhttp.version>4.10.0</okhttp.version>
@@ -109,21 +109,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt-api</artifactId>
-                <version>${jjwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt-impl</artifactId>
-                <version>${jjwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt-jackson</artifactId>
-                <version>${jjwt.version}</version>
-            </dependency>
             <!--orm 相关-->
             <!--mybatis-plus-->
             <dependency>
@@ -213,11 +198,6 @@
             <dependency>
                 <groupId>com.runjian</groupId>
                 <artifactId>rundo-cms-doc</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.runjian</groupId>
-                <artifactId>rundo-cms-jwt</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!--项目产生的通用依赖 End-->
