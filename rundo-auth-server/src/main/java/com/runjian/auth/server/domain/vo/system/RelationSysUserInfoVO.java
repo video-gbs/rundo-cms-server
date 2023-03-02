@@ -1,5 +1,6 @@
 package com.runjian.auth.server.domain.vo.system;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -24,9 +25,11 @@ public class RelationSysUserInfoVO {
     private String userName;
 
     @ApiModelProperty("有效期起")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expiryDateStart;
 
     @ApiModelProperty("有效期终")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expiryDateEnd;
 
     @ApiModelProperty("工号")
@@ -46,6 +49,9 @@ public class RelationSysUserInfoVO {
 
     @ApiModelProperty("安防区域名称")
     private String areaName;
+
+    @ApiModelProperty("所属部门")
+    private String orgName;
 
     @ApiModelProperty("描述信息")
     private String description;

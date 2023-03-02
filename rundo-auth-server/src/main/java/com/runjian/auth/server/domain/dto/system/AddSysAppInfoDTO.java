@@ -21,6 +21,10 @@ import javax.validation.constraints.NotBlank;
 @ApiModel(value = "添加应用", description = "应用信息")
 public class AddSysAppInfoDTO {
 
+    @ApiModelProperty(value = "应用分类", required = true)
+    @NotBlank
+    private Integer appType;
+
     @ApiModelProperty(value = "应用名称", required = true)
     @NotBlank
     private String appName;
@@ -32,6 +36,10 @@ public class AddSysAppInfoDTO {
     @ApiModelProperty(value = "应用服务端口", required = true)
     @NotBlank
     private Integer appPort;
+
+    @ApiModelProperty(value = "应用URL", required = true)
+    @NotBlank
+    private String appUrl;
 
     @ApiModelProperty("应用简介")
     private String appDesc;

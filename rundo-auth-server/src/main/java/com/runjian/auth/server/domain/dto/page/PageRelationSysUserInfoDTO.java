@@ -1,6 +1,7 @@
 package com.runjian.auth.server.domain.dto.page;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -14,4 +15,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PageRelationSysUserInfoDTO extends Page {
+    @ApiModelProperty("用户账户")
+    private String userAccount;
 }

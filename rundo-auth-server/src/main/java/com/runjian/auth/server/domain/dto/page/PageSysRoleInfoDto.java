@@ -1,7 +1,6 @@
 package com.runjian.auth.server.domain.dto.page;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,10 +27,8 @@ public class PageSysRoleInfoDto extends Page {
     private String userAccount;
 
     @ApiModelProperty("创建开始时间")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdTimeStart;
 
     @ApiModelProperty("创建时间结束")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdTimeEnd;
 }

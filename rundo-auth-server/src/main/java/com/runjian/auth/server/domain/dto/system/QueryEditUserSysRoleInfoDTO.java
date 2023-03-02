@@ -15,8 +15,8 @@ import lombok.EqualsAndHashCode;
  */
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "新增编辑用户时的角色分页参数", description = "新增编辑用户时的角色分页参数")
 public class QueryEditUserSysRoleInfoDTO extends CommonPage {
 }

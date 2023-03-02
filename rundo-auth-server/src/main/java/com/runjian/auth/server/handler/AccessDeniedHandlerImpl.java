@@ -18,7 +18,7 @@ import java.io.IOException;
  * @author Jiang4Yu
  * @version V1.0.0
  * @ClassName AccessDeniedHandlerImpl
- * @Description
+ * @Description 无权限 处理类
  * @date 2023-01-09 周一 17:01
  */
 @Slf4j

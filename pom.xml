@@ -53,13 +53,12 @@
         <!-- HuTool开发工具包 -->
         <hutool.version>5.8.10</hutool.version>
         <!--JWT工具包-->
-        <nimbus-jose-jwt.version>9.25.6</nimbus-jose-jwt.version>
-        <java-jwt.version>3.18.3</java-jwt.version>
+        <jjwt.version>0.11.5</jjwt.version>
         <!--easy-captcha 验证码-->
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <!--文档工具包-->
         <japidocs.version>1.4.4</japidocs.version>
-        <knife4j.version>4.0.0</knife4j.version>
+        <knife4j.version>3.0.3</knife4j.version>
 
     </properties>
 
@@ -89,10 +88,28 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!--文档工具-->
             <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-oauth2-authorization-server</artifactId>
-                <version>0.3.1</version>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-dependencies</artifactId>
+                <version>${knife4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt.version}</version>
             </dependency>
             <!--orm 相关-->
             <!--mybatis-plus-->
@@ -144,7 +161,6 @@
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
-
             <!--minio-->
             <dependency>
                 <groupId>io.minio</groupId>
@@ -156,23 +172,11 @@
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp.version}</version>
             </dependency>
-            <!--nimbus-jose-jwt-->
-            <dependency>
-                <groupId>com.nimbusds</groupId>
-                <artifactId>nimbus-jose-jwt</artifactId>
-                <version>${nimbus-jose-jwt.version}</version>
-            </dependency>
             <!--easy-captcha 验证码-->
             <dependency>
                 <groupId>com.github.whvcse</groupId>
                 <artifactId>easy-captcha</artifactId>
                 <version>${easy-captcha.version}</version>
-            </dependency>
-            <!-- java-jwt 可以反编码过期token-->
-            <dependency>
-                <groupId>com.auth0</groupId>
-                <artifactId>java-jwt</artifactId>
-                <version>${java-jwt.version}</version>
             </dependency>
             <!-- HuTool -->
             <dependency>
@@ -185,12 +189,6 @@
                 <groupId>io.github.yedaxia</groupId>
                 <artifactId>japidocs</artifactId>
                 <version>${japidocs.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
-                <version>${knife4j.version}</version>
             </dependency>
 
             <!--项目产生的通用依赖 Start-->
@@ -292,5 +290,39 @@
         </plugins>
 
     </build>
+    <!--配置不同的profile，对应不同的生产环境-->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <!--开发环境-->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <env>dev</env>
+            </properties>
+        </profile>
+        <profile>
+            <!--测试环境-->
+            <id>test</id>
+            <properties>
+                <env>test</env>
+            </properties>
+        </profile>
+        <profile>
+            <!--预演环境-->
+            <id>pred</id>
+            <properties>
+                <env>pred</env>
+            </properties>
+        </profile>
+        <profile>
+            <!--生产环境-->
+            <id>prod</id>
+            <properties>
+                <env>prod</env>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

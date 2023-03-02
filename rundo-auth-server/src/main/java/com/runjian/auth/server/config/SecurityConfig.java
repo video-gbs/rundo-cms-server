@@ -23,9 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * @date 2022-12-26 周一 22:06
  */
 @Configuration
-// @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -72,6 +70,7 @@ public class SecurityConfig {
                 .antMatchers("/captchaImage").anonymous()
                 // 放行 swagger knife4j，druid资源
                 .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/profile/**").permitAll()
                 .antMatchers("/v2/**").permitAll()
@@ -84,14 +83,7 @@ public class SecurityConfig {
                 .antMatchers("/**/*.png").permitAll()
                 .antMatchers("/**/*.ico").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().authenticated()
-
-        ;
-
-        // 配置RBAC权限控制级别的接口权限校验
-        // http.authorizeRequests().anyRequest()
-        //         .access("@rundoRbacService.hasPermission(request,authentication)");
-        // .anyRequest().authenticated();
+                .anyRequest().authenticated();
 
         // 把token校验过滤器添加到过滤链中
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
@@ -101,7 +93,6 @@ public class SecurityConfig {
                 .authenticationEntryPoint(authenticationEntryPoint)
                 // 权限不足处理器
                 .accessDeniedHandler(accessDeniedHandler);
-
 
         // 允许跨域
         http.cors();

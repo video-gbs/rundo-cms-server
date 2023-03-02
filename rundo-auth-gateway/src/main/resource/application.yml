@@ -1,37 +1,17 @@
 server:
-  port: 7720
+  port: 8070
 
 spring:
+  profiles:
+    active: '@env@'
   application:
-    name: rundo-auth-gateway
-  cloud:
-    nacos:
-      server-addr: rundo-nacos:8848
-      discovery:
-        namespace: public
-      config:
-        file-extension: yaml
-        timeout: 5000
-        namespace: public
-        group: DEFAULT_GROUP
-
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      routes:
-        - id: rundo-auth-server
-          uri: lb://rundo-auth-server
-          predicates:
-            - Path=/rundoAuthServer/**
-
-#  cloud:
-#    nacos:
-#      server-addr: rundo-nacos:8848
-
-#
-#  config:
-#    import:
-#      - optional:nacos:${spring.application.name}.${spring.cloud.nacos.config.file-extension}
-
+    name: auth-gateway
+  main:
+    allow-bean-definition-overriding: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jackson:
+    default-property-inclusion: NON_NULL
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8

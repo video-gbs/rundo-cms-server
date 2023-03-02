@@ -1,7 +1,7 @@
 package com.runjian.auth.server.domain.dto.login;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
-import com.runjian.auth.server.domain.entity.system.SysUserInfo;
+import com.runjian.auth.server.domain.entity.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ import java.util.Collection;
 @AllArgsConstructor
 public class LoginUser implements UserDetails {
 
-    private SysUserInfo sysUserInfo;
+    private UserInfo userInfo;
 
     Collection<? extends GrantedAuthority> authorities;
 
@@ -40,7 +40,7 @@ public class LoginUser implements UserDetails {
      */
     @Override
     public String getPassword() {
-        return sysUserInfo.getPassword();
+        return userInfo.getPassword();
     }
 
     /**
@@ -50,7 +50,7 @@ public class LoginUser implements UserDetails {
      */
     @Override
     public String getUsername() {
-        return sysUserInfo.getUserAccount();
+        return userInfo.getUserAccount();
     }
 
     /**
@@ -60,8 +60,8 @@ public class LoginUser implements UserDetails {
      */
     @Override
     public boolean isAccountNonExpired() {
-        if (null != sysUserInfo.getExpiryDateEnd()) {
-            long flag = LocalDateTimeUtil.between(LocalDateTimeUtil.now(), sysUserInfo.getExpiryDateEnd()).toDays();
+        if (null != userInfo.getExpiryDateEnd()) {
+            long flag = LocalDateTimeUtil.between(LocalDateTimeUtil.now(), userInfo.getExpiryDateEnd()).toDays();
             return flag > 0;
         }
         return true;
@@ -75,7 +75,7 @@ public class LoginUser implements UserDetails {
     @Override
     public boolean isAccountNonLocked() {
         // 状态为非0,就是锁定状态
-        return sysUserInfo.getStatus().equals(0);
+        return userInfo.getStatus().equals(0);
     }
 
     /**

@@ -21,11 +21,20 @@ public class SysAppInfoVO {
     @ApiModelProperty(value = "应用名称")
     private String appName;
 
+    @ApiModelProperty(value = "应用分类")
+    private Integer appType;
+
     @ApiModelProperty("应用所在IP")
     private String appIp;
 
     @ApiModelProperty("应用服务端口")
-    private String appPort;
+    private Integer appPort;
+
+    @ApiModelProperty(value = "应用名称")
+    private String appIcon;
+
+    @ApiModelProperty("url")
+    private String appUrl;
 
     @ApiModelProperty("应用简介")
     private String appDesc;

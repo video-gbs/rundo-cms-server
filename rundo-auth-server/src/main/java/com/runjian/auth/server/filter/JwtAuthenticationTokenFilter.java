@@ -3,6 +3,8 @@ package com.runjian.auth.server.filter;
 import com.runjian.auth.server.domain.dto.login.LoginUser;
 import com.runjian.auth.server.util.JwtUtil;
 import com.runjian.auth.server.util.RedisCache;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,23 +44,27 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        // 2.解析token
-        String userid;
-        try {
-            Claims claims = JwtUtil.parseJWT(token);
-            userid = claims.getSubject();
-        } catch (Exception e) {
-            throw new RuntimeException("token非法");
+        // 3. 判断jwt是否过期
+        Boolean flag = JwtUtil.isTokenExpired(token);
+        if (flag) {
+            throw new BusinessException(BusinessErrorEnums.TOKEN_IS_EXPIRE);
         }
+        // 2.判断jwt是否被篡改、是否解析异常
+        Claims claims = JwtUtil.parseJWT(token);
+        if (Objects.isNull(claims)) {
+            throw new BusinessException("token 异常");
+        }
+
+        String userid = claims.getSubject();
         // 3.获取userId,从redis中获取用户信息
         String redisKey = "login:" + userid;
         LoginUser loginUser = redisCache.getCacheObject(redisKey);
         if (Objects.isNull(loginUser)) {
-            throw new RuntimeException("用户未登录");
+            throw new BusinessException(BusinessErrorEnums.USER_LOGIN_FAILURE);
         }
         // 4.封装Authentication
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginUser,null, loginUser.getAuthorities());
+                new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
         // 5.存入SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         // 6.放行，让后面的过滤器执行

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Jiang4Yu
@@ -15,11 +16,12 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(value = "菜单查询参数", description = "菜单查询参数")
 public class QuerySysMenuInfoDTO {
 
-    @ApiModelProperty(value = "菜单类型",notes = "应用1，配置：2，运维3")
-    private Long menuType;
+    @ApiModelProperty("应用ID")
+    private Long appId;
 
     @ApiModelProperty("菜单名称")
     private String menuName;

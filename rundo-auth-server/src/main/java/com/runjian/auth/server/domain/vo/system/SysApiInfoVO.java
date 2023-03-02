@@ -17,6 +17,10 @@ public class SysApiInfoVO {
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long id;
 
+    @ApiModelProperty("所属应用ID")
+    @JsonFormat(shape =JsonFormat.Shape.STRING )
+    private Long appId;
+
     @ApiModelProperty("接口直接父ID")
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long apiPid;

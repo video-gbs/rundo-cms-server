@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Jiang4Yu
@@ -15,8 +16,9 @@ import lombok.EqualsAndHashCode;
  * @date 2023-01-31 周二 9:30
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "应用分页查询", description = "应用信息查询条件")
 public class QuerySysAppInfoDTO extends CommonPage {
     @ApiModelProperty(value = "应用名称", required = true)

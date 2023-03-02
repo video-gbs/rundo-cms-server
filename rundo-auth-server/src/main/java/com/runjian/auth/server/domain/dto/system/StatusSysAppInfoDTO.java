@@ -2,7 +2,9 @@ package com.runjian.auth.server.domain.dto.system;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
@@ -14,6 +16,8 @@ import javax.validation.constraints.NotNull;
  * @date 2023-01-31 周二 14:06
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ApiModel(value = "应用状态切换", description = "状态切换")
 public class StatusSysAppInfoDTO {
     @ApiModelProperty("编号ID")

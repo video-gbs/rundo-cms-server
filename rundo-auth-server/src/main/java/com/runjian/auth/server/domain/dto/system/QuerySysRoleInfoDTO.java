@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -18,8 +19,9 @@ import java.time.LocalDateTime;
  * @date 2023-02-02 周四 9:41
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "角色分页查询", description = "角色信息查询条件")
 public class QuerySysRoleInfoDTO extends CommonPage {
     @ApiModelProperty(value = "角色名称", required = true)
@@ -33,10 +35,10 @@ public class QuerySysRoleInfoDTO extends CommonPage {
     private String userAccount;
 
     @ApiModelProperty("创建开始时间")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdTimeStart;
 
     @ApiModelProperty("创建时间结束")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdTimeEnd;
 }

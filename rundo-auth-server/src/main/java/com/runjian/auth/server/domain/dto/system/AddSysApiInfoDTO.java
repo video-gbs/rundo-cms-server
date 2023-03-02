@@ -24,7 +24,7 @@ public class AddSysApiInfoDTO {
     @NotNull
     private Long appId;
 
-    @ApiModelProperty("接口直接父ID(即接口分组)")
+    @ApiModelProperty("接口直接父ID(即接口分组，菜单页面)")
     @NotNull
     private Long apiPid;
 
