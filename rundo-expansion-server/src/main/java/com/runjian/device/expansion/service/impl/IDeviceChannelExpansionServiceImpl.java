@@ -306,7 +306,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                     channelExpansion.setOnlineState(onlineState);
                     deviceChannelExpansionMapper.updateById(channelExpansion);
                 }
-                RedisCommonUtil.del(redisTemplate,MarkConstant.REDIS_DEVICE_ONLINE_STATE);
+                RedisCommonUtil.del(redisTemplate,MarkConstant.REDIS_CHANNEL_ONLINE_STATE);
             }
 
         } catch (Exception ex){

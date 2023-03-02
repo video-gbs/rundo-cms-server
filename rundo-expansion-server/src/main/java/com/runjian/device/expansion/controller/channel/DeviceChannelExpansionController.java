@@ -2,6 +2,7 @@ package com.runjian.device.expansion.controller.channel;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
+import com.runjian.device.expansion.aspect.annotation.ChannelStatusPoint;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
@@ -66,6 +67,7 @@ public class DeviceChannelExpansionController {
 
     @PostMapping(value = "/list", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("列表")
+    @ChannelStatusPoint
     public CommonResponse<PageResp<DeviceChannelExpansionResp>> list(@RequestBody DeviceChannelExpansionListReq request) {
         validatorService.validateRequest(request);
         return CommonResponse.success(deviceChannelExpansionService.list(request));

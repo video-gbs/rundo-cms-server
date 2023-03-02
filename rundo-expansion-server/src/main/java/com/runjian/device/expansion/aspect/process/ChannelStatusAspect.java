@@ -1,6 +1,7 @@
 package com.runjian.device.expansion.aspect.process;
 
 import com.runjian.common.constant.MarkConstant;
+import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.utils.RedisCommonUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -23,7 +24,7 @@ public class ChannelStatusAspect {
     RedisTemplate redisTemplate;
 
     @Autowired
-    IDeviceExpansionService deviceExpansionService;
+    IDeviceChannelExpansionService deviceChannelExpansionService;
 
     @Pointcut("@annotation(com.runjian.device.expansion.aspect.annotation.ChannelStatusPoint)")
     public void pointCut() {
@@ -36,7 +37,7 @@ public class ChannelStatusAspect {
         boolean b = RedisCommonUtil.hasKey(redisTemplate, MarkConstant.REDIS_CHANNEL_ONLINE_STATE);
         if(b){
             //进行redis清空和数据库数据状态更新
-            deviceExpansionService.syncDeviceStatus();
+            deviceChannelExpansionService.syncChannelStatus();
         }
         return joinPoint.proceed();
 
