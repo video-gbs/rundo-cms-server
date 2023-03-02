@@ -103,6 +103,11 @@ public class RabbitMqProperties {
          * 交换器名称
          */
         private String exchangeId;
+
+        /**
+         * 过期时间
+         */
+        private Integer ttl;
     }
 
     @Data

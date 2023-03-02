@@ -20,7 +20,9 @@ public enum MsgType {
     GATEWAY_RE_SIGN_IN("GATEWAY_RE_SIGN_IN"),
     GATEWAY_HEARTBEAT("GATEWAY_HEARTBEAT"),
 
+
     /****************** 调度相关消息 ******************/
+    DEVICE_TOTAL_SYNC("DEVICE_TOTAL_SYNC"),
 
     DISPATCH_SIGN_IN("DISPATCH_SIGN_IN"),
 
@@ -50,6 +52,7 @@ public enum MsgType {
     STREAM_RECORD_STOP("STREAM_RECORD_STOP"),
     STREAM_CHECK_RECORD("STREAM_CHECK_RECORD"),
     STREAM_CHECK_STREAM("STREAM_CHECK_STREAM"),
+    STREAM_STOP_ALL("STREAM_STOP_ALL"),
 
     /****************** 其他 ******************/
     ERROR("ERROR"),

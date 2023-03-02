@@ -6,8 +6,6 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.PlayType;
-import com.runjian.common.utils.CircleArray;
-import com.runjian.stream.dao.DispatchMapper;
 import com.runjian.stream.dao.GatewayDispatchMapper;
 import com.runjian.stream.dao.StreamMapper;
 import com.runjian.stream.entity.DispatchInfo;
@@ -21,12 +19,7 @@ import com.runjian.stream.vo.StreamManageDto;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.PostConstruct;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -67,7 +60,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (dispatchIdOp.isEmpty()) {
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("该网关模块%s未绑定流媒体模块，无法播放", gatewayId));
         }
-        DispatchInfo dispatchInfo = dataBaseService.getDispatchInfo(dispatchIdOp.get().getDispatchId());
+        DispatchInfo dispatchInfo = dataBaseService.getOnlineDispatchInfo(dispatchIdOp.get().getDispatchId());
         PostApplyStreamRsp res = new PostApplyStreamRsp();
         res.setDispatchUrl(dispatchInfo.getUrl());
         res.setRecordState(recordState);
@@ -78,12 +71,12 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             if (streamInfoOp.isEmpty()) {
                 streamInfo = saveStream(gatewayId, channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
                 // 设置“准备中”状态的超时时间
-                StreamBaseService.prepareStreamOutTimeArray.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
+                StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
             } else {
                 streamInfo = streamInfoOp.get();
                 if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
                     // 设置“准备中”状态的超时时间
-                    StreamBaseService.prepareStreamOutTimeArray.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
+                    StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
                 }
                 // 判断是否需要开启录像
                 if (!streamInfo.getRecordState().equals(recordState) || recordState.equals(CommonEnum.ENABLE.getCode())) {
@@ -98,7 +91,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             String streamId = PlayType.getMsgByCode(playType) + "_" + channelId + "_" + System.currentTimeMillis() + new Random().nextInt(100);
             streamInfo = saveStream(gatewayId, channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
             // 设置“准备中”状态的超时时间
-            StreamBaseService.prepareStreamOutTimeArray.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
+            StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
         }
         res.setStreamId(streamInfo.getStreamId());
         return res;
@@ -137,6 +130,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         CommonResponse<Boolean> commonResponse = parsingEngineApi.channelStopPlay(new StreamManageDto(streamInfo.getDispatchId(), streamId));
         if (commonResponse.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向服务", "流媒体交互失败", streamId, commonResponse.getMsg());
+            streamMapper.deleteByStreamId(streamId);
             return;
         }
         Boolean isSuccess = commonResponse.getData();

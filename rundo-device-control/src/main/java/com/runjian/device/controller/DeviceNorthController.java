@@ -1,8 +1,5 @@
 package com.runjian.device.controller;
 
-
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.runjian.common.aspect.annotation.BlankStringValid;
 import com.runjian.common.aspect.annotation.IllegalStringValid;
@@ -13,8 +10,8 @@ import com.runjian.device.vo.request.PostDeviceAddReq;
 import com.runjian.device.vo.request.PutDeviceSignSuccessReq;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
+import com.runjian.device.vo.response.PostDeviceAddRsp;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -53,7 +50,7 @@ public class DeviceNorthController {
      * @return
      */
     @PostMapping("/add")
-    public CommonResponse<Long> deviceAdd(@RequestBody PostDeviceAddReq req){
+    public CommonResponse<PostDeviceAddRsp> deviceAdd(@RequestBody PostDeviceAddReq req){
         validatorService.validateRequest(req);
         return CommonResponse.success(deviceNorthService.deviceAdd(req.getDeviceId(), req.getGatewayId(), req.getDeviceType(), req.getIp(), req.getPort(), req.getName(), req.getManufacturer(), req.getModel(), req.getFirmware(), req.getPtzType(), req.getUsername(), req.getPassword()));
     }
@@ -74,7 +71,7 @@ public class DeviceNorthController {
      * @return
      */
     @PutMapping("/sign/success")
-    public CommonResponse deviceSignSuccess(@RequestBody PutDeviceSignSuccessReq request){
+    public CommonResponse<?> deviceSignSuccess(@RequestBody PutDeviceSignSuccessReq request){
         validatorService.validateRequest(request);
         deviceNorthService.deviceSignSuccess(request.getDeviceId());
         return CommonResponse.success();

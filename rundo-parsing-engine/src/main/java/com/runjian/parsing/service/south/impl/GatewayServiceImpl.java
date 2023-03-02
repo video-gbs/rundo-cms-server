@@ -8,6 +8,7 @@ import com.runjian.common.constant.LogTemplate;
 import com.runjian.parsing.dao.GatewayMapper;
 import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.feign.DeviceControlApi;
+import com.runjian.parsing.service.common.GatewayTaskService;
 import com.runjian.parsing.vo.request.PostGatewaySignInReq;
 import com.runjian.parsing.service.south.GatewayService;
 import com.runjian.parsing.vo.request.PutGatewayHeartbeatReq;
@@ -29,8 +30,6 @@ public class GatewayServiceImpl implements GatewayService {
 
     @Autowired
     private DeviceControlApi deviceControlApi;
-
-
 
     /**
      * 网关注册
@@ -100,4 +99,5 @@ public class GatewayServiceImpl implements GatewayService {
         }
         return gatewayInfoOp.get().getId();
     }
+
 }

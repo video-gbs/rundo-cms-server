@@ -83,10 +83,34 @@ public interface ChannelMapper {
 
 
     @Select(" <script> " +
-            " SELECT id FROM " + CHANNEL_TABLE_NAME +
+            " SELECT * FROM " + CHANNEL_TABLE_NAME +
             " WHERE id IN " +
             " <foreach collection='channelIdList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
     List<ChannelInfo> selectByIds(List<Long> channelIdList);
+
+    @Select(value = {" <script> " +
+            " SELECT * FROM " + CHANNEL_TABLE_NAME +
+            " WHERE device_id IN" +
+            " <foreach collection='deviceIds'  item='item'  open='(' separator=',' close=')' > #{item} </foreach> " +
+            " AND online_state = #{onlineState} " +
+            " </script> "})
+    List<ChannelInfo> selectByDeviceIdsAndOnlineState(List<Long> deviceIds, Integer onlineState);
+
+    @Update(" <script> " +
+            " UPDATE " + CHANNEL_TABLE_NAME +
+            " SET update_time = #{updateTime}  " +
+            " , online_state = #{onlineState} " +
+            " WHERE device_id IN "+
+            " <foreach collection='deviceIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void batchUpdateOnlineStateByDeviceIds(List<Long> deviceIds, Integer onlineState, LocalDateTime updateTime);
+
+    @Select(value = {" <script> " +
+            " SELECT * FROM " + CHANNEL_TABLE_NAME +
+            " WHERE device_id = #{deviceId}" +
+            " AND sign_state = #{signState} " +
+            " </script> "})
+    List<ChannelInfo> selectByDeviceIdAndSignState(Long deviceId, Integer signState);
 
 }

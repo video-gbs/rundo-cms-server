@@ -1,27 +1,27 @@
 package com.runjian.device.service.south.impl;
 
-import com.runjian.common.config.exception.BusinessErrorEnums;
-import com.runjian.common.config.exception.BusinessException;
+
 import com.runjian.common.constant.CommonEnum;
-import com.runjian.common.constant.MarkConstant;
+import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
 import com.runjian.device.dao.ChannelMapper;
-import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
+import com.runjian.device.entity.ChannelInfo;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
+import com.runjian.device.service.common.DetailBaseService;
+import com.runjian.device.service.common.RedisBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.south.DeviceSouthService;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
+import com.runjian.device.vo.request.PostDeviceSignInReq;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 设备南向服务
@@ -35,16 +35,16 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
     private DeviceMapper deviceMapper;
 
     @Autowired
-    private DetailMapper detailMapper;
-
-    @Autowired
     private ChannelMapper channelMapper;
 
     @Autowired
     private ChannelNorthService channelNorthService;
 
     @Autowired
-    private RedissonClient redissonClient;
+    private RedisBaseService redisBaseService;
+
+    @Autowired
+    private DetailBaseService detailBaseService;
 
     /**
      * 设备添加注册
@@ -56,7 +56,8 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
      * @param port 端口
      */
     @Override
-    public void signIn(Long id, Long gatewayId, String originId, Integer onlineState, Integer deviceType, String ip, String port) {
+    public void signIn(Long id, Long gatewayId, String originId, Integer onlineState, Integer deviceType, String ip, String port,
+                       String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password) {
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
         LocalDateTime nowTime = LocalDateTime.now();
         if (deviceInfoOp.isEmpty()){
@@ -70,68 +71,153 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             deviceInfo.setSignState(SignState.TO_BE_ADD.getCode());
             deviceMapper.save(deviceInfo);
             if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                redissonClient.getMap(MarkConstant.REDIS_DEVICE_ONLINE_STATE).put(deviceInfo.getId(), deviceInfo.getOnlineState());
+                redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
             }
         }else {
             DeviceInfo deviceInfo = deviceInfoOp.get();
-            // 修改设备状态
             deviceInfo.setUpdateTime(nowTime);
+            boolean isAutoSignIn = false;
+            // 判断是否是待注册状态
+            if (deviceInfo.getSignState().equals(SignState.TO_BE_SIGN_IN.getCode())){
+                // 注册成功
+                deviceInfo.setSignState(SignState.SUCCESS.getCode());
+                isAutoSignIn = true;
+            }
+
             // 设备从离线到在线，进行通道同步
             if (onlineState.equals(CommonEnum.ENABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
                 // 对通道同步
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
                 if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                    uploadDeviceOnlineStateToRedis(deviceInfo.getId(), deviceInfo.getOnlineState());
-                    channelNorthService.channelSync(deviceInfo.getId());
+                    redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
+                    Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceInfo.getId()));
                 }
             } else if (onlineState.equals(CommonEnum.DISABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.ENABLE.getCode())) {
                 // 将通道全部离线
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
-                if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                    uploadDeviceOnlineStateToRedis(deviceInfo.getId(), deviceInfo.getOnlineState());
-                }
                 channelMapper.updateOnlineStateByDeviceId(id, onlineState, nowTime);
+                if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                    redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), CommonEnum.DISABLE.getCode());
+                    Map<Long, Integer> channelInfoMap = channelMapper.selectByDeviceIdAndSignState(deviceInfo.getId(), SignState.SUCCESS.getCode()).stream().collect(Collectors.toMap(ChannelInfo::getId, channelInfo -> CommonEnum.DISABLE.getCode()));
+                    redisBaseService.batchUpdateChannelOnlineState(channelInfoMap);
+                }
+            } else if (isAutoSignIn && onlineState.equals(CommonEnum.ENABLE.getCode())){
+                deviceInfo.setOnlineState(onlineState);
+                deviceMapper.update(deviceInfo);
+                redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
+                Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceInfo.getId()));
             }
         }
-
-        Optional<DetailInfo> detailInfoOp = detailMapper.selectByDcIdAndType(id, DetailType.DEVICE.getCode());
-        if (detailInfoOp.isEmpty()){
-            DetailInfo detailInfo = new DetailInfo();
-            detailInfo.setOriginId(originId);
-            detailInfo.setIp(ip);
-            detailInfo.setPort(port);
-            detailInfo.setUpdateTime(nowTime);
-            detailInfo.setDcId(id);
-            detailInfo.setType(DetailType.DEVICE.getCode());
-            detailInfo.setCreateTime(nowTime);
-            detailMapper.save(detailInfo);
-        } else {
-            DetailInfo detailInfo = detailInfoOp.get();
-            detailInfo.setIp(ip);
-            detailInfo.setPort(port);
-            detailInfo.setUpdateTime(nowTime);
-            detailMapper.update(detailInfo);
-        }
+        detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model,firmware,ptzType,nowTime);
     }
 
-    /**
-     * 更新设备状态到设备
-     * @param deviceId
-     * @param onlineState
-     */
-    private void uploadDeviceOnlineStateToRedis(Long deviceId,  Integer onlineState) {
-        RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_ONLINE_STATE_LOCK);
-        try{
-            lock.lock(3, TimeUnit.SECONDS);
-            redissonClient.getMap(MarkConstant.REDIS_DEVICE_ONLINE_STATE).put(deviceId, onlineState);
-        } catch (Exception ex){
-            ex.printStackTrace();
-            throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
-        }finally {
-            lock.unlock();
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void signInBatch(List<PostDeviceSignInReq> req) {
+        if (req.isEmpty()){
+            return;
         }
+        Map<Long, PostDeviceSignInReq> postDeviceSignInReqMap = req.stream().collect(Collectors.toMap(PostDeviceSignInReq::getDeviceId, postDeviceSignInReq -> postDeviceSignInReq));
+        // 查询已存在的设备信息
+        List<DeviceInfo> oldDeviceInfoList = deviceMapper.selectByIds(postDeviceSignInReqMap.keySet());
+
+        // 初始化批量处理容器
+        List<DeviceInfo> updateDeviceList = new ArrayList<>(oldDeviceInfoList.size());
+        List<DeviceInfo> saveDeviceList = new ArrayList<>(postDeviceSignInReqMap.size() - oldDeviceInfoList.size());
+        List<DetailInfo> detailInfoList = new ArrayList<>(postDeviceSignInReqMap.size());
+        List<Long> offLineDeviceIdList = new ArrayList<>(oldDeviceInfoList.size());
+        List<Long> needChannelSyncDevice = new ArrayList<>(oldDeviceInfoList.size());
+        Map<Long, Integer> updateDeviceRedisMap = new HashMap<>(postDeviceSignInReqMap.size());
+
+        LocalDateTime nowTime = LocalDateTime.now();
+        // 修改
+        for (DeviceInfo deviceInfo : oldDeviceInfoList){
+            PostDeviceSignInReq postDeviceSignInReq = postDeviceSignInReqMap.remove(deviceInfo.getId());
+            deviceInfo.setUpdateTime(nowTime);
+            boolean isAutoSignIn = false;
+            // 判断是否是待注册状态
+            if (deviceInfo.getSignState().equals(SignState.TO_BE_SIGN_IN.getCode())){
+                // 注册成功
+                deviceInfo.setSignState(SignState.SUCCESS.getCode());
+                isAutoSignIn = true;
+            }
+
+            // 设备从离线到在线，进行通道同步
+            if (postDeviceSignInReq.getOnlineState().equals(CommonEnum.ENABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+                // 对通道同步
+                deviceInfo.setOnlineState(postDeviceSignInReq.getOnlineState());
+                updateDeviceList.add(deviceInfo);
+                if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                    updateDeviceRedisMap.put(deviceInfo.getId(), deviceInfo.getOnlineState());
+                    needChannelSyncDevice.add(deviceInfo.getId());
+                }
+            } else if (postDeviceSignInReq.getOnlineState().equals(CommonEnum.DISABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.ENABLE.getCode())) {
+                // 将通道全部离线
+                deviceInfo.setOnlineState(postDeviceSignInReq.getOnlineState());
+                updateDeviceList.add(deviceInfo);
+                if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                    updateDeviceRedisMap.put(deviceInfo.getId(), deviceInfo.getOnlineState());
+                }
+                offLineDeviceIdList.add(deviceInfo.getId());
+            } else if (isAutoSignIn && postDeviceSignInReq.getOnlineState().equals(CommonEnum.ENABLE.getCode())){
+                deviceInfo.setOnlineState(postDeviceSignInReq.getOnlineState());
+                updateDeviceList.add(deviceInfo);
+                updateDeviceRedisMap.put(deviceInfo.getId(), deviceInfo.getOnlineState());
+                needChannelSyncDevice.add(deviceInfo.getId());
+            }
+            detailInfoList.add(getNewDetailInfo(postDeviceSignInReq, nowTime));
+        }
+
+        // 新增
+        for (PostDeviceSignInReq request : postDeviceSignInReqMap.values()){
+            DeviceInfo deviceInfo = new DeviceInfo();
+            deviceInfo.setId(request.getDeviceId());
+            deviceInfo.setGatewayId(request.getGatewayId());
+            deviceInfo.setDeviceType(request.getDeviceType());
+            deviceInfo.setOnlineState(request.getOnlineState());
+            deviceInfo.setCreateTime(nowTime);
+            deviceInfo.setUpdateTime(nowTime);
+            deviceInfo.setSignState(SignState.TO_BE_ADD.getCode());
+            saveDeviceList.add(deviceInfo);
+            if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                updateDeviceRedisMap.put(deviceInfo.getId(), deviceInfo.getOnlineState());
+            }
+            detailInfoList.add(getNewDetailInfo(request, nowTime));
+        }
+
+        if (updateDeviceList.size() > 0)
+            deviceMapper.batchUpdateOnlineState(updateDeviceList);
+        if (saveDeviceList.size() > 0)
+            deviceMapper.batchSave(saveDeviceList);
+        if (detailInfoList.size() > 0)
+            detailBaseService.batchSaveOrUpdate(detailInfoList, DetailType.DEVICE);
+        if (updateDeviceRedisMap.size() > 0)
+            redisBaseService.batchUpdateDeviceOnlineState(updateDeviceRedisMap);
+        if (offLineDeviceIdList.size() > 0)
+            channelMapper.batchUpdateOnlineStateByDeviceIds(offLineDeviceIdList, CommonEnum.DISABLE.getCode(), nowTime);
+        for (Long deviceId : needChannelSyncDevice){
+            Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceId));
+        }
+
+    }
+
+    private DetailInfo getNewDetailInfo(PostDeviceSignInReq req, LocalDateTime nowTime){
+        DetailInfo detailInfo = new DetailInfo();
+        detailInfo.setDcId(req.getDeviceId());
+        detailInfo.setOriginId(req.getOriginId());
+        detailInfo.setType(DetailType.DEVICE.getCode());
+        detailInfo.setIp(req.getIp());
+        detailInfo.setPort(req.getPort());
+        detailInfo.setName(req.getName());
+        detailInfo.setManufacturer(req.getManufacturer());
+        detailInfo.setModel(req.getModel());
+        detailInfo.setFirmware(req.getFirmware());
+        detailInfo.setUsername(req.getUsername());
+        detailInfo.setPassword(req.getPassword());
+        detailInfo.setUpdateTime(nowTime);
+        return detailInfo;
     }
 
 }

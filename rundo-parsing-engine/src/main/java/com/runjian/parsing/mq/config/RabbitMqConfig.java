@@ -3,6 +3,7 @@ package com.runjian.parsing.mq.config;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.LogTemplate;
+import com.runjian.parsing.mq.listener.MqListenerConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -10,13 +11,13 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Miracle
@@ -70,6 +71,17 @@ public class RabbitMqConfig {
         rabbitAdmin.declareBinding(binding);
     }
 
+    public Queue addQueue(String exchangeId, String queueKey, Integer ttl){
+        Map<String, Object> map = new HashMap<>();
+        // 队列中的消息未被消费则15秒后过期
+        map.put("x-message-ttl", ttl);
+        Queue queue = new Queue(queueKey, true, false, false, map);
+        AbstractExchange exchange = rabbitMqProperties.getExchangeDataMap().get(exchangeId).getExchange();
+        Binding binding = BindingBuilder.bind(queue).to(exchange).with(queueKey).noargs();
+        addQueue(queue, binding);
+        return queue;
+    }
+
     public void deleteQueue(String queueName){
         rabbitAdmin.deleteQueue(queueName);
     }
@@ -113,6 +125,9 @@ public class RabbitMqConfig {
         if (exchangeDataList.size() > 0 && queueDataList.size() > 0){
             Map<String, RabbitMqProperties.QueueData> queueDataMap = new HashMap<>(queueDataList.size());
             for (RabbitMqProperties.QueueData queueData : queueDataList){
+                if (Objects.isNull(queueData.getTtl())){
+
+                }
                 Queue queue = new Queue(queueData.getQueueName(), true, false, false);
                 AbstractExchange exchange = rabbitMqProperties.getExchangeDataMap().get(queueData.getExchangeId()).getExchange();
                 Binding binding = BindingBuilder.bind(queue).to(exchange).with(queueData.getRoutingKey()).noargs();

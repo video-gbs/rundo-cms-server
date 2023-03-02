@@ -85,20 +85,8 @@ public class CircleArray<T> {
             lock.lock();
             // 计算插入位置
             long position = (currentIndex + offset) % circleSize;
-            // 获取上一次的插入位置
-            Long oldPosition = dataIndexMap.getOrDefault(data, null);
-            // 判断是否存在数据
-            if (Objects.nonNull(oldPosition)){
-                // 获取上一次插入位置的数据
-                Set<T> dataSet = indexDataMap.get(oldPosition);
-                // 移除数据
-                dataSet.remove(data);
-                // 判断数据组是否为空
-                if (dataSet.size() == 0){
-                    // 移除当前位置数据
-                    indexDataMap.remove(oldPosition);
-                }
-            }
+            // 移除旧数据
+            removeOldData(data);
             // 记录数据位置信息
             dataIndexMap.put(data, position);
             Set<T> dataSet = indexDataMap.getOrDefault(position, new HashSet<>());
@@ -110,7 +98,61 @@ public class CircleArray<T> {
         } finally {
             lock.unlock();
         }
+    }
 
+    /**
+     * 移除旧数据
+     * @param data
+     */
+    private void removeOldData(T data) {
+        // 获取上一次的插入位置
+        Long oldPosition = dataIndexMap.getOrDefault(data, null);
+        // 判断是否存在数据
+        if (Objects.nonNull(oldPosition)){
+            // 获取上一次插入位置的数据
+            Set<T> dataSet = indexDataMap.get(oldPosition);
+            // 移除数据
+            dataSet.remove(data);
+            // 判断数据组是否为空
+            if (dataSet.size() == 0){
+                // 移除当前位置数据
+                indexDataMap.remove(oldPosition);
+            }
+        }
+    }
+
+    /**
+     * 添加或修改数据
+     * @param data 数据
+     * @param offset 保存偏移值
+     */
+    public void addOrUpdateTime(Set<T> dataSet, Long offset){
+        if (offset <= 0){
+            throw new RuntimeException("非法偏移值");
+        }
+        if (dataSet.isEmpty()){
+            return;
+        }
+        try{
+            // 上锁
+            lock.lock();
+            // 计算插入位置
+            long position = (currentIndex + offset) % circleSize;
+            for (T data : dataSet){
+                // 获取上一次的插入位置
+                removeOldData(data);
+                // 记录数据位置信息
+                dataIndexMap.put(data, position);
+            }
+            Set<T> oldDataSet = indexDataMap.getOrDefault(position, new HashSet<>());
+            oldDataSet.addAll(dataSet);
+            // 记录位置数据信息
+            indexDataMap.put(position, dataSet);
+        } catch (Exception ex){
+            ex.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
     }
 
 

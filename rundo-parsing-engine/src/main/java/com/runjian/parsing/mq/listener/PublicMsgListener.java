@@ -24,6 +24,8 @@ import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -115,8 +117,8 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                 // 判断是否是第一次注册
                 if (signInRsp.getIsFirstSignIn()) {
                     // 生成消息通讯队列
-                    addQueue(key1, mqDefaultProperties.getGatewayExchangeId());
-                    Queue queue = addQueue(key2, mqDefaultProperties.getGatewayExchangeId());
+                    rabbitMqConfig.addQueue(mqDefaultProperties.getStreamExchangeId(), key1, 15000);
+                    Queue queue = rabbitMqConfig.addQueue(mqDefaultProperties.getStreamExchangeId(), key2, 15000);
                     // 添加监听队列
                     SimpleMessageListenerContainer dispatch = MqListenerConfig.containerMap.get(MqConstant.GATEWAY_PREFIX);
                     if (Objects.isNull(dispatch)) {
@@ -143,8 +145,8 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                 // 判断是否是第一次注册
                 if (signInRsp.getIsFirstSignIn()) {
                     // 生成消息通讯队列
-                    addQueue(key1, mqDefaultProperties.getStreamExchangeId());
-                    Queue queue = addQueue(key2, mqDefaultProperties.getStreamExchangeId());
+                    rabbitMqConfig.addQueue(mqDefaultProperties.getStreamExchangeId(), key1, 15000);
+                    Queue queue = rabbitMqConfig.addQueue(mqDefaultProperties.getStreamExchangeId(), key2, 15000);
                     // 添加监听队列
                     SimpleMessageListenerContainer dispatch = MqListenerConfig.containerMap.get(MqConstant.STREAM_PREFIX);
                     if (Objects.isNull(dispatch)) {
@@ -167,13 +169,5 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
         } finally {
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), true);
         }
-    }
-
-    private Queue addQueue(String key, String exchangeId) {
-        Queue queue = new Queue(key, true, false, false);
-        AbstractExchange exchange = rabbitMqProperties.getExchangeDataMap().get(exchangeId).getExchange();
-        Binding binding = BindingBuilder.bind(queue).to(exchange).with(key).noargs();
-        rabbitMqConfig.addQueue(queue, binding);
-        return queue;
     }
 }

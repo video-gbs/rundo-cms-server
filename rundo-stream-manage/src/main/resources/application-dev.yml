@@ -4,10 +4,10 @@ spring:
   cloud:
     nacos:
       discovery:
-        username: ${NACOS_USERNAME}
-        password: ${NACOS_PASSWORD}
-        server-addr: ${NACOS_SERVER:124.71.21.11}
-        namespace: ${NACOS_NAMESPACE:public}
+        username: ${NACOS_USERNAME:nacos}
+        password: ${NACOS_PASSWORD:rundo@nacos*2023}
+        server-addr: ${NACOS_SERVER:124.71.21.11:8848}
+        namespace: ${NACOS_NAMESPACE:dev}
   web:
     resources:
       static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:./static
@@ -30,9 +30,9 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DATABASE_HOST:127.0.0.1}:${DATABASE_PORT:3306}/${DATABASE_NAME:rundo_stream_manage}?useUnicode=true&characterEncoding=UTF8&rewriteBatchedStatements=true&serverTimezone=PRC&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://${DATABASE_HOST:124.71.21.11}:${DATABASE_PORT:3306}/${DATABASE_NAME:rundo_stream_manage}?useUnicode=true&characterEncoding=UTF8&rewriteBatchedStatements=true&serverTimezone=PRC&useSSL=false&allowMultiQueries=true
     username: ${DATABASE_USER:root}
-    password: ${DATABASE_PWD:abc123}
+    password: ${DATABASE_PWD:rundomysql}
     druid:
       initialSize: 10                       # 连接池初始化连接数
       maxActive: 200                        # 连接池最大连接数
@@ -62,6 +62,12 @@ server:
 mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
 
 # [可选] 日志配置, 一般不需要改
 logging:

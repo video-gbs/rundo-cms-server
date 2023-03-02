@@ -18,16 +18,19 @@ import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.service.common.DataBaseService;
 import com.runjian.device.service.common.DetailBaseService;
+import com.runjian.device.service.common.RedisBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.north.DeviceNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
+import com.runjian.device.vo.response.PostDeviceAddRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -59,13 +62,17 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     @Autowired
     private DataBaseService dataBaseService;
 
+    @Autowired
+    private RedisBaseService redisBaseService;
+
     @Override
     public PageInfo<GetDevicePageRsp> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
-        PageHelper.startPage(page, num);
         if (Objects.nonNull(signState) && signState.equals(SignState.SUCCESS.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "注册状态不能为已成功");
         }
-        return new PageInfo<>(deviceMapper.selectByPage( signState, deviceName, ip));
+        PageHelper.startPage(page, num);
+        List<GetDevicePageRsp> devicePageRsps = deviceMapper.selectByPage(signState, deviceName, ip);
+        return new PageInfo<>(devicePageRsps);
     }
 
     /**
@@ -83,7 +90,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long deviceAdd(String originId, Long gatewayId, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password) {
+    public PostDeviceAddRsp deviceAdd(String originId, Long gatewayId, Integer deviceType, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password) {
         LocalDateTime nowTime = LocalDateTime.now();
 
         // 发送注册请求，返回数据ID
@@ -106,18 +113,18 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
         if (deviceInfoOp.isPresent()){
             DeviceInfo deviceInfo = deviceInfoOp.get();
-            if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "设备已添加，请勿重复添加");
-            }
-            if (deviceInfo.getSignState().equals(SignState.TO_BE_ADD.getCode())){
+            if (deviceInfo.getSignState().equals(SignState.TO_BE_SIGN_IN.getCode())){
                 throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "设备已存在，等待注册中");
+            }
+            if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                return new PostDeviceAddRsp(id, deviceInfo.getOnlineState());
             }
             deviceInfo.setSignState(SignState.SUCCESS.getCode());
             deviceInfo.setUpdateTime(nowTime);
             deviceMapper.updateSignState(deviceInfo);
-            return id;
+            Constant.poolExecutor.execute(() -> channelNorthService.channelSync(id));
+            return new PostDeviceAddRsp(id, deviceInfo.getOnlineState());
         }
-
         DeviceInfo deviceInfo = new DeviceInfo();
         deviceInfo.setId(id);
         deviceInfo.setGatewayId(gatewayId);
@@ -130,7 +137,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         deviceMapper.save(deviceInfo);
         // 保存详细信息
         detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime);
-        return id;
+        return new PostDeviceAddRsp(id, deviceInfo.getOnlineState());
     }
 
 
@@ -148,6 +155,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         deviceInfo.setUpdateTime(LocalDateTime.now());
         // 修改设备注册状态
         deviceMapper.updateSignState(deviceInfo);
+        redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
         // 异步触发通道同步
         Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceId));
     }

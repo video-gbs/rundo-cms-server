@@ -25,6 +25,13 @@ public interface SouthProtocol {
     void deviceSignIn(Long gatewayId, Object data);
 
     /**
+     * 设备全量同步
+     * @param gatewayId 网关id
+     * @param data 数据
+     */
+    void deviceBatchSignIn(Long gatewayId, Object data);
+
+    /**
      * 规范化：设备同步
      * @param taskId 任务id
      * @param data 数据集合

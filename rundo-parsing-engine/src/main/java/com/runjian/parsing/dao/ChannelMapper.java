@@ -4,6 +4,7 @@ import com.runjian.parsing.entity.ChannelInfo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -37,4 +38,9 @@ public interface ChannelMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(ChannelInfo channelInfo);
 
+    @Insert({" <script> " +
+            " INSERT INTO " + CHANNEL_TABLE_NAME + "(id, device_id, origin_id, update_time, create_time) values " +
+            " <foreach collection='channelInfoList' item='item' separator=','>(#{item.id}, #{item.deviceId}, #{item.originId}, #{item.updateTime}, #{item.createTime})</foreach> " +
+            " </script>"})
+    void batchSave(List<ChannelInfo> channelInfoList);
 }

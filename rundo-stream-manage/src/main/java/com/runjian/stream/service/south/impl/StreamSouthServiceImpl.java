@@ -4,8 +4,6 @@ import com.runjian.common.constant.CommonEnum;
 import com.runjian.stream.dao.StreamMapper;
 import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.service.common.StreamBaseService;
-import com.runjian.stream.service.north.StreamNorthService;
-import com.runjian.stream.service.north.impl.StreamNorthServiceImpl;
 import com.runjian.stream.service.south.StreamSouthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +24,8 @@ public class StreamSouthServiceImpl implements StreamSouthService {
 
     @Override
     public void receiveResult(String streamId, Boolean isSuccess) {
+        StreamBaseService.STREAM_OUT_TIME_ARRAY.deleteTime(streamId);
         Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
-        StreamBaseService.prepareStreamOutTimeArray.deleteTime(streamId);
         if (streamInfoOp.isEmpty()) {
             return;
         }

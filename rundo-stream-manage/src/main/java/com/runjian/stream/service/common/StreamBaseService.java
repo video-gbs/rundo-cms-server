@@ -9,14 +9,14 @@ import com.runjian.common.utils.CircleArray;
 public interface StreamBaseService {
 
     /**
-     * 心跳时钟
+     * 准备中的流过期时钟
      */
-    CircleArray<String> prepareStreamOutTimeArray = new CircleArray<>(600);
+    CircleArray<String> STREAM_OUT_TIME_ARRAY = new CircleArray<>(600);
 
     /**
      * 系统启动执行
      */
-    void systemStart();
+    void init();
 
     /**
      * 检测超时未成功播放的流

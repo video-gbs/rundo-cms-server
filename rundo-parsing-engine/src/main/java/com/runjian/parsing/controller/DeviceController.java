@@ -6,6 +6,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.parsing.constant.IdType;
 import com.runjian.parsing.service.common.ProtocolService;
+import com.runjian.parsing.service.south.GatewayService;
 import com.runjian.parsing.vo.request.DeviceControlReq;
 import com.runjian.parsing.vo.request.DeviceCustomEventReq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * 设备控制控制器
@@ -28,10 +30,22 @@ public class DeviceController {
     @Autowired
     private ProtocolService protocolService;
 
-
     @Autowired
     private ValidatorService validatorService;
 
+
+    /**
+     *
+     * @param gatewayIds
+     * @return
+     */
+    @GetMapping("/device/total-sync")
+    public CommonResponse<?> gatewayTotalSync(@RequestParam Set<Long> gatewayIds){
+        for (Long gatewayId : gatewayIds){
+            protocolService.getNorthProtocol(gatewayId, IdType.GATEWAY).deviceTotalSync(gatewayId);
+        }
+        return CommonResponse.success();
+    }
 
     /**
      * 设备信息同步

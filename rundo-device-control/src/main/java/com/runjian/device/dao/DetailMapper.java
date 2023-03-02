@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 设备或者通道的详细信息数据库操作类
@@ -49,7 +50,7 @@ public interface DetailMapper {
     void deleteByDcIdAndType(Long dcId, Integer type);
 
     @Insert({" <script> " +
-            " INSERT INTO " + DETAIL_TABLE_NAME + "(dc_id, origin_id, type, ip, port, name, manufacturer, model, firmware, ptz_type, username, password, update_time, create_time) values " +
+            " INSERT INTO " + DETAIL_TABLE_NAME + "(dc_id, origin_id, type, ip, port, name, manufacturer, model, firmware, ptz_type, username, password, update_time, create_time) VALUES " +
             " <foreach collection='detailSaveList' item='item' separator=','>(#{item.dcId}, #{item.originId}, #{item.type}, #{item.ip}, #{item.port}, #{item.name}, #{item.manufacturer}, #{item.model}, #{item.firmware}, #{item.ptzType}, #{item.username}, #{item.password}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>"})
     void batchSave(List<DetailInfo> detailSaveList);
@@ -79,4 +80,12 @@ public interface DetailMapper {
             " AND type = #{type} " +
             " </script>")
     void deleteByDcIdsAndType(List<Long> channelInfoIdList, Integer type);
+
+    @Select(" <script> " +
+            " SELECT * FROM " + DETAIL_TABLE_NAME +
+            " WHERE dc_id IN " +
+            " <foreach collection='dcIds' item='item' open='(' separator=',' close=')' >#{item}</foreach> " +
+            " AND type = #{detailType} " +
+            " </script>")
+    List<DetailInfo> selectByDcIdsAndType(Set<Long> dcIds, Integer detailType);
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -89,5 +90,16 @@ public class StreamController {
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
         streamNorthService.checkStreamStatus(dispatchId, streamIds, response);
         return response;
+    }
+
+    /**
+     * 删除所有的流
+     * @param dispatchIds 调度服务id数组
+     * @return
+     */
+    @DeleteMapping("/stream/stop/all")
+    public CommonResponse<?> stopAllStream(@RequestParam Set<Long> dispatchIds){
+        streamNorthService.stopAllStream(dispatchIds);
+        return CommonResponse.success();
     }
 }

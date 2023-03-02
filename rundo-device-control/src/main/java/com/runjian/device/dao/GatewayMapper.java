@@ -1,6 +1,7 @@
 package com.runjian.device.dao;
 
 import com.runjian.device.entity.GatewayInfo;
+import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
 import org.apache.ibatis.annotations.Insert;
@@ -67,13 +68,41 @@ public interface GatewayMapper {
             " online_state = #{onlineState} ")
     void setAllOnlineState(Integer onlineState, LocalDateTime updateTime);
 
-    @Select(" SELECT id, name FROM " + GATEWAY_TABLE_NAME)
-    List<GetGatewayNameRsp> selectAllNameAndId();
+    @Select(" <script> " +
+            " SELECT id, name, protocol FROM " + GATEWAY_TABLE_NAME+
+            " WHERE 1=1 " +
+            " <if test=\"gatewayId != null\" > AND id = #{gatewayId} </if> " +
+            " </script> ")
+    List<GetGatewayNameRsp> selectAllNameAndId(Long gatewayId);
 
     @Select(" <script> " +
             " SELECT * FROM " + GATEWAY_TABLE_NAME +
             " WHERE 1=1 " +
-            "<if test=\"name != null\" > AND name = #{name} </if>" +
+            "<if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%')</if>" +
             " </script> ")
     List<GetGatewayPageRsp> selectByPage(String name);
+
+    @Select(" <script> " +
+            " SELECT * FROM " + GATEWAY_TABLE_NAME +
+            " WHERE "+
+            " <if test=\"isIn == true\" > id IN </if>" +
+            " <if test=\"isIn == false\" > id NOT IN </if> " +
+            " <foreach collection='gatewayIds'  item='item'  open='(' separator=',' close=')' > #{item} </foreach> " +
+            " <if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%') </if>" +
+            " </script> ")
+    List<GetGatewayByIdsRsp> selectByIds(List<Long> gatewayIds, Boolean isIn, String name);
+
+
+    @Select(" <script> " +
+            " SELECT * FROM " + GATEWAY_TABLE_NAME +
+            " WHERE 1=1 "+
+            " <if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%') </if>" +
+            " </script> ")
+    List<GetGatewayByIdsRsp> selectByName(String name);
+
+    @Select(" <script> " +
+            " SELECT id FROM " + GATEWAY_TABLE_NAME +
+            " WHERE online_state = #{onlineState} "+
+            " </script> ")
+    Set<Long> selectIdByOnlineState(Integer onlineState);
 }

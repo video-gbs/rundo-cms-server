@@ -1,11 +1,10 @@
 package com.runjian.device.service.north;
 
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageInfo;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
+import com.runjian.device.vo.response.PostDeviceAddRsp;
 
 /**
  * 设备北向服务
@@ -22,8 +21,8 @@ public interface DeviceNorthService {
     /**
      * 设备添加注册
      */
-    Long deviceAdd(String deviceId, Long gatewayId, Integer deviceType,
-                   String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password);
+    PostDeviceAddRsp deviceAdd(String deviceId, Long gatewayId, Integer deviceType,
+                               String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, String username, String password);
 
     /**
      * 设备注册状态修改

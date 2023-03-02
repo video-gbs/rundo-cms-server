@@ -6,12 +6,18 @@ import com.runjian.parsing.constant.MsgType;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Miracle
  * @date 2023/1/30 14:15
  */
 public abstract class AbstractNorthProtocol implements NorthProtocol {
+
+    @Override
+    public void deviceTotalSync(Long gatewayId){
+        customEvent(gatewayId, IdType.GATEWAY, MsgType.DEVICE_TOTAL_SYNC.getMsg(), null, null);
+    }
 
     @Override
     public void deviceSync(Long deviceId, DeferredResult<CommonResponse<?>> response) {

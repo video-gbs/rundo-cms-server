@@ -11,7 +11,6 @@ import com.runjian.parsing.constant.IdType;
 import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.dao.GatewayMapper;
 import com.runjian.parsing.entity.GatewayInfo;
-import com.runjian.parsing.mq.config.RabbitMqProperties;
 import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.service.common.ProtocolService;
 import com.runjian.parsing.vo.CommonMqDto;
@@ -19,11 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -66,38 +62,37 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "流媒体异常消息记录", mqRequest.getMsgType(), mqRequest.getMsg());
             }
 
-            // 主动推送消息
-            if (mqRequest.getMsgType().equals(MsgType.DEVICE_SIGN_IN.getMsg())) {
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceSignIn(gatewayInfo.getId(), mqRequest.getData());
-                return;
-            } else if (!StringUtils.isNumber(mqRequest.getMsgId())) {
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).commonEvent(gatewayInfo.getId(), mqRequest.getMsgId(), mqRequest.getMsgType(), mqRequest.getData());
-                return;
-            }
 
-            // 返回的消息
-            if (mqRequest.getTime().plusSeconds(10).isBefore(LocalDateTime.now())){
-                // 超时的消息不再处理
-            } else if (mqRequest.getCode() != 0){
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
-            } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_SYNC.getMsg())) {
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceSync(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_ADD.getMsg())) {
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceAdd(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_DELETE.getMsg())) {
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceDelete(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_SYNC.getMsg())) {
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelSync(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_PTZ_CONTROL.getMsg())) {
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelPtzControl(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_PLAY.getMsg())) {
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_RECORD_INFO.getMsg())) {
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_PLAYBACK.getMsg())) {
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelPlayback(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-            } else {
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).commonEvent(gatewayInfo.getId(), mqRequest.getMsgId(), mqRequest.getMsgType(), mqRequest.getData());
+            if (!StringUtils.isNumber(mqRequest.getMsgId())){
+                // 网关主动推送消息
+                if (mqRequest.getMsgType().equals(MsgType.DEVICE_SIGN_IN.getMsg())) {
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceSignIn(gatewayInfo.getId(), mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_TOTAL_SYNC.getMsg())){
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceBatchSignIn(gatewayInfo.getId(), mqRequest.getData());
+                } else {
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).commonEvent(gatewayInfo.getId(), mqRequest.getMsgId(), mqRequest.getMsgType(), mqRequest.getData());
+                }
+            } else{
+                // 上层消息返回
+                if (mqRequest.getMsgType().equals(MsgType.DEVICE_SYNC.getMsg())) {
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceSync(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_ADD.getMsg())) {
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceAdd(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_DELETE.getMsg())) {
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceDelete(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_SYNC.getMsg())) {
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelSync(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_PTZ_CONTROL.getMsg())) {
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelPtzControl(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_PLAY.getMsg())) {
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_RECORD_INFO.getMsg())) {
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_PLAYBACK.getMsg())) {
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelPlayback(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                } else {
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).commonEvent(gatewayInfo.getId(), mqRequest.getMsgId(), mqRequest.getMsgType(), mqRequest.getData());
+                }
             }
         } catch (Exception ex) {
             if (ex instanceof BusinessException){

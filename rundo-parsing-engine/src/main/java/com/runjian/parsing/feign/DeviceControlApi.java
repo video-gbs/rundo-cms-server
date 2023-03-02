@@ -1,6 +1,7 @@
 package com.runjian.parsing.feign;
 
 
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.vo.request.PostGatewaySignInReq;
@@ -20,8 +21,11 @@ public interface DeviceControlApi {
     CommonResponse<Boolean> gatewayHeartbeat(@RequestBody PutGatewayHeartbeatReq req);
 
     @PostMapping("/device/south/sign-in")
-    CommonResponse<?> deviceSignIn(JSONObject req);
+    CommonResponse<?> deviceSignIn(@RequestBody JSONObject req);
 
     @PostMapping("/common/south/event")
-    CommonResponse<?> commonEvent(JSONObject req);
+    CommonResponse<?> commonEvent(@RequestBody JSONObject req);
+
+    @PostMapping("/device/south/sign-in-batch")
+    CommonResponse<?> deviceBatchSignIn(@RequestBody Object jsonArray);
 }

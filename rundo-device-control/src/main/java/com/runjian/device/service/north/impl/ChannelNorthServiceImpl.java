@@ -19,22 +19,18 @@ import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.feign.StreamManageApi;
 import com.runjian.device.service.common.DataBaseService;
+import com.runjian.device.service.common.RedisBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.feign.StreamPlayReq;
 import com.runjian.device.vo.response.*;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -66,13 +62,13 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     private DataBaseService dataBaseService;
 
     @Autowired
-    private RedissonClient redissonClient;
+    private RedisBaseService redisBaseService;
 
     @Override
     public PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String name) {
         List<Long> deviceIds = deviceMapper.selectIdBySignState(SignState.SUCCESS.getCode());
         if (deviceIds.size() == 0){
-            return new PageInfo<>(Collections.EMPTY_LIST);
+            return new PageInfo<>();
         }
         PageHelper.startPage(page, num);
         return new PageInfo<>(channelMapper.selectByPage(deviceIds, name));
@@ -131,7 +127,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                 // 更新通道在线状态
                 if (channelInfo.getSignState().equals(SignState.SUCCESS.getCode()) && !Objects.equals(rsp.getOnlineState(), channelInfo.getOnlineState())) {
                     // 对通道在线状态缓存
-                    channelOnlineMap.put(channelInfo.getId(), channelInfo.getOnlineState());
+                    channelOnlineMap.put(channelInfo.getId(), rsp.getOnlineState());
                 }
                 channelInfo.setOnlineState(rsp.getOnlineState());
 
@@ -156,30 +152,17 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                     detailUpdateList.add(detailInfo);
                 }
             }
-            RLock lock = redissonClient.getLock(MarkConstant.REDIS_CHANNEL_ONLINE_STATE_LOCK);
-            try {
-                lock.lock(3, TimeUnit.SECONDS);
-                redissonClient.getMap(MarkConstant.REDIS_CHANNEL_ONLINE_STATE).putAll(channelOnlineMap);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
-            } finally {
-                lock.unlock();
-            }
-
+            // 更新通道的在线状态
+            redisBaseService.batchUpdateChannelOnlineState(channelOnlineMap);
             // 对数据进行批量保存
-            if (channelSaveList.size() > 0) {
+            if (channelSaveList.size() > 0)
                 channelMapper.batchSave(channelSaveList);
-            }
-            if (channelUpdateList.size() > 0) {
+            if (channelUpdateList.size() > 0)
                 channelMapper.batchUpdateOnlineState(channelUpdateList);
-            }
-            if (detailSaveList.size() > 0) {
+            if (detailSaveList.size() > 0)
                 detailMapper.batchSave(detailSaveList);
-            }
-            if (detailUpdateList.size() > 0) {
+            if (detailUpdateList.size() > 0)
                 detailMapper.batchUpdate(detailUpdateList);
-            }
         }
         return channelSyncRsp;
     }
@@ -192,7 +175,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Transactional(rollbackFor = Exception.class)
     public void channelSignSuccess(List<Long> channelIdList) {
         List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIdList);
-        if (channelInfoList.size() > channelIdList.size()){
+        if (channelIdList.size() > channelInfoList.size()){
             List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
             channelIdList.removeAll(collect);
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("缺失的数据%s", channelIdList));
@@ -203,7 +186,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             channelInfo.setUpdateTime(LocalDateTime.now());
         }
         channelMapper.batchUpdateSignState(channelInfoList);
-
+        redisBaseService.batchUpdateChannelOnlineState(channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
     }
 
     /**
@@ -355,7 +338,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         return videoPlayRspCommonResponse.getData();
     }
 
-    @NotNull
+
     private ChannelInfo getChannelInfoAndValid(Long chId) {
         ChannelInfo channelInfo = dataBaseService.getChannelInfo(chId);
         // 检测通道是否在线
@@ -389,7 +372,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         req.putData(StandardName.PTZ_VERTICAL_SPEED, verticalSpeed);
         req.putData(StandardName.PTZ_ZOOM_SPEED, zoomSpeed);
         req.putData(StandardName.PTZ_TOTAL_SPEED, totalSpeed);
-        CommonResponse<Boolean> response = parsingEngineApi.channelPtzControl(req);
+        CommonResponse<?> response = parsingEngineApi.channelPtzControl(req);
         if (response.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "云台控制失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());

@@ -11,6 +11,7 @@ import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.entity.ChannelInfo;
 import com.runjian.parsing.entity.GatewayTaskInfo;
+import com.runjian.parsing.feign.DeviceControlApi;
 import com.runjian.parsing.service.common.GatewayTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,9 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
     @Autowired
     private ChannelMapper channelMapper;
 
+    @Autowired
+    private DeviceControlApi deviceControlApi;
+
     private final static String IP = "ipAddress";
 
     private final static String DEVICE_ONLINE_STATE = "online";
@@ -49,6 +53,23 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
     public void deviceSignIn(Long gatewayId, Object data) {
         JSONObject jsonObject = convertOnlineState(data);
         super.deviceSignIn(gatewayId,  jsonObject);
+    }
+
+    /**
+     * 重写批量注册
+     * @param gatewayId 网关id
+     * @param data 数据
+     */
+    @Override
+    public void deviceBatchSignIn(Long gatewayId, Object data){
+        JSONArray jsonArray = JSONArray.parseArray(data.toString());
+        for (int i = 0; i < jsonArray.size(); i++) {
+            convertOnlineState(saveDevice(jsonArray.getJSONObject(i), gatewayId));
+        }
+        CommonResponse<?> commonResponse = deviceControlApi.deviceBatchSignIn(jsonArray);
+        if (commonResponse.getCode() != 0) {
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
     }
 
     /**
@@ -117,6 +138,16 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "结果为空");
         }
         JSONObject jsonObject = JSON.parseObject(data.toString());
+        convertOnlineState(jsonObject);
+        return jsonObject;
+    }
+
+    /**
+     * 转换在线状态
+     * @param jsonObject
+     * @return
+     */
+    private JSONObject convertOnlineState(JSONObject jsonObject){
         int onlineState = jsonObject.getIntValue(DEVICE_ONLINE_STATE);
         jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
         return jsonObject;
