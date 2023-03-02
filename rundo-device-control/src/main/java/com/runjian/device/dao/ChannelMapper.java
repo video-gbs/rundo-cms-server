@@ -112,4 +112,5 @@ public interface ChannelMapper {
             " AND sign_state = #{signState} " +
             " </script> "})
     List<ChannelInfo> selectByDeviceIdAndSignState(Long deviceId, Integer signState);
+
 }
