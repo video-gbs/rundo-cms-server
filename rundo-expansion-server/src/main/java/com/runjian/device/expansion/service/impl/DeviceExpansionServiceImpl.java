@@ -174,6 +174,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         queryWrapper.eq(DeviceExpansion::getDeleted,0);
         queryWrapper.in(DeviceExpansion::getVideoAreaId,areaIdsArr);
         queryWrapper.orderByDesc(DeviceExpansion::getCreatedAt);
+        queryWrapper.orderByDesc(DeviceExpansion::getOnlineState);
         Page<DeviceExpansion> page = new Page<>(deviceExpansionListReq.getPageNum(), deviceExpansionListReq.getPageSize());
         Page<DeviceExpansion> deviceExpansionPage = deviceExpansionMapper.selectPage(page, queryWrapper);
 
