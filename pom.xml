@@ -25,9 +25,8 @@
         <module>rundo-generator</module>
         <module>rundo-expansion-server</module>
         <module>rundo-cms-doc</module>
+        <module>rundo-cms-core</module>
     </modules>
-
-
     <properties>
         <!--项目基础信息-->
         <java.version>11</java.version>
@@ -198,6 +197,11 @@
             <dependency>
                 <groupId>com.runjian</groupId>
                 <artifactId>rundo-cms-doc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.runjian</groupId>
+                <artifactId>rundo-cms-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!--项目产生的通用依赖 End-->

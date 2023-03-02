@@ -38,14 +38,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-security</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.security</groupId>-->
-<!--            <artifactId>spring-security-test</artifactId>-->
-<!--        </dependency>-->
         <!--数据库驱动-->
         <dependency>
             <groupId>mysql</groupId>
@@ -67,27 +59,10 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!--Redis-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
-
-        <!--API接口文档-->
-        <dependency>
-            <groupId>com.runjian</groupId>
-            <artifactId>rundo-cms-doc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-        </dependency>
-
 
         <!-- nacos 注册中心客户端-->
         <dependency>
@@ -123,12 +98,12 @@
         <!--项目自带的通用包-->
         <dependency>
             <groupId>com.runjian</groupId>
-            <artifactId>rundo-common</artifactId>
+            <artifactId>rundo-cms-doc</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.runjian</groupId>-->
-<!--            <artifactId>rundo-cms-jwt</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.runjian</groupId>
+            <artifactId>rundo-cms-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

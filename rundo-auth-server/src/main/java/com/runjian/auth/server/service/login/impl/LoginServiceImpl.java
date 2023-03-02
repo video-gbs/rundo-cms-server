@@ -3,10 +3,11 @@ package com.runjian.auth.server.service.login.impl;
 import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.runjian.auth.server.domain.dto.login.UserInfoDTO;
 import com.runjian.auth.server.domain.entity.UserInfo;
+import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.login.LoginService;
-import com.runjian.auth.server.service.login.MyRBACService;
 import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,16 +27,17 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class LoginServiceImpl implements LoginService {
-
     @Autowired
-    private MyRBACService myRBACService;
+    private UserInfoMapper userInfoMapper;
 
     @Override
     public Map login(UserInfoDTO dto) {
         String userAccount = dto.getUsername();
         String password = dto.getPassword();
         // 从数据库中查取用户
-        UserInfo userInfo = myRBACService.findUserInfoByUserAccount(userAccount);
+        LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserInfo::getUserAccount, userAccount);
+        UserInfo userInfo = userInfoMapper.selectOne(queryWrapper);
         // 校验用户是否存在
         if (Objects.isNull(userInfo)) {
             throw new BusinessException("用户不存在");

@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2023-02-28 周二 10:53
  */
 @Configuration
-public class JwtConfigure {
+public class SaTokenJwtConfigure {
     @Bean
     public StpLogic getStpLogicJwt(){
         return new StpLogicJwtForSimple();

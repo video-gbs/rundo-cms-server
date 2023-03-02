@@ -33,7 +33,7 @@ public class HomeServiceImpl implements HomeSevice {
     public HomeVO getIndex() {
         Long userId =StpUtil.getLoginIdAsLong();
         // 通过登录的用户查取该用户已授权的角色信息
-        List<String> roleCodeList = roleInfoMapper.selectRoleCodeByUserId(userId);
+        List<String> roleCodeList = StpUtil.getRoleList();
         if (CollUtil.isEmpty(roleCodeList)) {
             log.info("未对用户{}，进行角色授权", userId);
             return null;
