@@ -1,11 +1,13 @@
 package com.runjian.device.feign;
 
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.device.feign.fallback.ParsingEngineFallback;
 import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.response.VideoRecordRsp;
 import com.runjian.device.vo.response.ChannelSyncRsp;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.VideoPlayRsp;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +18,8 @@ import java.util.Set;
  * @author Miracle
  * @date 2023/01/06 16:56
  */
-@FeignClient(value = "parsing-engine")
+@FeignClient(value = "parsing-engine", fallbackFactory = ParsingEngineFallback.class, decode404 = true)
+
 public interface ParsingEngineApi {
 
     /**

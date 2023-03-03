@@ -111,5 +111,4 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
             parsingEngineApi.deviceTotalSync(gatewayIds);
         }
     }
-
 }
