@@ -19,7 +19,6 @@ import java.util.Set;
  * @date 2023/01/06 16:56
  */
 @FeignClient(value = "parsing-engine", fallbackFactory = ParsingEngineFallback.class, decode404 = true)
-
 public interface ParsingEngineApi {
 
     /**
@@ -27,7 +26,7 @@ public interface ParsingEngineApi {
      * @param gatewayIds 网关id数组
      */
     @GetMapping("/device-control/device/total-sync")
-    void deviceTotalSync(@RequestParam Set<Long> gatewayIds);
+    CommonResponse<?> deviceTotalSync(@RequestParam Set<Long> gatewayIds);
 
     /**
      * 设备信息同步

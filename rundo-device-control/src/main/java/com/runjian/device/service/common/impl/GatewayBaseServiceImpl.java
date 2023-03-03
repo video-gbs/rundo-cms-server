@@ -1,6 +1,8 @@
 package com.runjian.device.service.common.impl;
 
+import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
+import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.constant.SignState;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DeviceMapper;
@@ -108,7 +110,10 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
         Set<Long> gatewayIds =  gatewayMapper.selectIdByOnlineState(CommonEnum.ENABLE.getCode());
         // 发送全量同步消息
         if (gatewayIds.size() > 0){
-            parsingEngineApi.deviceTotalSync(gatewayIds);
+            CommonResponse<?> commonResponse = parsingEngineApi.deviceTotalSync(gatewayIds);
+            if (commonResponse.isError()){
+                log.error(LogTemplate.ERROR_LOG_TEMPLATE, "网关基础服务", "设备全量同步失败", commonResponse.getMsg());
+            }
         }
     }
 }
