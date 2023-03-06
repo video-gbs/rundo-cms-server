@@ -17,6 +17,8 @@
 
     <modules>
         <module>rundo-common</module>
+        <module>rundo-cms-doc</module>
+        <module>rundo-cms-core</module>
         <module>rundo-parsing-engine</module>
         <module>rundo-device-control</module>
         <module>rundo-stream-manage</module>
@@ -24,8 +26,6 @@
         <module>rundo-auth-server</module>
         <module>rundo-generator</module>
         <module>rundo-expansion-server</module>
-        <module>rundo-cms-doc</module>
-        <module>rundo-cms-core</module>
     </modules>
     <properties>
         <!--项目基础信息-->
