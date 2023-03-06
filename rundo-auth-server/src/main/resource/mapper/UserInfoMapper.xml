@@ -49,10 +49,12 @@
                 AND user.org_id = #{orgId,jdbcType=BIGINT}
             </if>
             <if test="userAccount != null and userAccount != ''">
-                AND user.user_account = #{userAccount,jdbcType=VARCHAR}
+                <bind name="patternUserAccount" value="'%' + userAccount + '%'"/>
+                AND user.user_account = #{patternUserAccount}
             </if>
             <if test="userName != null and userName != ''">
-                AND user.user_name = #{userName,jdbcType=VARCHAR}
+                <bind name="patternUserName" value="'%' + userName + '%'"/>
+                AND user.user_name = #{patternUserName}
             </if>
         </where>
         GROUP BY user.id
