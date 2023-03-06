@@ -87,7 +87,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.likeRight(VideoArea::getAreaPids, "[" + videoArea.getAreaPid() + "]");
         List<VideoArea> videoAreaChildren = videoAraeMapper.selectList(queryWrapper);
-        if (CollUtil.isNotEmpty(videoAreaChildren)){
+        if (CollUtil.isNotEmpty(videoAreaChildren)) {
             return "操作成功,不能删除含有下级节点的安防区域!";
         }
         // 3.调用远端确认是否可以删除
@@ -183,7 +183,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     @Override
     public List<VideoAreaTree> findByTree() {
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.orderBy(true, true, VideoArea::getAreaSort, VideoArea::getUpdatedTime);
+        // queryWrapper.orderBy(true, true, VideoArea::getAreaSort, VideoArea::getUpdatedTime);
         List<VideoArea> videoList = videoAraeMapper.selectList(queryWrapper);
         List<VideoAreaTree> videoAreaTreeList = videoList.stream().map(
                 item -> {

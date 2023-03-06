@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -62,7 +63,7 @@ public class OrgInfoController {
 
     @PostMapping("/move")
     @ApiOperation("移动部门")
-    public CommonResponse<?> move(@RequestBody MoveSysOrgDTO dto) {
+    public CommonResponse<?> move(@Valid @RequestBody MoveSysOrgDTO dto) {
         orgInfoService.moveSysOrg(dto);
         return CommonResponse.success();
     }

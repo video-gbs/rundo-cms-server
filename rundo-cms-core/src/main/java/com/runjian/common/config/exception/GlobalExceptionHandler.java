@@ -1,9 +1,7 @@
 package com.runjian.common.config.exception;
 
-import cn.dev33.satoken.exception.DisableServiceException;
-import cn.dev33.satoken.exception.NotLoginException;
-import cn.dev33.satoken.exception.NotPermissionException;
-import cn.dev33.satoken.exception.NotRoleException;
+import cn.dev33.satoken.exception.*;
+import cn.hutool.http.HttpStatus;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import lombok.extern.slf4j.Slf4j;
@@ -79,29 +77,35 @@ public class GlobalExceptionHandler {
             response.setStatus(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR.getState());
             return CommonResponse.failure(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, srEx.getMessage());
         } else if (ex instanceof NotLoginException) {
-            // 未登录异常
+            // 未登录异常 401
             NotLoginException srEx = (NotLoginException) ex;
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "BindException异常", null, srEx);
-            response.setStatus(BusinessErrorEnums.USER_LOGIN_FAILURE.getState());
-            return CommonResponse.failure(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, srEx.getMessage());
+            response.setStatus(HttpStatus.HTTP_UNAUTHORIZED);
+            return CommonResponse.failure(BusinessErrorEnums.USER_LOGIN_FAILURE, srEx.getMessage());
         } else if (ex instanceof NotRoleException) {
-            // 角色异常
+            // 角色异常 403
             NotRoleException srEx = (NotRoleException) ex;
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "BindException异常", null, srEx);
-            response.setStatus(BusinessErrorEnums.ROLE_NOT_FOUND.getState());
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "NotRoleException异常，无此角色：" + srEx.getRole(), null, srEx);
+            response.setStatus(HttpStatus.HTTP_FORBIDDEN);
             return CommonResponse.failure(BusinessErrorEnums.ROLE_NOT_FOUND, srEx.getMessage());
         } else if (ex instanceof NotPermissionException) {
-            // 权限异常
+            // 权限异常 403
             NotPermissionException srEx = (NotPermissionException) ex;
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "BindException异常", null, srEx);
-            response.setStatus(BusinessErrorEnums.ROLE_NOT_FOUND.getState());
-            return CommonResponse.failure(BusinessErrorEnums.ROLE_NOT_FOUND, srEx.getMessage());
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "NotPermissionException异常，无此权限" + srEx.getPermission(), null, srEx);
+            response.setStatus(HttpStatus.HTTP_FORBIDDEN);
+            return CommonResponse.failure(BusinessErrorEnums.PERM_NOT_FOUND, srEx.getMessage());
         } else if (ex instanceof DisableServiceException) {
-            // 封禁异常
+            // 封禁异常 403
             DisableServiceException srEx = (DisableServiceException) ex;
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "BindException异常", null, srEx);
-            response.setStatus(BusinessErrorEnums.USER_ACCOUNT_NOT_ENABLED.getState());
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "DisableServiceException异常，账号被封禁：" + srEx.getDisableTime() + "秒后解封", null, srEx);
+            response.setStatus(HttpStatus.HTTP_FORBIDDEN);
             return CommonResponse.failure(BusinessErrorEnums.USER_ACCOUNT_NOT_ENABLED, srEx.getMessage());
+        } else if (ex instanceof SaTokenException) {
+            // SaToken异常 直接返回
+            SaTokenException srEx = (SaTokenException) ex;
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "SaTokenException异常", null, srEx);
+            response.setStatus(BusinessErrorEnums.UNKNOWN_ERROR.getState());
+            return CommonResponse.failure(BusinessErrorEnums.UNKNOWN_ERROR, srEx.getMessage());
         } else {
             // 其他异常
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "全局异常捕获", "未知异常", null, ex);
