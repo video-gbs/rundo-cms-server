@@ -14,6 +14,7 @@ import com.runjian.auth.server.feign.ExpansionClient;
 import com.runjian.auth.server.mapper.VideoAraeMapper;
 import com.runjian.auth.server.service.system.VideoAreaSaervice;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
+import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -44,10 +45,14 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public VideoAreaVO save(AddVideoAreaDTO dto) {
+        // 确认父级安全区域是否存在
+        VideoArea prentInfo = videoAraeMapper.selectById(dto.getAreaPid());
+        if (prentInfo == null) {
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "父级安全区域不存在");
+        }
         VideoArea area = new VideoArea();
         area.setAreaName(dto.getAreaName());
         area.setAreaPid(dto.getAreaPid());
-        VideoArea prentInfo = videoAraeMapper.selectById(dto.getAreaPid());
         String pids = prentInfo.getAreaPids() + "[" + dto.getAreaPid() + "]";
         String areaNames = prentInfo.getAreaNames() + "/" + dto.getAreaName();
         area.setAreaPids(pids);
