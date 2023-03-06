@@ -34,7 +34,7 @@ spring:
     # [必须修改] 端口号
     port: 6379
     # [可选] 数据库 DB
-    database: 1
+    database: 6
     # [可选] 访问密码,若你的redis服务器没有设置密码，就不需要用密码去连接
     password: rundoredis
     # [可选] 超时时间
@@ -60,7 +60,7 @@ spring:
       testWhileIdle: true                   # 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
       testOnBorrow: false                   # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
       testOnReturn: false                   # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
-      poolPreparedStatements: false         # 是否開啟PSCache，並且指定每個連線上PSCache的大小
+      poolPreparedStatements: false         # 00000000000000是否開啟PSCache，並且指定每個連線上PSCache的大小
       timeBetweenEvictionRunsMillis: 60000  # 配置間隔多久才進行一次檢測，檢測需要關閉的空閒連線，單位是毫秒
       minEvictableIdleTimeMillis: 300000    # 配置一個連線在池中最小生存的時間，單位是毫秒
       filters: config,stat,slf4j             # 配置监控统计拦截的filters，监控统计用的filter:sta, 日志用的filter:log4j, 防御sql注入的filter:wall

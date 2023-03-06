@@ -15,6 +15,7 @@ import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.utils.RedisCommonUtil;
+import com.runjian.device.expansion.vo.feign.request.PutDeviceSignSuccessReq;
 import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import com.runjian.device.expansion.vo.request.DeviceExpansionEditReq;
@@ -60,6 +61,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         BeanUtil.copyProperties(deviceExpansionReq,deviceReq);
 
         CommonResponse<DeviceAddResp> longCommonResponse = deviceControlApi.deviceAdd(deviceReq);
+        log.info(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加返回",deviceReq, longCommonResponse);
         if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",deviceReq, longCommonResponse);
@@ -77,9 +79,28 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
     @Override
     public CommonResponse<Long> edit(DeviceExpansionEditReq deviceExpansionEditReq) {
-        DeviceExpansion deviceExpansion = new DeviceExpansion();
-        BeanUtil.copyProperties(deviceExpansionEditReq,deviceExpansion);
-        deviceExpansionMapper.updateById(deviceExpansion);
+        DeviceExpansion deviceExpansionDb = deviceExpansionMapper.selectById(deviceExpansionEditReq.getId());
+        if(ObjectUtils.isEmpty(deviceExpansionDb)){
+            // 来自待注册列表的数据操作，编辑/恢复
+            PutDeviceSignSuccessReq putDeviceSignSuccessReq = new PutDeviceSignSuccessReq();
+            putDeviceSignSuccessReq.setDeviceId(deviceExpansionEditReq.getId());
+            CommonResponse longCommonResponse = deviceControlApi.deviceSignSuccess(putDeviceSignSuccessReq);
+            log.info(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器编辑返回",deviceExpansionEditReq, longCommonResponse);
+            if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                //调用失败
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器状态通知失败",deviceExpansionEditReq, longCommonResponse);
+                return longCommonResponse;
+            }
+            DeviceExpansion deviceExpansion = new DeviceExpansion();
+            BeanUtil.copyProperties(deviceExpansionEditReq,deviceExpansion);
+            deviceExpansionMapper.insert(deviceExpansion);
+        }else {
+            DeviceExpansion deviceExpansion = new DeviceExpansion();
+            BeanUtil.copyProperties(deviceExpansionEditReq,deviceExpansion);
+            deviceExpansionMapper.updateById(deviceExpansion);
+        }
+
+
         return CommonResponse.success();
     }
 
@@ -153,6 +174,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         queryWrapper.eq(DeviceExpansion::getDeleted,0);
         queryWrapper.in(DeviceExpansion::getVideoAreaId,areaIdsArr);
         queryWrapper.orderByDesc(DeviceExpansion::getCreatedAt);
+        queryWrapper.orderByDesc(DeviceExpansion::getOnlineState);
         Page<DeviceExpansion> page = new Page<>(deviceExpansionListReq.getPageNum(), deviceExpansionListReq.getPageSize());
         Page<DeviceExpansion> deviceExpansionPage = deviceExpansionMapper.selectPage(page, queryWrapper);
 
@@ -219,6 +241,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             lock.lock(3, TimeUnit.SECONDS);
             Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_DEVICE_ONLINE_STATE);
             if(!CollectionUtils.isEmpty(deviceMap)){
+                log.info(LogTemplate.PROCESS_LOG_TEMPLATE,"设备缓存状态同步",deviceMap);
                 Set<Map.Entry<Long, Integer>> entries = deviceMap.entrySet();
                 for(Map.Entry entry:  entries){
                     Long deviceId = (Long)entry.getKey();

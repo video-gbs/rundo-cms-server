@@ -2,10 +2,7 @@ package com.runjian.device.expansion.feign;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.DeviceControlApiFallbackFactory;
-import com.runjian.device.expansion.vo.feign.request.DeviceReq;
-import com.runjian.device.expansion.vo.feign.request.PlayBackFeignReq;
-import com.runjian.device.expansion.vo.feign.request.PlayFeignReq;
-import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
+import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -37,6 +34,14 @@ public interface DeviceControlApi {
      */
     @DeleteMapping("/device/north/delete")
     CommonResponse deleteDevice(@RequestParam Long deviceId);
+
+    /**
+     * 设备注册状态修改
+     * @param putDeviceSignSuccessReq
+     * @return
+     */
+    @PutMapping("/device/north/sign/success")
+    CommonResponse deviceSignSuccess(@RequestBody PutDeviceSignSuccessReq putDeviceSignSuccessReq);
 
     /**
      * 控制服务 通道添加状态修改

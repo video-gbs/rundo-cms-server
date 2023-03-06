@@ -1,5 +1,7 @@
 package com.runjian.device.expansion.vo.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
@@ -41,6 +43,7 @@ public class DeviceExpansionResp {
 
 
     @ApiModelProperty("安防区域id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long videoAreaId;
 
     @ApiModelProperty("所属区域")

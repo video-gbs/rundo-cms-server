@@ -289,11 +289,12 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Override
     public void syncChannelStatus() {
-        RLock lock = redissonClient.getLock(MarkConstant.REDIS_CHANNEL_ONLINE_STATE);
+        RLock lock = redissonClient.getLock(MarkConstant.REDIS_CHANNEL_ONLINE_STATE_LOCK);
         try{
             lock.lock(3, TimeUnit.SECONDS);
-            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_CHANNEL_ONLINE_STATE_LOCK);
+            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_CHANNEL_ONLINE_STATE);
             if(!CollectionUtils.isEmpty(deviceMap)){
+                log.info(LogTemplate.PROCESS_LOG_TEMPLATE,"通道缓存状态同步",deviceMap);
                 Set<Map.Entry<Long, Integer>> entries = deviceMap.entrySet();
                 for(Map.Entry entry:  entries){
                     Long deviceId = (Long)entry.getKey();
@@ -305,7 +306,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                     channelExpansion.setOnlineState(onlineState);
                     deviceChannelExpansionMapper.updateById(channelExpansion);
                 }
-                RedisCommonUtil.del(redisTemplate,MarkConstant.REDIS_DEVICE_ONLINE_STATE);
+                RedisCommonUtil.del(redisTemplate,MarkConstant.REDIS_CHANNEL_ONLINE_STATE);
             }
 
         } catch (Exception ex){
@@ -321,7 +322,8 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(DeviceChannelExpansion::getVideoAreaId,videoAreaId);
         queryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
-
+        queryWrapper.orderByDesc(DeviceChannelExpansion::getCreatedAt);
+        queryWrapper.orderByDesc(DeviceChannelExpansion::getOnlineState);
         return deviceChannelExpansionMapper.selectList(queryWrapper);
     }
 }

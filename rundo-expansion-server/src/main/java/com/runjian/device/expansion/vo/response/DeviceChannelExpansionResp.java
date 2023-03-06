@@ -3,6 +3,8 @@ package com.runjian.device.expansion.vo.response;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -71,6 +73,7 @@ public class DeviceChannelExpansionResp {
     private LocalDateTime installTime;
 
     @ApiModelProperty("安防区域id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long videoAreaId;
 
     @ApiModelProperty("所属区域")
