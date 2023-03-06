@@ -1,7 +1,7 @@
 version: '3'
 services:
   parsing-engine:
-    image: registry.cn-hangzhou.aliyuncs.com/hyy-rundo-gms/rundo-parsing-engine:${version}
+    image: xard-harbor.runjian.com:20443/hyy-rundo-gms/rundo-parsing-engine:${version}
     container_name: parsing-engine
     restart: on-failure
     ports:

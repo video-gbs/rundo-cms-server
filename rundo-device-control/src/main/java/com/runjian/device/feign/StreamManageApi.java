@@ -1,6 +1,7 @@
 package com.runjian.device.feign;
 
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.device.feign.fallback.StreamManageFallback;
 import com.runjian.device.vo.feign.StreamPlayReq;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +14,7 @@ import java.util.Map;
  * @author Miracle
  * @date 2023/1/11 10:32
  */
-@FeignClient(value = "stream-manage")
+@FeignClient(value = "stream-manage", fallbackFactory = StreamManageFallback.class, decode404 = true)
 public interface StreamManageApi {
 
 

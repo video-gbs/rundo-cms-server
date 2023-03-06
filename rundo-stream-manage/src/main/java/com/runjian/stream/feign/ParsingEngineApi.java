@@ -62,5 +62,5 @@ public interface ParsingEngineApi {
      * @param dispatchIds 调度服务id数组
      */
     @DeleteMapping("/stream-manage/stream/stop/all")
-    void stopAllStream(Set<Long> dispatchIds);
+    CommonResponse<?> stopAllStream(Set<Long> dispatchIds);
 }

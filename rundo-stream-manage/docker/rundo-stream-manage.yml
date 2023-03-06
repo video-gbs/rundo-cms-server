@@ -1,7 +1,7 @@
 version: '3'
 services:
   stream-manage:
-    image: registry.cn-hangzhou.aliyuncs.com/hyy-rundo-gms/rundo-stream-manage:${version}
+    image: xard-harbor.runjian.com:20443/hyy-rundo-gms/rundo-stream-manage:${version}
     container_name: stream-manage
     restart: on-failure
     ports:
