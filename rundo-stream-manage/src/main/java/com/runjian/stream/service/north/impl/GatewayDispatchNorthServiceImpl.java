@@ -2,12 +2,15 @@ package com.runjian.stream.service.north.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Sets;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.stream.dao.GatewayDispatchMapper;
+import com.runjian.stream.dao.StreamMapper;
 import com.runjian.stream.entity.GatewayDispatchInfo;
 import com.runjian.stream.feign.DeviceControlApi;
+import com.runjian.stream.feign.ParsingEngineApi;
 import com.runjian.stream.service.common.DataBaseService;
 import com.runjian.stream.service.north.GatewayDispatchNorthService;
 import com.runjian.stream.vo.request.PostGetGatewayByDispatchReq;
@@ -35,6 +38,12 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
 
     @Autowired
     private DeviceControlApi deviceControlApi;
+
+    @Autowired
+    private ParsingEngineApi parsingEngineApi;
+
+    @Autowired
+    private StreamMapper streamMapper;
 
     @Override
     public Long getDispatchIdByGatewayId(Long gatewayId) {
@@ -95,6 +104,9 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
             gatewayDispatchInfo.setDispatchId(dispatchId);
             gatewayDispatchMapper.update(gatewayDispatchInfo);
         }
+        streamMapper.deleteByDispatchId(dispatchId);
+        parsingEngineApi.stopAllStream(Sets.newHashSet(dispatchId));
+
     }
 
     @Override
@@ -110,6 +122,9 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
                 gatewayDispatchInfo.setDispatchId(dispatchId);
             }
             gatewayDispatchMapper.updateAll(gatewayDispatchInfoList);
+            Set<Long> dispatchIds = gatewayDispatchInfoList.stream().map(GatewayDispatchInfo::getDispatchId).collect(Collectors.toSet());
+            streamMapper.deleteByDispatchIds(dispatchIds);
+            parsingEngineApi.stopAllStream(dispatchIds);
         }
 
         // 判断数据是否不存在

@@ -24,8 +24,8 @@ public class StreamSouthServiceImpl implements StreamSouthService {
 
     @Override
     public void receiveResult(String streamId, Boolean isSuccess) {
-        Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
         StreamBaseService.STREAM_OUT_TIME_ARRAY.deleteTime(streamId);
+        Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
         if (streamInfoOp.isEmpty()) {
             return;
         }

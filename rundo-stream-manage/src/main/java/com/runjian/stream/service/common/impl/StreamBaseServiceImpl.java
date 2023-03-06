@@ -57,7 +57,7 @@ public class StreamBaseServiceImpl implements StreamBaseService {
     }
 
     @Override
-    @Scheduled(fixedDelay = 18000)
+    @Scheduled(fixedDelay = 180000)
     public void checkPlayingStream(){
         checkStreamState();
         checkRecordState();

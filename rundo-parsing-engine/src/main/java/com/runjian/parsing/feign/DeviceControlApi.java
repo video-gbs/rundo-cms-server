@@ -1,9 +1,8 @@
 package com.runjian.parsing.feign;
 
-
-import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.parsing.feign.fallback.DeviceControlFallback;
 import com.runjian.parsing.vo.request.PostGatewaySignInReq;
 import com.runjian.parsing.vo.request.PutGatewayHeartbeatReq;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "device-control")
+@FeignClient(value = "device-control", fallbackFactory = DeviceControlFallback.class, decode404 = true)
 public interface DeviceControlApi {
 
     @PostMapping("/gateway/south/sign-in")

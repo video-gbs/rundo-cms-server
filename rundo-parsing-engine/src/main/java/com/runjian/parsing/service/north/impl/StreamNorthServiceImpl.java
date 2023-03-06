@@ -1,5 +1,6 @@
 package com.runjian.parsing.service.north.impl;
 
+import com.google.common.collect.Maps;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.StandardName;
 import com.runjian.parsing.constant.MsgType;
@@ -14,6 +15,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -42,16 +44,25 @@ public class StreamNorthServiceImpl implements StreamNorthService {
 
     @Override
     public void checkStreamRecordStatus(Long dispatchId, List<String> streamIds, DeferredResult<CommonResponse<?>> response) {
-        Map<String, Object> mapData = new HashMap<>(streamIds.size());
+        Map<String, Object> mapData = new HashMap<>(1);
         mapData.put(StandardName.STREAM_ID_LIST, streamIds);
         customEvent(dispatchId, null, mapData, MsgType.STREAM_CHECK_RECORD, response);
     }
 
     @Override
     public void checkStreamStatus(Long dispatchId, List<String> streamIds, DeferredResult<CommonResponse<?>> response) {
-        Map<String, Object> mapData = new HashMap<>(streamIds.size());
+        Map<String, Object> mapData = new HashMap<>(1);
         mapData.put(StandardName.STREAM_ID_LIST, streamIds);
         customEvent(dispatchId, null, mapData, MsgType.STREAM_CHECK_STREAM, response);
+    }
+
+    @Override
+    public void stopAllStream(Set<Long> dispatchIds) {
+        for (Long dispatchId : dispatchIds){
+            Map<String, Object> mapData = new HashMap<>(1);
+            mapData.put(StandardName.STREAM_DISPATCH_ID, dispatchId);
+            customEvent(dispatchId, null, mapData, MsgType.STREAM_STOP_ALL, null);
+        }
     }
 
     /**

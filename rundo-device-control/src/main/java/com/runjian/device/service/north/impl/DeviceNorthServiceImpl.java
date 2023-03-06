@@ -18,6 +18,7 @@ import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.service.common.DataBaseService;
 import com.runjian.device.service.common.DetailBaseService;
+import com.runjian.device.service.common.RedisBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.north.DeviceNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
@@ -60,6 +61,9 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
 
     @Autowired
     private DataBaseService dataBaseService;
+
+    @Autowired
+    private RedisBaseService redisBaseService;
 
     @Override
     public PageInfo<GetDevicePageRsp> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
@@ -151,6 +155,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         deviceInfo.setUpdateTime(LocalDateTime.now());
         // 修改设备注册状态
         deviceMapper.updateSignState(deviceInfo);
+        redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
         // 异步触发通道同步
         Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceId));
     }

@@ -1,6 +1,9 @@
 package com.runjian.device.service.common.impl;
 
+import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
+import com.runjian.common.constant.LogTemplate;
+import com.runjian.device.constant.SignState;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.dao.GatewayMapper;
@@ -50,7 +53,9 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
     public void init() {
         // 将所有的网关设置为离线状态
         Set<Long> gatewayIds =  gatewayMapper.selectIdByOnlineState(CommonEnum.ENABLE.getCode());
-        heartbeatArray.addOrUpdateTime(gatewayIds, 60L);
+        if (gatewayIds.size() > 0){
+            heartbeatArray.addOrUpdateTime(gatewayIds, 60L);
+        }
     }
 
     /**
@@ -73,7 +78,7 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
         // 根据网关查询所有在线的设备
         List<DeviceInfo> deviceInfoList = deviceMapper.selectByGatewayIdsAndOnlineState(gatewayIds, CommonEnum.ENABLE.getCode());
         deviceInfoList.forEach(deviceInfo -> {
-            deviceInfo.setSignState(CommonEnum.DISABLE.getCode());
+            deviceInfo.setOnlineState(CommonEnum.DISABLE.getCode());
             deviceInfo.setUpdateTime(nowTime);
         });
         // 修改设备的在线状态
@@ -81,18 +86,22 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
         // 根据设备查询所有在线的通道
         List<ChannelInfo> channelInfoList = channelMapper.selectByDeviceIdsAndOnlineState(deviceInfoList.stream().map(DeviceInfo::getId).collect(Collectors.toList()), CommonEnum.ENABLE.getCode());
         channelInfoList.forEach(channelInfo -> {
-            channelInfo.setSignState(CommonEnum.DISABLE.getCode());
+            channelInfo.setOnlineState(CommonEnum.DISABLE.getCode());
             channelInfo.setUpdateTime(nowTime);
         });
 
         // redis同步设备和通道的在线状态
-        redisBaseService.batchUpdateDeviceOnlineState(deviceInfoList.stream().collect(Collectors.toMap(DeviceInfo::getId, DeviceInfo::getOnlineState)));
+        redisBaseService.batchUpdateDeviceOnlineState(deviceInfoList
+                .stream()
+                .filter(deviceInfo -> deviceInfo.getSignState().equals(SignState.SUCCESS.getCode()))
+                .collect(Collectors.toMap(DeviceInfo::getId, DeviceInfo::getOnlineState)));
         // 修改通道的在线状态
         if (channelInfoList.size() > 0){
             channelMapper.batchUpdateOnlineState(channelInfoList);
-            redisBaseService.batchUpdateChannelOnlineState(channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
+            redisBaseService.batchUpdateChannelOnlineState(channelInfoList.stream()
+                    .filter(channelInfo -> channelInfo.getSignState().equals(SignState.SUCCESS.getCode()))
+                    .collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
         }
-
     }
 
     @Override
@@ -100,7 +109,11 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
     public void deviceTotalSync() {
         Set<Long> gatewayIds =  gatewayMapper.selectIdByOnlineState(CommonEnum.ENABLE.getCode());
         // 发送全量同步消息
-        parsingEngineApi.deviceTotalSync(gatewayIds);
+        if (gatewayIds.size() > 0){
+            CommonResponse<?> commonResponse = parsingEngineApi.deviceTotalSync(gatewayIds);
+            if (commonResponse.isError()){
+                log.error(LogTemplate.ERROR_LOG_TEMPLATE, "网关基础服务", "设备全量同步失败", commonResponse.getMsg());
+            }
+        }
     }
-
 }

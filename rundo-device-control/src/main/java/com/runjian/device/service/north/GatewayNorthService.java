@@ -18,7 +18,7 @@ public interface GatewayNorthService {
      * 获取网关所有名称
      * @return
      */
-    List<GetGatewayNameRsp> getGatewayNameList();
+    List<GetGatewayNameRsp> getGatewayNameList(Long gatewayId);
 
     /**
      * 获取网关信息

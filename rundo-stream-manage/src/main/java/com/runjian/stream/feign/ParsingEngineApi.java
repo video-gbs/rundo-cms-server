@@ -6,6 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -55,4 +56,11 @@ public interface ParsingEngineApi {
      */
     @GetMapping("/stream-manage/check/stream")
     CommonResponse<List<String>> checkStreamStreamStatus(@RequestParam Long dispatchId, @RequestParam List<String> streamIds);
+
+    /**
+     * 删除所有的流
+     * @param dispatchIds 调度服务id数组
+     */
+    @DeleteMapping("/stream-manage/stream/stop/all")
+    CommonResponse<?> stopAllStream(Set<Long> dispatchIds);
 }

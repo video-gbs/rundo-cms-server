@@ -52,6 +52,7 @@ public enum MsgType {
     STREAM_RECORD_STOP("STREAM_RECORD_STOP"),
     STREAM_CHECK_RECORD("STREAM_CHECK_RECORD"),
     STREAM_CHECK_STREAM("STREAM_CHECK_STREAM"),
+    STREAM_STOP_ALL("STREAM_STOP_ALL"),
 
     /****************** 其他 ******************/
     ERROR("ERROR"),

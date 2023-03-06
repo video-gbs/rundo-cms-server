@@ -18,4 +18,9 @@ public class GetGatewayNameRsp {
      * 网关名称
      */
     private String name;
+
+    /**
+     * 网关协议
+     */
+    private String protocol;
 }

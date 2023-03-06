@@ -130,6 +130,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         CommonResponse<Boolean> commonResponse = parsingEngineApi.channelStopPlay(new StreamManageDto(streamInfo.getDispatchId(), streamId));
         if (commonResponse.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向服务", "流媒体交互失败", streamId, commonResponse.getMsg());
+            streamMapper.deleteByStreamId(streamId);
             return;
         }
         Boolean isSuccess = commonResponse.getData();

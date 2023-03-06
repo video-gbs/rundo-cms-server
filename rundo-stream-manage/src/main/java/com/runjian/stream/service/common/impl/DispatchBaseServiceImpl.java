@@ -2,6 +2,7 @@ package com.runjian.stream.service.common.impl;
 
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.stream.dao.DispatchMapper;
+import com.runjian.stream.dao.StreamMapper;
 import com.runjian.stream.service.common.DispatchBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,6 +23,9 @@ public class DispatchBaseServiceImpl implements DispatchBaseService {
     @Autowired
     private DispatchMapper dispatchMapper;
 
+    @Autowired
+    private StreamMapper streamMapper;
+
     @Override
     @PostConstruct
     public void init(){
@@ -37,5 +41,6 @@ public class DispatchBaseServiceImpl implements DispatchBaseService {
             return;
         }
         dispatchMapper.batchUpdateOnlineState(dispatchIds, CommonEnum.DISABLE.getCode(), LocalDateTime.now());
+        streamMapper.deleteByDispatchIds(dispatchIds);
     }
 }

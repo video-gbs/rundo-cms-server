@@ -7,6 +7,7 @@ import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DeviceMapper;
+import com.runjian.device.entity.ChannelInfo;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.service.common.DetailBaseService;
@@ -96,10 +97,12 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 // 将通道全部离线
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
-                if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                    redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
-                }
                 channelMapper.updateOnlineStateByDeviceId(id, onlineState, nowTime);
+                if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+                    redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), CommonEnum.DISABLE.getCode());
+                    Map<Long, Integer> channelInfoMap = channelMapper.selectByDeviceIdAndSignState(deviceInfo.getId(), SignState.SUCCESS.getCode()).stream().collect(Collectors.toMap(ChannelInfo::getId, channelInfo -> CommonEnum.DISABLE.getCode()));
+                    redisBaseService.batchUpdateChannelOnlineState(channelInfoMap);
+                }
             } else if (isAutoSignIn && onlineState.equals(CommonEnum.ENABLE.getCode())){
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
@@ -116,7 +119,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         if (req.isEmpty()){
             return;
         }
-        Map<Long, PostDeviceSignInReq> postDeviceSignInReqMap = req.stream().collect(Collectors.toMap(PostDeviceSignInReq::getId, postDeviceSignInReq -> postDeviceSignInReq));
+        Map<Long, PostDeviceSignInReq> postDeviceSignInReqMap = req.stream().collect(Collectors.toMap(PostDeviceSignInReq::getDeviceId, postDeviceSignInReq -> postDeviceSignInReq));
         // 查询已存在的设备信息
         List<DeviceInfo> oldDeviceInfoList = deviceMapper.selectByIds(postDeviceSignInReqMap.keySet());
 
@@ -170,7 +173,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         // 新增
         for (PostDeviceSignInReq request : postDeviceSignInReqMap.values()){
             DeviceInfo deviceInfo = new DeviceInfo();
-            deviceInfo.setId(request.getId());
+            deviceInfo.setId(request.getDeviceId());
             deviceInfo.setGatewayId(request.getGatewayId());
             deviceInfo.setDeviceType(request.getDeviceType());
             deviceInfo.setOnlineState(request.getOnlineState());
@@ -202,7 +205,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
 
     private DetailInfo getNewDetailInfo(PostDeviceSignInReq req, LocalDateTime nowTime){
         DetailInfo detailInfo = new DetailInfo();
-        detailInfo.setDcId(req.getId());
+        detailInfo.setDcId(req.getDeviceId());
         detailInfo.setOriginId(req.getOriginId());
         detailInfo.setType(DetailType.DEVICE.getCode());
         detailInfo.setIp(req.getIp());
