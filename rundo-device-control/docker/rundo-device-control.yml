@@ -1,17 +1,17 @@
 version: '3'
 services:
-  parsing-engine:
-    image: registry.cn-hangzhou.aliyuncs.com/hyy-rundo-gms/rundo-parsing-engine:${version}
-    container_name: parsing-engine
+  device-control:
+    image: xard-harbor.runjian.com:20443/hyy-rundo-gms/rundo-device-control:${version}
+    container_name: device-control
     restart: on-failure
     ports:
-      - 8091:8091
+      - 8090:8090
     volumes:
-      - ./logs/:/opt/parsing-engine/logs/
-      - ./config/application.yml:/opt/parsing-engine/config/application.yml
+      - ./logs/:/opt/device-control/logs/
+      - ./config/application.yml:/opt/device-control/config/application.yml
     environment:
       TZ: Asia/Shanghai
-      SERVER_PORT: 8091
+      SERVER_PORT: 8090
       PROFILES_ACTIVE: "prod"
       REDIS_HOST: 124.71.21.11
       REDIS_PORT: 6379
@@ -21,11 +21,7 @@ services:
       DATABASE_PWD: rundomysql
       DATABASE_HOST: 124.71.21.11
       DATABASE_PORT: 3306
-      DATABASE_NAME: rundo_parsing_engine
-      RABBITMQ_HOST: 124.71.21.11
-      RABBITMQ_PORT: 5672
-      RABBITMQ_USERNAME: wvp
-      RABBITMQ_PASSWORD: wvp12345678
+      DATABASE_NAME: rundo_device_control
       NACOS_SERVER: 124.71.21.11:8848
       NACOS_NAMESPACE: test
       NACOS_USERNAME: nacos
@@ -38,4 +34,5 @@ services:
       - proxynet
 networks:
   proxynet:
-    name: rundo_network
+    external:
+      name: rundo_network
