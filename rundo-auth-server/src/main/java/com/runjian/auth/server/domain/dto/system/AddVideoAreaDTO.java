@@ -5,6 +5,11 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Jiang4Yu
@@ -20,11 +25,17 @@ import lombok.NoArgsConstructor;
 public class AddVideoAreaDTO {
 
     @ApiModelProperty("安防区域名称")
+    @Length(min = 1, max = 32, message = "内容过大")
+    @NotNull(message = "安防区域名称不能为空")
+    @NotBlank(message = "安防区域名称 或者只包含空格")
+    @NotEmpty(message = "安防区域名称不能为空")
     private String areaName;
 
     @ApiModelProperty("直接上级")
+    @NotNull(message = "上级区域不能为空")
     private Long areaPid;
 
     @ApiModelProperty("描述信息")
+    @Length(max = 128, message = "描述信息内容过长")
     private String description;
 }
