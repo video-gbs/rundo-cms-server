@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 /**
  * @author Jiang4Yu
  * @version V1.0.0
@@ -31,7 +33,7 @@ public class LoginController {
 
     @ApiOperation(value = "登录接口")
     @PostMapping("/login")
-    public CommonResponse<?> login(@RequestBody UserInfoDTO userInfoDTO) {
+    public CommonResponse<?> login(@RequestBody @Valid UserInfoDTO userInfoDTO) {
         return CommonResponse.success(loginService.login(userInfoDTO));
     }
 

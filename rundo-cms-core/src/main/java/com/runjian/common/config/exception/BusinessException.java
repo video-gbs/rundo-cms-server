@@ -45,7 +45,7 @@ public class BusinessException extends RuntimeException {
     public BusinessException(BusinessErrorEnums businessErrorEnums, String errDetail) {
         super();
         this.state = businessErrorEnums.getState();
-        this.errDetail = errDetail;
         this.businessErrorEnums = businessErrorEnums;
+        this.errDetail = errDetail;
     }
 }

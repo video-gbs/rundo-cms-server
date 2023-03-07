@@ -8,6 +8,7 @@ import com.runjian.auth.server.domain.dto.login.UserInfoDTO;
 import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.login.LoginService;
+import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +41,11 @@ public class LoginServiceImpl implements LoginService {
         UserInfo userInfo = userInfoMapper.selectOne(queryWrapper);
         // 校验用户是否存在
         if (Objects.isNull(userInfo)) {
-            throw new BusinessException("用户不存在");
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "用户不存在");
         }
         // 校验密码是否正确
         if (!BCrypt.checkpw(password, userInfo.getPassword())) {
-            throw new BusinessException("密码错误");
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "密码错误");
         }
         // 登录
         StpUtil.login(userInfo.getId());
