@@ -60,7 +60,7 @@ public enum BusinessErrorEnums {
     TOKEN_IS_EXPIRE(401, 20003, "访问令牌过期"),
     USER_LOGIN_FAILURE(401, 20004, "用户已经退出或者在其他地方登录"),
     ROLE_NOT_FOUND(403, 20005, "角色不存在"),
-    PERM_NOT_FOUND(403, 20006, "无耻权限"),
+    PERM_NOT_FOUND(403, 20006, "无此权限"),
     USER_ACCOUNT_NOT_ENABLED(403,20007, "该用户已被禁用"),
 
     /**************************** 定时器模块相关错误,PREFIX:TIMER CODE:21xxx ****************************/

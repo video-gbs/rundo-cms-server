@@ -22,7 +22,7 @@ public class StpInterfaceImpl implements StpInterface {
     private RoleInfoMapper roleInfoMapper;
 
     /**
-     * 返回此 loginId 拥有的权限列表
+     * 返回此 loginId 拥有的权限码列表
      *
      * @param loginId   账号id
      * @param loginType 账号类型
@@ -34,13 +34,12 @@ public class StpInterfaceImpl implements StpInterface {
     }
 
     /**
-     * 返回此 loginId 拥有的权限列表
+     * 返回此 loginId 拥有的角色权限列表
      *
      * @param loginId   账号id
      * @param loginType 账号类型
      * @return
      */
-
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
         return roleInfoMapper.selectRoleCodeByUserId(StpUtil.getLoginIdAsLong());
