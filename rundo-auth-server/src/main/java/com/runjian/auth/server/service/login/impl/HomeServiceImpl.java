@@ -1,13 +1,14 @@
 package com.runjian.auth.server.service.login.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.runjian.auth.server.domain.entity.AppInfo;
-import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.HomeVO;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.login.HomeSevice;
-import com.runjian.auth.server.util.UserUtils;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -29,18 +30,14 @@ public class HomeServiceImpl implements HomeSevice {
 
     @Resource
     private RoleInfoMapper roleInfoMapper;
-    @Resource
-    private UserUtils userUtils;
 
     @Override
     public HomeVO getIndex() {
-        UserInfo userInfo = userUtils.getSysUserInfo();
-        Long userId = userInfo.getId();
+        long userId = StpUtil.getLoginIdAsLong();
         // 通过登录的用户查取该用户已授权的角色信息
-        List<String> roleCodeList = roleInfoMapper.selectRoleCodeByUserId(userId);
+        List<String> roleCodeList = StpUtil.getRoleList();
         if (CollUtil.isEmpty(roleCodeList)) {
-            log.info("未对用户{}，进行角色授权", userId);
-            return null;
+            throw new BusinessException(BusinessErrorEnums.PERM_NOT_FOUND, "未对用户" + userId + "进行角色授权");
         }
         // 查取角色已经授权的应用
         List<AppInfo> roleAppInfoList = new ArrayList<>();
@@ -48,8 +45,7 @@ public class HomeServiceImpl implements HomeSevice {
             roleAppInfoList.addAll(roleInfoMapper.selectAppByRoleCode(roleCode));
         }
         if (CollUtil.isEmpty(roleAppInfoList)) {
-            log.info("未对用户{}，进行应用授权", userId);
-            return null;
+            throw new BusinessException(BusinessErrorEnums.PERM_NOT_FOUND, "未对用户" + userId + "进行应用授权");
         }
         // 去重
         List<AppInfo> appInfoList = CollUtil.distinct(roleAppInfoList);

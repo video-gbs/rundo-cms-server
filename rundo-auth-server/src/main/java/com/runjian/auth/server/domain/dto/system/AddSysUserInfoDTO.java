@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,18 +27,18 @@ import java.util.List;
 public class AddSysUserInfoDTO {
 
     @ApiModelProperty("用户账户")
-    @NotNull
+    @NotBlank(message = "用户账户不能为空")
     private String userAccount;
 
     @ApiModelProperty("用户姓名")
     private String userName;
 
     @ApiModelProperty("用户密码")
-    @NotNull
+    @NotBlank(message = "用户密码不能为空")
     private String password;
 
     @ApiModelProperty("确认密码")
-    @NotNull
+    @NotBlank(message = "确认密码不能为空")
     private String rePassword;
 
     @ApiModelProperty("有效期起")
@@ -59,6 +61,7 @@ public class AddSysUserInfoDTO {
     private String address;
 
     @ApiModelProperty("邮箱")
+    @Email(message = "邮箱格式错误")
     private String email;
 
     @ApiModelProperty("电话")

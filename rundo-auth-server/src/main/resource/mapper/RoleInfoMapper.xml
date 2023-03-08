@@ -82,13 +82,14 @@
         FROM role_info role
                  LEFT JOIN user_info userInfo ON userInfo.id = role.created_by
         <where>
-            role.delete_flag = 0
+                role.delete_flag = 0
             <if test="userAccount != null and userAccount != ''">
-                <bind name="pattern" value="'%' + userAccount + '%'"/>
-                AND userInfo.user_account LIKE #{pattern}
+                <bind name="patternAccount" value="'%' + userAccount + '%'"/>
+                AND userInfo.user_account LIKE #{patternAccount}
             </if>
             <if test="roleName != null and roleName != ''">
-                AND role.role_name = #{roleName,jdbcType=VARCHAR}
+                <bind name="patternRole" value="'%' + roleName + '%'"/>
+                AND role.role_name LIKE #{patternRole}
             </if>
             <if test="createdTimeStart != null">
                 AND role.created_time &gt;= #{createdTimeStart,jdbcType=TIMESTAMP}
@@ -97,6 +98,7 @@
                 AND role.created_time &lt;= #{createdTimeEnd,jdbcType=TIMESTAMP}
             </if>
         </where>
+        ORDER BY role.created_time DESC
     </select>
 
     <insert id="insertRoleApp">
@@ -276,7 +278,8 @@
                  LEFT JOIN org_info org ON org.id = userInfo.org_id
         WHERE userInfo.delete_flag = 0
         <if test="userAccount != null and userAccount != ''">
-            AND userInfo.user_account = #{userAccount,jdbcType=VARCHAR}
+            <bind name="patternAccount" value="'%' + userAccount + '%'"/>
+            AND userInfo.user_account = #{patternAccount}
         </if>
         <if test="roleId != null">
             AND ru.role_id = #{roleId,jdbcType=BIGINT}

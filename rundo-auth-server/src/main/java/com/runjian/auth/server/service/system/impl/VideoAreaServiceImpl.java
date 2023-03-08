@@ -14,6 +14,7 @@ import com.runjian.auth.server.feign.ExpansionClient;
 import com.runjian.auth.server.mapper.VideoAraeMapper;
 import com.runjian.auth.server.service.system.VideoAreaSaervice;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
+import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -44,10 +45,14 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public VideoAreaVO save(AddVideoAreaDTO dto) {
+        // 确认父级安全区域是否存在
+        VideoArea prentInfo = videoAraeMapper.selectById(dto.getAreaPid());
+        if (prentInfo == null) {
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "父级安全区域不存在");
+        }
         VideoArea area = new VideoArea();
         area.setAreaName(dto.getAreaName());
         area.setAreaPid(dto.getAreaPid());
-        VideoArea prentInfo = videoAraeMapper.selectById(dto.getAreaPid());
         String pids = prentInfo.getAreaPids() + "[" + dto.getAreaPid() + "]";
         String areaNames = prentInfo.getAreaNames() + "/" + dto.getAreaName();
         area.setAreaPids(pids);
@@ -87,7 +92,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.likeRight(VideoArea::getAreaPids, "[" + videoArea.getAreaPid() + "]");
         List<VideoArea> videoAreaChildren = videoAraeMapper.selectList(queryWrapper);
-        if (CollUtil.isNotEmpty(videoAreaChildren)){
+        if (CollUtil.isNotEmpty(videoAreaChildren)) {
             return "操作成功,不能删除含有下级节点的安防区域!";
         }
         // 3.调用远端确认是否可以删除
@@ -183,7 +188,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     @Override
     public List<VideoAreaTree> findByTree() {
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.orderBy(true, true, VideoArea::getAreaSort, VideoArea::getUpdatedTime);
+        // queryWrapper.orderBy(true, true, VideoArea::getAreaSort, VideoArea::getUpdatedTime);
         List<VideoArea> videoList = videoAraeMapper.selectList(queryWrapper);
         List<VideoAreaTree> videoAreaTreeList = videoList.stream().map(
                 item -> {

@@ -17,6 +17,9 @@
 
     <modules>
         <module>rundo-common</module>
+        <module>rundo-cms-doc</module>
+        <module>rundo-cms-core</module>
+        <module>rundo-cms-redis</module>
         <module>rundo-parsing-engine</module>
         <module>rundo-device-control</module>
         <module>rundo-stream-manage</module>
@@ -25,8 +28,6 @@
         <module>rundo-generator</module>
         <module>rundo-expansion-server</module>
     </modules>
-
-
     <properties>
         <!--项目基础信息-->
         <java.version>11</java.version>
@@ -40,6 +41,7 @@
         <spring-cloud-alibaba.version>2021.0.4.0</spring-cloud-alibaba.version>
         <nacos.client.version>2.2.0</nacos.client.version>
         <!--ORM框架 MybatisPlus-->
+        <mybatis-plus.version>3.5.2</mybatis-plus.version>
         <mybatis.version>3.0.1</mybatis.version>
         <pagehelper.version>1.4.6</pagehelper.version>
         <mybatis-plus.version>3.5.2</mybatis-plus.version>
@@ -52,13 +54,15 @@
         <guava.version>31.1-jre</guava.version>
         <!-- HuTool开发工具包 -->
         <hutool.version>5.8.10</hutool.version>
+        <!--sa-token-->
+        <sa-token.version>1.34.0</sa-token.version>
         <!--JWT工具包-->
         <jjwt.version>0.11.5</jjwt.version>
         <!--easy-captcha 验证码-->
-        <easy-captcha.version>1.6.2</easy-captcha.version>
+        <easy-captcha.version>2.2.2</easy-captcha.version>
         <!--文档工具包-->
-        <japidocs.version>1.4.4</japidocs.version>
         <knife4j.version>3.0.3</knife4j.version>
+        <japidocs.version>1.4.4</japidocs.version>
 
     </properties>
 
@@ -88,6 +92,20 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!--认证鉴权-->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-dependencies</artifactId>
+                <version>${sa-token.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--easy-captcha验证码增强 -->
+            <dependency>
+                <groupId>com.pig4cloud.plugin</groupId>
+                <artifactId>captcha-spring-boot-starter</artifactId>
+                <version>${easy-captcha.version}</version>
+            </dependency>
             <!--文档工具-->
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
@@ -96,21 +114,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt-api</artifactId>
-                <version>${jjwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt-impl</artifactId>
-                <version>${jjwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt-jackson</artifactId>
-                <version>${jjwt.version}</version>
-            </dependency>
+
             <!--orm 相关-->
             <!--mybatis-plus-->
             <dependency>
@@ -172,12 +176,6 @@
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp.version}</version>
             </dependency>
-            <!--easy-captcha 验证码-->
-            <dependency>
-                <groupId>com.github.whvcse</groupId>
-                <artifactId>easy-captcha</artifactId>
-                <version>${easy-captcha.version}</version>
-            </dependency>
             <!-- HuTool -->
             <dependency>
                 <groupId>cn.hutool</groupId>
@@ -195,6 +193,21 @@
             <dependency>
                 <groupId>com.runjian</groupId>
                 <artifactId>rundo-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.runjian</groupId>
+                <artifactId>rundo-cms-doc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.runjian</groupId>
+                <artifactId>rundo-cms-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.runjian</groupId>
+                <artifactId>rundo-cms-redis</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

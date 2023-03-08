@@ -13,6 +13,7 @@ import java.util.Map;
  */
 public interface LoginService {
     Map login(UserInfoDTO dto);
+    Map getCode();
 
     void logout();
 
