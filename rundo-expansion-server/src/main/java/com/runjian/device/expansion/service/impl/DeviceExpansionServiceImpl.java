@@ -30,7 +30,10 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -55,6 +58,13 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     RedisTemplate redisTemplate;
     @Autowired
     AuthServerApi authServerApi;
+
+    @Autowired
+    DataSourceTransactionManager dataSourceTransactionManager;
+
+    @Autowired
+    TransactionDefinition transactionDefinition;
+
     @Override
     public CommonResponse<DeviceAddResp> add(DeviceExpansionReq deviceExpansionReq) {
         DeviceReq deviceReq = new DeviceReq();
@@ -106,26 +116,30 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
     @Override
     public CommonResponse remove(Long id) {
-        deviceExpansionMapper.deleteById(id);
         CommonResponse res = deviceControlApi.deleteDevice(id);
         if(res.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
+            return res;
         }
+
 
         return CommonResponse.success();
     }
 
     @Override
     public CommonResponse<Boolean> removeBatch(List<Long> idList) {
-        deviceExpansionMapper.deleteBatchIds(idList);
-        idList.forEach(id->{
+        for(Long id : idList){
             CommonResponse res = deviceControlApi.deleteDevice(id);
             if(res.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
                 //调用失败
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
+                return CommonResponse.failure(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+            }else {
+                deviceExpansionMapper.deleteById(id);
             }
-        });
+        }
+
         return CommonResponse.success();
     }
     @Override

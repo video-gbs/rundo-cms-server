@@ -53,11 +53,11 @@ public class DeviceExpansion {
     private String ip;
 
     @ApiModelProperty("端口")
-    private int port;
+    private Integer port;
 
 
     @ApiModelProperty("设备网关ID")
-    private long gatewayId;
+    private Long gatewayId;
 
     @ApiModelProperty("传输协议")
     private String transport;
@@ -78,7 +78,7 @@ public class DeviceExpansion {
     private Date updatedAt;
 
     @ApiModelProperty("删除标记")
-    private int deleted;
+    private Integer deleted;
 
 
 
