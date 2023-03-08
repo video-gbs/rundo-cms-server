@@ -148,8 +148,6 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
                 updateChildren(org, childrenList);
             }
         }
-
-
     }
 
     @Override
@@ -179,7 +177,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByAsc(true, OrgInfo::getOrgSort);
         queryWrapper.orderByAsc(true, OrgInfo::getUpdatedTime);
-        List<OrgInfo> orgInfoList = orgInfoMapper.selectList(queryWrapper);
+        List<OrgInfo> orgInfoList = orgInfoMapper.selectList(null);
         List<SysOrgTree> sysOrgTreeList = orgInfoList.stream().map(
                 item -> {
                     SysOrgTree bean = new SysOrgTree();

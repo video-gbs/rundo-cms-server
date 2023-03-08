@@ -1,0 +1,24 @@
+version: '3.3'
+services:
+  rundo-auth-server:
+    image: registry.cn-hangzhou.aliyuncs.com/hyy-rundo-gms/rundo-auth-server:latest
+    container_name: rundo-auth-server
+    restart: always
+    environment:
+      - TZ=Asia/Shanghai
+      - env=pred
+    ports:
+      - 8071:8071
+    volumes:
+      - ./logs:/logs
+      - /tmp:/tmp
+    extra_hosts:
+      - "rundo-mysql:192.168.0.239"
+      - "rundo-redis:192.168.0.239"
+      - "rundo-nacos:192.168.0.84"
+    networks:
+      - proxynet
+networks:
+  proxynet:
+    external:
+      name: rundo_network

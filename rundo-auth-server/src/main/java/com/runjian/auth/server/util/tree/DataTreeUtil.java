@@ -14,7 +14,8 @@ public class DataTreeUtil {
 
     public static <T extends DataTree<T>> List<T> buildTree(List<T> paramList, Long rootNodeId) {
         List<T> returnList = new ArrayList<T>();
-        for (T node : paramList) {//查找根节点
+        for (T node : paramList) {
+            // 查找根节点
             if (node.getId().equals(rootNodeId)) {
                 returnList.add(node);
             }
