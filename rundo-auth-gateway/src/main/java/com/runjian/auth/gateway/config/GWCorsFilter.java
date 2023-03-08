@@ -23,6 +23,7 @@ public class GWCorsFilter {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
+        // 使用了setAllowCredentials(true)就不能把addAllowedOrigin("*")配置
         // configuration.addAllowedOrigin("*");
         configuration.addAllowedOriginPattern("*");
         configuration.addAllowedHeader("*");
