@@ -122,8 +122,8 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
             return res;
         }
-        deviceExpansionMapper.deleteById(id);
 
+        deviceExpansionMapper.deleteById(id);
         return CommonResponse.success();
     }
 
