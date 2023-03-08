@@ -39,7 +39,7 @@ public class DeviceChannelExpansion {
     private String ip;
 
     @ApiModelProperty("端口")
-    private int port;
+    private Integer port;
 
     @ApiModelProperty("通道编码")
     private String channelCode;
@@ -63,7 +63,7 @@ public class DeviceChannelExpansion {
     private String installLocation;
 
     @ApiModelProperty("高度")
-    private double height;
+    private Double height;
 
     @ApiModelProperty("创建时间")
     private LocalDateTime installTime;
@@ -84,7 +84,7 @@ public class DeviceChannelExpansion {
     private Date updatedAt;
 
     @ApiModelProperty("删除标记")
-    private int deleted;
+    private Integer deleted;
 
 
 
