@@ -5,8 +5,7 @@ MAINTAINER JiangYu 105194@runjian.com
 # 声明服务使用的端口
 EXPOSE 8071
 # 配置源
-RUN echo -e "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.14/main\n\
-    https://mirror.tuna.tsinghua.edu.cn/alpine/v3.14/community" > /etc/apk/repositories
+RUN echo -e "https://mirrors.aliyun.com/alpine/v3.14/main\n https://mirrors.aliyun.com/alpine/v3.14/community" > /etc/apk/repositories
 # 处理字体问题
 RUN apk add fontconfig  \
     && apk add --update  \
