@@ -51,7 +51,7 @@ public class DefaultNorthProtocol extends AbstractNorthProtocol {
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(deviceId);
         if (deviceInfoOp.isEmpty()){
             response.setResult(CommonResponse.success(true));
-        }else {
+        } else {
             super.deviceDelete(deviceId, response);
         }
     }

@@ -1,21 +1,27 @@
 package com.runjian.auth.server.service.login.impl;
 
-import com.runjian.auth.server.domain.dto.login.LoginUser;
+import cn.dev33.satoken.secure.BCrypt;
+import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.pig4cloud.captcha.SpecCaptcha;
+import com.pig4cloud.captcha.base.Captcha;
 import com.runjian.auth.server.domain.dto.login.UserInfoDTO;
+import com.runjian.auth.server.domain.entity.UserInfo;
+import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.login.LoginService;
-import com.runjian.auth.server.util.JwtUtil;
-import com.runjian.auth.server.util.RedisCache;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
+import com.runjian.common.util.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Jiang4Yu
@@ -27,52 +33,62 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class LoginServiceImpl implements LoginService {
-
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private UserInfoMapper userInfoMapper;
 
     @Autowired
     private RedisCache redisCache;
 
     @Override
-    public Map login(UserInfoDTO user) {
-        // 调用AuthenticationManager authenticate进行用户认证
-        UsernamePasswordAuthenticationToken authenticationToken
-                = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
-        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-        //如果认证没通过，给出对应的提示
-        // 认证失败，给出对应的提示
-        if (Objects.isNull(authenticate)) {
-            throw new RuntimeException("登录失败");
+    public Map login(UserInfoDTO dto) {
+        String userAccount = dto.getUsername();
+        String password = dto.getPassword();
+        // 从数据库中查取用户
+        LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserInfo::getUserAccount, userAccount);
+        UserInfo userInfo = userInfoMapper.selectOne(queryWrapper);
+        // 校验用户是否存在
+        if (Objects.isNull(userInfo)) {
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "用户不存在");
         }
-
-        // 认证通过了，使用userid生成一个JWT令牌 并将JWT存入CommonResponse返回
-        LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
-        String userid = loginUser.getUserInfo().getId().toString();
-        String jwt = JwtUtil.createJWT(userid);
+        // 校验密码是否正确
+        if (!BCrypt.checkpw(password, userInfo.getPassword())) {
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "密码错误");
+        }
+        // 登录
+        StpUtil.login(userInfo.getId());
+        // 获取token
+        SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+        String token = tokenInfo.getTokenValue();
 
         Map<String, String> map = new HashMap<>();
-        map.put("token", jwt);
-        map.put("username", loginUser.getUserInfo().getUserName());
-        map.put("userAccount", loginUser.getUserInfo().getUserAccount());
-        map.put("jobNo", loginUser.getUserInfo().getJobNo());
-        map.put("email", loginUser.getUserInfo().getEmail());
-        map.put("phone", loginUser.getUserInfo().getPhone());
-        map.put("description", loginUser.getUserInfo().getDescription());
+        map.put("id", userInfo.getId().toString());
+        map.put("token", token);
+        map.put("username", userInfo.getUserName());
+        map.put("userAccount", userInfo.getUserAccount());
+        map.put("jobNo", userInfo.getJobNo());
+        map.put("email", userInfo.getEmail());
+        map.put("phone", userInfo.getPhone());
+        map.put("description", userInfo.getDescription());
+        return map;
+    }
 
-        // 把完整的用户信息放入redis中，userId 作为key
-        redisCache.setCacheObject("login:" + userid, loginUser);
+    @Override
+    public Map getCode() {
+        SpecCaptcha captcha = new SpecCaptcha(130, 48, 5);
+        captcha.setCharType(Captcha.TYPE_ONLY_NUMBER);
+        String verCode = captcha.text().toLowerCase();
+        String key = "captcha:" + UUID.randomUUID();
+        redisCache.setCacheObject(key, verCode, 30, TimeUnit.MINUTES);
+        Map<String, String> map = new HashMap<>();
+        map.put("key", key);
+        map.put("image", captcha.toBase64());
         return map;
     }
 
     @Override
     public void logout() {
-        // 获取SecurityContextHolder中的用户ID
-        UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        Long userid = loginUser.getUserInfo().getId();
-        // 删除redis中的UserID
-        redisCache.deleteObject("login:" + userid);
+        StpUtil.logout();
     }
 
 }

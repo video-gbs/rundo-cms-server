@@ -12,9 +12,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,7 +37,7 @@ public class UserInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加用户")
-    public CommonResponse<?> addUser(@RequestBody @Valid AddSysUserInfoDTO dto) {
+    public CommonResponse<?> addUser(@RequestBody @Validated AddSysUserInfoDTO dto) {
         log.info("添加用户前端传参{}", JSONUtil.toJsonStr(dto));
         if (null != dto.getPassword() && null != dto.getRePassword()) {
             if (!Objects.equals(dto.getPassword(), dto.getPassword())) {

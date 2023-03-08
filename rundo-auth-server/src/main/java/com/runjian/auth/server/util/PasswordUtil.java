@@ -1,6 +1,6 @@
 package com.runjian.auth.server.util;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import cn.dev33.satoken.secure.BCrypt;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,10 +12,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PasswordUtil {
-    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public String encode(String password) {
-        return passwordEncoder.encode(password);
+        return BCrypt.hashpw(password);
     }
 
 }

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author Jiang4Yu
  * @version V1.0.0
@@ -20,8 +22,10 @@ import lombok.NoArgsConstructor;
 public class MoveSysOrgDTO {
 
     @ApiModelProperty(value = "部门ID", required = true)
+    @NotBlank
     private Long id;
 
     @ApiModelProperty(value = "上级部门ID", required = true)
+    @NotBlank
     private Long orgPid;
 }
