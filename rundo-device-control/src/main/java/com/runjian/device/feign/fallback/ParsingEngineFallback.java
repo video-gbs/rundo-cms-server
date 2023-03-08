@@ -41,7 +41,7 @@ public class ParsingEngineFallback implements FallbackFactory<ParsingEngineApi> 
 
             @Override
             public CommonResponse<Boolean> deviceDelete(Long deviceId) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
+                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), false);
             }
 
             @Override
