@@ -124,7 +124,6 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
             gatewayDispatchMapper.updateAll(gatewayDispatchInfoList);
             Set<Long> dispatchIds = gatewayDispatchInfoList.stream().map(GatewayDispatchInfo::getDispatchId).collect(Collectors.toSet());
             streamMapper.deleteByDispatchIds(dispatchIds);
-            System.out.println(dispatchIds);
             parsingEngineApi.stopAllStream(dispatchIds);
         }
 
