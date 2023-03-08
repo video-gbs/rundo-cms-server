@@ -123,7 +123,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             return res;
         }
 
-        deviceExpansionMapper.deleteById(id);
+
         return CommonResponse.success();
     }
 
