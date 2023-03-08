@@ -24,6 +24,7 @@ public class SaTokenConfigure implements WebMvcConfigurer {
             // 登录校验 -- 拦截所有路由，并排除/user/doLogin 用于开放登录
             SaRouter.match("/**")
                     .notMatch("/user/login")
+                    .notMatch("/user/code")
                     // 开放文档地址
                     .notMatch("/**/swagger-resources",
                             "/**/v3/api-docs/**",

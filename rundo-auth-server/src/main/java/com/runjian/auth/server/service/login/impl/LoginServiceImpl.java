@@ -4,12 +4,15 @@ import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.pig4cloud.captcha.SpecCaptcha;
+import com.pig4cloud.captcha.base.Captcha;
 import com.runjian.auth.server.domain.dto.login.UserInfoDTO;
 import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.login.LoginService;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
+import com.runjian.common.util.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,8 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Jiang4Yu
@@ -30,6 +35,9 @@ import java.util.Objects;
 public class LoginServiceImpl implements LoginService {
     @Autowired
     private UserInfoMapper userInfoMapper;
+
+    @Autowired
+    private RedisCache redisCache;
 
     @Override
     public Map login(UserInfoDTO dto) {
@@ -62,6 +70,19 @@ public class LoginServiceImpl implements LoginService {
         map.put("email", userInfo.getEmail());
         map.put("phone", userInfo.getPhone());
         map.put("description", userInfo.getDescription());
+        return map;
+    }
+
+    @Override
+    public Map getCode() {
+        SpecCaptcha captcha = new SpecCaptcha(130, 48, 5);
+        captcha.setCharType(Captcha.TYPE_ONLY_NUMBER);
+        String verCode = captcha.text().toLowerCase();
+        String key = "captcha:" + UUID.randomUUID();
+        redisCache.setCacheObject(key, verCode, 30, TimeUnit.MINUTES);
+        Map<String, String> map = new HashMap<>();
+        map.put("key", key);
+        map.put("image", captcha.toBase64());
         return map;
     }
 

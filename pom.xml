@@ -19,6 +19,7 @@
         <module>rundo-common</module>
         <module>rundo-cms-doc</module>
         <module>rundo-cms-core</module>
+        <module>rundo-cms-redis</module>
         <module>rundo-parsing-engine</module>
         <module>rundo-device-control</module>
         <module>rundo-stream-manage</module>
@@ -58,7 +59,7 @@
         <!--JWT工具包-->
         <jjwt.version>0.11.5</jjwt.version>
         <!--easy-captcha 验证码-->
-        <easy-captcha.version>1.6.2</easy-captcha.version>
+        <easy-captcha.version>2.2.2</easy-captcha.version>
         <!--文档工具包-->
         <knife4j.version>3.0.3</knife4j.version>
         <japidocs.version>1.4.4</japidocs.version>
@@ -98,6 +99,12 @@
                 <version>${sa-token.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!--easy-captcha验证码增强 -->
+            <dependency>
+                <groupId>com.pig4cloud.plugin</groupId>
+                <artifactId>captcha-spring-boot-starter</artifactId>
+                <version>${easy-captcha.version}</version>
             </dependency>
             <!--文档工具-->
             <dependency>
@@ -169,12 +176,6 @@
                 <artifactId>okhttp</artifactId>
                 <version>${okhttp.version}</version>
             </dependency>
-            <!--easy-captcha 验证码-->
-            <dependency>
-                <groupId>com.github.whvcse</groupId>
-                <artifactId>easy-captcha</artifactId>
-                <version>${easy-captcha.version}</version>
-            </dependency>
             <!-- HuTool -->
             <dependency>
                 <groupId>cn.hutool</groupId>
@@ -204,6 +205,12 @@
                 <artifactId>rundo-cms-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.runjian</groupId>
+                <artifactId>rundo-cms-redis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!--项目产生的通用依赖 End-->
         </dependencies>
     </dependencyManagement>

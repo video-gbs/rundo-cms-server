@@ -1,4 +1,4 @@
-package com.runjian.auth.server.util;
+package com.runjian.common.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
@@ -7,12 +7,16 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings(value = {"unchecked", "rawtypes"})
 @Component
-public class RedisCache {
+public class RedisCache implements Serializable {
+
+    private static final long serialVersionUID = -7668445273555693470L;
+
     @Autowired
     public RedisTemplate redisTemplate;
 

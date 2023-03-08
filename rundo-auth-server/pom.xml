@@ -38,6 +38,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
+        <!--验证码 -->
+        <dependency>
+            <groupId>com.pig4cloud.plugin</groupId>
+            <artifactId>captcha-spring-boot-starter</artifactId>
+        </dependency>
+
         <!--数据库驱动-->
         <dependency>
             <groupId>mysql</groupId>
@@ -103,6 +109,10 @@
         <dependency>
             <groupId>com.runjian</groupId>
             <artifactId>rundo-cms-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.runjian</groupId>
+            <artifactId>rundo-cms-redis</artifactId>
         </dependency>
     </dependencies>
 

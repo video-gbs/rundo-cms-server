@@ -6,6 +6,7 @@ import com.runjian.auth.server.mapper.RoleInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class StpInterfaceImpl implements StpInterface {
     private RoleInfoMapper roleInfoMapper;
 
     /**
-     * 返回此 loginId 拥有的权限码列表
+     * 返回此 loginId 拥有的权限码列表(权限与角色可分开校验)
      *
      * @param loginId   账号id
      * @param loginType 账号类型
@@ -30,11 +31,15 @@ public class StpInterfaceImpl implements StpInterface {
      */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
+        // 在判断权限时，会调用该方法
+        List<String> list = new ArrayList<>();
+
+
         return roleInfoMapper.selectRoleCodeByUserId(StpUtil.getLoginIdAsLong());
     }
 
     /**
-     * 返回此 loginId 拥有的角色权限列表
+     * 返回此 loginId 拥有的角色权限列表(权限与角色可分开校验)
      *
      * @param loginId   账号id
      * @param loginType 账号类型
@@ -42,6 +47,7 @@ public class StpInterfaceImpl implements StpInterface {
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        return roleInfoMapper.selectRoleCodeByUserId(StpUtil.getLoginIdAsLong());
+        Long userId = Long.valueOf(loginId.toString());
+        return roleInfoMapper.selectRoleCodeByUserId(userId);
     }
 }

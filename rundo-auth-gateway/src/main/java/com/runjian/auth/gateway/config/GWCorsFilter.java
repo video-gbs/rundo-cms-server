@@ -23,13 +23,13 @@ public class GWCorsFilter {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
+        // configuration.addAllowedOrigin("*");
         configuration.addAllowedOriginPattern("*");
-        configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setMaxAge(MAX_AGE);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(new PathPatternParser());
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(new PathPatternParser());
         source.registerCorsConfiguration("/**",configuration);
         return new CorsWebFilter(source);
     }
