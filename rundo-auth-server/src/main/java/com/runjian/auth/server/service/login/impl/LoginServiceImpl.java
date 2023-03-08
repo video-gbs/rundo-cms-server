@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit;
 public class LoginServiceImpl implements LoginService {
     @Autowired
     private UserInfoMapper userInfoMapper;
-
     @Autowired
     private RedisCache redisCache;
 
