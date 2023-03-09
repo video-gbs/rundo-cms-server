@@ -9,12 +9,10 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.MarkConstant;
-import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.feign.AuthServerApi;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
-import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.utils.RedisCommonUtil;
 import com.runjian.device.expansion.vo.feign.request.PutDeviceSignSuccessReq;
@@ -36,7 +34,6 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -67,9 +64,6 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
     @Autowired
     TransactionDefinition transactionDefinition;
-
-    @Autowired
-    IDeviceChannelExpansionService deviceChannelExpansionService;
 
     @Override
     public CommonResponse<DeviceAddResp> add(DeviceExpansionReq deviceExpansionReq) {
@@ -120,7 +114,6 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         return CommonResponse.success();
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public CommonResponse remove(Long id) {
         CommonResponse res = deviceControlApi.deleteDevice(id);
@@ -131,14 +124,9 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         }
 
         deviceExpansionMapper.deleteById(id);
-        //删除对应的通道
-        LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
-        deviceChannelExpansionService.remove(lambdaQueryWrapper);
         return CommonResponse.success();
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
     public CommonResponse<Boolean> removeBatch(List<Long> idList) {
         for(Long id : idList){
@@ -146,15 +134,12 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             if(res.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
                 //调用失败
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
-                throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+                return CommonResponse.failure(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
             }else {
                 deviceExpansionMapper.deleteById(id);
             }
         }
-        //删除对应的通道
-        LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.in(DeviceChannelExpansion::getDeviceExpansionId,idList);
-        deviceChannelExpansionService.remove(lambdaQueryWrapper);
+
         return CommonResponse.success();
     }
     @Override
