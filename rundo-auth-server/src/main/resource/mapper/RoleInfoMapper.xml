@@ -279,7 +279,7 @@
         WHERE userInfo.delete_flag = 0
         <if test="userAccount != null and userAccount != ''">
             <bind name="patternAccount" value="'%' + userAccount + '%'"/>
-            AND userInfo.user_account = #{patternAccount}
+            AND userInfo.user_account LIKE #{patternAccount}
         </if>
         <if test="roleId != null">
             AND ru.role_id = #{roleId,jdbcType=BIGINT}

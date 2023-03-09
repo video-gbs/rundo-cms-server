@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class AddSysUserInfoDTO {
 
     @ApiModelProperty("用户账户")
     @NotBlank(message = "用户账户不能为空")
+    @Pattern(regexp = "[A-Za-z0-9_\\-\\u4e00-\\u9fa5]+")
     private String userAccount;
 
     @ApiModelProperty("用户姓名")

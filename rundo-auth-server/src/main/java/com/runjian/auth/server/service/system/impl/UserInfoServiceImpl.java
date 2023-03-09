@@ -1,6 +1,7 @@
 package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageRelationSysUserInfoDTO;
@@ -14,6 +15,8 @@ import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.system.UserInfoService;
 import com.runjian.auth.server.util.PasswordUtil;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +44,12 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Override
     public void save(AddSysUserInfoDTO dto) {
+        LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserInfo::getUserAccount, dto.getUserAccount());
+        long count = userInfoMapper.selectCount(queryWrapper);
+        if (count > 0) {
+            throw new BusinessException(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, "账号已存在");
+        }
         // 处理基本信息
         UserInfo userInfo = new UserInfo();
         BeanUtils.copyProperties(dto, userInfo);
@@ -56,8 +65,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
                 userInfoMapper.insertUserRole(userInfo.getId(), roleId);
             }
         }
-
-
     }
 
     @Override
@@ -175,7 +182,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public Page<RelationSysUserInfoVO> findRelationList(QueryRelationSysUserInfoDTO dto) {
         PageRelationSysUserInfoDTO page = new PageRelationSysUserInfoDTO();
-        if (null != dto.getUserAccount() && !"".equals(dto.getUserAccount())){
+        if (null != dto.getUserAccount() && !"".equals(dto.getUserAccount())) {
             page.setUserAccount(dto.getUserAccount());
         }
         if (null != dto.getCurrent() && dto.getCurrent() > 0) {

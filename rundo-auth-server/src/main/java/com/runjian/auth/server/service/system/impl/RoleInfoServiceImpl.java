@@ -620,6 +620,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             for (Long userId : dto.getUserIdList()) {
                 roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
             }
+            return;
         }
         // 求取新旧的相同点
         List<Long> commonId = oldUserIds.stream().filter(dto.getUserIdList()::contains).collect(Collectors.toList());
