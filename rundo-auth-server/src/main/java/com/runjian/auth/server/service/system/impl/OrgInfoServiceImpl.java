@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,12 +14,14 @@ import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.mapper.OrgInfoMapper;
 import com.runjian.auth.server.service.system.OrgInfoService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
+import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -118,31 +121,43 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     public void moveSysOrg(MoveSysOrgDTO dto) {
         //  0-1 禁止本级移动到本级
         if (dto.getId().equals(dto.getOrgPid())) {
-            return;
+            throw new BusinessException(BusinessErrorEnums.VALID_METHOD_NOT_SUPPORTED, "禁止本级移动到本级");
         }
-        // 1.根据上级组织ID，查询上级组织ID信息
-        OrgInfo parentInfo = orgInfoMapper.selectById(dto.getOrgPid());
-        // 1-1 同一节点下的移动判断
-        OrgInfo parentInfoId = orgInfoMapper.selectById(dto.getId());
-        if (parentInfoId.getOrgPid().equals(parentInfo.getOrgPid())) {
-            // 切换排序顺序
-            parentInfoId.setOrgSort(parentInfo.getOrgSort());
-            orgInfoMapper.updateById(parentInfo);
-            parentInfo.setOrgSort(parentInfoId.getOrgSort());
-            orgInfoMapper.updateById(parentInfo);
-            return;
+        // 1. 判断目标是否存在
+        OrgInfo selectOrg = orgInfoMapper.selectById(dto.getId());
+        OrgInfo targetOrg = orgInfoMapper.selectById(dto.getOrgPid());
+        Optional.ofNullable(selectOrg).orElseThrow(() -> new BusinessException(BusinessErrorEnums.VALID_METHOD_NOT_SUPPORTED, "移动的节点不存在或已删除"));
+        Optional.ofNullable(targetOrg).orElseThrow(() -> new BusinessException(BusinessErrorEnums.VALID_METHOD_NOT_SUPPORTED, "目标位置不存在或已删除"));
+        // 2. 判断是否为祖父级向子孙级别移动
+        List<OrgInfo> offspringList = getOffspring(selectOrg.getOrgPids() + "[" + selectOrg.getId() + "]");
+        boolean flag = offspringList.stream().anyMatch(orgInfo -> orgInfo.getId().equals(targetOrg.getId()));
+        if (flag){
+            throw new BusinessException(BusinessErrorEnums.VALID_METHOD_NOT_SUPPORTED, "禁止向子级移动");
         }
-
-        // 2.根据id，查询当前组织的信息
-        OrgInfo orgInfo = orgInfoMapper.selectById(dto.getId());
-        // 3.根据id，查询当前组织的直接下级组织信息
-        List<OrgInfo> childrenList = getChildren(orgInfo.getId());
-        // 4.更新当前节点信息
-        orgInfo.setOrgPid(parentInfo.getId());
-        orgInfo.setOrgPids(parentInfo.getOrgPids() + "[" + parentInfo.getId() + "]");
-        orgInfo.setLevel(parentInfo.getLevel() + 1);
-        orgInfoMapper.updateById(orgInfo);
-        // 5.更新子节点信息
+        // 3. 确认是否为同一层级节点移动
+        if (selectOrg.getOrgPid().equals(targetOrg.getOrgPid())) {
+            // 同一层级节点移动
+            // 确认排序值是否相等
+            if (selectOrg.getOrgSort().equals(targetOrg.getOrgSort())) {
+                // 排序值相等，将选中的更新时间进行刷新
+                selectOrg.setUpdatedTime(LocalDateTimeUtil.now());
+                orgInfoMapper.updateById(selectOrg);
+            } else {
+                // 交换排序顺序
+                selectOrg.setOrgSort(targetOrg.getOrgSort());
+                orgInfoMapper.updateById(selectOrg);
+                targetOrg.setOrgSort(selectOrg.getOrgSort());
+                orgInfoMapper.updateById(targetOrg);
+            }
+        }
+        // 4.根据id，查询当前组织的直接下级组织信息
+        List<OrgInfo> childrenList = getChildren(selectOrg.getId());
+        // 5.更新当前节点信息
+        selectOrg.setOrgPid(targetOrg.getId());
+        selectOrg.setOrgPids(targetOrg.getOrgPids() + "[" + targetOrg.getId() + "]");
+        selectOrg.setLevel(targetOrg.getLevel() + 1);
+        orgInfoMapper.updateById(selectOrg);
+        // 6.更新子节点信息
         if (childrenList.size() > 0) {
             for (OrgInfo org : childrenList) {
                 updateChildren(org, childrenList);
@@ -213,6 +228,12 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(OrgInfo::getOrgPid, id);
         queryWrapper.orderBy(true, true, OrgInfo::getOrgSort, OrgInfo::getUpdatedTime);
+        return orgInfoMapper.selectList(queryWrapper);
+    }
+
+    private List<OrgInfo> getOffspring(String pidstring) {
+        LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.likeRight(OrgInfo::getOrgPids, pidstring);
         return orgInfoMapper.selectList(queryWrapper);
     }
 

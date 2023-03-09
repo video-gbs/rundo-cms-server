@@ -63,7 +63,7 @@ public class OrgInfoController {
 
     @PostMapping("/move")
     @ApiOperation("移动部门")
-    public CommonResponse<?> move(@Valid @RequestBody MoveSysOrgDTO dto) {
+    public CommonResponse<?> move(@RequestBody @Valid MoveSysOrgDTO dto) {
         orgInfoService.moveSysOrg(dto);
         return CommonResponse.success();
     }
