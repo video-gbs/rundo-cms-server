@@ -52,6 +52,8 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         Long roleId = idUtil.nextId();
         role.setId(roleId);
         role.setRoleName(dto.getRoleName());
+        // 角色新建后默认是启用状态： 0启用，1禁用
+        role.setStatus(0);
         // 角色是一个特殊的权限，ROLE_前缀 用来满足Spring Security规范
         role.setRoleCode("ROLE_" + roleId.toString());
         role.setRoleDesc(dto.getRoleDesc());
