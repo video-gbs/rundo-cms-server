@@ -8,7 +8,7 @@ spring:
     nacos:
       discovery:
         username: nacos
-        password: nacos
+        password: rundo@nacos*2023
         server-addr: rundo-nacos:8848
         namespace: public
 
