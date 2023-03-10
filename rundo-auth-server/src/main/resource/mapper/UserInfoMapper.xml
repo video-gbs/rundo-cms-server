@@ -58,6 +58,7 @@
             </if>
         </where>
         GROUP BY user.id
+        ORDER BY user.created_time DESC
     </select>
 
     <select id="selectOrgInfoByUserId" resultType="com.runjian.auth.server.domain.vo.system.OrgInfoVO">

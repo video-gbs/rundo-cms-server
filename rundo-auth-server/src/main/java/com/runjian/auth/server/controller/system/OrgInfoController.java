@@ -36,7 +36,7 @@ public class OrgInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加部门")
-    public CommonResponse<SysOrgVO> save(@RequestBody AddSysOrgDTO dto) {
+    public CommonResponse<SysOrgVO> save(@RequestBody @Valid AddSysOrgDTO dto) {
         log.info("添加部门前端传参信息{}", JSONUtil.toJsonStr(dto));
         return CommonResponse.success(orgInfoService.save(dto));
     }

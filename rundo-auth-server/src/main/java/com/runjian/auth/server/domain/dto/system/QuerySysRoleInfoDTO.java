@@ -30,7 +30,6 @@ public class QuerySysRoleInfoDTO extends CommonPage {
     @ApiModelProperty("创建人ID")
     private Long createdBy;
 
-
     @ApiModelProperty("创建人账户")
     private String userAccount;
 
