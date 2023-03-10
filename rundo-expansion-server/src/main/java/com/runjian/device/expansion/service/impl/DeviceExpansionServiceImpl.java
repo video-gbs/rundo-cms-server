@@ -9,10 +9,12 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.MarkConstant;
+import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.feign.AuthServerApi;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
+import com.runjian.device.expansion.service.IBaseDeviceAndChannelService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.utils.RedisCommonUtil;
 import com.runjian.device.expansion.vo.feign.request.PutDeviceSignSuccessReq;
@@ -55,6 +57,10 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     RedisTemplate redisTemplate;
     @Autowired
     AuthServerApi authServerApi;
+
+    @Autowired
+    IBaseDeviceAndChannelService baseDeviceAndChannelService;
+
     @Override
     public CommonResponse<DeviceAddResp> add(DeviceExpansionReq deviceExpansionReq) {
         DeviceReq deviceReq = new DeviceReq();
@@ -106,26 +112,30 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
     @Override
     public CommonResponse remove(Long id) {
-        deviceExpansionMapper.deleteById(id);
         CommonResponse res = deviceControlApi.deleteDevice(id);
         if(res.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
+            return res;
         }
 
+        baseDeviceAndChannelService.removeDevice(id);
         return CommonResponse.success();
     }
 
     @Override
     public CommonResponse<Boolean> removeBatch(List<Long> idList) {
-        deviceExpansionMapper.deleteBatchIds(idList);
-        idList.forEach(id->{
+        for(Long id : idList){
             CommonResponse res = deviceControlApi.deleteDevice(id);
             if(res.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
                 //调用失败
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
+                throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+            }else {
+                baseDeviceAndChannelService.removeDevice(id);
             }
-        });
+        }
+
         return CommonResponse.success();
     }
     @Override

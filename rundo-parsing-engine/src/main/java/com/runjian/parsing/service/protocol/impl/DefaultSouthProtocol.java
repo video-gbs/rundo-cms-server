@@ -160,7 +160,7 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol {
             channelMapper.deleteByDeviceId(gatewayTaskInfo.getDeviceId());
             deviceMapper.deleteById(gatewayTaskInfo.getDeviceId());
         }
-        gatewayTaskService.taskSuccess(taskId, CommonResponse.success(isSuccess));
+        gatewayTaskService.taskSuccess(taskId, isSuccess);
     }
 
     /**
@@ -203,7 +203,7 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol {
             channelMapper.batchSave(channelInfoList);
         }
 
-        gatewayTaskService.taskSuccess(taskId, CommonResponse.success(objects));
+        gatewayTaskService.taskSuccess(taskId, objects);
     }
 
 
