@@ -32,10 +32,10 @@ public class AddVideoAreaDTO {
     private String areaName;
 
     @ApiModelProperty("直接上级")
-    @NotNull(message = "上级区域不能为空")
+    @NotNull(message = "上级区域，为必填项")
     private Long areaPid;
 
     @ApiModelProperty("描述信息")
-    @Length(max = 128, message = "描述信息内容过长")
+    @Length(max = 128, message = "描述信息内容过长，支持最大长度128个字符")
     private String description;
 }
