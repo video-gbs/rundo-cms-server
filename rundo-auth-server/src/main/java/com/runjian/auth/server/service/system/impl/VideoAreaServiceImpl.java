@@ -151,17 +151,13 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
             queryWrapper.likeRight(VideoArea::getAreaPids, videoArea.getAreaPids() + "[" + videoArea.getId() + "]");
         }
         List<VideoArea> videoAreaList = videoAraeMapper.selectList(queryWrapper);
-        List<VideoAreaVO> videoAreaVOS = videoAreaList.stream().map(
+        return videoAreaList.stream().map(
                 item -> {
                     VideoAreaVO videoAreaVO = new VideoAreaVO();
                     BeanUtils.copyProperties(item, videoAreaVO);
                     return videoAreaVO;
                 }
         ).collect(Collectors.toList());
-        VideoAreaVO videoAreaVO = new VideoAreaVO();
-        BeanUtils.copyProperties(videoArea, videoAreaVO);
-        videoAreaVOS.add(videoAreaVO);
-        return videoAreaVOS;
     }
 
     @Override
