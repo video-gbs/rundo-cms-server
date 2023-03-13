@@ -108,7 +108,7 @@
     <insert id="batchInsertRoleApp">
         INSERT INTO role_app (role_id, app_id)
         VALUES
-        <foreach collection="list" item="item" separator=",">
+        <foreach collection="appList" item="item" separator=",">
             (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
         </foreach>
     </insert>
@@ -119,7 +119,7 @@
     <insert id="batchInsertRoleMenu">
         INSERT INTO role_menu (role_id, menu_id)
         VALUES
-        <foreach collection="list" item="item" separator=",">
+        <foreach collection="menuList" item="item" separator=",">
             (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
         </foreach>
     </insert>
@@ -131,7 +131,7 @@
     <insert id="batchInsertRoleApi">
         INSERT INTO role_api (role_id, api_id)
         VALUES
-        <foreach collection="list" item="item" separator=",">
+        <foreach collection="apiList" item="item" separator=",">
             (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
         </foreach>
     </insert>
@@ -144,7 +144,7 @@
     <insert id="batchInsertRoleOrg">
         INSERT INTO role_org (role_id, org_id)
         VALUES
-        <foreach collection="list" item="item" separator=",">
+        <foreach collection="orgList" item="item" separator=",">
             (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
         </foreach>
     </insert>
@@ -157,7 +157,7 @@
     <insert id="batchInsertRoleArea">
         INSERT INTO role_area (role_id, area_id)
         VALUES
-        <foreach collection="list" item="item" separator=",">
+        <foreach collection="areaList" item="item" separator=",">
             (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
         </foreach>
     </insert>
@@ -170,7 +170,7 @@
     <insert id="batchInsertRoleUser">
         INSERT INTO role_user (role_id, user_id)
         VALUES
-        <foreach collection="list" item="item" separator=",">
+        <foreach collection="userList" item="item" separator=",">
             (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
         </foreach>
     </insert>
