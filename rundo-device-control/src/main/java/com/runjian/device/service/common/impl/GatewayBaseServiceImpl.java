@@ -52,8 +52,8 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
     @PostConstruct
     public void init() {
         // 将所有的网关设置为离线状态
-        Set<Long> gatewayIds =  gatewayMapper.selectIdByOnlineState(CommonEnum.ENABLE.getCode());
-        if (gatewayIds.size() > 0){
+        Set<Long> gatewayIds = gatewayMapper.selectIdByOnlineState(CommonEnum.ENABLE.getCode());
+        if (gatewayIds.size() > 0) {
             heartbeatArray.addOrUpdateTime(gatewayIds, 60L);
         }
     }
@@ -65,7 +65,7 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
     @Scheduled(fixedRate = 1000)
     public void heartbeat() {
         Set<Long> gatewayIds = heartbeatArray.pullAndNext();
-        if (Objects.isNull(gatewayIds) || gatewayIds.isEmpty()){
+        if (Objects.isNull(gatewayIds) || gatewayIds.isEmpty()) {
             return;
         }
         gatewayOffline(gatewayIds);
@@ -77,41 +77,46 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
         gatewayMapper.batchUpdateOnlineState(gatewayIds, CommonEnum.DISABLE.getCode(), nowTime);
         // 根据网关查询所有在线的设备
         List<DeviceInfo> deviceInfoList = deviceMapper.selectByGatewayIdsAndOnlineState(gatewayIds, CommonEnum.ENABLE.getCode());
+        if (deviceInfoList.isEmpty()) {
+            return;
+        }
         deviceInfoList.forEach(deviceInfo -> {
             deviceInfo.setOnlineState(CommonEnum.DISABLE.getCode());
             deviceInfo.setUpdateTime(nowTime);
         });
         // 修改设备的在线状态
         deviceMapper.batchUpdateOnlineState(deviceInfoList);
-        // 根据设备查询所有在线的通道
-        List<ChannelInfo> channelInfoList = channelMapper.selectByDeviceIdsAndOnlineState(deviceInfoList.stream().map(DeviceInfo::getId).collect(Collectors.toList()), CommonEnum.ENABLE.getCode());
-        channelInfoList.forEach(channelInfo -> {
-            channelInfo.setOnlineState(CommonEnum.DISABLE.getCode());
-            channelInfo.setUpdateTime(nowTime);
-        });
-
         // redis同步设备和通道的在线状态
         redisBaseService.batchUpdateDeviceOnlineState(deviceInfoList
                 .stream()
                 .filter(deviceInfo -> deviceInfo.getSignState().equals(SignState.SUCCESS.getCode()))
                 .collect(Collectors.toMap(DeviceInfo::getId, DeviceInfo::getOnlineState)));
-        // 修改通道的在线状态
-        if (channelInfoList.size() > 0){
-            channelMapper.batchUpdateOnlineState(channelInfoList);
-            redisBaseService.batchUpdateChannelOnlineState(channelInfoList.stream()
-                    .filter(channelInfo -> channelInfo.getSignState().equals(SignState.SUCCESS.getCode()))
-                    .collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
+        // 根据设备查询所有在线的通道
+        List<ChannelInfo> channelInfoList = channelMapper.selectByDeviceIdsAndOnlineState(deviceInfoList.stream().map(DeviceInfo::getId).collect(Collectors.toList()), CommonEnum.ENABLE.getCode());
+        if (channelInfoList.isEmpty()) {
+            return;
         }
+        channelInfoList.forEach(channelInfo -> {
+            channelInfo.setOnlineState(CommonEnum.DISABLE.getCode());
+            channelInfo.setUpdateTime(nowTime);
+        });
+
+        // 修改通道的在线状态
+        channelMapper.batchUpdateOnlineState(channelInfoList);
+        redisBaseService.batchUpdateChannelOnlineState(channelInfoList.stream()
+                .filter(channelInfo -> channelInfo.getSignState().equals(SignState.SUCCESS.getCode()))
+                .collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
+
     }
 
     @Override
     @Scheduled(fixedDelay = 600000)
     public void deviceTotalSync() {
-        Set<Long> gatewayIds =  gatewayMapper.selectIdByOnlineState(CommonEnum.ENABLE.getCode());
+        Set<Long> gatewayIds = gatewayMapper.selectIdByOnlineState(CommonEnum.ENABLE.getCode());
         // 发送全量同步消息
-        if (gatewayIds.size() > 0){
+        if (gatewayIds.size() > 0) {
             CommonResponse<?> commonResponse = parsingEngineApi.deviceTotalSync(gatewayIds);
-            if (commonResponse.isError()){
+            if (commonResponse.isError()) {
                 log.error(LogTemplate.ERROR_LOG_TEMPLATE, "网关基础服务", "设备全量同步失败", commonResponse.getMsg());
             }
         }
