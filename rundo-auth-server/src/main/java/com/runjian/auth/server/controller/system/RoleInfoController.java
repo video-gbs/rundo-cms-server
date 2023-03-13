@@ -90,14 +90,6 @@ public class RoleInfoController {
         return CommonResponse.success();
     }
 
-    @PostMapping("/relationUserByRole")
-    @ApiOperation("查询已关联用户列表")
-    public CommonResponse<IPage<RelationSysUserInfoVO>> listRelationUser(@RequestBody @Valid QueryRoleRelationSysUserInfoDTO dto) {
-        log.info("查询已关联用户列表传参{}", JSONUtil.toJsonStr(dto));
-        return CommonResponse.success(roleInfoService.listRelationUser(dto));
-    }
-
-
     @PostMapping("/getListByPage")
     @ApiOperation("获取角色分页列表")
     public CommonResponse<IPage<SysRoleInfoVO>> getListByPage(@RequestBody QuerySysRoleInfoDTO dto) {
@@ -131,6 +123,13 @@ public class RoleInfoController {
         log.info("左移提交用户到已关联用户列表，前端传参{}", JSONUtil.toJsonStr(dto));
         roleInfoService.leftRelationUser(dto);
         return CommonResponse.success();
+    }
+
+    @PostMapping("/relationUserByRole")
+    @ApiOperation("查询已关联用户列表")
+    public CommonResponse<IPage<RelationSysUserInfoVO>> listRelationUser(@RequestBody @Valid QueryRoleRelationSysUserInfoDTO dto) {
+        log.info("查询已关联用户列表传参{}", JSONUtil.toJsonStr(dto));
+        return CommonResponse.success(roleInfoService.listRelationUser(dto));
     }
 
 }
