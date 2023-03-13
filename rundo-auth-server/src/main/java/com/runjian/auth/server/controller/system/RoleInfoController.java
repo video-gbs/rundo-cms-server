@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -108,7 +109,7 @@ public class RoleInfoController {
 
     @PostMapping("/relationUserByRole")
     @ApiOperation("查询已关联用户列表")
-    public CommonResponse<IPage<RelationSysUserInfoVO>> listRelationUser(@RequestBody QueryRoleRelationSysUserInfoDTO dto) {
+    public CommonResponse<IPage<RelationSysUserInfoVO>> listRelationUser(@RequestBody @Valid QueryRoleRelationSysUserInfoDTO dto) {
         log.info("查询已关联用户列表传参{}", JSONUtil.toJsonStr(dto));
         return CommonResponse.success(roleInfoService.listRelationUser(dto));
     }
