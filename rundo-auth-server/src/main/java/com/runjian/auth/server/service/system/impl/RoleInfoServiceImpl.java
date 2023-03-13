@@ -613,12 +613,26 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     @Override
     public void rightRelationUser(RoleRelationUserDTO dto) {
         if (CollUtil.isEmpty(dto.getUserIdList())) {
-            // 如果新关联为空，则是直接返回不进行操作
             return;
         }
         List<Long> oldUserIds = roleInfoMapper.findUserIdList(dto.getRoleId());
         if (CollUtil.isEmpty(oldUserIds)) {
-            // 如果旧关联为空，则本次为新关联
+            return;
+        }
+        List<Long> commonId = oldUserIds.stream().filter(dto.getUserIdList()::contains).collect(Collectors.toList());
+        // 将相同部分后进行删除
+        for (Long userId : commonId) {
+            roleInfoMapper.removeRoleUser(dto.getRoleId(), userId);
+        }
+    }
+
+    @Override
+    public void leftRelationUser(RoleRelationUserDTO dto) {
+        if (CollUtil.isEmpty(dto.getUserIdList())) {
+            return;
+        }
+        List<Long> oldUserIds = roleInfoMapper.findUserIdList(dto.getRoleId());
+        if (CollUtil.isEmpty(oldUserIds)) {
             for (Long userId : dto.getUserIdList()) {
                 roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
             }
@@ -631,25 +645,6 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         for (Long userId : dto.getUserIdList()) {
             roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
         }
-    }
-
-    @Override
-    public void leftRelationUser(RoleRelationUserDTO dto) {
-        if (CollUtil.isEmpty(dto.getUserIdList())) {
-            // 如果新关联为空，则是直接返回不进行操作
-            return;
-        }
-        List<Long> oldUserIds = roleInfoMapper.findUserIdList(dto.getRoleId());
-        if (CollUtil.isEmpty(oldUserIds)) {
-            // 如果旧关联为空，则是直接返回不进行操作
-            return;
-        }
-        List<Long> commonId = oldUserIds.stream().filter(dto.getUserIdList()::contains).collect(Collectors.toList());
-        // 将相同部分后进行删除
-        for (Long userId : commonId) {
-            roleInfoMapper.removeRoleUser(dto.getRoleId(), userId);
-        }
-
     }
 
     /**

@@ -2,10 +2,12 @@ package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.runjian.auth.server.domain.dto.system.*;
+import com.runjian.auth.server.domain.dto.system.AddSysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.UpdateSysUserInfoDTO;
 import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
-import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.service.system.UserInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
@@ -98,18 +100,7 @@ public class UserInfoController {
         return CommonResponse.success(userInfoService.findByPage(dto));
     }
 
-    @PostMapping("/getRelationSysUserInfo/{id}")
-    @ApiOperation("关联用户查看用户下信息")
-    public CommonResponse<RelationSysUserInfoVO> getRelationSysUserInfoById(@PathVariable Long id) {
-        return CommonResponse.success(userInfoService.findRelationById(id));
-    }
 
-    @PostMapping("/getRelationSysUserInfoList")
-    @ApiOperation("关联用户用户列表")
-    public CommonResponse<IPage<RelationSysUserInfoVO>> getRelationSysUserInfoList(@RequestBody QueryRelationSysUserInfoDTO dto) {
-        log.info("关联用户用户列表前端传参{}", JSONUtil.toJsonStr(dto));
-        return CommonResponse.success(userInfoService.findRelationList(dto));
-    }
 
 
 }

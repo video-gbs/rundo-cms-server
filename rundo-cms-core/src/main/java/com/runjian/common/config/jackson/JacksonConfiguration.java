@@ -1,7 +1,10 @@
 package com.runjian.common.config.jackson;
 
 import cn.hutool.core.date.DatePattern;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -9,7 +12,10 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import java.io.IOException;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -35,5 +41,18 @@ public class JacksonConfiguration {
             builder.serializerByType(Long.class, ToStringSerializer.instance);
             builder.modules(new JavaTimeModule());
         };
+    }
+
+    @Bean
+    @Primary
+    public ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder) {
+        ObjectMapper objectMapper = builder.createXmlMapper(false).build();
+        objectMapper.getSerializerProvider().setNullValueSerializer(new JsonSerializer<>() {
+            @Override
+            public void serialize(Object o, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+                jsonGenerator.writeString("");
+            }
+        });
+        return objectMapper;
     }
 }

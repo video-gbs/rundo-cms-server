@@ -50,11 +50,11 @@
             </if>
             <if test="userAccount != null and userAccount != ''">
                 <bind name="patternUserAccount" value="'%' + userAccount + '%'"/>
-                AND user.user_account = #{patternUserAccount}
+                AND user.user_account LIKE #{patternUserAccount}
             </if>
             <if test="userName != null and userName != ''">
                 <bind name="patternUserName" value="'%' + userName + '%'"/>
-                AND user.user_name = #{patternUserName}
+                AND user.user_name LIKE #{patternUserName}
             </if>
         </where>
         GROUP BY user.id
@@ -121,7 +121,7 @@
         WHERE user.delete_flag = 0
             <if test="userAccount != null and userAccount != ''">
                 <bind name="patternAccount" value="'%' + userAccount + '%'"/>
-                AND user.user_account = #{patternAccount}
+                AND user.user_account LIKE #{patternAccount}
             </if>
         GROUP BY user.id
         ORDER BY user.id
