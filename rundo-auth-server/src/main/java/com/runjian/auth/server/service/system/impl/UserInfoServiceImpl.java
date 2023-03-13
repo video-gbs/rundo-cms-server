@@ -141,10 +141,13 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         if (dto.getOrgId() != null && !zero.equals(dto.getOrgId())) {
             page.setOrgId(dto.getOrgId());
         }
-        if (null != dto.getUserName() && "".equals(dto.getUserName())) {
+        if (null != dto.getUserName() && !"".equals(dto.getUserName())) {
             page.setUserName(dto.getUserName());
         }
-        page.setUserAccount(dto.getUserAccount());
+        if (null != dto.getUserAccount() && !"".equals(dto.getUserAccount())) {
+            page.setUserAccount(dto.getUserAccount());
+        }
+
         if (null != dto.getCurrent() && dto.getCurrent() > 0) {
             page.setCurrent(dto.getCurrent());
         } else {
