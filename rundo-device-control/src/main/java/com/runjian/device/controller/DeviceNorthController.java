@@ -55,6 +55,7 @@ public class DeviceNorthController {
         return CommonResponse.success(deviceNorthService.deviceAdd(req.getDeviceId(), req.getGatewayId(), req.getDeviceType(), req.getIp(), req.getPort(), req.getName(), req.getManufacturer(), req.getModel(), req.getFirmware(), req.getPtzType(), req.getUsername(), req.getPassword()));
     }
 
+
     /**
      * 设备同步
      * @param deviceId 设备id

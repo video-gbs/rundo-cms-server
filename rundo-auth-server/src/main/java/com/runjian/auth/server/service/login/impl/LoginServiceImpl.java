@@ -35,7 +35,6 @@ import java.util.concurrent.TimeUnit;
 public class LoginServiceImpl implements LoginService {
     @Autowired
     private UserInfoMapper userInfoMapper;
-
     @Autowired
     private RedisCache redisCache;
 
@@ -78,7 +77,7 @@ public class LoginServiceImpl implements LoginService {
         SpecCaptcha captcha = new SpecCaptcha(130, 48, 5);
         captcha.setCharType(Captcha.TYPE_ONLY_NUMBER);
         String verCode = captcha.text().toLowerCase();
-        String key = "captcha:" + UUID.randomUUID();
+        String key = "captcha:" + UUID.randomUUID().toString().replace("-", "") ;
         redisCache.setCacheObject(key, verCode, 30, TimeUnit.MINUTES);
         Map<String, String> map = new HashMap<>();
         map.put("key", key);

@@ -13,10 +13,12 @@
         <where>
             sd.delete_flag = 0
             <if test="itemName != null and itemName != ''">
-                AND sd.item_name = #{itemName,jdbcType=VARCHAR}
+                <bind name="patternItemName" value="'%' + itemName + '%'"/>
+                AND sd.item_name LIKE #{patternItemName}
             </if>
             <if test="itemValue != null and itemValue != ''">
-                AND sd.item_value = #{itemValue,jdbcType=VARCHAR}
+                <bind name="patternItemValue" value="'%' + itemValue + '%'"/>
+                AND sd.item_value LIKE #{patternItemValue}
             </if>
         </where>
     </select>

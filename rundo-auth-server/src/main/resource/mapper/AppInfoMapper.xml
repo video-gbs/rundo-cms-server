@@ -12,10 +12,12 @@
         <where>
             sai.delete_flag = 0
             <if test="appIp != null and appIp != ''">
-                AND sai.app_ip = #{appIp,jdbcType=VARCHAR}
+                <bind name="patternAppIp" value="'%' + appIp + '%'"/>
+                AND sai.app_ip LIKE #{patternAppIp}
             </if>
             <if test="appName != null and appName != ''">
-                AND sai.app_name = #{appName,jdbcType=VARCHAR}
+                <bind name="patternAppName" value="'%' + appName + '%'"/>
+                AND sai.app_name LIKE #{patternAppName}
             </if>
         </where>
     </select>

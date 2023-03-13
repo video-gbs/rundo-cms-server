@@ -1,11 +1,8 @@
 package com.runjian.auth.gateway.config;
 
-import cn.dev33.satoken.exception.NotLoginException;
-import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.reactor.filter.SaReactorFilter;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.dev33.satoken.util.SaResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,17 +54,6 @@ public class SaTokenConfigure {
                     // SaRouter.match("/orders/**", r -> StpUtil.checkPermission("orders"));
 
                     // 更多匹配 ...  */
-                })
-                // 异常处理方法：每次setAuth函数出现异常时进入
-                .setError(e -> {
-                    log.info(e.getMessage(), e);
-                    if (e instanceof NotPermissionException){
-                        // 无权限异常
-                    }
-                    if (e instanceof NotLoginException){
-                        // 未能通过登录认证
-                    }
-                    return SaResult.error(e.getMessage());
                 });
     }
 }

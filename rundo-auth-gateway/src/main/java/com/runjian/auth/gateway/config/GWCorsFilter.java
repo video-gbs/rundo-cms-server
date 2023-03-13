@@ -17,12 +17,13 @@ import org.springframework.web.util.pattern.PathPatternParser;
 @Configuration
 public class GWCorsFilter {
 
-    private static final Long MAX_AGE = 1800L;
+    private static final Long MAX_AGE = 3600L;
 
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
+        // 使用了setAllowCredentials(true)就不能把addAllowedOrigin("*")配置
         // configuration.addAllowedOrigin("*");
         configuration.addAllowedOriginPattern("*");
         configuration.addAllowedHeader("*");

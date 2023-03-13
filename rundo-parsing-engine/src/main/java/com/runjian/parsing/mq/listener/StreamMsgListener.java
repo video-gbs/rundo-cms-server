@@ -63,18 +63,16 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
             }
             DispatchInfo dispatchInfo = dispatchInfoOp.get();
 
-            if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "流媒体异常消息记录", mqRequest.getMsgType(), mqRequest.getMsg());
-            }
-
             if (!StringUtils.isNumber(mqRequest.getMsgId())){
-                if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_RESULT.getMsg())){
+                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "流媒体异常消息记录", mqRequest.getMsgType(), mqRequest.getMsg());
+                }else if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_RESULT.getMsg())){
                     streamSouthService.streamPlayResult(dispatchInfo.getId(), mqRequest.getData());
                 } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CLOSE.getMsg())) {
                     streamSouthService.streamClose(dispatchInfo.getId(), mqRequest.getData());
                 }
             }else {
-                if (mqRequest.getCode() != 0){
+                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
                     streamSouthService.errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
                 } else if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_STOP.getMsg())) {
                     streamSouthService.streamStopPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
