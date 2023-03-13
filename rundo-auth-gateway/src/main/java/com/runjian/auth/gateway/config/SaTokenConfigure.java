@@ -33,12 +33,12 @@ public class SaTokenConfigure {
                         "/webjars/**",
                         "/swagger-resources",
                         "/swagger-resources/**",
+
                         "/auth/**",
                         "/auth/v3/**",
-                        "/expserver/**",
-                        "/expserver/v3/**",
 
                         "/expserver/**",
+                        "/expserver/v3/**",
 
                         "/stream-manage/**",
                         "/device-control/**"
