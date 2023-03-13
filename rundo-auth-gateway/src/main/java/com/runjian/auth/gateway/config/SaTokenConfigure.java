@@ -36,7 +36,10 @@ public class SaTokenConfigure {
                         "/auth/**",
                         "/auth/v3/**",
                         "/expserver/**",
-                        "/expserver/v3/**"
+                        "/expserver/v3/**",
+
+                        "/stream-manage/*",
+                        "/device-control/*"
                 )
                 // 鉴权方法：每次访问进入
                 .setAuth(obj -> {
