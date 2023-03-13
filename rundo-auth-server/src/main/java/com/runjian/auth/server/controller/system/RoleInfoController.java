@@ -82,23 +82,6 @@ public class RoleInfoController {
         return CommonResponse.success();
     }
 
-    @PostMapping("/relationUser/right")
-    @ApiOperation("右移提交关联用户列表")
-    public CommonResponse<?> rightRelationUser(@RequestBody RoleRelationUserDTO dto) {
-        log.info("右移提交关联用户列表前端传参{}", JSONUtil.toJsonStr(dto));
-        roleInfoService.rightRelationUser(dto);
-        return CommonResponse.success();
-    }
-
-    @PostMapping("/relationUser/left")
-    @ApiOperation("左移提交关联用户列表")
-    public CommonResponse<?> leftRelationUser(@RequestBody RoleRelationUserDTO dto) {
-        log.info("左移提交关联用户列表前端传参{}", JSONUtil.toJsonStr(dto));
-        roleInfoService.leftRelationUser(dto);
-        return CommonResponse.success();
-    }
-
-
     @PostMapping("/relationUser/add")
     @ApiOperation("提交关联用户列表")
     public CommonResponse<?> addRelationUser(@RequestBody RoleRelationUserDTO dto) {
@@ -132,6 +115,22 @@ public class RoleInfoController {
     @ApiImplicitParam(name = "appType", value = "应用分类 1 应用类，2 配置类，3 运维类", required = true)
     public CommonResponse<List<AppMenuApiTree>> getAppIdTree(@PathVariable Integer appType) {
         return CommonResponse.success(roleInfoService.getAppMenuApiTree(appType));
+    }
+
+    @PostMapping("/relationUser/right")
+    @ApiOperation("右移从关联用户列表中移除用户")
+    public CommonResponse<?> rightRelationUser(@RequestBody RoleRelationUserDTO dto) {
+        log.info("右移从关联用户列表中移除用户，前端传参{}", JSONUtil.toJsonStr(dto));
+        roleInfoService.rightRelationUser(dto);
+        return CommonResponse.success();
+    }
+
+    @PostMapping("/relationUser/left")
+    @ApiOperation("左移提交用户到已关联用户列表")
+    public CommonResponse<?> leftRelationUser(@RequestBody RoleRelationUserDTO dto) {
+        log.info("左移提交用户到已关联用户列表，前端传参{}", JSONUtil.toJsonStr(dto));
+        roleInfoService.leftRelationUser(dto);
+        return CommonResponse.success();
     }
 
 }
