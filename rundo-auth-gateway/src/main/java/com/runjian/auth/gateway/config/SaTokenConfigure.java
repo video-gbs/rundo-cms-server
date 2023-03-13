@@ -38,6 +38,8 @@ public class SaTokenConfigure {
                         "/expserver/**",
                         "/expserver/v3/**",
 
+                        "/expserver/**",
+
                         "/stream-manage/**",
                         "/device-control/**"
                 )
