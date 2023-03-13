@@ -57,15 +57,11 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
             }
             GatewayInfo gatewayInfo = gatewayInfoOp.get();
 
-            // 异常消息记录
-            if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "流媒体异常消息记录", mqRequest.getMsgType(), mqRequest.getMsg());
-            }
-
-
             if (!StringUtils.isNumber(mqRequest.getMsgId())){
                 // 网关主动推送消息
-                if (mqRequest.getMsgType().equals(MsgType.DEVICE_SIGN_IN.getMsg())) {
+                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "流媒体异常消息记录", mqRequest.getMsgType(), mqRequest.getMsg());
+                }else if (mqRequest.getMsgType().equals(MsgType.DEVICE_SIGN_IN.getMsg())) {
                     protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceSignIn(gatewayInfo.getId(), mqRequest.getData());
                 } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_TOTAL_SYNC.getMsg())){
                     protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceBatchSignIn(gatewayInfo.getId(), mqRequest.getData());
@@ -74,7 +70,10 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
                 }
             } else{
                 // 上层消息返回
-                if (mqRequest.getMsgType().equals(MsgType.DEVICE_SYNC.getMsg())) {
+                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "流媒体异常消息记录", mqRequest.getMsgType(), mqRequest.getMsg());
+                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
+                } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_SYNC.getMsg())) {
                     protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceSync(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
                 } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_ADD.getMsg())) {
                     protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceAdd(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
