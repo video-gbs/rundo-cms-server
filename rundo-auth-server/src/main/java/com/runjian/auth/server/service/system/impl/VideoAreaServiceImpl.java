@@ -22,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -143,14 +144,14 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public List<VideoAreaVO> findByList(Long areaId) {
-        // TODO 根据用户ID渲染
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
-        VideoArea videoArea = new VideoArea();
+        List<VideoArea> videoAreaList = new ArrayList<>();
         if (areaId != null) {
-            videoArea = videoAraeMapper.selectById(areaId);
+            VideoArea videoArea = videoAraeMapper.selectById(areaId);
             queryWrapper.likeRight(VideoArea::getAreaPids, videoArea.getAreaPids() + "[" + videoArea.getId() + "]");
+            videoAreaList = videoAraeMapper.selectList(queryWrapper);
+            videoAreaList.add(videoArea);
         }
-        List<VideoArea> videoAreaList = videoAraeMapper.selectList(queryWrapper);
         return videoAreaList.stream().map(
                 item -> {
                     VideoAreaVO videoAreaVO = new VideoAreaVO();
