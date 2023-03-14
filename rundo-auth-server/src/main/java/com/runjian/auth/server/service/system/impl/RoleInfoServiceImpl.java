@@ -620,37 +620,50 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                                        List<ApiInfo> apiInfoList,
                                        Integer appType
     ) {
-        // 4.拼接返回结果
-        List<String> resultList = new ArrayList<>();
-        // 1.先根据appType选出目标分类的应用
+
+        // 1.根据 appType 筛选出符合要求的应用
+        List<AppInfo> myAppInfoList = new ArrayList<>();
         for (AppInfo appInfo : appInfoList) {
             if (appType.equals(appInfo.getAppType())) {
-                resultList.add("A_" + appInfo.getId());
+                myAppInfoList.add(appInfo);
             }
         }
-        // 2.根据目标分类的结果过滤掉不属于这个应用分类的菜单
-        for (MenuInfo menuInfo : menuInfoList) {
-            if (menuInfo.getId().equals(1L)) {
-                continue;
-            }
-            for (AppInfo appInfo : appInfoList) {
-                if (menuInfo.getAppId().equals(appInfo.getId())) {
-                    resultList.add("M_" + appInfo.getId());
+        // 2-1. 将筛选后的应用列表作为筛选菜单的条件
+        List<MenuInfo> myMenuInfoList = new ArrayList<>();
+        for (AppInfo appInfo : myAppInfoList) {
+            for (MenuInfo menuInfo : menuInfoList) {
+                if (menuInfo.getId().equals(1L)) {
+                    continue;
+                }
+                if (appInfo.getId().equals(menuInfo.getAppId())){
+                    myMenuInfoList.add(menuInfo);
                 }
             }
         }
-        // 3.根据目标分类的结果过滤掉不属于这个应用分类的接口
-        for (ApiInfo apiInfo : apiInfoList) {
-            if (apiInfo.getId().equals(1L)) {
-                continue;
-            }
-            for (AppInfo appInfo : appInfoList) {
-                if (apiInfo.getAppId().equals(appInfo.getId())) {
-                    resultList.add("U_" + appInfo.getId());
+        // 3. 将筛选后的应用列表作为筛选接口的条件
+        List<ApiInfo> myApiInfoList = new ArrayList<>();
+        for (AppInfo appInfo : myAppInfoList) {
+            for (ApiInfo apiInfo : apiInfoList) {
+                if (apiInfo.getId().equals(1L)) {
+                    continue;
+                }
+                if (appInfo.getId().equals(apiInfo.getAppId())){
+                    myApiInfoList.add(apiInfo);
                 }
             }
         }
 
+        // 4.拼接返回结果
+        List<String> resultList = new ArrayList<>();
+        for (AppInfo appInfo : myAppInfoList) {
+            resultList.add("A_" + appInfo.getId());
+        }
+        for (MenuInfo menuInfo : myMenuInfoList) {
+            resultList.add("M_" + menuInfo.getId());
+        }
+        for (ApiInfo apiInfo : myApiInfoList) {
+            resultList.add("U_" + apiInfo.getId());
+        }
         return resultList;
     }
 }
