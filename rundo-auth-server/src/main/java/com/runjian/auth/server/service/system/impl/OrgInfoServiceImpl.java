@@ -46,6 +46,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         String orgPids = parentInfo.getOrgPids() + "[" + dto.getOrgPid() + "]";
         orgInfo.setOrgPids(orgPids);
         orgInfo.setOrgName(dto.getOrgName());
+        orgInfo.setOrgNameStr(parentInfo.getOrgNameStr() + "/" + dto.getOrgName());
         orgInfo.setOrgCode(dto.getOrgCode());
         if (null != dto.getOrgSort()) {
             orgInfo.setOrgSort(dto.getOrgSort());
@@ -131,7 +132,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         // 2. 判断是否为祖父级向子孙级别移动
         List<OrgInfo> offspringList = getOffspring(selectOrg.getOrgPids() + "[" + selectOrg.getId() + "]");
         boolean flag = offspringList.stream().anyMatch(orgInfo -> orgInfo.getId().equals(targetOrg.getId()));
-        if (flag){
+        if (flag) {
             throw new BusinessException(BusinessErrorEnums.VALID_METHOD_NOT_SUPPORTED, "禁止向子级移动");
         }
         // 3. 确认是否为同一层级节点移动
