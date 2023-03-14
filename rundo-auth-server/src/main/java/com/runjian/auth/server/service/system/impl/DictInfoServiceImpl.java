@@ -70,8 +70,13 @@ public class DictInfoServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> i
     @Override
     public Page<SysDictVO> findByPage(QureySysDictDTO dto) {
         PageSysDictDTO page = new PageSysDictDTO();
-        page.setItemName(dto.getItemName());
-        page.setItemValue(dto.getItemValue());
+        if (null != dto.getItemName() && !"".equals(dto.getItemName())){
+            page.setItemName(dto.getItemName());
+        }
+
+        if (null != dto.getItemValue() && !"".equals(dto.getItemValue())){
+            page.setItemValue(dto.getItemValue());
+        }
         if (null != dto.getCurrent() && dto.getCurrent() > 0) {
             page.setCurrent(dto.getCurrent());
         } else {

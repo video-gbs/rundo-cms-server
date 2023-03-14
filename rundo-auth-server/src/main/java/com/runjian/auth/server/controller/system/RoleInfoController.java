@@ -56,6 +56,7 @@ public class RoleInfoController {
     @PostMapping("/update")
     @ApiOperation("编辑角色")
     public CommonResponse<?> updateRole(@RequestBody UpdateSysRoleInfoDTO dto) {
+        log.info("编辑角色,前端传参{}",JSONUtil.toJsonStr(dto));
         roleInfoService.modifyById(dto);
         return CommonResponse.success();
     }
