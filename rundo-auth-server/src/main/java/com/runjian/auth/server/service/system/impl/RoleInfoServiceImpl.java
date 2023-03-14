@@ -64,84 +64,50 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<String> appIds = dto.getAppIds();
         List<String> configIds = dto.getConfigIds();
         List<String> devopsIds = dto.getDevopsIds();
-        List<Long> orgIds = dto.getOrgIds();
-        List<Long> areaIds = dto.getAreaIds();
-
-        // 筛选出与A开头的id
+        // 筛选出与A开头 应用
         List<Long> appIdList = new ArrayList<>();
         appIdList.addAll(getAppIds(appIds));
         appIdList.addAll(getAppIds(configIds));
         appIdList.addAll(getAppIds(devopsIds));
+        if (CollUtil.isNotEmpty(appIdList)) {
+            for (Long appId : appIdList) {
+                roleInfoMapper.insertRoleApp(roleId, appId);
+            }
+        }
 
-        // 筛选出与M开头的id
+        // 筛选出与M开头 菜单
         List<Long> menuIdList = new ArrayList<>();
         menuIdList.addAll(getMenuIds(appIds));
         menuIdList.addAll(getMenuIds(configIds));
         menuIdList.addAll(getMenuIds(devopsIds));
-        // 筛选出与U开头的id
+        if (CollUtil.isNotEmpty(menuIdList)) {
+            for (Long menuId : menuIdList) {
+                roleInfoMapper.insertRoleMenu(roleId, menuId);
+            }
+        }
+        // 筛选出与U开头 接口
         List<Long> apiIdList = new ArrayList<>();
         apiIdList.addAll(getApiIds(appIds));
         apiIdList.addAll(getApiIds(configIds));
         apiIdList.addAll(getApiIds(devopsIds));
-
-        if (CollUtil.isNotEmpty(appIdList)) {
-            List<BatchDTO> batchAppIdList = new ArrayList<>();
-            for (Long appId : appIdList) {
-                // roleInfoMapper.insertRoleApp(roleId, appId);
-                BatchDTO batchDTO = new BatchDTO();
-                batchDTO.setRoleId(roleId);
-                batchDTO.setObjId(appId);
-                batchAppIdList.add(batchDTO);
-            }
-            roleInfoMapper.batchInsertRoleApp(batchAppIdList);
-        }
-
-        if (CollUtil.isNotEmpty(menuIdList)) {
-            List<BatchDTO> batchMenuIdList = new ArrayList<>();
-            for (Long menuId : menuIdList) {
-                // roleInfoMapper.insertRoleMenu(roleId, menuId);
-                BatchDTO batchDTO = new BatchDTO();
-                batchDTO.setRoleId(roleId);
-                batchDTO.setObjId(menuId);
-                batchMenuIdList.add(batchDTO);
-            }
-            roleInfoMapper.batchInsertRoleMenu(batchMenuIdList);
-        }
-
         if (CollUtil.isNotEmpty(apiIdList)) {
-            List<BatchDTO> batchApiIdList = new ArrayList<>();
             for (Long apiId : apiIdList) {
-                // roleInfoMapper.insertRoleApi(roleId, apiId);
-                BatchDTO batchDTO = new BatchDTO();
-                batchDTO.setRoleId(roleId);
-                batchDTO.setObjId(apiId);
-                batchApiIdList.add(batchDTO);
+                roleInfoMapper.insertRoleApi(roleId, apiId);
             }
-            roleInfoMapper.batchInsertRoleApi(batchApiIdList);
         }
 
+        List<Long> orgIds = dto.getOrgIds();
         if (CollUtil.isNotEmpty(orgIds)) {
-            List<BatchDTO> batchOrgIdList = new ArrayList<>();
             for (Long orgId : orgIds) {
-                // roleInfoMapper.insertRoleOrg(roleId, orgId);
-                BatchDTO batchDTO = new BatchDTO();
-                batchDTO.setRoleId(roleId);
-                batchDTO.setObjId(orgId);
-                batchOrgIdList.add(batchDTO);
+                roleInfoMapper.insertRoleOrg(roleId, orgId);
             }
-            roleInfoMapper.batchInsertRoleOrg(batchOrgIdList);
         }
 
+        List<Long> areaIds = dto.getAreaIds();
         if (CollUtil.isNotEmpty(areaIds)) {
-            List<BatchDTO> batchAreaIdList = new ArrayList<>();
             for (Long areaId : areaIds) {
-                // roleInfoMapper.insertRoleArea(roleId, areaId);
-                BatchDTO batchDTO = new BatchDTO();
-                batchDTO.setRoleId(roleId);
-                batchDTO.setObjId(areaId);
-                batchAreaIdList.add(batchDTO);
+                roleInfoMapper.insertRoleArea(roleId, areaId);
             }
-            roleInfoMapper.batchInsertRoleArea(batchAreaIdList);
         }
 
 
