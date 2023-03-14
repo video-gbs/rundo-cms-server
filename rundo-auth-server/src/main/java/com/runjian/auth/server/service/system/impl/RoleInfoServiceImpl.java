@@ -376,40 +376,45 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
 
     @Override
     public RoleDetailVO getRoleDetailById(Long id) {
+        // 返回实体
+        RoleDetailVO roleDetailVO = new RoleDetailVO();
+
+        // 查询角色基本信息
         RoleInfo roleInfo = roleInfoMapper.selectById(id);
+        roleDetailVO.setId(roleInfo.getId());
+        roleDetailVO.setRoleName(roleInfo.getRoleName());
+        roleDetailVO.setRoleDesc(roleInfo.getRoleDesc());
+
         // 查询该角色已授权的应用列表
         List<AppInfo> appInfoList = roleInfoMapper.selectAppByRoleCode(roleInfo.getRoleCode());
         // 查询该角色已授权的菜单列表
         List<MenuInfo> menuInfoList = roleInfoMapper.selectMenuByRoleCode(roleInfo.getRoleCode());
         // 查询该角色已授权的接口列表
         List<ApiInfo> apiInfoList = roleInfoMapper.selectApiInfoByRoleCode(roleInfo.getRoleCode());
+
+        // 应用类
+        List<String> appIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 1);
+        appIds = appIds.stream().distinct().collect(Collectors.toList());
+        roleDetailVO.setAppIds(appIds);
+        // 配置类
+        List<String> configIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 2);
+        configIds = configIds.stream().distinct().collect(Collectors.toList());
+        roleDetailVO.setConfigIds(configIds);
+        // 运维类
+        List<String> devopsIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 3);
+        devopsIds = devopsIds.stream().distinct().collect(Collectors.toList());
+        roleDetailVO.setDevopsIds(devopsIds);
+
         // 查询该角色已授权的部门列表
         List<OrgInfo> orgList = roleInfoMapper.selectOrgInfoByRoleCode(roleInfo.getRoleCode());
         List<String> orgIds = orgList.stream().map(item -> item.getId().toString()).collect(Collectors.toList());
         orgIds = orgIds.stream().distinct().collect(Collectors.toList());
+        roleDetailVO.setOrgIds(orgIds);
         // 查询该角色已授权的安防区域
         List<VideoArea> areaList = roleInfoMapper.selectVideoAreaByRoleCode(roleInfo.getRoleCode());
         List<String> areaIds = areaList.stream().map(item -> item.getId().toString()).collect(Collectors.toList());
         areaIds = areaIds.stream().distinct().collect(Collectors.toList());
-        // 查询该角色已授权的通道
-        RoleDetailVO roleDetailVO = new RoleDetailVO();
-        roleDetailVO.setId(roleInfo.getId());
-        roleDetailVO.setRoleName(roleInfo.getRoleName());
-        roleDetailVO.setRoleDesc(roleInfo.getRoleDesc());
-        List<String> appIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 1);
-        appIds = appIds.stream().distinct().collect(Collectors.toList());
-        roleDetailVO.setAppIds(appIds);
-        List<String> configIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 2);
-        configIds = configIds.stream().distinct().collect(Collectors.toList());
-        roleDetailVO.setConfigIds(configIds);
-        List<String> devopsIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 3);
-        devopsIds = devopsIds.stream().distinct().collect(Collectors.toList());
-        roleDetailVO.setDevopsIds(devopsIds);
-        roleDetailVO.setOrgIds(orgIds);
         roleDetailVO.setAreaIds(areaIds);
-        // roleDetailVO.setChannelIds(null);
-        // roleDetailVO.setOperationIds(null);
-
         return roleDetailVO;
     }
 
