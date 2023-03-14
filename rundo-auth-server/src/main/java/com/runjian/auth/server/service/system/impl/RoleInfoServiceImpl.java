@@ -2,6 +2,7 @@ package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.common.BatchDTO;
@@ -131,6 +132,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         appIdList.addAll(getAppIds(dto.getAppIds()));
         appIdList.addAll(getAppIds(dto.getConfigIds()));
         appIdList.addAll(getAppIds(dto.getDevopsIds()));
+        log.info(" 筛选出与A开头的id {}", JSONUtil.toJsonStr(appIdList));
         if (CollUtil.isEmpty(oldAppIdList) && CollUtil.isNotEmpty(appIdList)) {
             // 原始授权应用为空，本次为新增
             for (Long appId : appIdList) {
@@ -164,6 +166,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         menuIdList.addAll(getMenuIds(dto.getAppIds()));
         menuIdList.addAll(getMenuIds(dto.getConfigIds()));
         menuIdList.addAll(getMenuIds(dto.getDevopsIds()));
+        log.info(" 筛选出与M开头的id {}", JSONUtil.toJsonStr(menuIdList));
         if (CollUtil.isEmpty(oldMenuIdList) && CollUtil.isNotEmpty(menuIdList)) {
             // 原始授权菜单为空，本次为新增
             for (Long menuId : menuIdList) {
@@ -197,6 +200,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         apiIdList.addAll(getApiIds(dto.getAppIds()));
         apiIdList.addAll(getApiIds(dto.getConfigIds()));
         apiIdList.addAll(getApiIds(dto.getDevopsIds()));
+        log.info(" 筛选出与U开头的id {}", JSONUtil.toJsonStr(apiIdList));
         if (CollUtil.isEmpty(oldApiIdList) && CollUtil.isNotEmpty(apiIdList)) {
             // 原始授权接口为空，本次为新增
             for (Long apiId : apiIdList) {
