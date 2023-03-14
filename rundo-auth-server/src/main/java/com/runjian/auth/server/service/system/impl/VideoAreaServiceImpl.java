@@ -151,6 +151,8 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
             queryWrapper.likeRight(VideoArea::getAreaPids, videoArea.getAreaPids() + "[" + videoArea.getId() + "]");
             videoAreaList = videoAraeMapper.selectList(queryWrapper);
             videoAreaList.add(videoArea);
+        }else {
+            videoAreaList = videoAraeMapper.selectList(queryWrapper);
         }
         return videoAreaList.stream().map(
                 item -> {
