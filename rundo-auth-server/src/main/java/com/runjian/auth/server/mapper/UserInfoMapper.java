@@ -32,11 +32,13 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
 
     Page<ListSysUserInfoVO> MySelectPage(PageSysUserInfoDTO page);
 
+    Page<ListSysUserInfoVO> MySelectPageByContain(@Param("page") PageSysUserInfoDTO page, @Param("orgIds") List<Long> orgIds);
+
     OrgInfoVO selectOrgInfoByUserId(@Param("userId") Long userId);
 
     RelationSysUserInfoVO selectRelationSysUserInfoById(@Param("userId") Long userId);
 
     Page<RelationSysUserInfoVO> relationSysUserInfoPage(PageRelationSysUserInfoDTO page);
 
-    List<String> selectAreaNameByUserId(@Param("id")Long id);
+    List<String> selectAreaNameByUserId(@Param("id") Long id);
 }

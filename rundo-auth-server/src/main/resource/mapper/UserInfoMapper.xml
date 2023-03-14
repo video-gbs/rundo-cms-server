@@ -142,4 +142,37 @@
             </if>
         </where>
     </select>
+
+    <select id="MySelectPageByContain" resultType="com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO">
+        SELECT user.id,
+        user.user_account,
+        user.user_name,
+        org.org_name_str AS org_name,
+        GROUP_CONCAT(role.role_name ORDER BY user.id SEPARATOR '/') AS role_name,
+        user.job_no,
+        user.status,
+        user.created_time,
+        user.updated_time
+        FROM user_info user
+        LEFT JOIN org_info org ON org.id = user.org_id
+        LEFT JOIN role_user ru ON ru.user_id = user.id
+        LEFT JOIN role_info role ON role.id = ru.role_id
+        <where>
+            user.delete_flag = 0
+            AND org.id IN
+            <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
+                #{orgId}
+            </foreach>
+            <if test="page.userAccount != null and page.userAccount != ''">
+                <bind name="patternUserAccount" value="'%' + page.userAccount + '%'"/>
+                AND user.user_account LIKE #{patternUserAccount}
+            </if>
+            <if test="page.userName != null and page.userName != ''">
+                <bind name="patternUserName" value="'%' + page.userName + '%'"/>
+                AND user.user_name LIKE #{patternUserName}
+            </if>
+        </where>
+        GROUP BY user.id
+        ORDER BY user.created_time DESC
+    </select>
 </mapper>

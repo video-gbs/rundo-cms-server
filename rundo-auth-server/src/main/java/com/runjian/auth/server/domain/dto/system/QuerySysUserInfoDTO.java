@@ -25,6 +25,9 @@ public class QuerySysUserInfoDTO extends CommonPage {
     @ApiModelProperty("部门ID")
     private Long orgId;
 
+    @ApiModelProperty("是否包含下级：1包含，0不包含")
+    private Integer contain;
+
     @ApiModelProperty("用户账户")
     private String userAccount;
 
