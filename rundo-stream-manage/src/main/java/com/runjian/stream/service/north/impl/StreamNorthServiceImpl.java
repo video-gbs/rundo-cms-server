@@ -84,7 +84,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
                 }
             }
         } else {
-            List<StreamInfo> streamInfoList = streamMapper.selectByChannelId(channelId);
+//            List<StreamInfo> streamInfoList = streamMapper.selectByChannelId(channelId);
 //            if (streamInfoList.size() >= CHANNEL_MAX_PLAY_NUM) {
 //                throw new BusinessException(BusinessErrorEnums.VALID_REPETITIVE_OPERATION_ERROR, String.format("设备%s已达到并发播放数上限,请稍后重试", channelId));
 //            }
