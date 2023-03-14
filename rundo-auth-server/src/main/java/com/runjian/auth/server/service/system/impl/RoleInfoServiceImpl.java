@@ -149,48 +149,29 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
 
     @Override
     public void modifyById(UpdateSysRoleInfoDTO dto) {
-        // 1 查取原始角色
+        // 1 查取原始角色基础信息
         RoleInfo roleInfo = roleInfoMapper.selectById(dto.getId());
         roleInfo.setRoleName(dto.getRoleName());
         roleInfo.setRoleDesc(dto.getRoleDesc());
         roleInfoMapper.updateById(roleInfo);
-        // 获取原始已授权的ID备用
+
+        /**
+         * 应用
+         */
+        // 获取原始已授权应用ID
         List<Long> oldAppIdList = roleInfoMapper.findAppIdList(dto.getId());
-        List<Long> oldMenuIdList = roleInfoMapper.findMenuIdList(dto.getId());
-        List<Long> oldApiIdList = roleInfoMapper.findApiIdList(dto.getId());
-        List<Long> oldOrgIdList = roleInfoMapper.findOrgIdList(dto.getId());
-        List<Long> oldAreaIdList = roleInfoMapper.findAreaIdList(dto.getId());
-        // 处理传输过来的ID
         // 筛选出与A开头的id 应用
         List<Long> appIdList = new ArrayList<>();
         appIdList.addAll(getAppIds(dto.getAppIds()));
         appIdList.addAll(getAppIds(dto.getConfigIds()));
         appIdList.addAll(getAppIds(dto.getDevopsIds()));
-        // 筛选出与M开头的id 菜单
-        List<Long> menuIdList = new ArrayList<>();
-        menuIdList.addAll(getMenuIds(dto.getAppIds()));
-        menuIdList.addAll(getMenuIds(dto.getConfigIds()));
-        menuIdList.addAll(getMenuIds(dto.getDevopsIds()));
-        // 筛选出与U开头的id 接口
-        List<Long> apiIdList = new ArrayList<>();
-        apiIdList.addAll(getApiIds(dto.getAppIds()));
-        apiIdList.addAll(getApiIds(dto.getConfigIds()));
-        apiIdList.addAll(getApiIds(dto.getDevopsIds()));
-        // 部门
-        List<Long> orgIdList = dto.getOrgIds();
-        // 区域
-        List<Long> areaIdList = dto.getAreaIds();
-
-        /**
-         * 应用
-         */
         if (CollUtil.isEmpty(oldAppIdList) && CollUtil.isNotEmpty(appIdList)) {
             // 原始授权应用为空，本次为新增
             for (Long appId : appIdList) {
                 roleInfoMapper.insertRoleApp(dto.getId(), appId);
             }
         }
-        if (CollUtil.isEmpty(apiIdList)) {
+        if (CollUtil.isEmpty(appIdList)) {
             // 如果提交的应用为空，则删除所有的角色关联应用
             roleInfoMapper.removeRoleApp(dto.getId(), null);
         }
@@ -210,6 +191,13 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         /**
          * 菜单
          */
+        // 获取原始已授权 菜单ID
+        List<Long> oldMenuIdList = roleInfoMapper.findMenuIdList(dto.getId());
+        // 筛选出与M开头的id 菜单
+        List<Long> menuIdList = new ArrayList<>();
+        menuIdList.addAll(getMenuIds(dto.getAppIds()));
+        menuIdList.addAll(getMenuIds(dto.getConfigIds()));
+        menuIdList.addAll(getMenuIds(dto.getDevopsIds()));
         if (CollUtil.isEmpty(oldMenuIdList) && CollUtil.isNotEmpty(menuIdList)) {
             // 原始授权菜单为空，本次为新增
             for (Long menuId : menuIdList) {
@@ -236,6 +224,13 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         /**
          * 接口
          */
+        // 获取原始已授权 接口ID
+        List<Long> oldApiIdList = roleInfoMapper.findApiIdList(dto.getId());
+        // 筛选出与U开头的id 接口
+        List<Long> apiIdList = new ArrayList<>();
+        apiIdList.addAll(getApiIds(dto.getAppIds()));
+        apiIdList.addAll(getApiIds(dto.getConfigIds()));
+        apiIdList.addAll(getApiIds(dto.getDevopsIds()));
         if (CollUtil.isEmpty(oldApiIdList) && CollUtil.isNotEmpty(apiIdList)) {
             // 原始授权接口为空，本次为新增
             for (Long apiId : apiIdList) {
@@ -262,6 +257,9 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         /**
          * 组织
          */
+        // 获取原始已授权组织ID
+        List<Long> oldOrgIdList = roleInfoMapper.findOrgIdList(dto.getId());
+        List<Long> orgIdList = dto.getOrgIds();
         if (CollUtil.isEmpty(oldOrgIdList) && CollUtil.isNotEmpty(orgIdList)) {
             // 原始授权组织为空，本次为新增
             for (Long orgId : orgIdList) {
@@ -288,8 +286,11 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         /**
          * 区域
          */
+        // 获取原始已授权区域的ID
+        List<Long> oldAreaIdList = roleInfoMapper.findAreaIdList(dto.getId());
+        List<Long> areaIdList = dto.getAreaIds();
         if (CollUtil.isEmpty(oldAreaIdList) && CollUtil.isNotEmpty(areaIdList)) {
-            // 原始授权区域为空，本次为新增
+            // 原始授权区域为空且本次参数不为空，本次为新增
             for (Long areaId : areaIdList) {
                 roleInfoMapper.insertRoleArea(dto.getId(), areaId);
             }
