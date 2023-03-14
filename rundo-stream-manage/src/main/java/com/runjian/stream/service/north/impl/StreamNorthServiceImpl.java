@@ -46,7 +46,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     /**
      * 通道最大播放数
      */
-    private static final int CHANNEL_MAX_PLAY_NUM = 3;
+//    private static final int CHANNEL_MAX_PLAY_NUM = 3;
 
     /**
      * 播放未响应超时时间
@@ -85,9 +85,9 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             }
         } else {
             List<StreamInfo> streamInfoList = streamMapper.selectByChannelId(channelId);
-            if (streamInfoList.size() >= CHANNEL_MAX_PLAY_NUM) {
-                throw new BusinessException(BusinessErrorEnums.VALID_REPETITIVE_OPERATION_ERROR, String.format("设备%s已达到并发播放数上限,请稍后重试", channelId));
-            }
+//            if (streamInfoList.size() >= CHANNEL_MAX_PLAY_NUM) {
+//                throw new BusinessException(BusinessErrorEnums.VALID_REPETITIVE_OPERATION_ERROR, String.format("设备%s已达到并发播放数上限,请稍后重试", channelId));
+//            }
             String streamId = PlayType.getMsgByCode(playType) + "_" + channelId + "_" + System.currentTimeMillis() + new Random().nextInt(100);
             streamInfo = saveStream(gatewayId, channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
             // 设置“准备中”状态的超时时间
