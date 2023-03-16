@@ -83,7 +83,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         // 1.判断是否为根节点
         OrgInfo orgInfo = orgInfoMapper.selectById(id);
         if (orgInfo.getOrgPid().equals(0L)) {
-            return CommonResponse.success(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR);
+            return CommonResponse.failure(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR);
         }
         // 2.查取该节点的所有子代节点
         LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
@@ -98,14 +98,14 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
             }
         }
         if (CollUtil.isNotEmpty(orgInfoChild)) {
-            return CommonResponse.success(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION2);
+            return CommonResponse.failure(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION2);
         }
         // 4.判断该部门是否有员工、
         LambdaQueryWrapper<UserInfo> userInfoQueryWrapper = new LambdaQueryWrapper<>();
         userInfoQueryWrapper.eq(UserInfo::getOrgId, id);
         List<UserInfo> userInfoList = userInfoMapper.selectList(userInfoQueryWrapper);
         if (CollUtil.isNotEmpty(userInfoList)) {
-            return CommonResponse.success(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION);
+            return CommonResponse.failure(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION);
         }
         // 4.删除目标节点
         orgInfoMapper.deleteById(id);

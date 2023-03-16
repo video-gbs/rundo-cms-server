@@ -87,7 +87,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         // 1.判断是否为根节点
         VideoArea videoArea = videoAraeMapper.selectById(id);
         if (videoArea.getAreaPid().equals(0L)) {
-            return CommonResponse.success(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR);
+            return CommonResponse.failure(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR);
         }
         // 2.确认当前需要删除的安防区域有无下级安防区域
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
@@ -102,14 +102,14 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
             }
         }
         if (CollUtil.isNotEmpty(videoAreaChildren)) {
-            return CommonResponse.success(BusinessErrorEnums.VALID_ILLEGAL_AREA_OPERATION2);
+            return CommonResponse.failure(BusinessErrorEnums.VALID_ILLEGAL_AREA_OPERATION2);
         }
         // 3.调用远端确认是否可以删除
         CommonResponse<Boolean> commonResponse = expansionClient.videoAreaBindCheck(id);
         if (!commonResponse.getData()) {
             return CommonResponse.success(videoAraeMapper.deleteById(id));
         } else {
-            return CommonResponse.success(BusinessErrorEnums.VALID_ILLEGAL_AREA_OPERATION);
+            return CommonResponse.failure(BusinessErrorEnums.VALID_ILLEGAL_AREA_OPERATION);
         }
     }
 
