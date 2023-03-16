@@ -19,6 +19,7 @@ import com.runjian.auth.server.service.system.OrgInfoService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
+import com.runjian.common.config.response.CommonResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -78,11 +79,11 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     }
 
     @Override
-    public String erasureById(Long id) {
+    public CommonResponse erasureById(Long id) {
         // 1.判断是否为根节点
         OrgInfo orgInfo = orgInfoMapper.selectById(id);
         if (orgInfo.getOrgPid().equals(0L)) {
-            throw new BusinessException(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR);
+            return CommonResponse.success(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR);
         }
         // 2.查取该节点的所有子代节点
         LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
@@ -97,18 +98,18 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
             }
         }
         if (CollUtil.isNotEmpty(orgInfoChild)) {
-            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION2);
+            return CommonResponse.success(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION2);
         }
         // 4.判断该部门是否有员工、
         LambdaQueryWrapper<UserInfo> userInfoQueryWrapper = new LambdaQueryWrapper<>();
         userInfoQueryWrapper.eq(UserInfo::getOrgId, id);
         List<UserInfo> userInfoList = userInfoMapper.selectList(userInfoQueryWrapper);
         if (CollUtil.isNotEmpty(userInfoList)) {
-            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION);
+            return CommonResponse.success(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION);
         }
         // 4.删除目标节点
         orgInfoMapper.deleteById(id);
-        return "删除组织，操作成功!";
+        return CommonResponse.success(orgInfoMapper.deleteById(id));
     }
 
     @Override

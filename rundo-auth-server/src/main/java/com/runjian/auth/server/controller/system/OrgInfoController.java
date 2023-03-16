@@ -43,8 +43,8 @@ public class OrgInfoController {
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除部门")
-    public CommonResponse<String> delete(@PathVariable Long id) {
-        return CommonResponse.success(orgInfoService.erasureById(id));
+    public CommonResponse<?> delete(@PathVariable Long id) {
+        return orgInfoService.erasureById(id);
     }
 
     @PostMapping("/batchDelete")

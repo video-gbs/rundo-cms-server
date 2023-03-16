@@ -43,8 +43,8 @@ public class VideoAreaController {
 
     @PostMapping("/remove/{id}")
     @ApiOperation("删除安防区域")
-    public CommonResponse<String> delete(@PathVariable Long id) {
-        return CommonResponse.success(videoAreaSaervice.erasureById(id));
+    public CommonResponse<?> delete(@PathVariable Long id) {
+        return videoAreaSaervice.erasureById(id);
     }
 
     @PostMapping("/batchDelete")

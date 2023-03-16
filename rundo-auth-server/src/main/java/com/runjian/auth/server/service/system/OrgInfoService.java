@@ -8,6 +8,7 @@ import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
 import com.runjian.auth.server.domain.entity.OrgInfo;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
+import com.runjian.common.config.response.CommonResponse;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public interface OrgInfoService extends IService<OrgInfo> {
 
     IPage<OrgInfo> findByPage(Integer pageNum, Integer pageSize);
 
-    String erasureById(Long id);
+    CommonResponse erasureById(Long id);
 
     void modifyById(UpdateSysOrgDTO dto);
 
