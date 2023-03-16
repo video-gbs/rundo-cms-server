@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -9,9 +10,11 @@ import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
 import com.runjian.auth.server.domain.entity.OrgInfo;
+import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.mapper.OrgInfoMapper;
+import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.system.OrgInfoService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
@@ -37,6 +40,9 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
 
     @Autowired
     private OrgInfoMapper orgInfoMapper;
+
+    @Autowired
+    private UserInfoMapper userInfoMapper;
 
     @Override
     public SysOrgVO save(AddSysOrgDTO dto) {
@@ -76,15 +82,26 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         // 1.判断是否为根节点
         OrgInfo orgInfo = orgInfoMapper.selectById(id);
         if (orgInfo.getOrgPid().equals(0L)) {
-            throw new BusinessException("系统内置根节点不能删除");
+            throw new BusinessException(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR, "系统内置根节点不能删除");
         }
         // 2.查取该节点的所有子代节点
         LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.likeRight(OrgInfo::getOrgPids, orgInfo.getOrgPids() + "[" + orgInfo.getId() + "]");
         List<OrgInfo> orgInfoChild = orgInfoMapper.selectList(queryWrapper);
-        // 3.删除子代节点
+        // 3.剔除自己之后确认是否还存在子节点
         for (OrgInfo org : orgInfoChild) {
-            orgInfoMapper.deleteById(org.getId());
+            org.getId().equals(orgInfo.getId());
+            orgInfoChild.remove(org);
+        }
+        if (CollUtil.isNotEmpty(orgInfoChild)) {
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "不能删除含有下级节点的部门!");
+        }
+        // 4.判断该部门是否有员工、
+        LambdaQueryWrapper<UserInfo> userInfoQueryWrapper = new LambdaQueryWrapper<>();
+        userInfoQueryWrapper.eq(UserInfo::getOrgId, id);
+        List<UserInfo> userInfoList = userInfoMapper.selectList(userInfoQueryWrapper);
+        if (CollUtil.isNotEmpty(userInfoList)){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "不能删除含有员工的部门!");
         }
         // 4.删除目标节点
         orgInfoMapper.deleteById(id);
