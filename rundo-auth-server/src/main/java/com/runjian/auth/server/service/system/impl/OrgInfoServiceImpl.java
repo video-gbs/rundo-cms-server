@@ -82,7 +82,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         // 1.判断是否为根节点
         OrgInfo orgInfo = orgInfoMapper.selectById(id);
         if (orgInfo.getOrgPid().equals(0L)) {
-            throw new BusinessException(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR, "系统内置根节点不能删除");
+            throw new BusinessException(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR);
         }
         // 2.查取该节点的所有子代节点
         LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
@@ -97,14 +97,14 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
             }
         }
         if (CollUtil.isNotEmpty(orgInfoChild)) {
-            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "不能删除含有下级节点的部门!");
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION2);
         }
         // 4.判断该部门是否有员工、
         LambdaQueryWrapper<UserInfo> userInfoQueryWrapper = new LambdaQueryWrapper<>();
         userInfoQueryWrapper.eq(UserInfo::getOrgId, id);
         List<UserInfo> userInfoList = userInfoMapper.selectList(userInfoQueryWrapper);
         if (CollUtil.isNotEmpty(userInfoList)) {
-            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "不能删除含有员工的部门!");
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION);
         }
         // 4.删除目标节点
         orgInfoMapper.deleteById(id);

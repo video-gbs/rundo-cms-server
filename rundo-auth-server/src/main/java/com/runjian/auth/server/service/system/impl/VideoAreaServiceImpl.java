@@ -87,7 +87,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         // 1.判断是否为根节点
         VideoArea videoArea = videoAraeMapper.selectById(id);
         if (videoArea.getAreaPid().equals(0L)) {
-            throw new BusinessException(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR, "系统内置根节点不能删除");
+            throw new BusinessException(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR);
         }
         // 2.确认当前需要删除的安防区域有无下级安防区域
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
@@ -102,7 +102,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
             }
         }
         if (CollUtil.isNotEmpty(videoAreaChildren)) {
-            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "不能删除含有下级节点的安防区域!");
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_AREA_OPERATION2);
         }
         // 3.调用远端确认是否可以删除
         CommonResponse<Boolean> commonResponse = expansionClient.videoAreaBindCheck(id);
@@ -110,7 +110,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
             videoAraeMapper.deleteById(id);
             return "删除安防区域，操作成功";
         } else {
-            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "不能删除已绑定设备的安防区域!");
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_AREA_OPERATION);
         }
     }
 
