@@ -94,9 +94,12 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         queryWrapper.likeRight(VideoArea::getAreaPids, "[" + videoArea.getAreaPid() + "]");
         List<VideoArea> videoAreaChildren = videoAraeMapper.selectList(queryWrapper);
         // 3.剔除自己之后确认是否还存在子节点
-        for (VideoArea area : videoAreaChildren) {
-            area.getId().equals(videoArea.getId());
-            videoAreaChildren.remove(area);
+        int size = videoAreaChildren.size();
+        for (int i = size - 1; i >= 0; i--) {
+            VideoArea area = videoAreaChildren.get(i);
+            if (area.getId().equals(videoArea.getId())){
+                videoAreaChildren.remove(area);
+            }
         }
         if (CollUtil.isNotEmpty(videoAreaChildren)) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "不能删除含有下级节点的安防区域!");

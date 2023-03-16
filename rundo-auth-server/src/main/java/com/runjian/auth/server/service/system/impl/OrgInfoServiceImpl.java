@@ -89,9 +89,12 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         queryWrapper.likeRight(OrgInfo::getOrgPids, orgInfo.getOrgPids() + "[" + orgInfo.getId() + "]");
         List<OrgInfo> orgInfoChild = orgInfoMapper.selectList(queryWrapper);
         // 3.剔除自己之后确认是否还存在子节点
-        for (OrgInfo org : orgInfoChild) {
-            org.getId().equals(orgInfo.getId());
-            orgInfoChild.remove(org);
+        int size = orgInfoChild.size();
+        for (int i = size - 1; i >= 0; i--) {
+            OrgInfo org = orgInfoChild.get(i);
+            if (org.getId().equals(orgInfo.getId())){
+                orgInfoChild.remove(org);
+            }
         }
         if (CollUtil.isNotEmpty(orgInfoChild)) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "不能删除含有下级节点的部门!");
@@ -100,7 +103,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         LambdaQueryWrapper<UserInfo> userInfoQueryWrapper = new LambdaQueryWrapper<>();
         userInfoQueryWrapper.eq(UserInfo::getOrgId, id);
         List<UserInfo> userInfoList = userInfoMapper.selectList(userInfoQueryWrapper);
-        if (CollUtil.isNotEmpty(userInfoList)){
+        if (CollUtil.isNotEmpty(userInfoList)) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "不能删除含有员工的部门!");
         }
         // 4.删除目标节点
