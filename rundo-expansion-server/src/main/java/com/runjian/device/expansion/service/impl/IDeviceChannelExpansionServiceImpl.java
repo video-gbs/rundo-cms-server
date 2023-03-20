@@ -172,7 +172,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
             CommonResponse<List<VideoAreaResp>> videoAraeList = authServerApi.getVideoAraeList(deviceChannelExpansionListReq.getVideoAreaId());
             if(CollectionUtils.isEmpty(videoAraeList.getData())){
-                throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH);
+                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS);
 
             }
             videoAreaRespList = videoAraeList.getData();
@@ -183,7 +183,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             }
             CommonResponse<VideoAreaResp> videoAraeInfo = authServerApi.getVideoAraeInfo(deviceChannelExpansionListReq.getVideoAreaId());
             if(ObjectUtils.isEmpty(videoAraeInfo.getData())){
-                throw new BusinessException(BusinessErrorEnums.USER_NO_AUTH);
+                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS);
 
             }
             videoAreaData = videoAraeInfo.getData();
