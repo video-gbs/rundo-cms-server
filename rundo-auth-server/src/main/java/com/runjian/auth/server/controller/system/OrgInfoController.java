@@ -47,12 +47,6 @@ public class OrgInfoController {
         return orgInfoService.erasureById(id);
     }
 
-    @PostMapping("/batchDelete")
-    @ApiOperation("批量删除部门")
-    public CommonResponse<String> batchDelete(@RequestBody List<Long> ids) {
-        return CommonResponse.success(orgInfoService.erasureBatch(ids));
-    }
-
     @PostMapping("/update")
     @ApiOperation("编辑部门信息")
     public CommonResponse<?> update(@RequestBody UpdateSysOrgDTO dto) {

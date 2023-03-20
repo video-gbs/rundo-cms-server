@@ -1,6 +1,5 @@
 package com.runjian.auth.server.controller.login;
 
-import com.runjian.auth.server.domain.vo.system.HomeVO;
 import com.runjian.auth.server.service.login.HomeSevice;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
@@ -29,7 +28,7 @@ public class IndexController {
 
     @GetMapping("/index")
     @ApiOperation("获取应用分类")
-    public CommonResponse<HomeVO> index(){
-        return CommonResponse.success(homeSevice.getIndex());
+    public CommonResponse index(){
+        return homeSevice.getIndex();
     }
 }

@@ -117,6 +117,9 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         OrgInfo orgInfo = new OrgInfo();
         BeanUtils.copyProperties(dto, orgInfo);
         orgInfoMapper.updateById(orgInfo);
+
+        // 更新子节点信息
+
     }
 
     @Override
@@ -185,28 +188,6 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
                 updateChildren(org, childrenList);
             }
         }
-    }
-
-    @Override
-    public String erasureBatch(List<Long> ids) {
-        // 1.确定节点ID不为空
-        if (ids.size() <= 0) {
-            return "没有选定删除目标";
-        }
-        // 2.检索删除的节点中是否包含根节点
-        List<OrgInfo> orgInfoList = orgInfoMapper.selectBatchIds(ids);
-        boolean flag = false;
-        for (OrgInfo orgInfo : orgInfoList) {
-            if (orgInfo.getOrgPid().equals(0L)) {
-                flag = true;
-            }
-        }
-        if (flag) {
-            return "删除目标中包含系统内置根节点";
-        }
-        orgInfoMapper.deleteBatchIds(ids);
-        return "删除组织，操作成功!";
-
     }
 
     @Override

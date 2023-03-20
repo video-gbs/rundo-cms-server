@@ -1,6 +1,6 @@
 package com.runjian.auth.server.service.login;
 
-import com.runjian.auth.server.domain.vo.system.HomeVO;
+import com.runjian.common.config.response.CommonResponse;
 
 /**
  * @author Jiang4Yu
@@ -10,5 +10,5 @@ import com.runjian.auth.server.domain.vo.system.HomeVO;
  * @date 2023-02-08 周三 11:51
  */
 public interface HomeSevice {
-    HomeVO getIndex();
+    CommonResponse getIndex();
 }

@@ -38,5 +38,4 @@ public interface OrgInfoService extends IService<OrgInfo> {
 
     void moveSysOrg(MoveSysOrgDTO dto);
 
-    String erasureBatch(List<Long> ids);
 }

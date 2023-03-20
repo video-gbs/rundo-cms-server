@@ -24,7 +24,8 @@
         FROM menu_info smi
                  LEFT JOIN role_menu srm ON srm.menu_id = smi.id
                  LEFT JOIN role_info sri ON sri.id = srm.role_id
-        WHERE sri.role_code = #{roleCode}
+        WHERE sri.status = 0
+          AND sri.role_code = #{roleCode}
     </select>
 
     <select id="selectApiUrlByRoleCode" resultType="java.lang.String">
