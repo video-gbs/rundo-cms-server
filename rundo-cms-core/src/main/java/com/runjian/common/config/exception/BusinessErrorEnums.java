@@ -41,7 +41,7 @@ public enum BusinessErrorEnums {
     VALID_ANNOTATION_PARAMETER_ERROR(500, 10009, "注解参数错误"),
 
     VALID_ILLEGAL_OPERATION(400, 10010, "非法的操作"),
-    VALID_ILLEGAL_ORG_OPERATION(400, 10011, "部门下还有用户，不能删除"),
+    VALID_ILLEGAL_ORG_OPERATION(400, 10011, "部门下已关联用户，请先解绑"),
     VALID_ILLEGAL_ORG_OPERATION2(400, 10012, "部门含有下级节点，不能删除"),
 
     VALID_ILLEGAL_AREA_OPERATION(400, 10011, "区域下还有资源，无法删除区域"),
