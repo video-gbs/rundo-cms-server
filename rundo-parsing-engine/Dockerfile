@@ -13,4 +13,4 @@ WORKDIR /opt/parsing-engine
 
 
 
-ENTRYPOINT ["/bin/bash","-c","java ${JAVA_OPTS} -jar /opt/parsing-engine/*.jar  --spring.config.location=/opt/parsing-engine/config/ ${0} ${@}"]
+ENTRYPOINT ["/bin/bash","-c","java ${JAVA_OPTS} -jar /opt/parsing-engine/*.jar"]
