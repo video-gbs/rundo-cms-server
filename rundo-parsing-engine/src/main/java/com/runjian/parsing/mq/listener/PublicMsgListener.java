@@ -117,8 +117,8 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                 // 判断是否是第一次注册
                 if (signInRsp.getIsFirstSignIn()) {
                     // 生成消息通讯队列
-                    rabbitMqConfig.addQueue(mqDefaultProperties.getStreamExchangeId(), key1, 15000);
-                    Queue queue = rabbitMqConfig.addQueue(mqDefaultProperties.getStreamExchangeId(), key2, 15000);
+                    rabbitMqConfig.addQueue(mqDefaultProperties.getGatewayExchangeId(), key1, 15000);
+                    Queue queue = rabbitMqConfig.addQueue(mqDefaultProperties.getGatewayExchangeId(), key2, 15000);
                     // 添加监听队列
                     SimpleMessageListenerContainer dispatch = MqListenerConfig.containerMap.get(MqConstant.GATEWAY_PREFIX);
                     if (Objects.isNull(dispatch)) {
