@@ -11,9 +11,9 @@ services:
     environment:
       TZ: Asia/Shanghai
       SERVER_PORT: 8092
-      PROFILES_ACTIVE: dev
+      PROFILES_ACTIVE: uat
       NACOS_SERVER: 192.168.0.84:8848
-      NACOS_NAMESPACE: test
+      NACOS_NAMESPACE: uat
       NACOS_USERNAME: nacos
       NACOS_GROUP: DEFAULT_GROUP
       NACOS_PASSWORD: rundo@nacos*2023
