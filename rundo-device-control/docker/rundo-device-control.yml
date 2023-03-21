@@ -12,9 +12,9 @@ services:
     environment:
       TZ: Asia/Shanghai
       SERVER_PORT: 8090
-      PROFILES_ACTIVE: test
-      NACOS_SERVER: rundo-nacos:8848
-      NACOS_NAMESPACE: test
+      PROFILES_ACTIVE: uat
+      NACOS_SERVER: 192.168.0.84:8848
+      NACOS_NAMESPACE: uat
       NACOS_USERNAME: nacos
       NACOS_GROUP: DEFAULT_GROUP
       NACOS_PASSWORD: rundo@nacos*2023
@@ -22,10 +22,6 @@ services:
       options:
         max-size: '12m'
         max-file: '10'
-    extra_hosts:
-      - "rundo-mysql:192.168.0.239"
-      - "rundo-redis:192.168.0.239"
-      - "rundo-nacos:192.168.0.84"
     networks:
       - proxynet
 networks:
