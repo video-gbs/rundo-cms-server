@@ -13,4 +13,4 @@ WORKDIR /opt/device-control
 
 
 
-ENTRYPOINT ["/bin/bash","-c","java ${JAVA_OPTS} -jar /opt/device-control/*.jar  --spring.config.location=/opt/device-control/config/ ${0} ${@}"]
+ENTRYPOINT ["/bin/bash","-c","java ${JAVA_OPTS} -jar /opt/device-control/*.jar ${0} ${@}"]
