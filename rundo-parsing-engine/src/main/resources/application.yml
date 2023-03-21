@@ -2,4 +2,4 @@ spring:
   application:
     name: parsing-engine
   profiles:
-    active: ${PROFILES_ACTIVE:dev}
+    active: ${PROFILES_ACTIVE:local}

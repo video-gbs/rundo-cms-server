@@ -164,7 +164,7 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                 rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getPublicSetQueueData().getExchangeId(), mqDefaultProperties.getPublicSetQueueData().getRoutingKey(), mqId, mqResponse, true);
             }
         } catch (Exception ex) {
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "公共信息监听器", "公共信息处理失败", msgBody, ex.getMessage());
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "公共信息监听器", "公共信息处理失败", msgBody, ex);
             ex.printStackTrace();
         } finally {
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), true);
