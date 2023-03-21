@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RundoIdUtil {
     Snowflake snowflake = IdUtil.getSnowflake(1, 1);
+
     public Long nextId() {
         return snowflake.nextId();
     }
