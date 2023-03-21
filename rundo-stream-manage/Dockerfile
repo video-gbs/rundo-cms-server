@@ -13,4 +13,4 @@ WORKDIR /opt/stream-manage
 
 
 
-ENTRYPOINT ["/bin/bash","-c","java ${JAVA_OPTS} -jar /opt/stream-manage/*.jar  --spring.config.location=/opt/stream-manage/config/ ${0} ${@}"]
+ENTRYPOINT ["/bin/bash","-c","java ${JAVA_OPTS} -jar /opt/stream-manage/*.jar"]
