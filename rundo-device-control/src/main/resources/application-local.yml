@@ -1,11 +1,14 @@
 spring:
   cloud:
     nacos:
-      server-addr: ${NACOS_SERVER:rundo-nacos:8848}
+      server-addr: ${NACOS_SERVER:124.71.21.11:8848}
       username: ${NACOS_USERNAME:nacos}
       password: ${NACOS_PASSWORD:rundo@nacos*2023}
       discovery:
         namespace: ${NACOS_NAMESPACE:dev}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+      config:
+        namespace: ${NACOS_NAMESPACE:public}
         group: ${NACOS_GROUP:DEFAULT_GROUP}
   web:
     resources:
