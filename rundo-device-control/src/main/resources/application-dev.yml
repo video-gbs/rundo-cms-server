@@ -10,6 +10,7 @@ spring:
       config:
         namespace: ${NACOS_NAMESPACE:dev}
         group: ${NACOS_GROUP:DEFAULT_GROUP}
+        file-extension: yaml
   config:
     import:
       - optional:nacos:${spring.application.name}-${spring.profiles.active}.yml
