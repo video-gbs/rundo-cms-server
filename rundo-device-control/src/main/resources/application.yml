@@ -1,3 +1,5 @@
 spring:
+  application:
+    name: device-control
   profiles:
     active: ${PROFILES_ACTIVE:dev}
