@@ -13,18 +13,10 @@ services:
       TZ: Asia/Shanghai
       SERVER_PORT: 8090
       PROFILES_ACTIVE: "prod"
-      REDIS_HOST: 124.71.21.11
-      REDIS_PORT: 6379
-      REDIS_DB: 6
-      REDIS_PWD: rundoredis
-      DATABASE_USER: root
-      DATABASE_PWD: rundomysql
-      DATABASE_HOST: 124.71.21.11
-      DATABASE_PORT: 3306
-      DATABASE_NAME: rundo_device_control
       NACOS_SERVER: 124.71.21.11:8848
       NACOS_NAMESPACE: test
       NACOS_USERNAME: nacos
+      NACOS_GROUP: DEFAULT_GROUP
       NACOS_PASSWORD: rundo@nacos*2023
     logging:
       options:
