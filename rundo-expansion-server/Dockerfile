@@ -12,4 +12,4 @@ WORKDIR /opt/rundo-expansion-server
 
 
 
-ENTRYPOINT ["/bin/bash","-c","java ${JAVA_OPTS} -jar /opt/rundo-expansion-server/*.jar  --spring.config.location=/opt/rundo-expansion-server/config/ ${0} ${@}"]
+ENTRYPOINT ["/bin/bash","-c","java ${JAVA_OPTS} -jar /opt/rundo-expansion-server/*.jar  "]

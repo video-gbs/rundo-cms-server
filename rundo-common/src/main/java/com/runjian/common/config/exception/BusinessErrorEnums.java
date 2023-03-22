@@ -58,9 +58,11 @@ public enum BusinessErrorEnums {
     USER_LOGIN_ERROR(401, 20001, "用户登录失败"),
 
     USER_NO_AUTH(401, 20002, "用户无权限"),
+
+
     TOKEN_IS_EXPIRE(401, 20003, "访问令牌过期"),
     USER_LOGIN_FAILURE(401, 20004, "用户已经退出或者在其他地方登录"),
-
+    USER_FORBID_ACCESS(403, 20005, "用户无法访问"),
     /**************************** 定时器模块相关错误,PREFIX:TIMER CODE:21xxx ****************************/
 
     TIMER_START_ERROR(500, 21001, "定时任务启动异常"),
