@@ -73,7 +73,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                 return true;
             }).collect(Collectors.toList());
         }
-
+        menuInfoList.stream().distinct();
         List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
                 item -> {
                     MenuInfoTree bean = new MenuInfoTree();
