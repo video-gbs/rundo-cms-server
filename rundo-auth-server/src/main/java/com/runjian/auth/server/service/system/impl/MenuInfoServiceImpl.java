@@ -54,9 +54,19 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
             queryWrapper.like(MenuInfo::getPath, dto.getUrl());
         }
         List<MenuInfo> menuInfoList = menuInfoMapper.selectList(queryWrapper);
-        MenuInfo menuInfo = menuInfoMapper.selectById(1);
-        menuInfoList.add(menuInfo);
         Long rootNodeId = 1L;
+        int flag = 0;
+        for (MenuInfo info : menuInfoList) {
+            if (info.getId().longValue() == rootNodeId) {
+                flag = flag + 1;
+            }
+        }
+
+        if (flag == 0) {
+            MenuInfo menuInfo = menuInfoMapper.selectById(1);
+            menuInfoList.add(menuInfo);
+        }
+
         if (null != dto.getAppId()) {
             AppInfo appInfo = appInfoMapper.selectById(dto.getAppId());
             menuInfoList.stream().filter(bean -> {
@@ -73,7 +83,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                 return true;
             }).collect(Collectors.toList());
         }
-        menuInfoList.stream().distinct();
+        menuInfoList.stream().distinct().collect(Collectors.toList());
         List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
                 item -> {
                     MenuInfoTree bean = new MenuInfoTree();
