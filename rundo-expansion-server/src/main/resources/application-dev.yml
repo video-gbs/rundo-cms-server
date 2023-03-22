@@ -8,10 +8,10 @@ spring:
         namespace: ${NACOS_NAMESPACE:dev}
         group: ${NACOS_GROUP:DEFAULT_GROUP}
       config:
-        namespace: ${NACOS_NAMESPACE:public}
+        namespace: ${NACOS_NAMESPACE:dev}
         group: ${NACOS_GROUP:DEFAULT_GROUP}
   config:
     import:
       - optional:nacos:${spring.application.name}-${spring.profiles.active}.yml
 server:
-  port: ${SERVER_PORT:8090}
+  port: ${SERVER_PORT:8060}
