@@ -42,8 +42,6 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
 
     @Override
     public List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
-        List<MenuInfo> menuInfoList = new ArrayList<>();
-
         LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
         if (null != dto.getAppId()) {
             queryWrapper.eq(MenuInfo::getAppId, dto.getAppId());
@@ -55,7 +53,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         if (null != dto.getUrl() && !"".equals(dto.getUrl())) {
             queryWrapper.like(MenuInfo::getPath, dto.getUrl());
         }
-        menuInfoList = menuInfoMapper.selectList(queryWrapper);
+        List<MenuInfo> menuInfoList = menuInfoMapper.selectList(queryWrapper);
         MenuInfo menuInfo = menuInfoMapper.selectById(1);
         menuInfoList.add(menuInfo);
         Long rootNodeId = 1L;
