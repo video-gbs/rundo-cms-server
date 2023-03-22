@@ -7,6 +7,7 @@ import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.mapper.AppInfoMapper;
+import com.runjian.auth.server.service.system.ApiInfoService;
 import com.runjian.auth.server.service.system.AppInfoService;
 import com.runjian.auth.server.service.system.MenuInfoService;
 import org.springframework.beans.BeanUtils;
@@ -33,24 +34,37 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
     @Autowired
     private MenuInfoService menuInfoService;
 
+    @Autowired
+    private ApiInfoService apiInfoService;
+
     @Override
     public void save(AddSysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
         BeanUtils.copyProperties(dto, appInfo);
         appInfoMapper.insert(appInfo);
-        // 向菜单表中插入一条虚拟根菜单
+        // 向菜单表中插入一条虚拟根菜单，并将虚拟根挂在到菜单的默认根节点下
         // AddSysMenuInfoDTO menuInfoDTO = new AddSysMenuInfoDTO();
-        // Long menuPid = 1L;
         // menuInfoDTO.setAppId(appInfo.getId());
-        // menuInfoDTO.setMenuPid(menuPid);
-        // menuInfoDTO.setTitle(appInfo.getAppName());
-        // menuInfoDTO.setIcon(null);
+        // menuInfoDTO.setMenuPid(1L);
         // menuInfoDTO.setMenuSort(1);
         // menuInfoDTO.setPath(appInfo.getAppUrl());
-        // menuInfoDTO.setComponent(null);
+        // menuInfoDTO.setComponent(appInfo.getComponent());
+        // menuInfoDTO.setIcon(appInfo.getAppIcon());
+        // menuInfoDTO.setTitle(appInfo.getAppName());
         // menuInfoDTO.setStatus(0);
         // menuInfoDTO.setHidden(0);
         // menuInfoService.save(menuInfoDTO);
+
+        // 向接口表中插入一条虚拟应用的根接口并将虚拟根挂在到接口的默认根节点下
+        // AddSysApiInfoDTO apiInfoDTO = new AddSysApiInfoDTO();
+        // apiInfoDTO.setAppId(appInfo.getId());
+        // apiInfoDTO.setApiPid(1L);
+        // apiInfoDTO.setApiName(appInfo.getAppName());
+        // apiInfoDTO.setUrl(appInfo.getAppUrl());
+        // apiInfoDTO.setApiSort(1);
+        // apiInfoDTO.setStatus(0);
+        // apiInfoService.save(apiInfoDTO);
+
     }
 
     @Override
@@ -58,6 +72,7 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         AppInfo appInfo = new AppInfo();
         BeanUtils.copyProperties(dto, appInfo);
         appInfoMapper.updateById(appInfo);
+        // 修改菜单表中的虚拟根
     }
 
     @Override
@@ -75,9 +90,9 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         } else {
             page.setCurrent(1);
         }
-        if (null != dto.getPageSize() && dto.getPageSize() > 0){
+        if (null != dto.getPageSize() && dto.getPageSize() > 0) {
             page.setSize(dto.getPageSize());
-        }else {
+        } else {
             page.setSize(20);
         }
         return appInfoMapper.MySelectPage(page);
