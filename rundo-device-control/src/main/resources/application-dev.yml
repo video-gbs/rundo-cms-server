@@ -1,109 +1,17 @@
 spring:
-  application:
-    name: device-control
   cloud:
     nacos:
+      server-addr: ${NACOS_SERVER:124.71.21.11:8848}
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:rundo@nacos*2023}
       discovery:
-        username: ${NACOS_USERNAME:nacos}
-        password: ${NACOS_PASSWORD:rundo@nacos*2023}
-        server-addr: ${NACOS_SERVER:124.71.21.11:8848}
         namespace: ${NACOS_NAMESPACE:dev}
-  web:
-    resources:
-      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:./static
-  # REDIS数据库配置
-  redis:
-    # [必须修改] Redis服务器IP, REDIS安装在本机的,使用127.0.0.1
-    host: ${REDIS_HOST:124.71.21.11}
-    # [必须修改] 端口号
-    port: ${REDIS_PORT:6379}
-    # [可选] 数据库 DB
-    database: ${REDIS_DB:6}
-    # [可选] 访问密码,若你的redis服务器没有设置密码，就不需要用密码去连接
-    password: ${REDIS_PWD:rundoredis}
-    # [可选] 超时时间
-    timeout: 10000
-    # [可选] jdbc数据库配置, 项目使用sqlite作为数据库，一般不需要配置
-    # redisson
-#    redisson:
-#      file: classpath:redisson.yml
-  datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DATABASE_HOST:124.71.21.11}:${DATABASE_PORT:3306}/${DATABASE_NAME:rundo_device_control}?useUnicode=true&characterEncoding=UTF8&rewriteBatchedStatements=true&serverTimezone=PRC&useSSL=false&allowMultiQueries=true
-    username: ${DATABASE_USER:root}
-    password: ${DATABASE_PWD:rundomysql}
-    druid:
-      initialSize: 10                       # 连接池初始化连接数
-      maxActive: 200                        # 连接池最大连接数
-      minIdle: 5                            # 连接池最小空闲连接数
-      maxWait: 60000                        # 获取连接时最大等待时间，单位毫秒。配置了maxWait之后，缺省启用公平锁，并发效率会有所下降，如果需要可以通过配置useUnfairLock属性为true使用非公平锁。
-      keepAlive: true                       # 连接池中的minIdle数量以内的连接，空闲时间超过minEvictableIdleTimeMillis，则会执行keepAlive操作。
-      validationQuery: select 1             # 检测连接是否有效sql，要求是查询语句，常用select 'x'。如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会起作用。
-      testWhileIdle: true                   # 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
-      testOnBorrow: true                   # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
-      testOnReturn: true                   # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
-      poolPreparedStatements: false         # 是否開啟PSCache，並且指定每個連線上PSCache的大小
-      timeBetweenEvictionRunsMillis: 60000  # 配置間隔多久才進行一次檢測，檢測需要關閉的空閒連線，單位是毫秒
-      minEvictableIdleTimeMillis: 300000    # 配置一個連線在池中最小生存的時間，單位是毫秒
-      filters: config,stat,slf4j             # 配置监控统计拦截的filters，监控统计用的filter:sta, 日志用的filter:log4j, 防御sql注入的filter:wall
-      filter:
-        wall:
-          config:
-            multi-statement-allow: true
-      useGlobalDataSourceStat: true         # 合并多个DruidDataSource的监控数据
-      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1000
-      #stat-view-servlet.url-pattern: /admin/druid/*
-
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+      config:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+  config:
+    import:
+      - optional:nacos:${spring.application.name}-${spring.profiles.active}.yml
 server:
-  port: ${SERVER_PORT:8080}
-
-mybatis:
-  configuration:
-    mapUnderscoreToCamelCase: true
-
-pagehelper:
-  helperDialect: mysql
-  reasonable: true
-  supportMethodsArguments: true
-  params: count=countSql
-
-# [可选] 日志配置, 一般不需要改
-logging:
-  config: classpath:logback-spring.xml
-
-feign:
-  circuitbreaker:
-    enabled: true
-  client:
-    config:
-      default:
-        connect-timeout: 15000
-        read-timeout: 15000
-        logger-level: basic
-
-resilience4j:
-  ratelimiter: #限流
-    configs:
-      default:
-        timeoutDuration: 5 # 线程等待权限的默认等待时间
-        limitRefreshPeriod: 1s # 限流器每隔1s刷新⼀次，将允许处理的最⼤请求重置为100
-        limitForPeriod: 100 #在⼀个刷新周期内，允许执⾏的最⼤请求数
-  timelimiter: #超时处理
-    configs:
-      default:
-        timeout-duration: 15s # 请求超时时间
-        cancel-running-future: true # 取消运行
-  circuitbreaker: # 断路器
-    configs:
-      default:
-        failureRateThreshold: 30 #失败请求百分⽐，超过这个⽐例，CircuitBreaker变为OPEN状态
-        slidingWindowSize: 10 #滑动窗⼝的⼤⼩，配置COUNT_BASED,表示10个请求，配置TIME_BASED表示10秒
-        minimumNumberOfCalls: 5 #最⼩请求个数，只有在滑动窗⼝内，请求个数达到这个个数，才会触发CircuitBreader对于断路器的判断
-        slidingWindowType: TIME_BASED #滑动窗⼝的类型
-        permittedNumberOfCallsInHalfOpenState: 3 #当CircuitBreaker处于HALF_OPEN状态的时候，允许通过的请求个数
-        automaticTransitionFromOpenToHalfOpenEnabled: true #设置true，表示⾃动从OPEN变成HALF_OPEN，即使没有请求过来
-        waitDurationInOpenState: 2s #从OPEN到HALF_OPEN状态需要等待的时间
-        recordExceptions: #异常名单
-          - java.lang.Exception
+  port: ${SERVER_PORT:8090}

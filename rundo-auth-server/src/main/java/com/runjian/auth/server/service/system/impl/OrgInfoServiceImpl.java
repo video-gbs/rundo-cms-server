@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -9,13 +10,16 @@ import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
 import com.runjian.auth.server.domain.entity.OrgInfo;
+import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.mapper.OrgInfoMapper;
+import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.system.OrgInfoService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
+import com.runjian.common.config.response.CommonResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +41,9 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
 
     @Autowired
     private OrgInfoMapper orgInfoMapper;
+
+    @Autowired
+    private UserInfoMapper userInfoMapper;
 
     @Override
     public SysOrgVO save(AddSysOrgDTO dto) {
@@ -72,23 +79,37 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     }
 
     @Override
-    public String erasureById(Long id) {
+    public CommonResponse erasureById(Long id) {
         // 1.判断是否为根节点
         OrgInfo orgInfo = orgInfoMapper.selectById(id);
         if (orgInfo.getOrgPid().equals(0L)) {
-            throw new BusinessException("系统内置根节点不能删除");
+            return CommonResponse.failure(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR);
         }
         // 2.查取该节点的所有子代节点
         LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.likeRight(OrgInfo::getOrgPids, orgInfo.getOrgPids() + "[" + orgInfo.getId() + "]");
         List<OrgInfo> orgInfoChild = orgInfoMapper.selectList(queryWrapper);
-        // 3.删除子代节点
-        for (OrgInfo org : orgInfoChild) {
-            orgInfoMapper.deleteById(org.getId());
+        // 3.剔除自己之后确认是否还存在子节点
+        int size = orgInfoChild.size();
+        for (int i = size - 1; i >= 0; i--) {
+            OrgInfo org = orgInfoChild.get(i);
+            if (org.getId().equals(orgInfo.getId())){
+                orgInfoChild.remove(org);
+            }
+        }
+        if (CollUtil.isNotEmpty(orgInfoChild)) {
+            return CommonResponse.failure(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION2);
+        }
+        // 4.判断该部门是否有员工、
+        LambdaQueryWrapper<UserInfo> userInfoQueryWrapper = new LambdaQueryWrapper<>();
+        userInfoQueryWrapper.eq(UserInfo::getOrgId, id);
+        List<UserInfo> userInfoList = userInfoMapper.selectList(userInfoQueryWrapper);
+        if (CollUtil.isNotEmpty(userInfoList)) {
+            return CommonResponse.failure(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION);
         }
         // 4.删除目标节点
         orgInfoMapper.deleteById(id);
-        return "删除组织，操作成功!";
+        return CommonResponse.success(orgInfoMapper.deleteById(id));
     }
 
     @Override
@@ -96,6 +117,9 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         OrgInfo orgInfo = new OrgInfo();
         BeanUtils.copyProperties(dto, orgInfo);
         orgInfoMapper.updateById(orgInfo);
+
+        // 更新子节点信息
+
     }
 
     @Override
@@ -164,28 +188,6 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
                 updateChildren(org, childrenList);
             }
         }
-    }
-
-    @Override
-    public String erasureBatch(List<Long> ids) {
-        // 1.确定节点ID不为空
-        if (ids.size() <= 0) {
-            return "没有选定删除目标";
-        }
-        // 2.检索删除的节点中是否包含根节点
-        List<OrgInfo> orgInfoList = orgInfoMapper.selectBatchIds(ids);
-        boolean flag = false;
-        for (OrgInfo orgInfo : orgInfoList) {
-            if (orgInfo.getOrgPid().equals(0L)) {
-                flag = true;
-            }
-        }
-        if (flag) {
-            return "删除目标中包含系统内置根节点";
-        }
-        orgInfoMapper.deleteBatchIds(ids);
-        return "删除组织，操作成功!";
-
     }
 
     @Override

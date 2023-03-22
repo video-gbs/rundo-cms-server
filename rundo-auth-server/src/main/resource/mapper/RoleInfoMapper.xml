@@ -6,7 +6,8 @@
         FROM role_info sri
                  LEFT JOIN role_user sru ON sru.role_id = sri.id
                  LEFT JOIN user_info sui ON sui.id = sru.user_id
-        WHERE sui.id = #{userId,jdbcType=BIGINT}
+        WHERE sri.status = 0
+          AND sui.id = #{userId,jdbcType=BIGINT}
     </select>
 
     <select id="selectAppByRoleCode" resultType="com.runjian.auth.server.domain.entity.AppInfo">
@@ -24,7 +25,8 @@
         FROM menu_info smi
                  LEFT JOIN role_menu srm ON srm.menu_id = smi.id
                  LEFT JOIN role_info sri ON sri.id = srm.role_id
-        WHERE sri.role_code = #{roleCode}
+        WHERE sri.status = 0
+          AND sri.role_code = #{roleCode}
     </select>
 
     <select id="selectApiUrlByRoleCode" resultType="java.lang.String">

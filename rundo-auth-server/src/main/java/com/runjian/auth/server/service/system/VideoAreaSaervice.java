@@ -7,6 +7,7 @@ import com.runjian.auth.server.domain.entity.VideoArea;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
+import com.runjian.common.config.response.CommonResponse;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface VideoAreaSaervice extends IService<VideoArea> {
 
     VideoAreaVO findById(Long id);
 
-    String erasureById(Long id);
+    CommonResponse erasureById(Long id);
 
     List<VideoAreaTree> findByTree();
 

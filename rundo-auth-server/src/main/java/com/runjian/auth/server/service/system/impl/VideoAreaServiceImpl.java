@@ -5,11 +5,11 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.AddVideoAreaDTO;
+import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
 import com.runjian.auth.server.domain.dto.system.UpdateVideoAreaDTO;
 import com.runjian.auth.server.domain.entity.VideoArea;
-import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
-import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
+import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.feign.ExpansionClient;
 import com.runjian.auth.server.mapper.VideoAraeMapper;
 import com.runjian.auth.server.service.system.VideoAreaSaervice;
@@ -83,26 +83,33 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     }
 
     @Override
-    public String erasureById(Long id) {
+    public CommonResponse erasureById(Long id) {
         // 1.判断是否为根节点
         VideoArea videoArea = videoAraeMapper.selectById(id);
         if (videoArea.getAreaPid().equals(0L)) {
-            throw new BusinessException("系统内置根节点不能删除");
+            return CommonResponse.failure(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR);
         }
         // 2.确认当前需要删除的安防区域有无下级安防区域
         LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.likeRight(VideoArea::getAreaPids, "[" + videoArea.getAreaPid() + "]");
         List<VideoArea> videoAreaChildren = videoAraeMapper.selectList(queryWrapper);
+        // 3.剔除自己之后确认是否还存在子节点
+        int size = videoAreaChildren.size();
+        for (int i = size - 1; i >= 0; i--) {
+            VideoArea area = videoAreaChildren.get(i);
+            if (area.getId().equals(videoArea.getId())) {
+                videoAreaChildren.remove(area);
+            }
+        }
         if (CollUtil.isNotEmpty(videoAreaChildren)) {
-            return "操作成功,不能删除含有下级节点的安防区域!";
+            return CommonResponse.failure(BusinessErrorEnums.VALID_ILLEGAL_AREA_OPERATION2);
         }
         // 3.调用远端确认是否可以删除
         CommonResponse<Boolean> commonResponse = expansionClient.videoAreaBindCheck(id);
         if (!commonResponse.getData()) {
-            videoAraeMapper.deleteById(id);
-            return "删除安防区域，操作成功";
+            return CommonResponse.success(videoAraeMapper.deleteById(id));
         } else {
-            return "操作成功,不能删除已绑定设备的安防区域!";
+            return CommonResponse.failure(BusinessErrorEnums.VALID_ILLEGAL_AREA_OPERATION);
         }
     }
 
@@ -151,7 +158,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
             queryWrapper.likeRight(VideoArea::getAreaPids, videoArea.getAreaPids() + "[" + videoArea.getId() + "]");
             videoAreaList = videoAraeMapper.selectList(queryWrapper);
             videoAreaList.add(videoArea);
-        }else {
+        } else {
             videoAreaList = videoAraeMapper.selectList(queryWrapper);
         }
         return videoAreaList.stream().map(

@@ -84,17 +84,7 @@ public class CommonResponse<T> implements Serializable {
      * @return
      */
     public static <T> CommonResponse<T> failure(BusinessErrorEnums businessErrorEnums) {
-        return failure(businessErrorEnums, null);
-    }
-
-    /**
-     * 失败自定义异常消息,无数据返回
-     *
-     * @param businessErrorEnums
-     * @return
-     */
-    public static <T> CommonResponse<T> failure(BusinessErrorEnums businessErrorEnums, String msg) {
-        return create(businessErrorEnums.getErrCode(), msg, null);
+        return create(businessErrorEnums.getErrCode(), businessErrorEnums.getErrMsg(),null);
     }
 
     /**
