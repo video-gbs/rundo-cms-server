@@ -330,6 +330,13 @@
             </properties>
         </profile>
         <profile>
+            <!--预演环境-->
+            <id>uat</id>
+            <properties>
+                <env>uat</env>
+            </properties>
+        </profile>
+        <profile>
             <!--生产环境-->
             <id>prod</id>
             <properties>
