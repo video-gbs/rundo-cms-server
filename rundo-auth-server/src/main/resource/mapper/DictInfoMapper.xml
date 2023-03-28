@@ -20,6 +20,14 @@
                 <bind name="patternItemValue" value="'%' + itemValue + '%'"/>
                 AND sd.item_value LIKE #{patternItemValue}
             </if>
+            <if test="groupCode != null and groupCode != ''">
+                <bind name="patternGroupCode" value="'%' + groupCode + '%'"/>
+                AND sd.group_code LIKE #{patternGroupCode}
+            </if>
+            <if test="groupName != null and groupName != ''">
+                <bind name="patternGroupName" value="'%' + groupName + '%'"/>
+                AND sd.group_name LIKE #{patternGroupName}
+            </if>
         </where>
     </select>
 </mapper>
