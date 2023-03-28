@@ -2,7 +2,9 @@ package com.runjian.device.vo.feign;
 
 
 
+import com.runjian.common.constant.MsgType;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
 import java.util.HashMap;
@@ -14,13 +16,16 @@ import java.util.Map;
  * @date 2023/1/9 15:11
  */
 @Data
+@NoArgsConstructor
 public class DeviceControlReq {
 
-    /**
-     * 设备ID
-     */
-    @Range(min = 1, message = "非法设备id")
-    private Long deviceId;
+    public DeviceControlReq(Long gatewayId, Long deviceId, Long channelId, MsgType msgType, Long outTime){
+        this.gatewayId = gatewayId;
+        this.deviceId = deviceId;
+        this.channelId = channelId;
+        this.msgType = msgType.getMsg();
+        this.outTime = outTime;
+    }
 
     /**
      * 网关ID
@@ -29,10 +34,26 @@ public class DeviceControlReq {
     private Long gatewayId;
 
     /**
+     * 设备ID
+     */
+    @Range(min = 1, message = "非法设备id")
+    private Long deviceId;
+
+    /**
      * 通道id
      */
     @Range(min = 1, message = "非法通道id")
     private Long channelId;
+
+    /**
+     * 消息类型
+     */
+    private String msgType;
+
+    /**
+     * 过期时间
+     */
+    private Long outTime = 10L;
 
     /**
      * 数据集合

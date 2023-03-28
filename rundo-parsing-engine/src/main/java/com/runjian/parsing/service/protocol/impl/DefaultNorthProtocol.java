@@ -45,7 +45,7 @@ public class DefaultNorthProtocol implements NorthProtocol {
                 deviceDelete(mainId, response);
                 break;
             default:
-                customEvent(mainId, idType, MsgType.DEVICE_DELETE.getMsg(), dataMap, response);
+                customEvent(mainId, idType, msgType.getMsg(), dataMap, response);
         }
     }
 
@@ -80,8 +80,5 @@ public class DefaultNorthProtocol implements NorthProtocol {
             customEvent(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE.getMsg(), null, response);
         }
     }
-
-
-
 
 }

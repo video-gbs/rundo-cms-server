@@ -25,47 +25,12 @@ public class ParsingEngineFallback implements FallbackFactory<ParsingEngineApi> 
     public ParsingEngineApi create(Throwable cause) {
         return new ParsingEngineApi() {
             @Override
+            public CommonResponse<?> customEvent(DeviceControlReq req) {
+                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
+            }
+
+            @Override
             public CommonResponse<?> deviceTotalSync(Set<Long> gatewayIds) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
-
-            @Override
-            public CommonResponse<DeviceSyncRsp> deviceSync(Long deviceId) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
-
-            @Override
-            public CommonResponse<Long> deviceAdd(DeviceControlReq req) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
-
-            @Override
-            public CommonResponse<Boolean> deviceDelete(Long deviceId) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
-
-            @Override
-            public CommonResponse<ChannelSyncRsp> channelSync(Long deviceId) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
-
-            @Override
-            public CommonResponse<?> channelPtzControl(DeviceControlReq req) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
-
-            @Override
-            public CommonResponse<VideoPlayRsp> channelPlay(DeviceControlReq req) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
-
-            @Override
-            public CommonResponse<VideoRecordRsp> channelRecord(DeviceControlReq req) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
-
-            @Override
-            public CommonResponse<VideoPlayRsp> channelPlayback(DeviceControlReq req) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
         };

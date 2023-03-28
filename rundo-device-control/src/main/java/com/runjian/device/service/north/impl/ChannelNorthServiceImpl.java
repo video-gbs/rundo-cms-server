@@ -90,12 +90,12 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         if (!deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, String.format("设备%s是未注册成功的设备，不允许操作", deviceId));
         }
-        CommonResponse<ChannelSyncRsp> response = parsingEngineApi.channelSync(deviceId);
+        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(null, deviceId, null, MsgType.CHANNEL_SYNC, 10L));
         if (response.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        ChannelSyncRsp channelSyncRsp = response.getData();
+        ChannelSyncRsp channelSyncRsp = (ChannelSyncRsp) response.getData();
         channelSyncRsp.setNum(channelSyncRsp.getChannelDetailList().size());
         // 判断是否有通道
         if (channelSyncRsp.getNum() > 0) {
@@ -251,20 +251,17 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
         Map<String, Object> responseMapData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.LIVE, recordState, autoCloseState);
 
-        DeviceControlReq deviceReq = new DeviceControlReq();
-        deviceReq.setChannelId(channelId);
+        DeviceControlReq deviceReq = new DeviceControlReq(null, null, channelId, MsgType.CHANNEL_PLAY, 10L);
         deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
         deviceReq.putData(StandardName.STREAM_MODE, StreamType.getMsgByCode(streamType));
-
         deviceReq.putAllData(responseMapData);
-
-        CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlay(deviceReq);
+        CommonResponse<?> videoPlayRspCommonResponse = parsingEngineApi.customEvent(deviceReq);
         if (videoPlayRspCommonResponse.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, videoPlayRspCommonResponse.getMsg());
         }
-        return videoPlayRspCommonResponse.getData();
+        return (VideoPlayRsp) videoPlayRspCommonResponse.getData();
     }
 
     /**
@@ -293,18 +290,18 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     }
 
     @Override
-    public VideoRecordRsp channelRecord(Long chId, LocalDateTime startTime, LocalDateTime endTime) {
-        getChannelInfoAndValid(chId);
-        DeviceControlReq deviceReq = new DeviceControlReq();
-        deviceReq.setChannelId(chId);
+    public VideoRecordRsp channelRecord(Long channelId, LocalDateTime startTime, LocalDateTime endTime) {
+        getChannelInfoAndValid(channelId);
+        DeviceControlReq deviceReq = new DeviceControlReq(null, null, channelId, MsgType.CHANNEL_RECORD_INFO, 10L);
+        deviceReq.setChannelId(channelId);
         deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
-        CommonResponse<VideoRecordRsp> response = parsingEngineApi.channelRecord(deviceReq);
+        CommonResponse<?> response = parsingEngineApi.customEvent(deviceReq);
         if (response.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频录像数据获取失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        return response.getData();
+        return (VideoRecordRsp) response.getData();
     }
 
     /**
@@ -322,20 +319,19 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         ChannelInfo channelInfo = getChannelInfoAndValid(channelId);
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
         Map<String, Object> streamData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.RECORD, recordState, autoCloseState);
-        DeviceControlReq deviceReq = new DeviceControlReq();
-        deviceReq.setChannelId(channelId);
+        DeviceControlReq deviceReq = new DeviceControlReq(null, null, channelId, MsgType.CHANNEL_PLAYBACK, 10L);
         deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
         deviceReq.putData(StandardName.STREAM_MODE, StreamType.getMsgByCode(streamType));
         deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         deviceReq.putAllData(streamData);
-        CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlayback(deviceReq);
+        CommonResponse<?> videoPlayRspCommonResponse = parsingEngineApi.customEvent(deviceReq);
         if (videoPlayRspCommonResponse.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频回放失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, videoPlayRspCommonResponse.getMsg());
         }
-        return videoPlayRspCommonResponse.getData();
+        return (VideoPlayRsp) videoPlayRspCommonResponse.getData();
     }
 
 
@@ -365,14 +361,13 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Override
     public void channelPtzControl(Long channelId, Integer cmdCode, Integer horizonSpeed, Integer verticalSpeed, Integer zoomSpeed, Integer totalSpeed) {
         getChannelInfoAndValid(channelId);
-        DeviceControlReq req = new DeviceControlReq();
-        req.setChannelId(channelId);
+        DeviceControlReq req = new DeviceControlReq(null, null, channelId, MsgType.CHANNEL_PTZ_CONTROL, 10L);
         req.putData(StandardName.PTZ_CMD_CODE, cmdCode);
         req.putData(StandardName.PTZ_HORIZON_SPEED, horizonSpeed);
         req.putData(StandardName.PTZ_VERTICAL_SPEED, verticalSpeed);
         req.putData(StandardName.PTZ_ZOOM_SPEED, zoomSpeed);
         req.putData(StandardName.PTZ_TOTAL_SPEED, totalSpeed);
-        CommonResponse<?> response = parsingEngineApi.channelPtzControl(req);
+        CommonResponse<?> response = parsingEngineApi.customEvent(req);
         if (response.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "云台控制失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());

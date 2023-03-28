@@ -22,75 +22,18 @@ import java.util.Set;
 public interface ParsingEngineApi {
 
     /**
+     * 通用消息处理
+     * @param req
+     * @return
+     */
+    @PostMapping("/device-control/custom/event")
+    CommonResponse<?> customEvent(@RequestBody DeviceControlReq req);
+
+    /**
      * 网关全量同步
      * @param gatewayIds 网关id数组
      */
     @GetMapping("/device-control/device/total-sync")
     CommonResponse<?> deviceTotalSync(@RequestParam Set<Long> gatewayIds);
-
-    /**
-     * 设备信息同步
-     * @param deviceId 设备id
-     * @return 设备同步消息体
-     */
-    @GetMapping("/device-control/device/sync")
-    CommonResponse<DeviceSyncRsp> deviceSync(@RequestParam Long deviceId);
-
-    /**
-     * 设备添加
-     * @param req 设备请求体
-     * @return 设备id
-     */
-    @PostMapping("/device-control/device/add")
-    CommonResponse<Long> deviceAdd(@RequestBody DeviceControlReq req);
-
-    /**
-     * 设备删除
-     * @param deviceId 设备id
-     * @return 删除结果
-     */
-    @DeleteMapping("/device-control/device/delete")
-    CommonResponse<Boolean> deviceDelete(@RequestParam Long deviceId);
-
-    /**
-     * 通道同步
-     * @param deviceId 通道id
-     * @return 通道同步结果返回体
-     */
-    @GetMapping("/device-control/channel/sync")
-    CommonResponse<ChannelSyncRsp> channelSync(@RequestParam Long deviceId);
-
-    /**
-     * 云台控制服务
-     * @param req 云台控制请求体
-     * @return 是否成功
-     */
-    @PutMapping("/device-control/channel/ptz/control")
-    CommonResponse<?> channelPtzControl(@RequestBody DeviceControlReq req);
-
-    /**
-     * 通道播放
-     * @param req 设备请求体
-     * @return
-     */
-    @PostMapping("/device-control/channel/video/play")
-    CommonResponse<VideoPlayRsp> channelPlay(@RequestBody DeviceControlReq req);
-
-    /**
-     * 通道回放视频获取
-     * @param req 设备请求体
-     * @return
-     */
-    @PostMapping("/device-control/channel/video/record")
-    CommonResponse<VideoRecordRsp> channelRecord(@RequestBody DeviceControlReq req);
-
-    /**
-     * 通道回放
-     * @param req 设备请求体
-     * @return
-     */
-    @PostMapping("/device-control/channel/video/playback")
-    CommonResponse<VideoPlayRsp> channelPlayback(@RequestBody DeviceControlReq req);
-
 
 }

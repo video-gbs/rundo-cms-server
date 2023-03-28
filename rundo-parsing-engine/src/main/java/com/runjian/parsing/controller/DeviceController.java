@@ -47,106 +47,6 @@ public class DeviceController {
         return CommonResponse.success();
     }
 
-    /**
-     * 设备信息同步
-     * @param deviceId 设备id
-     * @return 设备同步消息体
-     */
-    @GetMapping("/device/sync")
-    public DeferredResult<CommonResponse<?>> deviceSync(@RequestParam Long deviceId){
-        final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(deviceId, IdType.GATEWAY).msgDistribute(MsgType.DEVICE_SYNC, deviceId, IdType.DEVICE, null, response);
-        return response;
-    }
-
-    /**
-     * 设备添加
-     * @param req 设备添加请求体
-     * @return 设备id
-     */
-    @PostMapping("/device/add")
-    public DeferredResult<CommonResponse<?>> deviceAdd(@RequestBody DeviceControlReq req){
-        validatorService.validateRequest(req);
-        final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(req.getGatewayId(), IdType.GATEWAY).msgDistribute(MsgType.DEVICE_ADD, req.getGatewayId(), IdType.GATEWAY, req.getDataMap(), response);
-        return response;
-    }
-
-    /**
-     * 设备删除
-     * @param deviceId 设备id
-     * @return 删除结果
-     */
-    @DeleteMapping("/device/delete")
-    DeferredResult<CommonResponse<?>> deviceDelete(@RequestParam Long deviceId){
-        final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(deviceId, IdType.DEVICE).msgDistribute(MsgType.DEVICE_DELETE, deviceId, IdType.DEVICE, null, response);
-        return response;
-    }
-
-    /**
-     * 通道同步
-     * @param deviceId 设备id
-     * @return 设备id
-     */
-    @GetMapping("/channel/sync")
-    public DeferredResult<CommonResponse<?>> channelSync(@RequestParam Long deviceId){
-        final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(deviceId, IdType.DEVICE).msgDistribute(MsgType.CHANNEL_SYNC, deviceId, IdType.DEVICE, null, response);
-        return response;
-    }
-
-    /**
-     * 通道云台控制
-     * @param req 设备请求体
-     * @return
-     */
-    @PutMapping("/channel/ptz/control")
-    public DeferredResult<CommonResponse<?>> channelPtzControl(@RequestBody DeviceControlReq req){
-        validatorService.validateRequest(req);
-        final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).msgDistribute(MsgType.CHANNEL_PTZ_CONTROL, req.getChannelId(), IdType.CHANNEL, req.getDataMap(), response);
-        return response;
-    }
-
-    /**
-     * 通道播放
-     * @param req 设备请求体
-     * @return
-     */
-    @PostMapping("/channel/video/play")
-    public DeferredResult<CommonResponse<?>> channelPlay(@RequestBody DeviceControlReq req){
-        validatorService.validateRequest(req);
-        final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).msgDistribute(MsgType.CHANNEL_PLAY, req.getChannelId(), IdType.CHANNEL, req.getDataMap(), response);
-        return response;
-    }
-
-    /**
-     * 通道录像获取
-     * @param req 设备请求体
-     * @return
-     */
-    @PostMapping("/channel/video/record")
-    public DeferredResult<CommonResponse<?>> channelRecord(@RequestBody DeviceControlReq req){
-        validatorService.validateRequest(req);
-        final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).msgDistribute(MsgType.CHANNEL_RECORD_INFO, req.getChannelId(), IdType.CHANNEL, req.getDataMap(), response);
-        return response;
-    }
-
-    /**
-     * 设备添加
-     * @param req 设备请求体
-     * @return
-     */
-    @PostMapping("/channel/video/playback")
-    public DeferredResult<CommonResponse<?>> channelPlayback(@RequestBody DeviceControlReq req){
-        validatorService.validateRequest(req);
-        final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).msgDistribute(MsgType.CHANNEL_PLAYBACK, req.getChannelId(), IdType.CHANNEL, req.getDataMap(), response);
-        return response;
-    }
 
     /**
      * 自定义扩展事件处理
@@ -154,15 +54,15 @@ public class DeviceController {
      * @return
      */
     @PostMapping("/custom/event")
-    public DeferredResult<CommonResponse<?>> customEvent(@RequestBody DeviceCustomEventReq req){
+    public DeferredResult<CommonResponse<?>> customEvent(@RequestBody DeviceControlReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
         if (Objects.nonNull(req.getGatewayId())){
-            protocolService.getNorthProtocol(req.getGatewayId(), IdType.GATEWAY).customEvent(req.getGatewayId(), IdType.GATEWAY, req.getMsgType(), req.getDataMap(), response);
+            protocolService.getNorthProtocol(req.getGatewayId(), IdType.GATEWAY).msgDistribute(MsgType.getByStr(req.getMsgType()), req.getGatewayId(), IdType.GATEWAY, req.getDataMap(), response);
         } else if (Objects.nonNull(req.getDeviceId())) {
-            protocolService.getNorthProtocol(req.getDeviceId(), IdType.DEVICE).customEvent(req.getDeviceId(), IdType.DEVICE, req.getMsgType(), req.getDataMap(), response);
+            protocolService.getNorthProtocol(req.getDeviceId(), IdType.DEVICE).msgDistribute(MsgType.getByStr(req.getMsgType()), req.getDeviceId(), IdType.DEVICE, req.getDataMap(), response);
         } else if (Objects.nonNull(req.getChannelId())) {
-            protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).customEvent(req.getChannelId(), IdType.CHANNEL, req.getMsgType(), req.getDataMap(), response);
+            protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).msgDistribute(MsgType.getByStr(req.getMsgType()), req.getChannelId(), IdType.CHANNEL, req.getDataMap(), response);
         }else {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "主键id不能为空");
         }
