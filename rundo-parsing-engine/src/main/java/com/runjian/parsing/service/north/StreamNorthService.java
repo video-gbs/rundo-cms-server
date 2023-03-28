@@ -1,9 +1,11 @@
 package com.runjian.parsing.service.north;
 
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.parsing.constant.MsgType;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -12,48 +14,14 @@ import java.util.Set;
  */
 public interface StreamNorthService {
 
-    /**
-     * 停止播放北向接口
-     * @param streamId 流id
-     * @param response 异步返回体
-     */
-    void streamNorthStopPlay(Long dispatchId, String streamId, DeferredResult<CommonResponse<?>> response);
 
     /**
-     * 开启录像北向接口
-     * @param streamId 流id
-     * @param response 异步返回体
-     */
-    void streamNorthStartRecord(Long dispatchId, String streamId, DeferredResult<CommonResponse<?>> response);
-
-    /**
-     * 停止录像北向接口
-     * @param streamId 流id
-     * @param response 异步返回体
-     */
-    void streamNorthStopRecord(Long dispatchId, String streamId, DeferredResult<CommonResponse<?>> response);
-
-    /**
-     * 检测录像状态
+     * 通用处理方法
      * @param dispatchId 调度服务id
-     * @param streamIds 流id数组
+     * @param streamId 流id
+     * @param mapData 数据
+     * @param msgType 消息类型
      * @param response 异步返回体
-     * @return
      */
-    void checkStreamRecordStatus(Long dispatchId, List<String> streamIds, DeferredResult<CommonResponse<?>> response);
-
-    /**
-     * 检测流状态
-     * @param dispatchId 调度服务id
-     * @param streamIds 流id数组
-     * @param response 异步返回体
-     * @return
-     */
-    void checkStreamStatus(Long dispatchId, List<String> streamIds, DeferredResult<CommonResponse<?>> response);
-
-    /**
-     * 删除所有的流
-     * @param dispatchIds 流媒体id数组
-     */
-    void stopAllStream(Set<Long> dispatchIds);
+    void customEvent(Long dispatchId, String streamId, Map<String, Object> mapData, MsgType msgType, DeferredResult<CommonResponse<?>> response);
 }

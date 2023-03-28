@@ -71,7 +71,7 @@ public class StreamBaseServiceImpl implements StreamBaseService {
             List<Long> noStreamIds = new ArrayList<>();
             for (Map.Entry<Long, List<StreamInfo>> entry : dispatchRecordMap.entrySet()){
                 dataBaseService.getDispatchInfo(entry.getKey());
-                CommonResponse<List<String>> commonResponse = parsingEngineApi.checkStreamStreamStatus(entry.getKey(), entry.getValue().stream().map(StreamInfo::getStreamId).collect(Collectors.toList()));
+                CommonResponse<List<String>> commonResponse = parsingEngineApi.streamCheckStreamStatus(entry.getKey(), entry.getValue().stream().map(StreamInfo::getStreamId).collect(Collectors.toList()));
                 if (commonResponse.isError()){
                     log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "定时检测流播放状态服务", "流媒体交互失败", String.format("流媒体id:%s", entry.getKey()), commonResponse.getMsg());
                     break;
@@ -101,7 +101,7 @@ public class StreamBaseServiceImpl implements StreamBaseService {
             List<Long> noRecordIds = new ArrayList<>();
             for (Map.Entry<Long, List<StreamInfo>> entry : dispatchRecordMap.entrySet()){
                 dataBaseService.getDispatchInfo(entry.getKey());
-                CommonResponse<List<String>> commonResponse = parsingEngineApi.checkStreamRecordStatus(entry.getKey(), entry.getValue().stream().map(StreamInfo::getStreamId).collect(Collectors.toList()));
+                CommonResponse<List<String>> commonResponse = parsingEngineApi.streamCheckRecordStatus(entry.getKey(), entry.getValue().stream().map(StreamInfo::getStreamId).collect(Collectors.toList()));
                 if (commonResponse.isError()){
                     log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "定时检测流播放状态服务", "流媒体交互失败", String.format("流媒体id:%s", entry.getKey()), commonResponse.getMsg());
                     break;

@@ -3,6 +3,11 @@ package com.runjian.parsing.service.protocol;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.constant.IdType;
+import com.runjian.parsing.constant.MsgType;
+import com.runjian.parsing.vo.CommonMqDto;
+import org.springframework.web.context.request.async.DeferredResult;
+
+import java.util.Map;
 
 /**
  * @author Miracle
@@ -19,82 +24,12 @@ public interface SouthProtocol {
     String getProtocolName();
 
     /**
-     * 设备注册
-     * @param data 数据集合
-     */
-    void deviceSignIn(Long gatewayId, Object data);
-
-    /**
-     * 设备全量同步
-     * @param gatewayId 网关id
-     * @param data 数据
-     */
-    void deviceBatchSignIn(Long gatewayId, Object data);
-
-    /**
-     * 规范化：设备同步
-     * @param taskId 任务id
-     * @param data 数据集合
-     */
-    void deviceSync(Long taskId, Object data);
-
-    /**
-     * 规范化：主动添加设备
-     * @param taskId 任务id
-     * @param data 数据集合
-     */
-    void deviceAdd(Long taskId, Object data);
-
-    /**
-     * 规范化：删除设备
-     * @param taskId 任务id
-     * @param data 数据集合
-     */
-    void deviceDelete(Long taskId, Object data);
-
-    /**
-     * 规范化：通道同步
-     * @param taskId 任务id
-     * @param data 数据集合
-     */
-    void channelSync(Long taskId, Object data);
-
-    /**
-     * 规范化：通道控制
-     * @param taskId 任务id
-     * @param data 数据集合
-     */
-    void channelPtzControl(Long taskId, Object data);
-
-    /**
-     * 规范化：通道播放
-     * @param taskId 任务id
-     * @param data 数据集合
-     */
-    void channelPlay(Long taskId, Object data);
-
-    /**
-     * 规范化：获取通道回放数据
-     * @param taskId 任务id
-     * @param data 数据集合
-     */
-    void channelRecord(Long taskId, Object data);
-
-    /**
-     * 规范化：通道回放
-     * @param taskId 任务id
-     * @param data 数据集合
-     */
-    void channelPlayback(Long taskId, Object data);
-
-    /**
-     * 通用消息处理
-     * @param gatewayId
-     * @param msgId
+     * 消息分发
      * @param msgType
-     * @param data
+     * @param mainId
+     * @param dataMap
      */
-    void commonEvent(Long gatewayId, String msgId, String msgType, Object data);
+    void msgDistribute(String msgType, Long mainId, Object dataMap);
 
     /**
      * 通用消息处理
@@ -106,5 +41,5 @@ public interface SouthProtocol {
     /**
      * 异常处理
      */
-    void errorEvent(Long taskId, CommonResponse<?> response);
+    void errorEvent(Long taskId, CommonMqDto<?> response);
 }

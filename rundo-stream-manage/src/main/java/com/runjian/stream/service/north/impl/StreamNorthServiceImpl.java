@@ -127,7 +127,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         streamInfo.setRecordState(CommonEnum.DISABLE.getCode());
         streamInfo.setUpdateTime(LocalDateTime.now());
         streamMapper.updateRecordAndAutoCloseState(streamInfo);
-        CommonResponse<Boolean> commonResponse = parsingEngineApi.channelStopPlay(new StreamManageDto(streamInfo.getDispatchId(), streamId));
+        CommonResponse<Boolean> commonResponse = parsingEngineApi.streamStopPlay(new StreamManageDto(streamInfo.getDispatchId(), streamId));
         if (commonResponse.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向服务", "流媒体交互失败", streamId, commonResponse.getMsg());
             streamMapper.deleteByStreamId(streamId);
@@ -145,7 +145,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (streamInfo.getRecordState().equals(CommonEnum.ENABLE.getCode())){
             return true;
         }
-        CommonResponse<Boolean> response = parsingEngineApi.channelStartRecord(new StreamManageDto(streamInfo.getDispatchId(), streamId));
+        CommonResponse<Boolean> response = parsingEngineApi.streamStartRecord(new StreamManageDto(streamInfo.getDispatchId(), streamId));
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         Boolean isSuccess = response.getData();
         if (Objects.nonNull(isSuccess) && isSuccess){
@@ -162,7 +162,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (streamInfo.getRecordState().equals(CommonEnum.DISABLE.getCode())){
             return true;
         }
-        CommonResponse<Boolean> response = parsingEngineApi.channelStopRecord(new StreamManageDto(streamInfo.getDispatchId(), streamId));
+        CommonResponse<Boolean> response = parsingEngineApi.streamStopRecord(new StreamManageDto(streamInfo.getDispatchId(), streamId));
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         Boolean isSuccess = response.getData();
         if (Objects.nonNull(isSuccess) && isSuccess){
@@ -179,6 +179,18 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "流id不能为空");
         }
         return streamMapper.selectByStreamIdsAndRecordStateAndStreamState(streamIds, recordState, streamState);
+    }
+
+    @Override
+    public void updateRecordSpeed(String streamId, Float speed) {
+        StreamInfo streamInfo = dataBaseService.getStreamInfoByStreamId(streamId);
+        if (streamInfo.getRecordState().equals(CommonEnum.DISABLE.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "视频未正常播放，无法调整速度");
+        }
+        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId);
+        streamManageDto.put("speed", speed);
+        CommonResponse<?> commonResponse = parsingEngineApi.streamUpdateRecordSpeed(streamManageDto);
+        commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
     }
 
 }

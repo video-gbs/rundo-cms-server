@@ -3,6 +3,8 @@ package com.runjian.parsing.service.protocol.impl;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.StandardName;
+import com.runjian.parsing.constant.IdType;
+import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.entity.GatewayInfo;
@@ -35,6 +37,15 @@ public class Gb28181NorthProtocol extends DefaultNorthProtocol {
     }
 
     @Override
+    public void msgDistribute(MsgType msgType, Long mainId, IdType idType, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
+        switch (msgType){
+            case DEVICE_ADD:
+                deviceAdd(mainId, dataMap, response);
+                break;
+        }
+        super.msgDistribute(msgType, mainId, idType, dataMap, response);
+    }
+
     public void deviceAdd(Long gatewayId, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
         dataBaseService.getGatewayInfo(gatewayId);
         String originId = dataMap.get(StandardName.DEVICE_ID).toString();

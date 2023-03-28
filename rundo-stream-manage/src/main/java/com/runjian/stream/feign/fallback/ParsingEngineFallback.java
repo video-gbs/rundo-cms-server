@@ -21,32 +21,37 @@ public class ParsingEngineFallback implements FallbackFactory<ParsingEngineApi> 
     public ParsingEngineApi create(Throwable cause) {
         return new ParsingEngineApi() {
             @Override
-            public CommonResponse<Boolean> channelStopPlay(StreamManageDto req) {
+            public CommonResponse<Boolean> streamStopPlay(StreamManageDto req) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
 
             @Override
-            public CommonResponse<Boolean> channelStartRecord(StreamManageDto req) {
+            public CommonResponse<Boolean> streamStartRecord(StreamManageDto req) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
 
             @Override
-            public CommonResponse<Boolean> channelStopRecord(StreamManageDto req) {
+            public CommonResponse<Boolean> streamStopRecord(StreamManageDto req) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
 
             @Override
-            public CommonResponse<List<String>> checkStreamRecordStatus(Long dispatchId, List<String> streamIds) {
+            public CommonResponse<List<String>> streamCheckRecordStatus(Long dispatchId, List<String> streamIds) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
 
             @Override
-            public CommonResponse<List<String>> checkStreamStreamStatus(Long dispatchId, List<String> streamIds) {
+            public CommonResponse<List<String>> streamCheckStreamStatus(Long dispatchId, List<String> streamIds) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
 
             @Override
-            public CommonResponse<?> stopAllStream(Set<Long> dispatchIds) {
+            public CommonResponse<?> streamStopAll(Set<Long> dispatchIds) {
+                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
+            }
+
+            @Override
+            public CommonResponse<?> streamUpdateRecordSpeed(StreamManageDto streamManageDto) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
         };

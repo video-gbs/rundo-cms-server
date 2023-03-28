@@ -21,7 +21,7 @@ public interface ParsingEngineApi {
      * @return
      */
     @PutMapping("/stream-manage/play/stop")
-    CommonResponse<Boolean> channelStopPlay(@RequestBody StreamManageDto req);
+    CommonResponse<Boolean> streamStopPlay(@RequestBody StreamManageDto req);
 
     /**
      * 开启录播
@@ -29,7 +29,7 @@ public interface ParsingEngineApi {
      * @return
      */
     @PutMapping("/stream-manage/record/start")
-    CommonResponse<Boolean> channelStartRecord(@RequestBody StreamManageDto req);
+    CommonResponse<Boolean> streamStartRecord(@RequestBody StreamManageDto req);
 
     /**
      * 关闭录像
@@ -37,7 +37,7 @@ public interface ParsingEngineApi {
      * @return
      */
     @PutMapping("/stream-manage/record/stop")
-    CommonResponse<Boolean> channelStopRecord(@RequestBody StreamManageDto req);
+    CommonResponse<Boolean> streamStopRecord(@RequestBody StreamManageDto req);
 
     /**
      * 检测录像状态
@@ -46,7 +46,7 @@ public interface ParsingEngineApi {
      * @return
      */
     @GetMapping("/stream-manage/check/record")
-    CommonResponse<List<String>> checkStreamRecordStatus(@RequestParam Long dispatchId, @RequestParam List<String> streamIds);
+    CommonResponse<List<String>> streamCheckRecordStatus(@RequestParam Long dispatchId, @RequestParam List<String> streamIds);
 
     /**
      * 检测流状态
@@ -55,12 +55,20 @@ public interface ParsingEngineApi {
      * @return
      */
     @GetMapping("/stream-manage/check/stream")
-    CommonResponse<List<String>> checkStreamStreamStatus(@RequestParam Long dispatchId, @RequestParam List<String> streamIds);
+    CommonResponse<List<String>> streamCheckStreamStatus(@RequestParam Long dispatchId, @RequestParam List<String> streamIds);
 
     /**
      * 删除所有的流
      * @param dispatchIds 调度服务id数组
      */
     @DeleteMapping("/stream-manage/stream/stop/all")
-    CommonResponse<?> stopAllStream(@RequestParam Set<Long> dispatchIds);
+    CommonResponse<?> streamStopAll(@RequestParam Set<Long> dispatchIds);
+
+    /**
+     * 修改录播播放速度
+     * @param streamManageDto
+     * @return
+     */
+    @PutMapping("/stream-manage/record/speed")
+    CommonResponse<?> streamUpdateRecordSpeed(StreamManageDto streamManageDto);
 }

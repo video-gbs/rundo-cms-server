@@ -43,4 +43,10 @@ public interface StreamNorthService {
      */
     List<StreamInfo> getRecordStates(List<String> streamIds, Integer recordState, Integer streamState);
 
+    /**
+     * 调整播放速度
+     * @param streamId 流id
+     * @param speed 速递
+     */
+    void updateRecordSpeed(String streamId, Float speed);
 }

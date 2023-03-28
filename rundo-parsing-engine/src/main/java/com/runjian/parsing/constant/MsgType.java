@@ -53,12 +53,23 @@ public enum MsgType {
     STREAM_CHECK_RECORD("STREAM_CHECK_RECORD"),
     STREAM_CHECK_STREAM("STREAM_CHECK_STREAM"),
     STREAM_STOP_ALL("STREAM_STOP_ALL"),
-
-    /****************** 其他 ******************/
-    ERROR("ERROR"),
-
+    STREAM_RECORD_SPEED("STREAM_RECORD_SPEED"),
     ;
 
     private final String msg;
+
+    public static MsgType getByStr(String msgStr) {
+        if (msgStr == null) {
+            return null;
+        }
+        for (MsgType msgType : MsgType.values()) {
+            if (msgStr.equals(msgType.getMsg())){
+                return msgType;
+            }
+        }
+        return null;
+    }
+
+
 
 }

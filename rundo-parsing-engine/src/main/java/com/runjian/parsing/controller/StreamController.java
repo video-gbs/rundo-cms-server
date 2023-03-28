@@ -1,14 +1,18 @@
 package com.runjian.parsing.controller;
 
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.constant.StandardName;
 import com.runjian.common.validator.ValidatorService;
+import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.service.north.StreamNorthService;
 import com.runjian.parsing.vo.request.StreamManageReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -36,7 +40,7 @@ public class StreamController {
     public DeferredResult<CommonResponse<?>> streamPlayStop(@RequestBody StreamManageReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        streamNorthService.streamNorthStopPlay(req.getDispatchId(), req.getStreamId(), response);
+        streamNorthService.customEvent(req.getDispatchId(), req.getStreamId(), req.getMapData(), MsgType.STREAM_PLAY_STOP, response);
         return response;
     }
 
@@ -49,7 +53,7 @@ public class StreamController {
     public DeferredResult<CommonResponse<?>> streamRecordStop(@RequestBody StreamManageReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        streamNorthService.streamNorthStopRecord(req.getDispatchId(), req.getStreamId(), response);
+        streamNorthService.customEvent(req.getDispatchId(), req.getStreamId(), req.getMapData(), MsgType.STREAM_RECORD_STOP, response);
         return response;
     }
 
@@ -62,7 +66,20 @@ public class StreamController {
     public DeferredResult<CommonResponse<?>> streamRecordStart(@RequestBody StreamManageReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        streamNorthService.streamNorthStartRecord(req.getDispatchId(), req.getStreamId(), response);
+        streamNorthService.customEvent(req.getDispatchId(), req.getStreamId(), req.getMapData(), MsgType.STREAM_RECORD_START, response);
+        return response;
+    }
+
+    /**
+     * 调整录播播放速度
+     * @param req
+     * @return
+     */
+    @PutMapping("/record/speed")
+    public DeferredResult<CommonResponse<?>> streamRecordSpeed(@RequestBody StreamManageReq req){
+        validatorService.validateRequest(req);
+        final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
+        streamNorthService.customEvent(req.getDispatchId(), req.getStreamId(), req.getMapData(), MsgType.STREAM_RECORD_SPEED, response);
         return response;
     }
 
@@ -75,7 +92,9 @@ public class StreamController {
     @GetMapping("/check/record")
     public DeferredResult<CommonResponse<?>> checkStreamRecordStatus(@RequestParam Long dispatchId, @RequestParam List<String> streamIds){
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        streamNorthService.checkStreamRecordStatus(dispatchId, streamIds, response);
+        Map<String, Object> mapData = new HashMap<>(1);
+        mapData.put(StandardName.STREAM_ID_LIST, streamIds);
+        streamNorthService.customEvent(dispatchId, null, mapData, MsgType.STREAM_CHECK_RECORD, response);
         return response;
     }
 
@@ -88,7 +107,9 @@ public class StreamController {
     @GetMapping("/check/stream")
     public DeferredResult<CommonResponse<?>> checkStreamStatus(@RequestParam Long dispatchId, @RequestParam List<String> streamIds){
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        streamNorthService.checkStreamStatus(dispatchId, streamIds, response);
+        Map<String, Object> mapData = new HashMap<>(1);
+        mapData.put(StandardName.STREAM_ID_LIST, streamIds);
+        streamNorthService.customEvent(dispatchId, null, mapData, MsgType.STREAM_CHECK_STREAM, response);
         return response;
     }
 
@@ -99,7 +120,11 @@ public class StreamController {
      */
     @DeleteMapping("/stream/stop/all")
     public CommonResponse<?> stopAllStream(@RequestParam Set<Long> dispatchIds){
-        streamNorthService.stopAllStream(dispatchIds);
+        for (Long dispatchId : dispatchIds){
+            Map<String, Object> mapData = new HashMap<>(1);
+            mapData.put(StandardName.STREAM_DISPATCH_ID, dispatchId);
+            streamNorthService.customEvent(dispatchId, null, mapData, MsgType.STREAM_STOP_ALL, null);
+        }
         return CommonResponse.success();
     }
 }

@@ -2,7 +2,6 @@ package com.runjian.parsing.mq.listener;
 
 import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.rabbitmq.client.Channel;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
@@ -21,7 +20,6 @@ import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,7 +50,7 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
         try {
             CommonMqDto<?> mqRequest = JSON.parseObject(new String(message.getBody()), CommonMqDto.class);
             Optional<DispatchInfo> dispatchInfoOp = dispatchMapper.selectBySerialNum(mqRequest.getSerialNum());
-            if (dispatchInfoOp.isEmpty()){
+            if (dispatchInfoOp.isEmpty()) {
                 CommonMqDto<StreamConvertDto> mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
                 mqResponse.copyRequest(mqRequest);
                 // 发送重新注册命令
@@ -63,34 +61,23 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
             }
             DispatchInfo dispatchInfo = dispatchInfoOp.get();
 
-            if (!StringUtils.isNumber(mqRequest.getMsgId())){
-                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "流媒体异常消息记录", mqRequest.getMsgType(), mqRequest.getMsg());
-                }else if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_RESULT.getMsg())){
-                    streamSouthService.streamPlayResult(dispatchInfo.getId(), mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CLOSE.getMsg())) {
-                    streamSouthService.streamClose(dispatchInfo.getId(), mqRequest.getData());
+            if (!StringUtils.isNumber(mqRequest.getMsgId())) {
+                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()) {
+                    streamSouthService.errorEvent(null, mqRequest);
+                }else {
+                    streamSouthService.msgDistribute(mqRequest.getMsgType(), dispatchInfo.getId(), null, mqRequest.getData());
                 }
-            }else {
-                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            } else {
+                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()) {
                     streamSouthService.errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
-                } else if (mqRequest.getMsgType().equals(MsgType.STREAM_PLAY_STOP.getMsg())) {
-                    streamSouthService.streamStopPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.STREAM_RECORD_START.getMsg())) {
-                    streamSouthService.streamStartRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.STREAM_RECORD_STOP.getMsg())) {
-                    streamSouthService.streamStopRecord(Long.parseLong(mqRequest.getMsgId()),mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CHECK_STREAM.getMsg())) {
-                    streamSouthService.streamCheckStream(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.STREAM_CHECK_RECORD.getMsg())) {
-                    streamSouthService.streamCheckRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
+                } else {
+                    streamSouthService.msgDistribute(mqRequest.getMsgType(), dispatchInfo.getId(), Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
                 }
             }
-
         } catch (Exception ex) {
-            if (ex instanceof BusinessException){
+            if (ex instanceof BusinessException) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "处理失败", new String(message.getBody()), ex.getMessage());
-            }else {
+            } else {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "处理失败", new String(message.getBody()), ex);
             }
         } finally {

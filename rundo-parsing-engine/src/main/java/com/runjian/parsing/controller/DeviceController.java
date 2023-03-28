@@ -5,6 +5,7 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.parsing.constant.IdType;
+import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.service.common.ProtocolService;
 import com.runjian.parsing.service.south.GatewayService;
 import com.runjian.parsing.vo.request.DeviceControlReq;
@@ -42,7 +43,7 @@ public class DeviceController {
     @GetMapping("/device/total-sync")
     public CommonResponse<?> gatewayTotalSync(@RequestParam Set<Long> gatewayIds){
         for (Long gatewayId : gatewayIds){
-            protocolService.getNorthProtocol(gatewayId, IdType.GATEWAY).deviceTotalSync(gatewayId);
+            protocolService.getNorthProtocol(gatewayId, IdType.GATEWAY).msgDistribute(MsgType.DEVICE_TOTAL_SYNC, gatewayId, IdType.GATEWAY, null, null);
         }
         return CommonResponse.success();
     }
@@ -55,7 +56,7 @@ public class DeviceController {
     @GetMapping("/device/sync")
     public DeferredResult<CommonResponse<?>> deviceSync(@RequestParam Long deviceId){
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(deviceId, IdType.DEVICE).deviceSync(deviceId, response);
+        protocolService.getNorthProtocol(deviceId, IdType.GATEWAY).msgDistribute(MsgType.DEVICE_SYNC, deviceId, IdType.DEVICE, null, response);
         return response;
     }
 
@@ -68,7 +69,7 @@ public class DeviceController {
     public DeferredResult<CommonResponse<?>> deviceAdd(@RequestBody DeviceControlReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(req.getGatewayId(), IdType.GATEWAY).deviceAdd(req.getGatewayId(), req.getDataMap(), response);
+        protocolService.getNorthProtocol(req.getGatewayId(), IdType.GATEWAY).msgDistribute(MsgType.DEVICE_ADD, req.getGatewayId(), IdType.GATEWAY, req.getDataMap(), response);
         return response;
     }
 
@@ -80,7 +81,7 @@ public class DeviceController {
     @DeleteMapping("/device/delete")
     DeferredResult<CommonResponse<?>> deviceDelete(@RequestParam Long deviceId){
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(deviceId, IdType.DEVICE).deviceDelete(deviceId, response);
+        protocolService.getNorthProtocol(deviceId, IdType.DEVICE).msgDistribute(MsgType.DEVICE_DELETE, deviceId, IdType.DEVICE, null, response);
         return response;
     }
 
@@ -92,7 +93,7 @@ public class DeviceController {
     @GetMapping("/channel/sync")
     public DeferredResult<CommonResponse<?>> channelSync(@RequestParam Long deviceId){
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(deviceId, IdType.DEVICE).channelSync(deviceId, response);
+        protocolService.getNorthProtocol(deviceId, IdType.DEVICE).msgDistribute(MsgType.CHANNEL_SYNC, deviceId, IdType.DEVICE, null, response);
         return response;
     }
 
@@ -105,7 +106,7 @@ public class DeviceController {
     public DeferredResult<CommonResponse<?>> channelPtzControl(@RequestBody DeviceControlReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).channelPtzControl(req.getChannelId(), req.getDataMap(), response);
+        protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).msgDistribute(MsgType.CHANNEL_PTZ_CONTROL, req.getChannelId(), IdType.CHANNEL, req.getDataMap(), response);
         return response;
     }
 
@@ -118,7 +119,7 @@ public class DeviceController {
     public DeferredResult<CommonResponse<?>> channelPlay(@RequestBody DeviceControlReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).channelPlay(req.getChannelId(), req.getDataMap(), response);
+        protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).msgDistribute(MsgType.CHANNEL_PLAY, req.getChannelId(), IdType.CHANNEL, req.getDataMap(), response);
         return response;
     }
 
@@ -131,7 +132,7 @@ public class DeviceController {
     public DeferredResult<CommonResponse<?>> channelRecord(@RequestBody DeviceControlReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).channelRecord(req.getChannelId(), req.getDataMap(), response);
+        protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).msgDistribute(MsgType.CHANNEL_RECORD_INFO, req.getChannelId(), IdType.CHANNEL, req.getDataMap(), response);
         return response;
     }
 
@@ -144,7 +145,7 @@ public class DeviceController {
     public DeferredResult<CommonResponse<?>> channelPlayback(@RequestBody DeviceControlReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
-        protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).channelPlayback(req.getChannelId(), req.getDataMap(), response);
+        protocolService.getNorthProtocol(req.getChannelId(), IdType.CHANNEL).msgDistribute(MsgType.CHANNEL_PLAYBACK, req.getChannelId(), IdType.CHANNEL, req.getDataMap(), response);
         return response;
     }
 
