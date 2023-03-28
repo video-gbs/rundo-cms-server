@@ -5,6 +5,7 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
+import com.runjian.common.constant.MsgType;
 import com.runjian.common.constant.PlayType;
 import com.runjian.stream.dao.GatewayDispatchMapper;
 import com.runjian.stream.dao.StreamMapper;
@@ -127,14 +128,14 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         streamInfo.setRecordState(CommonEnum.DISABLE.getCode());
         streamInfo.setUpdateTime(LocalDateTime.now());
         streamMapper.updateRecordAndAutoCloseState(streamInfo);
-        CommonResponse<Boolean> commonResponse = parsingEngineApi.streamStopPlay(new StreamManageDto(streamInfo.getDispatchId(), streamId));
+        CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_PLAY_STOP, 10L));
         if (commonResponse.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向服务", "流媒体交互失败", streamId, commonResponse.getMsg());
             streamMapper.deleteByStreamId(streamId);
             return;
         }
-        Boolean isSuccess = commonResponse.getData();
-        if (Objects.nonNull(isSuccess) && isSuccess){
+
+        if (Boolean.getBoolean(commonResponse.getData().toString())){
             streamMapper.deleteByStreamId(streamId);
         }
     }
@@ -145,10 +146,9 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (streamInfo.getRecordState().equals(CommonEnum.ENABLE.getCode())){
             return true;
         }
-        CommonResponse<Boolean> response = parsingEngineApi.streamStartRecord(new StreamManageDto(streamInfo.getDispatchId(), streamId));
+        CommonResponse<?> response = parsingEngineApi.streamCustomEvent(new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_START, 10L));
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
-        Boolean isSuccess = response.getData();
-        if (Objects.nonNull(isSuccess) && isSuccess){
+        if (Boolean.getBoolean(response.getData().toString())){
             streamInfo.setRecordState(CommonEnum.ENABLE.getCode());
             streamInfo.setUpdateTime(LocalDateTime.now());
             streamMapper.updateRecordState(streamInfo);
@@ -162,10 +162,9 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (streamInfo.getRecordState().equals(CommonEnum.DISABLE.getCode())){
             return true;
         }
-        CommonResponse<Boolean> response = parsingEngineApi.streamStopRecord(new StreamManageDto(streamInfo.getDispatchId(), streamId));
+        CommonResponse<?> response = parsingEngineApi.streamCustomEvent(new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_STOP, 10L));
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
-        Boolean isSuccess = response.getData();
-        if (Objects.nonNull(isSuccess) && isSuccess){
+        if (Boolean.getBoolean(response.getData().toString())){
             streamInfo.setRecordState(CommonEnum.DISABLE.getCode());
             streamInfo.setUpdateTime(LocalDateTime.now());
             streamMapper.updateRecordState(streamInfo);
@@ -187,9 +186,9 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (streamInfo.getRecordState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "视频未正常播放，无法调整速度");
         }
-        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId);
+        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_SPEED, 10L);
         streamManageDto.put("speed", speed);
-        CommonResponse<?> commonResponse = parsingEngineApi.streamUpdateRecordSpeed(streamManageDto);
+        CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
         commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
     }
 

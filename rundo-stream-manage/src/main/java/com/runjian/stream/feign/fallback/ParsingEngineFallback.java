@@ -20,28 +20,9 @@ public class ParsingEngineFallback implements FallbackFactory<ParsingEngineApi> 
     @Override
     public ParsingEngineApi create(Throwable cause) {
         return new ParsingEngineApi() {
-            @Override
-            public CommonResponse<Boolean> streamStopPlay(StreamManageDto req) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
 
             @Override
-            public CommonResponse<Boolean> streamStartRecord(StreamManageDto req) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
-
-            @Override
-            public CommonResponse<Boolean> streamStopRecord(StreamManageDto req) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
-
-            @Override
-            public CommonResponse<List<String>> streamCheckRecordStatus(Long dispatchId, List<String> streamIds) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
-
-            @Override
-            public CommonResponse<List<String>> streamCheckStreamStatus(Long dispatchId, List<String> streamIds) {
+            public CommonResponse<?> streamCustomEvent(StreamManageDto req) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
 
@@ -50,10 +31,6 @@ public class ParsingEngineFallback implements FallbackFactory<ParsingEngineApi> 
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
 
-            @Override
-            public CommonResponse<?> streamUpdateRecordSpeed(StreamManageDto streamManageDto) {
-                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
-            }
         };
     }
 }

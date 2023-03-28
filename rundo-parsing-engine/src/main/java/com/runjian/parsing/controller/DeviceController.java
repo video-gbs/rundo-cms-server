@@ -5,9 +5,8 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.parsing.constant.IdType;
-import com.runjian.parsing.constant.MsgType;
+import com.runjian.common.constant.MsgType;
 import com.runjian.parsing.service.common.ProtocolService;
-import com.runjian.parsing.service.south.GatewayService;
 import com.runjian.parsing.vo.request.DeviceControlReq;
 import com.runjian.parsing.vo.request.DeviceCustomEventReq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class DeviceController {
 
 
     /**
-     *
+     * 设备全量同步
      * @param gatewayIds
      * @return
      */

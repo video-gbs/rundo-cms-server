@@ -1,13 +1,11 @@
 package com.runjian.parsing.service.protocol.impl;
 
-import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.StandardName;
 import com.runjian.parsing.constant.IdType;
-import com.runjian.parsing.constant.MsgType;
+import com.runjian.common.constant.MsgType;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.DeviceInfo;
-import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.service.common.DataBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -7,7 +7,7 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
-import com.runjian.parsing.constant.MsgType;
+import com.runjian.common.constant.MsgType;
 import com.runjian.parsing.dao.DispatchMapper;
 import com.runjian.parsing.entity.DispatchInfo;
 import com.runjian.parsing.mq.config.RabbitMqSender;

@@ -1,8 +1,7 @@
 package com.runjian.parsing.service.north.impl;
 
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.common.constant.StandardName;
-import com.runjian.parsing.constant.MsgType;
+import com.runjian.common.constant.MsgType;
 import com.runjian.parsing.service.common.StreamTaskService;
 import com.runjian.parsing.service.north.StreamNorthService;
 import com.runjian.parsing.vo.dto.StreamConvertDto;

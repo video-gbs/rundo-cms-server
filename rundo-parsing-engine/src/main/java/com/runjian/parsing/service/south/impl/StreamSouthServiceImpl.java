@@ -6,7 +6,7 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.StandardName;
-import com.runjian.parsing.constant.MsgType;
+import com.runjian.common.constant.MsgType;
 import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.feign.StreamManageApi;
 import com.runjian.parsing.service.common.StreamTaskService;
