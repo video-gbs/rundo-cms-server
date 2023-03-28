@@ -65,25 +65,24 @@ public class DefaultSouthProtocol implements SouthProtocol {
         switch (MsgType.getByStr(msgType)){
             case DEVICE_SIGN_IN:
                 deviceSignIn(mainId, data);
-                break;
+                return;
             case DEVICE_TOTAL_SYNC:
                 deviceBatchSignIn(mainId, data);
-                break;
+                return;
             case DEVICE_SYNC:
                 deviceSync(mainId, data);
-                break;
+                return;
             case DEVICE_ADD:
                 deviceAdd(mainId, data);
-                break;
+                return;
             case DEVICE_DELETE:
                 deviceDelete(mainId, data);
-                break;
+                return;
             case CHANNEL_SYNC:
                 channelSync(mainId, data);
-                break;
+                return;
             default:
                 customEvent(mainId, data);
-                break;
         }
     }
 

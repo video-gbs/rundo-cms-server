@@ -39,7 +39,7 @@ public class Gb28181NorthProtocol extends DefaultNorthProtocol {
         switch (msgType){
             case DEVICE_ADD:
                 deviceAdd(mainId, dataMap, response);
-                break;
+                return;
         }
         super.msgDistribute(msgType, mainId, idType, dataMap, response);
     }

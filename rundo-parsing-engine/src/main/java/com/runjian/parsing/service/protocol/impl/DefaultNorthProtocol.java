@@ -43,7 +43,7 @@ public class DefaultNorthProtocol implements NorthProtocol {
         switch (msgType){
             case DEVICE_DELETE:
                 deviceDelete(mainId, response);
-                break;
+                return;
             default:
                 customEvent(mainId, idType, msgType.getMsg(), dataMap, response);
         }
