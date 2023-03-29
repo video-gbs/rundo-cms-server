@@ -80,7 +80,7 @@ public class StreamNorthController {
     @PutMapping("/record/speed")
     public CommonResponse<?> updateRecordSpeed(@RequestBody PutRecordSpeedReq req){
         validatorService.validateRequest(req);
-        streamNorthService.updateRecordSpeed(req.getStreamId(), req.getSpeed());
+        streamNorthService.speedRecord(req.getStreamId(), req.getSpeed());
         return CommonResponse.success();
     }
 

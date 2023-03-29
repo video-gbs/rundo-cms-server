@@ -1,7 +1,7 @@
 package com.runjian.parsing.service.protocol;
 
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.parsing.constant.IdType;
+import com.runjian.common.constant.IdType;
 import com.runjian.common.constant.MsgType;
 import org.springframework.web.context.request.async.DeferredResult;
 

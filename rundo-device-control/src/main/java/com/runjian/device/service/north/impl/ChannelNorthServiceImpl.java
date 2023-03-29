@@ -90,7 +90,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         if (!deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, String.format("设备%s是未注册成功的设备，不允许操作", deviceId));
         }
-        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(null, deviceId, null, MsgType.CHANNEL_SYNC, 10L));
+        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.CHANNEL_SYNC, 10L));
         if (response.getCode() != 0) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
@@ -251,7 +251,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
         Map<String, Object> responseMapData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.LIVE, recordState, autoCloseState);
 
-        DeviceControlReq deviceReq = new DeviceControlReq(null, null, channelId, MsgType.CHANNEL_PLAY, 10L);
+        DeviceControlReq deviceReq = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PLAY, 10L);
         deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
         deviceReq.putData(StandardName.STREAM_MODE, StreamType.getMsgByCode(streamType));
@@ -292,8 +292,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Override
     public VideoRecordRsp channelRecord(Long channelId, LocalDateTime startTime, LocalDateTime endTime) {
         getChannelInfoAndValid(channelId);
-        DeviceControlReq deviceReq = new DeviceControlReq(null, null, channelId, MsgType.CHANNEL_RECORD_INFO, 10L);
-        deviceReq.setChannelId(channelId);
+        DeviceControlReq deviceReq = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_RECORD_INFO, 10L);
         deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         CommonResponse<?> response = parsingEngineApi.customEvent(deviceReq);
@@ -319,7 +318,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         ChannelInfo channelInfo = getChannelInfoAndValid(channelId);
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
         Map<String, Object> streamData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.RECORD, recordState, autoCloseState);
-        DeviceControlReq deviceReq = new DeviceControlReq(null, null, channelId, MsgType.CHANNEL_PLAYBACK, 10L);
+        DeviceControlReq deviceReq = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PLAYBACK, 10L);
         deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
         deviceReq.putData(StandardName.STREAM_MODE, StreamType.getMsgByCode(streamType));
@@ -361,7 +360,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Override
     public void channelPtzControl(Long channelId, Integer cmdCode, Integer horizonSpeed, Integer verticalSpeed, Integer zoomSpeed, Integer totalSpeed) {
         getChannelInfoAndValid(channelId);
-        DeviceControlReq req = new DeviceControlReq(null, null, channelId, MsgType.CHANNEL_PTZ_CONTROL, 10L);
+        DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_CONTROL, 10L);
         req.putData(StandardName.PTZ_CMD_CODE, cmdCode);
         req.putData(StandardName.PTZ_HORIZON_SPEED, horizonSpeed);
         req.putData(StandardName.PTZ_VERTICAL_SPEED, verticalSpeed);

@@ -85,6 +85,23 @@ public class StandardName {
      */
     public static final String STREAM_DISPATCH_ID = "dispatchId";
 
+    /***************************录像播放标准名称****************************/
+
+    /**
+     * 录像播放速度
+     */
+    public static final String RECORD_SPEED = "speed";
+
+    /**
+     * 录像播放当前播放时间
+     */
+    public static final String RECORD_CURRENT_TIME = "currentTime";
+
+    /**
+     * 录像播放目标播放时间
+     */
+    public static final String RECORD_TARGET_TIME = "targetTime";
+
     /***************************云台控制类标准名称****************************/
 
     /**
@@ -159,6 +176,7 @@ public class StandardName {
      * 响应
      */
     public static final String COM_RESULT = "result";
+
 
 
 }
