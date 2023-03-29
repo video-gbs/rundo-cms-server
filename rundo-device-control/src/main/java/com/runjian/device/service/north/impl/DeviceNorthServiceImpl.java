@@ -1,6 +1,7 @@
 package com.runjian.device.service.north.impl;
 
 
+import com.alibaba.fastjson2.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
@@ -23,6 +24,7 @@ import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
 import com.runjian.device.vo.response.PostDeviceAddRsp;
+import com.runjian.device.vo.response.VideoPlayRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -181,7 +183,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备同步失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        DeviceSyncRsp data = (DeviceSyncRsp) response.getData();
+        DeviceSyncRsp data = JSONObject.parseObject(JSONObject.toJSONString(response.getData()), DeviceSyncRsp.class);
         LocalDateTime nowTime = LocalDateTime.now();
         detailBaseService.saveOrUpdateDetail(deviceId, null,  DetailType.DEVICE.getCode(), data.getIp(), data.getPort(), data.getName(), data.getManufacturer(), data.getModel(), data.getFirmware(), data.getPtzType(), nowTime);
         return data;
@@ -201,7 +203,6 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备删除失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        ;
 
         // 判断网关是否删除成功
         if (Boolean.getBoolean(response.getData().toString())){

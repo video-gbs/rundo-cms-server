@@ -263,7 +263,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, videoPlayRspCommonResponse.getMsg());
         }
-        return (VideoPlayRsp) videoPlayRspCommonResponse.getData();
+        return JSONObject.parseObject(JSONObject.toJSONString(videoPlayRspCommonResponse.getData()), VideoPlayRsp.class);
     }
 
     /**
@@ -302,7 +302,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频录像数据获取失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        return (VideoRecordRsp) response.getData();
+        return JSONObject.parseObject(JSONObject.toJSONString(response.getData()), VideoRecordRsp.class);
     }
 
     /**
@@ -332,7 +332,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频回放失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, videoPlayRspCommonResponse.getMsg());
         }
-        return (VideoPlayRsp) videoPlayRspCommonResponse.getData();
+        return JSONObject.parseObject(JSONObject.toJSONString(videoPlayRspCommonResponse.getData()), VideoPlayRsp.class);
     }
 
 
