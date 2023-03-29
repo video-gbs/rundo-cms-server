@@ -6,6 +6,7 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
+import com.runjian.common.constant.MsgType;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.parsing.constant.*;
 import com.runjian.parsing.mq.config.RabbitMqConfig;
@@ -24,8 +25,6 @@ import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -63,7 +62,6 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
 
     /**
      * 消息处理
-     *
      * @param message
      * @param channel
      * @throws Exception
@@ -80,88 +78,50 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                 return;
             }
 
-            // 判断是否是注册信息
-            if (mqRequest.getMsgType().equals(MsgType.GATEWAY_HEARTBEAT.getMsg())) {
-                Long gatewayId = gatewayService.heartbeat(mqRequest.getSerialNum(), mqRequest.getData().toString());
-                CommonMqDto<?> mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
-                mqResponse.copyRequest(mqRequest);
-                // 判断设备信息是否存在
-                if (Objects.isNull(gatewayId)) {
-                    // 发送重新注册命令
-                    mqResponse.setMsgType(MsgType.GATEWAY_RE_SIGN_IN.getMsg());
-                    String mqId = UUID.randomUUID().toString().replace("-", "");
-                    rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getPublicSetQueueData().getExchangeId(), mqDefaultProperties.getPublicSetQueueData().getRoutingKey(), mqId, mqResponse, true);
-                }
-            } else if (mqRequest.getMsgType().equals(MsgType.DISPATCH_HEARTBEAT.getMsg())) {
-                Long dispatchId = dispatchService.heartbeat(mqRequest.getSerialNum(), mqRequest.getData().toString());
-                CommonMqDto<?> mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
-                mqResponse.copyRequest(mqRequest);
-                // 判断设备信息是否存在
-                if (Objects.isNull(dispatchId)) {
-                    // 发送重新注册命令
-                    mqResponse.setMsgType(MsgType.DISPATCH_RE_SIGN_IN.getMsg());
-                    String mqId = UUID.randomUUID().toString().replace("-", "");
-                    rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getPublicSetQueueData().getExchangeId(), mqDefaultProperties.getPublicSetQueueData().getRoutingKey(), mqId, mqResponse, true);
-                }
-            } else if (mqRequest.getMsgType().equals(MsgType.GATEWAY_SIGN_IN.getMsg())) {
-                log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "公共信息监听器", "接收到调度服务注册信息，执行注册流程", msgBody);
-                // 提取请求体信息
-                GatewaySignInReq req = JSONObject.parseObject(mqRequest.getData().toString(), GatewaySignInReq.class);
-                // 校验请求体
-                validatorService.validateRequest(req);
-                // 进行网关信息存储并发送信息到上层平台
-                SignInRsp signInRsp = gatewayService.signIn(mqRequest.getSerialNum(), SignType.MQ.getCode(), GatewayType.getCodeByMsg(req.getGatewayType()), req.getProtocol(), req.getIp(), req.getPort(), req.getOutTime());
-                signInRsp.setSignType(SignType.MQ.getMsg());
-                String key1 = MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + signInRsp.getGatewayId();
-                String key2 = MqConstant.GATEWAY_PREFIX + MqConstant.SET_GET_PREFIX + signInRsp.getGatewayId();
-                // 判断是否是第一次注册
-                if (signInRsp.getIsFirstSignIn()) {
-                    // 生成消息通讯队列
-                    rabbitMqConfig.addQueue(mqDefaultProperties.getGatewayExchangeId(), key1, 15000);
-                    Queue queue = rabbitMqConfig.addQueue(mqDefaultProperties.getGatewayExchangeId(), key2, 15000);
-                    // 添加监听队列
-                    SimpleMessageListenerContainer dispatch = MqListenerConfig.containerMap.get(MqConstant.GATEWAY_PREFIX);
-                    if (Objects.isNull(dispatch)) {
-                        throw new BusinessException(BusinessErrorEnums.MQ_CONTAINER_NOT_FOUND);
+            switch (MsgType.getByStr(MsgType.GATEWAY_HEARTBEAT.getMsg())){
+                case GATEWAY_HEARTBEAT:
+                    Long gatewayId = gatewayService.heartbeat(mqRequest.getSerialNum(), mqRequest.getData().toString());
+                    CommonMqDto<?> gatewayResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
+                    gatewayResponse.copyRequest(mqRequest);
+                    // 判断设备信息是否存在
+                    if (Objects.isNull(gatewayId)) {
+                        // 发送重新注册命令
+                        gatewayResponse.setMsgType(MsgType.GATEWAY_RE_SIGN_IN.getMsg());
+                        String mqId = UUID.randomUUID().toString().replace("-", "");
+                        rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getPublicSetQueueData().getExchangeId(), mqDefaultProperties.getPublicSetQueueData().getRoutingKey(), mqId, gatewayResponse, true);
                     }
-                    dispatch.addQueues(queue);
-                }
-                signInRsp.setMqExchange(rabbitMqProperties.getExchangeData(mqDefaultProperties.getGatewayExchangeId()).getExchange().getName());
-                signInRsp.setMqGetQueue(key1);
-                signInRsp.setMqSetQueue(key2);
-                CommonMqDto<?> mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success(signInRsp));
-                mqResponse.copyRequest(mqRequest);
-                // 发送消息到公共频道
-                String mqId = UUID.randomUUID().toString().replace("-", "");
-                rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getPublicSetQueueData().getExchangeId(), mqDefaultProperties.getPublicSetQueueData().getRoutingKey(), mqId, mqResponse, true);
-            } else if (mqRequest.getMsgType().equals(MsgType.DISPATCH_SIGN_IN.getMsg())) {
-                log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "公共信息监听器", "接收到调度服务注册信息，执行注册流程", msgBody);
-                DispatchSignInReq req = JSONObject.parseObject(mqRequest.getData().toString(), DispatchSignInReq.class);
-                validatorService.validateRequest(req);
-                SignInRsp signInRsp = dispatchService.signIn(mqRequest.getSerialNum(), SignType.MQ.getCode(), req.getIp(), req.getPort(), req.getOutTime());
-                signInRsp.setSignType(SignType.MQ.getMsg());
-                String key1 = MqConstant.STREAM_PREFIX + MqConstant.GET_SET_PREFIX + signInRsp.getDispatchId();
-                String key2 = MqConstant.STREAM_PREFIX + MqConstant.SET_GET_PREFIX + signInRsp.getDispatchId();
-                // 判断是否是第一次注册
-                if (signInRsp.getIsFirstSignIn()) {
-                    // 生成消息通讯队列
-                    rabbitMqConfig.addQueue(mqDefaultProperties.getStreamExchangeId(), key1, 15000);
-                    Queue queue = rabbitMqConfig.addQueue(mqDefaultProperties.getStreamExchangeId(), key2, 15000);
-                    // 添加监听队列
-                    SimpleMessageListenerContainer dispatch = MqListenerConfig.containerMap.get(MqConstant.STREAM_PREFIX);
-                    if (Objects.isNull(dispatch)) {
-                        throw new BusinessException(BusinessErrorEnums.MQ_CONTAINER_NOT_FOUND);
+                    return;
+                case DISPATCH_HEARTBEAT:
+                    Long dispatchId = dispatchService.heartbeat(mqRequest.getSerialNum(), mqRequest.getData().toString());
+                    CommonMqDto<?> dispatchResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
+                    dispatchResponse.copyRequest(mqRequest);
+                    // 判断设备信息是否存在
+                    if (Objects.isNull(dispatchId)) {
+                        // 发送重新注册命令
+                        dispatchResponse.setMsgType(MsgType.DISPATCH_RE_SIGN_IN.getMsg());
+                        String mqId = UUID.randomUUID().toString().replace("-", "");
+                        rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getPublicSetQueueData().getExchangeId(), mqDefaultProperties.getPublicSetQueueData().getRoutingKey(), mqId, dispatchResponse, true);
                     }
-                    dispatch.addQueues(queue);
-                }
-                signInRsp.setMqExchange(rabbitMqProperties.getExchangeData(mqDefaultProperties.getStreamExchangeId()).getExchange().getName());
-                signInRsp.setMqGetQueue(key1);
-                signInRsp.setMqSetQueue(key2);
-                CommonMqDto<?> mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success(signInRsp));
-                mqResponse.copyRequest(mqRequest);
-                // 发送消息到公共频道
-                String mqId = UUID.randomUUID().toString().replace("-", "");
-                rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getPublicSetQueueData().getExchangeId(), mqDefaultProperties.getPublicSetQueueData().getRoutingKey(), mqId, mqResponse, true);
+                    return;
+                case GATEWAY_SIGN_IN:
+                    log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "公共信息监听器", "接收到调度服务注册信息，执行注册流程", msgBody);
+                    // 提取请求体信息
+                    GatewaySignInReq gatewaySignInReq = JSONObject.parseObject(mqRequest.getData().toString(), GatewaySignInReq.class);
+                    // 校验请求体
+                    validatorService.validateRequest(gatewaySignInReq);
+                    // 进行网关信息存储并发送信息到上层平台
+                    SignInRsp gatewaySignInRsp = gatewayService.signIn(mqRequest.getSerialNum(), SignType.MQ.getCode(), GatewayType.getCodeByMsg(gatewaySignInReq.getGatewayType()), gatewaySignInReq.getProtocol(), gatewaySignInReq.getIp(), gatewaySignInReq.getPort(), gatewaySignInReq.getOutTime());
+                    signIn(mqRequest, gatewaySignInRsp, ModuleType.GATEWAY);
+                    return;
+                case DISPATCH_SIGN_IN:
+                    log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "公共信息监听器", "接收到调度服务注册信息，执行注册流程", msgBody);
+                    DispatchSignInReq dispatchSignInReq = JSONObject.parseObject(mqRequest.getData().toString(), DispatchSignInReq.class);
+                    validatorService.validateRequest(dispatchSignInReq);
+                    SignInRsp dispatchSignInRsp = dispatchService.signIn(mqRequest.getSerialNum(), SignType.MQ.getCode(), dispatchSignInReq.getIp(), dispatchSignInReq.getPort(), dispatchSignInReq.getOutTime());
+                    signIn(mqRequest, dispatchSignInRsp, ModuleType.STREAM);
+                    return;
+                default:
+                    log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "公共消息监听器", "未知的消息类型", msgBody);
             }
         } catch (Exception ex) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "公共信息监听器", "公共信息处理失败", msgBody, ex);
@@ -169,5 +129,46 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
         } finally {
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), true);
         }
+    }
+
+    private void signIn(CommonMqDto<?> mqRequest, SignInRsp signInRsp, ModuleType moduleType) {
+        String key1;
+        String key2;
+        String exchangeId;
+        switch (moduleType){
+            case GATEWAY:
+                key1 = MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + signInRsp.getGatewayId();
+                key2 = MqConstant.GATEWAY_PREFIX + MqConstant.SET_GET_PREFIX + signInRsp.getGatewayId();
+                exchangeId = mqDefaultProperties.getGatewayExchangeId();
+                break;
+            case STREAM:
+                key1 = MqConstant.STREAM_PREFIX + MqConstant.GET_SET_PREFIX + signInRsp.getGatewayId();
+                key2 = MqConstant.STREAM_PREFIX + MqConstant.SET_GET_PREFIX + signInRsp.getGatewayId();
+                exchangeId = mqDefaultProperties.getStreamExchangeId();
+                break;
+            default:
+                return;
+        }
+        signInRsp.setSignType(SignType.MQ.getMsg());
+        // 判断是否是第一次注册
+        if (signInRsp.getIsFirstSignIn()) {
+            // 生成消息通讯队列
+            rabbitMqConfig.addQueue(exchangeId, key1, 15000);
+            Queue queue = rabbitMqConfig.addQueue(exchangeId, key2, 15000);
+            // 添加监听队列
+            SimpleMessageListenerContainer dispatch = MqListenerConfig.containerMap.get(MqConstant.GATEWAY_PREFIX);
+            if (Objects.isNull(dispatch)) {
+                throw new BusinessException(BusinessErrorEnums.MQ_CONTAINER_NOT_FOUND);
+            }
+            dispatch.addQueues(queue);
+        }
+        signInRsp.setMqExchange(rabbitMqProperties.getExchangeData(exchangeId).getExchange().getName());
+        signInRsp.setMqGetQueue(key1);
+        signInRsp.setMqSetQueue(key2);
+        CommonMqDto<?> mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success(signInRsp));
+        mqResponse.copyRequest(mqRequest);
+        // 发送消息到公共频道
+        String mqId = UUID.randomUUID().toString().replace("-", "");
+        rabbitMqSender.sendMsgByRoutingKey(mqDefaultProperties.getPublicSetQueueData().getExchangeId(), mqDefaultProperties.getPublicSetQueueData().getRoutingKey(), mqId, mqResponse, true);
     }
 }

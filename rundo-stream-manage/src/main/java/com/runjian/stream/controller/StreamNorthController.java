@@ -5,6 +5,7 @@ import com.runjian.common.validator.ValidatorService;
 import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.request.PostStreamApplyStreamReq;
+import com.runjian.stream.vo.request.PutRecordSpeedReq;
 import com.runjian.stream.vo.request.PutStreamOperationReq;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,18 @@ public class StreamNorthController {
     public CommonResponse<Boolean> stopRecord(@RequestBody PutStreamOperationReq req){
         validatorService.validateRequest(req);
         return CommonResponse.success(streamNorthService.stopRecord(req.getStreamId()));
+    }
+
+    /**
+     * 调整录播的播放速度
+     * @param req
+     * @return
+     */
+    @PutMapping("/record/speed")
+    public CommonResponse<?> updateRecordSpeed(@RequestBody PutRecordSpeedReq req){
+        validatorService.validateRequest(req);
+        streamNorthService.updateRecordSpeed(req.getStreamId(), req.getSpeed());
+        return CommonResponse.success();
     }
 
     /**

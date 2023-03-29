@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.feign.StreamManageApi;
+import com.runjian.parsing.vo.CommonMqDto;
 import com.runjian.parsing.vo.request.PostDispatchSignInReq;
 import com.runjian.parsing.vo.request.PutDispatchHeartbeatReq;
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -41,6 +42,10 @@ public class StreamManageFallback implements FallbackFactory<StreamManageApi> {
             @Override
             public CommonResponse<Boolean> streamCloseHandle(JSONObject req) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
+            }
+
+            @Override
+            public void commonError(CommonMqDto<?> response) {
             }
         };
     }

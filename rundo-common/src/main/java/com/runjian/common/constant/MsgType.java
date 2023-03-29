@@ -1,12 +1,10 @@
-package com.runjian.parsing.constant;
+package com.runjian.common.constant;
 
-import com.runjian.parsing.vo.CommonMqDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * 消息类型
- * @see CommonMqDto#msgType
  * @author Miracle
  * @date 2023/1/12 9:43
  */
@@ -50,15 +48,30 @@ public enum MsgType {
     STREAM_PLAY_STOP("STREAM_PLAY_STOP"),
     STREAM_RECORD_START("STREAM_RECORD_START"),
     STREAM_RECORD_STOP("STREAM_RECORD_STOP"),
+    STREAM_RECORD_SPEED("STREAM_RECORD_SPEED"),
+    STREAM_RECORD_SEEK("STREAM_RECORD_SEEK"),
+    STREAM_RECORD_PAUSE("STREAM_RECORD_PAUSE"),
+    STREAM_RECORD_RESUME("STREAM_RECORD_RESUME"),
     STREAM_CHECK_RECORD("STREAM_CHECK_RECORD"),
     STREAM_CHECK_STREAM("STREAM_CHECK_STREAM"),
     STREAM_STOP_ALL("STREAM_STOP_ALL"),
 
-    /****************** 其他 ******************/
-    ERROR("ERROR"),
-
     ;
 
     private final String msg;
+
+    public static MsgType getByStr(String msgStr) {
+        if (msgStr == null) {
+            return null;
+        }
+        for (MsgType msgType : MsgType.values()) {
+            if (msgStr.equals(msgType.getMsg())){
+                return msgType;
+            }
+        }
+        return null;
+    }
+
+
 
 }

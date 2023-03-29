@@ -6,6 +6,8 @@ import com.runjian.common.validator.ValidationResult;
 import com.runjian.common.validator.ValidatorFunction;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.NotBlank;
 import java.util.Map;
 import java.util.Objects;
 
@@ -34,6 +36,17 @@ public class DeviceControlReq implements ValidatorFunction {
      */
     @Range(min = 1, message = "非法通道id")
     private Long channelId;
+
+    /**
+     * 消息类型
+     */
+    @NotBlank(message = "消息类型不能为空")
+    private String msgType;
+
+    /**
+     * 过期时间
+     */
+    private Long outTime = 10L;
 
     /**
      * 数据集合

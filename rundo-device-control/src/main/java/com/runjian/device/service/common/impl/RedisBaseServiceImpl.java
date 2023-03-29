@@ -45,7 +45,7 @@ public class RedisBaseServiceImpl implements RedisBaseService {
         } catch (Exception ex){
             ex.printStackTrace();
             throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
-        }finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -59,7 +59,7 @@ public class RedisBaseServiceImpl implements RedisBaseService {
         } catch (Exception ex){
             ex.printStackTrace();
             throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
-        }finally {
+        } finally {
             lock.unlock();
         }
     }
