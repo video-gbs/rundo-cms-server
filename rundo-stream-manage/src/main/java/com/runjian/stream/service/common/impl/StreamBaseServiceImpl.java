@@ -1,5 +1,6 @@
 package com.runjian.stream.service.common.impl;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
@@ -101,7 +102,7 @@ public class StreamBaseServiceImpl implements StreamBaseService {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "定时检测流播放状态服务", "流媒体交互失败", String.format("流媒体id:%s", entry.getKey()), commonResponse.getMsg());
                 break;
             }
-            List<String> recordingStreamIds = (List<String>) commonResponse.getData();
+            List<String> recordingStreamIds = JSONArray.parseArray(JSONArray.toJSONString(commonResponse.getData())).toJavaList(String.class);
             if (Objects.nonNull(recordingStreamIds) && recordingStreamIds.size() > 0){
                 List<Long> dispatchNoRecordIds = entry.getValue().stream().filter(streamInfo -> recordingStreamIds.contains(streamInfo.getStreamId())).map(StreamInfo::getId).collect(Collectors.toList());
                 noRecordIds.addAll(dispatchNoRecordIds);
