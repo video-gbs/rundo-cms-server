@@ -62,7 +62,7 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
             if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
                 protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).errorEvent(taskId, mqRequest);
             }else {
-                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).msgDistribute(mqRequest.getMsgType(), taskId, mqRequest.getData());
+                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).msgDistribute(mqRequest.getMsgType(), gatewayInfo.getId(), taskId, mqRequest.getData());
             }
         } catch (Exception ex) {
             if (ex instanceof BusinessException){
