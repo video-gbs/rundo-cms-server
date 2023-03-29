@@ -97,8 +97,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        ChannelSyncRsp channelSyncRsp = JSONUtil.toBean(JSONObject.toJSONString(response.getData()), ChannelSyncRsp.class);
-//        ChannelSyncRsp channelSyncRsp = JSONObject.parseObject(response.getData().toString(), ChannelSyncRsp.class) ;
+        ChannelSyncRsp channelSyncRsp = JSONObject.parseObject(JSONObject.toJSONString(response.getData()), ChannelSyncRsp.class);
         channelSyncRsp.setNum(channelSyncRsp.getChannelDetailList().size());
         // 判断是否有通道
         if (channelSyncRsp.getNum() > 0) {
