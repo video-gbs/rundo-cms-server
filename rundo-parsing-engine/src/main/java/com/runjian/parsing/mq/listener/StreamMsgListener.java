@@ -60,20 +60,17 @@ public class StreamMsgListener implements ChannelAwareMessageListener {
                 return;
             }
             DispatchInfo dispatchInfo = dispatchInfoOp.get();
-
-            if (!StringUtils.isNumber(mqRequest.getMsgId())) {
-                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()) {
-                    streamSouthService.errorEvent(null, mqRequest);
-                }else {
-                    streamSouthService.msgDistribute(mqRequest.getMsgType(), dispatchInfo.getId(), null, mqRequest.getData());
-                }
-            } else {
-                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()) {
-                    streamSouthService.errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
-                } else {
-                    streamSouthService.msgDistribute(mqRequest.getMsgType(), dispatchInfo.getId(), Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                }
+            Long taskId = null;
+            if (StringUtils.isNumber(mqRequest.getMsgId())) {
+                taskId = Long.parseLong(mqRequest.getMsgId());
             }
+
+            if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()) {
+                streamSouthService.errorEvent(taskId, mqRequest);
+            }else {
+                streamSouthService.msgDistribute(mqRequest.getMsgType(), dispatchInfo.getId(), taskId, mqRequest.getData());
+            }
+
         } catch (Exception ex) {
             if (ex instanceof BusinessException) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "处理失败", new String(message.getBody()), ex.getMessage());

@@ -55,20 +55,14 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
                 return;
             }
             GatewayInfo gatewayInfo = gatewayInfoOp.get();
-
-            if (!StringUtils.isNumber(mqRequest.getMsgId())){
-                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).errorEvent(null, mqRequest);
-                }else {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).msgDistribute(mqRequest.getMsgType(), gatewayInfo.getId(), mqRequest.getData());
-                }
-            } else{
-                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
-                }else {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).msgDistribute(mqRequest.getMsgType(), Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                }
-
+            Long taskId = null;
+            if (StringUtils.isNumber(mqRequest.getMsgId())){
+                taskId = Long.parseLong(mqRequest.getMsgId());
+            }
+            if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).errorEvent(taskId, mqRequest);
+            }else {
+                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).msgDistribute(mqRequest.getMsgType(), taskId, mqRequest.getData());
             }
         } catch (Exception ex) {
             if (ex instanceof BusinessException){
