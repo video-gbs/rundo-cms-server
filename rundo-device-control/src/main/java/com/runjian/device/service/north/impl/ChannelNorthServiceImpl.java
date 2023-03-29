@@ -1,5 +1,6 @@
 package com.runjian.device.service.north.impl;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
@@ -95,7 +96,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        ChannelSyncRsp channelSyncRsp = (ChannelSyncRsp) response.getData();
+        ChannelSyncRsp channelSyncRsp = JSONObject.parseObject(response.getData().toString(), ChannelSyncRsp.class) ;
         channelSyncRsp.setNum(channelSyncRsp.getChannelDetailList().size());
         // 判断是否有通道
         if (channelSyncRsp.getNum() > 0) {
