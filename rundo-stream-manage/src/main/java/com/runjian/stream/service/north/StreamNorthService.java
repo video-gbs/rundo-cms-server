@@ -4,6 +4,7 @@ package com.runjian.stream.service.north;
 import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -48,5 +49,26 @@ public interface StreamNorthService {
      * @param streamId 流id
      * @param speed 速递
      */
-    void updateRecordSpeed(String streamId, Float speed);
+    void speedRecord(String streamId, Float speed);
+
+    /**
+     * 拖动时间
+     * @param streamId 流id
+     * @param currentTime 现在播放时间
+     * @param targetTime 目标播放时间
+     */
+    void seekRecord(String streamId, LocalDateTime currentTime, LocalDateTime targetTime);
+
+    /**
+     * 暂停录像播放
+     * @param streamId 流id
+     */
+    void pauseRecord(String streamId);
+
+    /**
+     * 恢复录像播放
+     * @param streamId 流id
+     */
+    void resumeRecord(String streamId);
+
 }

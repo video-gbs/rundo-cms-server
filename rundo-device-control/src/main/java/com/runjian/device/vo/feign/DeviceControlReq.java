@@ -2,6 +2,7 @@ package com.runjian.device.vo.feign;
 
 
 
+import com.runjian.common.constant.IdType;
 import com.runjian.common.constant.MsgType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,31 +20,23 @@ import java.util.Map;
 @NoArgsConstructor
 public class DeviceControlReq {
 
-    public DeviceControlReq(Long gatewayId, Long deviceId, Long channelId, MsgType msgType, Long outTime){
-        this.gatewayId = gatewayId;
-        this.deviceId = deviceId;
-        this.channelId = channelId;
+    public DeviceControlReq(Long mainId, IdType idType, MsgType msgType, Long outTime){
+        this.mainId = mainId;
+        this.idType = idType.getCode();
         this.msgType = msgType.getMsg();
         this.outTime = outTime;
     }
 
     /**
-     * 网关ID
+     * 主id
      */
-    @Range(min = 1, message = "非法网关id")
-    private Long gatewayId;
+    private Long mainId;
 
     /**
-     * 设备ID
+     * id类型
+     * @see IdType
      */
-    @Range(min = 1, message = "非法设备id")
-    private Long deviceId;
-
-    /**
-     * 通道id
-     */
-    @Range(min = 1, message = "非法通道id")
-    private Long channelId;
+    private Integer idType;
 
     /**
      * 消息类型

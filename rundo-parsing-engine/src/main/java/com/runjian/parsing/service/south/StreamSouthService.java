@@ -21,7 +21,7 @@ public interface StreamSouthService {
      * @param taskId
      * @param data
      */
-    void taskEvent(Long taskId, Object data);
+    void customEvent(Long taskId, Object data);
 
     /**
      * 错误消息返回

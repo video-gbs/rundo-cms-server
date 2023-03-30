@@ -1,7 +1,7 @@
 package com.runjian.parsing.service.protocol;
 
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.parsing.constant.IdType;
+import com.runjian.common.constant.IdType;
 import com.runjian.common.constant.MsgType;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -24,11 +24,11 @@ public interface NorthProtocol {
 
     /**
      * 消息分发
-     * @param msgType
-     * @param mainId
-     * @param idType
-     * @param dataMap
-     * @param response
+     * @param msgType 自定义消息类型
+     * @param mainId 主要id
+     * @param idType id类型
+     * @param dataMap 数据集合
+     * @param response 异步返回体
      */
     void msgDistribute(MsgType msgType, Long mainId, IdType idType, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response);
 

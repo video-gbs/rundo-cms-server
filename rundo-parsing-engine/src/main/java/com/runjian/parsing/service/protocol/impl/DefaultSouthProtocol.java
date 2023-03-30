@@ -57,33 +57,52 @@ public class DefaultSouthProtocol implements SouthProtocol {
     /**
      * 消息统一处理分发
      * @param msgType
-     * @param mainId
+     * @param taskId
      * @param data
      */
     @Override
-    public void msgDistribute(String msgType, Long mainId, Object data) {
+    public void msgDistribute(String msgType, Long gatewayId, Long taskId, Object data) {
         switch (MsgType.getByStr(msgType)){
             case DEVICE_SIGN_IN:
-                deviceSignIn(mainId, data);
+                deviceSignIn(gatewayId, data);
                 return;
             case DEVICE_TOTAL_SYNC:
-                deviceBatchSignIn(mainId, data);
+                deviceBatchSignIn(gatewayId, data);
                 return;
             case DEVICE_SYNC:
-                deviceSync(mainId, data);
+                deviceSync(taskId, data);
                 return;
             case DEVICE_ADD:
-                deviceAdd(mainId, data);
+                deviceAdd(taskId, data);
                 return;
             case DEVICE_DELETE:
-                deviceDelete(mainId, data);
+                deviceDelete(taskId, data);
                 return;
             case CHANNEL_SYNC:
-                channelSync(mainId, data);
+                channelSync(taskId, data);
                 return;
             default:
-                customEvent(mainId, data);
+                customEvent(taskId, data);
         }
+    }
+
+    @Override
+    public void customEvent(Long taskId, Object dataMap) {
+        if (Objects.isNull(taskId)){
+            return;
+        }
+        gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
+        gatewayTaskService.taskSuccess(taskId, dataMap);
+    }
+
+    @Override
+    public void errorEvent(Long taskId, CommonMqDto<?> response) {
+        log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关南向信息处理服务", "网关异常消息记录", response.getMsgType(), response);
+        if (Objects.nonNull(taskId)){
+            gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
+            gatewayTaskService.removeDeferredResult(taskId, TaskState.ERROR, response.getMsg()).setResult(response);
+        }
+        deviceControlApi.errorEvent(response);
     }
 
     /**
@@ -233,26 +252,6 @@ public class DefaultSouthProtocol implements SouthProtocol {
         }
 
         gatewayTaskService.taskSuccess(taskId, objects);
-    }
-
-
-    @Override
-    public void customEvent(Long taskId, Object dataMap) {
-        if (Objects.isNull(taskId)){
-            return;
-        }
-        gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
-        gatewayTaskService.taskSuccess(taskId, dataMap);
-    }
-
-    @Override
-    public void errorEvent(Long taskId, CommonMqDto<?> response) {
-        log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关南向信息处理服务", "网关异常消息记录", response.getMsgType(), response);
-        if (Objects.nonNull(taskId)){
-            gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
-            gatewayTaskService.removeDeferredResult(taskId, TaskState.ERROR, response.getMsg()).setResult(response);
-        }
-        deviceControlApi.errorEvent(response);
     }
 
 }

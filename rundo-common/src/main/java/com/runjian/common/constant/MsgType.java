@@ -20,7 +20,6 @@ public enum MsgType {
 
 
     /****************** 调度相关消息 ******************/
-    DEVICE_TOTAL_SYNC("DEVICE_TOTAL_SYNC"),
 
     DISPATCH_SIGN_IN("DISPATCH_SIGN_IN"),
 
@@ -29,6 +28,8 @@ public enum MsgType {
     DISPATCH_HEARTBEAT("DISPATCH_HEARTBEAT"),
 
     /****************** 设备相关消息 ******************/
+
+    DEVICE_TOTAL_SYNC("DEVICE_TOTAL_SYNC"),
     DEVICE_SIGN_IN("DEVICE_SIGN_IN"),
     DEVICE_SYNC("DEVICE_SYNC"),
     DEVICE_DELETE("DEVICE_DELETE"),

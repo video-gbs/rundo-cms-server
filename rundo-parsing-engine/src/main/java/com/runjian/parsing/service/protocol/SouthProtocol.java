@@ -20,10 +20,10 @@ public interface SouthProtocol {
     /**
      * 消息分发
      * @param msgType
-     * @param mainId
+     * @param taskId
      * @param dataMap
      */
-    void msgDistribute(String msgType, Long mainId, Object dataMap);
+    void msgDistribute(String msgType, Long gatewayId, Long taskId, Object dataMap);
 
     /**
      * 通用消息处理

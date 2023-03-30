@@ -44,12 +44,12 @@ public class StreamSouthServiceImpl implements StreamSouthService {
                 streamClose(dispatchId, data);
                 break;
             default:
-                taskEvent(taskId, data);
+                customEvent(taskId, data);
         }
     }
 
     @Override
-    public void taskEvent(Long taskId, Object dataMap) {
+    public void customEvent(Long taskId, Object dataMap) {
         if (Objects.isNull(taskId)){
             return;
         }
