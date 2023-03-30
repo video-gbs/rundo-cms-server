@@ -5,6 +5,7 @@ import com.runjian.common.validator.ValidatorService;
 import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.request.PostStreamApplyStreamReq;
+import com.runjian.stream.vo.request.PutRecordSeekReq;
 import com.runjian.stream.vo.request.PutRecordSpeedReq;
 import com.runjian.stream.vo.request.PutStreamOperationReq;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
@@ -78,11 +79,48 @@ public class StreamNorthController {
      * @return
      */
     @PutMapping("/record/speed")
-    public CommonResponse<?> updateRecordSpeed(@RequestBody PutRecordSpeedReq req){
+    public CommonResponse<?> recordSpeed(@RequestBody PutRecordSpeedReq req){
         validatorService.validateRequest(req);
         streamNorthService.speedRecord(req.getStreamId(), req.getSpeed());
         return CommonResponse.success();
     }
+
+    /**
+     * 调整录播的播放速度
+     * @param req
+     * @return
+     */
+    @PutMapping("/record/seek")
+    public CommonResponse<?> recordSeek(@RequestBody PutRecordSeekReq req){
+        validatorService.validateRequest(req);
+        streamNorthService.seekRecord(req.getStreamId(), req.getCurrentTime(), req.getTargetTime());
+        return CommonResponse.success();
+    }
+
+    /**
+     * 调整录播的播放速度
+     * @param req
+     * @return
+     */
+    @PutMapping("/record/pause")
+    public CommonResponse<?> recordPause(@RequestBody PutStreamOperationReq req){
+        validatorService.validateRequest(req);
+        streamNorthService.pauseRecord(req.getStreamId());
+        return CommonResponse.success();
+    }
+
+    /**
+     * 调整录播的播放速度
+     * @param req
+     * @return
+     */
+    @PutMapping("/record/resume")
+    public CommonResponse<?> recordResume(@RequestBody PutStreamOperationReq req){
+        validatorService.validateRequest(req);
+        streamNorthService.resumeRecord(req.getStreamId());
+        return CommonResponse.success();
+    }
+
 
     /**
      * 查询录像状态

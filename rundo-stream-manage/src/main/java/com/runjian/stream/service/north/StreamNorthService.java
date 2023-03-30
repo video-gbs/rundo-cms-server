@@ -54,10 +54,10 @@ public interface StreamNorthService {
     /**
      * 拖动时间
      * @param streamId 流id
-     * @param nowTime 现在播放时间
+     * @param currentTime 现在播放时间
      * @param targetTime 目标播放时间
      */
-    void seekRecord(String streamId, LocalDateTime nowTime, LocalDateTime targetTime);
+    void seekRecord(String streamId, LocalDateTime currentTime, LocalDateTime targetTime);
 
     /**
      * 暂停录像播放
