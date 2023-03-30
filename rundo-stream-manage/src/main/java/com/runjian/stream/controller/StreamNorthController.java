@@ -86,7 +86,7 @@ public class StreamNorthController {
     }
 
     /**
-     * 调整录播的播放速度
+     * 调整录播的播放进度
      * @param req
      * @return
      */
@@ -98,7 +98,7 @@ public class StreamNorthController {
     }
 
     /**
-     * 调整录播的播放速度
+     * 暂停录播播放
      * @param req
      * @return
      */
