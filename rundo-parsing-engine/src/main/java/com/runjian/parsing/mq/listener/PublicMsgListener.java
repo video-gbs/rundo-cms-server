@@ -78,7 +78,7 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                 return;
             }
 
-            switch (MsgType.getByStr(MsgType.GATEWAY_HEARTBEAT.getMsg())){
+            switch (MsgType.getByStr(mqRequest.getMsgType())){
                 case GATEWAY_HEARTBEAT:
                     Long gatewayId = gatewayService.heartbeat(mqRequest.getSerialNum(), mqRequest.getData().toString());
                     CommonMqDto<?> gatewayResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
