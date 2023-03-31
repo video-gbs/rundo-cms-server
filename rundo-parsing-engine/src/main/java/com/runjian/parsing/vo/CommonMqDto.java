@@ -2,6 +2,7 @@ package com.runjian.parsing.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.constant.MsgType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ public class CommonMqDto<T> extends CommonResponse<T> {
     private String serialNum;
 
     /**
-     * 消息类型 {@link com.runjian.parsing.constant.MsgType}
+     * 消息类型 {@link MsgType}
      */
     private String msgType;
 

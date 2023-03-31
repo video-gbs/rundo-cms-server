@@ -42,12 +42,35 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
 
     @Override
     public List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
-        List<MenuInfo> menuInfoList = new ArrayList<>();
+        LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
         if (null != dto.getAppId()) {
-            menuInfoList = menuInfoMapper.selectByAppId(dto.getAppId());
+            queryWrapper.eq(MenuInfo::getAppId, dto.getAppId());
+        }
+        if (null != dto.getMenuName() && !"".equals(dto.getMenuName())) {
+            queryWrapper.like(MenuInfo::getTitle, dto.getMenuName());
+        }
+
+        if (null != dto.getUrl() && !"".equals(dto.getUrl())) {
+            queryWrapper.like(MenuInfo::getPath, dto.getUrl());
+        }
+        List<MenuInfo> menuInfoList = menuInfoMapper.selectList(queryWrapper);
+        Long rootNodeId = 1L;
+        int flag = 0;
+        for (MenuInfo info : menuInfoList) {
+            if (info.getId().longValue() == rootNodeId) {
+                flag = flag + 1;
+            }
+        }
+
+        if (flag == 0) {
+            MenuInfo menuInfo = menuInfoMapper.selectById(1);
+            menuInfoList.add(menuInfo);
+        }
+
+        if (null != dto.getAppId()) {
             AppInfo appInfo = appInfoMapper.selectById(dto.getAppId());
             menuInfoList.stream().filter(bean -> {
-                if (bean.getId().equals(1L)) {
+                if (bean.getId().equals(rootNodeId)) {
                     bean.setAppId(appInfo.getId());
                     bean.setIcon(appInfo.getAppIcon());
                     bean.setTitle(appInfo.getAppName());
@@ -59,10 +82,8 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                 }
                 return true;
             }).collect(Collectors.toList());
-        } else {
-            menuInfoList = menuInfoMapper.selectByAppId(null);
         }
-        Long rootNodeId = 1L;
+        menuInfoList.stream().distinct().collect(Collectors.toList());
         List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
                 item -> {
                     MenuInfoTree bean = new MenuInfoTree();

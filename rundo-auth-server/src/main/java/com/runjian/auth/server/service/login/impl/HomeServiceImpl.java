@@ -38,7 +38,6 @@ public class HomeServiceImpl implements HomeSevice {
         List<String> roleCodeList = StpUtil.getRoleList();
         if (CollUtil.isEmpty(roleCodeList)) {
             return CommonResponse.failure(BusinessErrorEnums.PERM_NOT_FOUND, "未对用户" + userId + "进行角色授权");
-            // throw new BusinessException(BusinessErrorEnums.PERM_NOT_FOUND, "未对用户" + userId + "进行角色授权");
         }
         // 查取角色已经授权的应用
         List<AppInfo> roleAppInfoList = new ArrayList<>();
@@ -47,7 +46,6 @@ public class HomeServiceImpl implements HomeSevice {
         }
         if (CollUtil.isEmpty(roleAppInfoList)) {
             return CommonResponse.failure(BusinessErrorEnums.PERM_NOT_FOUND, "未对用户" + userId + "进行应用授权");
-            // throw new BusinessException(BusinessErrorEnums.PERM_NOT_FOUND, "未对用户" + userId + "进行应用授权");
         }
         // 去重
         List<AppInfo> appInfoList = CollUtil.distinct(roleAppInfoList);

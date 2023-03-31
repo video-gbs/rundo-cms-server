@@ -29,7 +29,7 @@ public class AddSysAppInfoDTO {
     @NotBlank
     private String appName;
 
-    @ApiModelProperty(value = "应用名称")
+    @ApiModelProperty(value = "应用图标")
     private String appIcon;
 
     @ApiModelProperty(value = "应用所在IP", required = true)
@@ -47,7 +47,7 @@ public class AddSysAppInfoDTO {
     @ApiModelProperty(value = "前端组件import路径")
     private String component;
 
-    @ApiModelProperty(value = "重定向")
+    @ApiModelProperty(value = "重定向地址")
     private String redirect;
 
     @ApiModelProperty("应用简介")

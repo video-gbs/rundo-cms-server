@@ -2,7 +2,6 @@ package com.runjian.parsing.service.common;
 
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.entity.GatewayTaskInfo;
 import org.springframework.web.context.request.async.DeferredResult;

@@ -1,8 +1,6 @@
 package com.runjian.parsing.service.south;
 
-import com.runjian.common.config.response.CommonResponse;
-
-import java.util.Map;
+import com.runjian.parsing.vo.CommonMqDto;
 
 /**
  * @author Miracle
@@ -11,55 +9,17 @@ import java.util.Map;
 public interface StreamSouthService {
 
     /**
-     * 流播放处理器
+     * 消息分发
+     * @param msgType
+     * @param dispatchId
+     * @param data
      */
-    void streamPlayResult(Long dispatchId, Object data);
-
-    /**
-     * 流关闭处理器
-     * @param streamId 流id
-     */
-    void streamClose(Long dispatchId, Object data);
-
-    /**
-     * 停止播放接口
-     * @param taskId 流id
-     * @param dataMap
-     */
-    void streamStopPlay(Long taskId, Object data);
-
-    /**
-     * 开启录像接口
-     * @param taskId 流id
-     * @param dataMap
-     */
-    void streamStartRecord(Long taskId, Object data);
-
-    /**
-     * 停止录像接口
-     * @param taskId 流id
-     * @param dataMap
-     */
-    void streamStopRecord(Long taskId, Object data);
-
-    /**
-     * 检测流录像状态
-     * @param taskId 任务id
-     * @param dataMap 数据体
-     */
-    void streamCheckRecord(Long taskId, Object data);
-
-    /**
-     * 检测录像流
-     * @param taskId 任务id
-     * @param dataMap 数据体
-     */
-    void streamCheckStream(Long taskId, Object data);
+    void msgDistribute(String msgType, Long dispatchId, Long taskId, Object data);
 
     /**
      * 通用消息返回
      * @param taskId
-     * @param dataMap
+     * @param data
      */
     void customEvent(Long taskId, Object data);
 
@@ -68,5 +28,5 @@ public interface StreamSouthService {
      * @param taskId
      * @param response
      */
-    void errorEvent(Long taskId, CommonResponse<?> response);
+    void errorEvent(Long taskId, CommonMqDto<?> response);
 }

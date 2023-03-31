@@ -1,8 +1,7 @@
 package com.runjian.parsing.service.common.impl;
 
 
-import com.runjian.parsing.constant.IdType;
-import com.runjian.parsing.service.protocol.AbstractSouthProtocol;
+import com.runjian.common.constant.IdType;
 import com.runjian.parsing.service.protocol.SouthProtocol;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.ProtocolService;
@@ -39,8 +38,8 @@ public class ProtocolServiceImpl implements ProtocolService {
             NORTH_PROTOCOL_MAP.put(northProtocol.getProtocolName(), northProtocol);
         }
 
-        Map<String, AbstractSouthProtocol> southProtocolRealizeMap = applicationContext.getBeansOfType(AbstractSouthProtocol.class);
-        for (AbstractSouthProtocol southProtocol : southProtocolRealizeMap.values()){
+        Map<String, SouthProtocol> southProtocolRealizeMap = applicationContext.getBeansOfType(SouthProtocol.class);
+        for (SouthProtocol southProtocol : southProtocolRealizeMap.values()){
             SOUTH_PROTOCOL_MAP.put(southProtocol.getProtocolName(), southProtocol);
         }
     }

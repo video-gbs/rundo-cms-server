@@ -1,17 +1,16 @@
 package com.runjian.device.service.north.impl;
 
 
+import com.alibaba.fastjson2.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.common.constant.CommonEnum;
-import com.runjian.common.constant.LogTemplate;
+import com.runjian.common.constant.*;
 import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
-import com.runjian.common.constant.StandardName;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.DeviceInfo;
@@ -25,6 +24,7 @@ import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
 import com.runjian.device.vo.response.PostDeviceAddRsp;
+import com.runjian.device.vo.response.VideoPlayRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,21 +94,20 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         LocalDateTime nowTime = LocalDateTime.now();
 
         // 发送注册请求，返回数据ID
-        DeviceControlReq req = new DeviceControlReq();
-        req.setGatewayId(gatewayId);
+        DeviceControlReq req = new DeviceControlReq(gatewayId, IdType.GATEWAY, MsgType.DEVICE_ADD, 10L);
         req.putData(StandardName.DEVICE_ID, originId);
         req.putData(StandardName.DEVICE_TYPE, deviceType);
         req.putData(StandardName.COM_IP, ip);
         req.putData(StandardName.COM_PORT, port);
         req.putData(StandardName.COM_USERNAME, username);
         req.putData(StandardName.COM_PASSWORD, password);
-        CommonResponse<Long> response = parsingEngineApi.deviceAdd(req);
+        CommonResponse<?> response = parsingEngineApi.customEvent(req);
         if (response.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备注册失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
         // 获取id
-        Long id =  response.getData();
+        Long id = (Long) response.getData();
         //判断数据是否存在，存在直接修改注册状态为已添加
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
         if (deviceInfoOp.isPresent()){
@@ -179,12 +178,12 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("设备%s处于删除状态", deviceId));
         }
         // 请求解析引擎，进行设备同步
-        CommonResponse<DeviceSyncRsp> response = parsingEngineApi.deviceSync(deviceId);
+        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_SYNC, 10L));
         if (response.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备同步失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        DeviceSyncRsp data = response.getData();
+        DeviceSyncRsp data = JSONObject.parseObject(JSONObject.toJSONString(response.getData()), DeviceSyncRsp.class);
         LocalDateTime nowTime = LocalDateTime.now();
         detailBaseService.saveOrUpdateDetail(deviceId, null,  DetailType.DEVICE.getCode(), data.getIp(), data.getPort(), data.getName(), data.getManufacturer(), data.getModel(), data.getFirmware(), data.getPtzType(), nowTime);
         return data;
@@ -199,15 +198,14 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     public void deviceDelete(Long deviceId) {
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(deviceId);
         // 触发删除流程，返回boolean
-        CommonResponse<Boolean> response = parsingEngineApi.deviceDelete(deviceId);
+        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE, 10l));
         if (response.getCode() != 0){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备删除失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        Boolean isDeleted = response.getData();
 
         // 判断网关是否删除成功
-        if (isDeleted){
+        if (Boolean.getBoolean(response.getData().toString())){
             // 若删除成功，删除所有数据
             detailMapper.deleteByDcIdAndType(deviceInfo.getId(), DetailType.DEVICE.getCode());
             deviceMapper.deleteById(deviceInfo.getId());

@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.feign.DeviceControlApi;
+import com.runjian.parsing.vo.CommonMqDto;
 import com.runjian.parsing.vo.request.PostGatewaySignInReq;
 import com.runjian.parsing.vo.request.PutGatewayHeartbeatReq;
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -34,7 +35,7 @@ public class DeviceControlFallback implements FallbackFactory<DeviceControlApi> 
             }
 
             @Override
-            public CommonResponse<?> commonEvent(JSONObject req) {
+            public CommonResponse<?> errorEvent(CommonMqDto req) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
 

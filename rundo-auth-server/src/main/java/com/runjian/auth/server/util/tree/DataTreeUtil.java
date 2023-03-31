@@ -13,7 +13,7 @@ import java.util.List;
 public class DataTreeUtil {
 
     public static <T extends DataTree<T>> List<T> buildTree(List<T> paramList, Long rootNodeId) {
-        List<T> returnList = new ArrayList<T>();
+        List<T> returnList = new ArrayList<>();
         for (T node : paramList) {
             // 查找根节点
             if (node.getId().equals(rootNodeId)) {
@@ -29,9 +29,9 @@ public class DataTreeUtil {
 
     private static <T extends DataTree<T>> void toTreeChildren(List<T> returnList, T entry) {
         for (T node : returnList) {
-            if (entry.getParentId().equals(node.getId())) {
+            if (entry.getParentId().longValue() == node.getId().longValue()) {
                 if (node.getChildren() == null) {
-                    node.setChildren(new ArrayList<T>());
+                    node.setChildren(new ArrayList<>());
                 }
                 node.getChildren().add(entry);
             }

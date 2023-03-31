@@ -1,6 +1,5 @@
 package com.runjian.stream.service.north.impl;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Sets;
 import com.runjian.common.config.exception.BusinessErrorEnums;
@@ -105,7 +104,7 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
             gatewayDispatchMapper.update(gatewayDispatchInfo);
         }
         streamMapper.deleteByDispatchId(dispatchId);
-        parsingEngineApi.stopAllStream(Sets.newHashSet(dispatchId));
+        parsingEngineApi.streamStopAll(Sets.newHashSet(dispatchId));
 
     }
 
@@ -124,7 +123,7 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
             gatewayDispatchMapper.updateAll(gatewayDispatchInfoList);
             Set<Long> dispatchIds = gatewayDispatchInfoList.stream().map(GatewayDispatchInfo::getDispatchId).collect(Collectors.toSet());
             streamMapper.deleteByDispatchIds(dispatchIds);
-            parsingEngineApi.stopAllStream(dispatchIds);
+            parsingEngineApi.streamStopAll(dispatchIds);
         }
 
         // 判断数据是否不存在
