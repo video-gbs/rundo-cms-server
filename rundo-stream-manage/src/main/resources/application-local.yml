@@ -78,6 +78,16 @@ pagehelper:
 logging:
   config: classpath:logback-spring.xml
 
+feign:
+  circuitbreaker:
+    enabled: true
+  client:
+    config:
+      default:
+        connect-timeout: 15000
+        read-timeout: 15000
+        logger-level: basic
+
 resilience4j:
   ratelimiter: #限流
     configs:
