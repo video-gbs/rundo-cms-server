@@ -199,13 +199,13 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(deviceId);
         // 触发删除流程，返回boolean
         CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE, 10l));
-        if (response.getCode() != 0){
+        if (response.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备删除失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
 
         // 判断网关是否删除成功
-        if (Boolean.getBoolean(response.getData().toString())){
+        if ((Boolean) response.getData()){
             // 若删除成功，删除所有数据
             detailMapper.deleteByDcIdAndType(deviceInfo.getId(), DetailType.DEVICE.getCode());
             deviceMapper.deleteById(deviceInfo.getId());
