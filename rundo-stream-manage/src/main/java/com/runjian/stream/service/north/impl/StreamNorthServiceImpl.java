@@ -134,6 +134,8 @@ public class StreamNorthServiceImpl implements StreamNorthService {
 
         if (Boolean.getBoolean(commonResponse.getData().toString())){
             streamMapper.deleteByStreamId(streamId);
+        } else {
+            StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
         }
     }
 
