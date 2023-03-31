@@ -62,9 +62,9 @@ public interface StreamMapper {
             " WHERE stream_state = #{streamState} ")
     List<StreamInfo> selectByStreamState(Integer streamState);
 
-    @Select(" SELECT * FROM " + STREAM_TABLE_NAME +
+    @Select(" SELECT stream_id FROM " + STREAM_TABLE_NAME +
             " WHERE stream_state = #{streamState} ")
-    List<Long> selectIdByStreamState(Integer streamState);
+    Set<String> selectIdByStreamState(Integer streamState);
 
     @Delete(" <script> " +
             " DELETE FROM " + STREAM_TABLE_NAME +

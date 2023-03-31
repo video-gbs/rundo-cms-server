@@ -116,10 +116,10 @@ public class StreamBaseServiceImpl implements StreamBaseService {
     @Override
     public void initClearPrepareStream() {
         // 清空所有“准备中”的流
-        List<Long> idList = streamMapper.selectIdByStreamState(CommonEnum.DISABLE.getCode());
+        Set<String> idList = streamMapper.selectIdByStreamState(CommonEnum.DISABLE.getCode());
         if (Objects.isNull(idList) || idList.isEmpty()){
             return;
         }
-        streamMapper.deleteByIds(idList);
+        StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(idList, 5L);
     }
 }
