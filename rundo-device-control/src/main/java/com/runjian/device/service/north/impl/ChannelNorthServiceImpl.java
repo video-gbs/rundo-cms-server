@@ -93,7 +93,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, String.format("设备%s是未注册成功的设备，不允许操作", deviceId));
         }
         CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.CHANNEL_SYNC, 10L));
-        if (response.getCode() != 0) {
+        if (response.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
@@ -259,7 +259,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         deviceReq.putData(StandardName.STREAM_MODE, StreamType.getMsgByCode(streamType));
         deviceReq.putAllData(responseMapData);
         CommonResponse<?> videoPlayRspCommonResponse = parsingEngineApi.customEvent(deviceReq);
-        if (videoPlayRspCommonResponse.getCode() != 0) {
+        if (videoPlayRspCommonResponse.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, videoPlayRspCommonResponse.getMsg());
         }
@@ -298,7 +298,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         CommonResponse<?> response = parsingEngineApi.customEvent(deviceReq);
-        if (response.getCode() != 0) {
+        if (response.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频录像数据获取失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
@@ -328,7 +328,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         deviceReq.putAllData(streamData);
         CommonResponse<?> videoPlayRspCommonResponse = parsingEngineApi.customEvent(deviceReq);
-        if (videoPlayRspCommonResponse.getCode() != 0) {
+        if (videoPlayRspCommonResponse.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频回放失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, videoPlayRspCommonResponse.getMsg());
         }
@@ -369,7 +369,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         req.putData(StandardName.PTZ_ZOOM_SPEED, zoomSpeed);
         req.putData(StandardName.PTZ_TOTAL_SPEED, totalSpeed);
         CommonResponse<?> response = parsingEngineApi.customEvent(req);
-        if (response.getCode() != 0) {
+        if (response.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "云台控制失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
