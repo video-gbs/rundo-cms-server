@@ -17,7 +17,7 @@ public interface StreamManageApi {
      * @param req
      * @return
      */
-    @PutMapping("/record/pause")
+    @PutMapping("/stream/north/record/pause")
     public CommonResponse<Boolean> recordPause(@RequestBody RecordStreamOperationReq req);
 
 
@@ -26,7 +26,7 @@ public interface StreamManageApi {
      * @param req
      * @return
      */
-    @PutMapping("/record/resume")
+    @PutMapping("/stream/north/record/resume")
     public CommonResponse<Boolean> recordResume(@RequestBody RecordStreamOperationReq req);
 
 
@@ -35,10 +35,10 @@ public interface StreamManageApi {
      * @param req
      * @return
      */
-    @PutMapping("/record/speed")
+    @PutMapping("/stream/north/record/speed")
     public CommonResponse<?> recordSpeed(@RequestBody RecordStreamSpeedOperationReq req);
 
 
-    @PutMapping("/record/seek")
+    @PutMapping("/stream/north/record/seek")
     public CommonResponse<?> recordSeek(@RequestBody RecordStreamSeekOperationReq req);
 }
