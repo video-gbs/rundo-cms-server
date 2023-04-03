@@ -165,6 +165,15 @@ public enum BusinessErrorEnums {
      */
     INTERFACE_EXCEED_LOAD(500,60006, "接口负载过高"),
 
+    FEIGN_REQUEST_EXCEPTION(500,60007, "内部服务请求异常"),
+
+    FEIGN_TIMEOUT_EXCEPTION(500,60008, "内部服务请求超时"),
+
+    FEIGN_CANNOT_FIND_EXCEPTION(500,60009, "内部服务无法访问"),
+
+
+
+
 
 ;
 
