@@ -38,5 +38,13 @@ public class MarkConstant {
 
     /*******************************用户相关****************************************/
 
+    /*******************************feign错误解析****************************************/
+
+    public static final String MARK_FEIGN_RESP_START = "[{";
+    public static final String MARK_FEIGN_RESP_END = "}]";
+    public static final String MARK_FEIGN_RESP_CODE = "code";
+
+
+
 
 }
