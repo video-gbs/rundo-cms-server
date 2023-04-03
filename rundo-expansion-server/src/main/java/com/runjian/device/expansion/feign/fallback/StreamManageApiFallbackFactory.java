@@ -4,31 +4,22 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.MarkConstant;
-import com.runjian.device.expansion.feign.AuthServerApi;
-import com.runjian.device.expansion.feign.DeviceControlApi;
-import com.runjian.device.expansion.vo.feign.request.DeviceReq;
-import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
+import com.runjian.device.expansion.feign.StreamManageApi;
+import com.runjian.device.expansion.vo.request.RecordStreamOperationReq;
+import com.runjian.device.expansion.vo.request.RecordStreamSeekOperationReq;
+import com.runjian.device.expansion.vo.request.RecordStreamSpeedOperationReq;
 import feign.FeignException;
-import feign.RetryableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-/**
- * 调用失败处理工厂 熔断
- *
- * @author huangtongkui
- */
 @Slf4j
 @Component
-public class AuthServerApiFallbackFactory implements FallbackFactory<AuthServerApi> {
-
+public class StreamManageApiFallbackFactory implements FallbackFactory<StreamManageApi> {
     @Override
-    public AuthServerApi create(Throwable throwable) {
-
+    public StreamManageApi create(Throwable throwable) {
         String message = throwable.getMessage();
         CommonResponse<?> failure = null;
         if(throwable instanceof FeignException){
@@ -48,18 +39,30 @@ public class AuthServerApiFallbackFactory implements FallbackFactory<AuthServerA
         }
 
         final CommonResponse<?> finalFailure = failure;
-        return new AuthServerApi() {
 
+        return new StreamManageApi() {
             @Override
-            public CommonResponse<List<VideoAreaResp>> getVideoAraeList(Long areaId) {
-                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"权限服务","feign--编码器获取安防通道信息列表失败",areaId, throwable);
-                return (CommonResponse<List<VideoAreaResp>>) finalFailure;
+            public CommonResponse<Boolean> recordPause(RecordStreamOperationReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--操作失败",req, throwable);
+                return (CommonResponse<Boolean>) finalFailure;
             }
 
             @Override
-            public CommonResponse<VideoAreaResp> getVideoAraeInfo(Long areaId) {
-                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"权限服务","feign--编码器获取安防通道信息失败",areaId, throwable);
-                return (CommonResponse<VideoAreaResp>) finalFailure;
+            public CommonResponse<Boolean> recordResume(RecordStreamOperationReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--操作失败",req, throwable);
+                return (CommonResponse<Boolean>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<?> recordSpeed(RecordStreamSpeedOperationReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--操作失败",req, throwable);
+                return finalFailure;
+            }
+
+            @Override
+            public CommonResponse<?> recordSeek(RecordStreamSeekOperationReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--操作失败",req, throwable);
+                return finalFailure;
             }
         };
     }

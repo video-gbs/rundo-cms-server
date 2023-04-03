@@ -131,9 +131,10 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             streamMapper.deleteByStreamId(streamId);
             return;
         }
-
-        if (Boolean.getBoolean(commonResponse.getData().toString())){
+        if ((Boolean) commonResponse.getData()){
             streamMapper.deleteByStreamId(streamId);
+        } else {
+            StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
         }
     }
 
@@ -145,7 +146,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         }
         CommonResponse<?> response = parsingEngineApi.streamCustomEvent(new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_START, 10L));
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
-        if (Boolean.getBoolean(response.getData().toString())){
+        if ((Boolean) response.getData()){
             streamInfo.setRecordState(CommonEnum.ENABLE.getCode());
             streamInfo.setUpdateTime(LocalDateTime.now());
             streamMapper.updateRecordState(streamInfo);
@@ -161,7 +162,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         }
         CommonResponse<?> response = parsingEngineApi.streamCustomEvent(new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_STOP, 10L));
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
-        if (Boolean.getBoolean(response.getData().toString())){
+        if ((Boolean) response.getData()){
             streamInfo.setRecordState(CommonEnum.DISABLE.getCode());
             streamInfo.setUpdateTime(LocalDateTime.now());
             streamMapper.updateRecordState(streamInfo);

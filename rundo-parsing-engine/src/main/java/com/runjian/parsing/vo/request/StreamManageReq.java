@@ -42,5 +42,5 @@ public class StreamManageReq {
     /**
      * 数据体
      */
-    private Map<String, Object> mapData;
+    private Map<String, Object> dataMap;
 }

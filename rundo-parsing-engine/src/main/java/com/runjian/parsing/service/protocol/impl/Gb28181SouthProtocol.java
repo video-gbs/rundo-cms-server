@@ -62,7 +62,7 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
      */
     @Override
     public void deviceBatchSignIn(Long gatewayId, Object data){
-        JSONArray jsonArray = JSONArray.parseArray(data.toString());
+        JSONArray jsonArray = JSONArray.parseArray(JSONArray.toJSONString(data));
         for (int i = 0; i < jsonArray.size(); i++) {
             convertOnlineState(saveDevice(jsonArray.getJSONObject(i), gatewayId));
         }

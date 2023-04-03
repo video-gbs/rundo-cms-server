@@ -1,6 +1,8 @@
 package com.runjian.stream.feign;
 
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.stream.feign.fallback.DeviceControlFallback;
+import com.runjian.stream.feign.fallback.ParsingEngineFallback;
 import com.runjian.stream.vo.StreamManageDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +14,7 @@ import java.util.Set;
  * @author Miracle
  * @date 2023/2/6 15:27
  */
-@FeignClient(value = "parsing-engine")
+@FeignClient(value = "parsing-engine", fallbackFactory = ParsingEngineFallback.class, decode404 = true)
 public interface ParsingEngineApi {
 
 

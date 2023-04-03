@@ -130,7 +130,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             if(res.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
                 //调用失败
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
-                throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+                throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR,res.getMsg());
             }else {
                 baseDeviceAndChannelService.removeDevice(id);
             }
@@ -150,7 +150,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
             CommonResponse<List<VideoAreaResp>> videoAraeList = authServerApi.getVideoAraeList(deviceExpansionListReq.getVideoAreaId());
             if(CollectionUtils.isEmpty(videoAraeList.getData())){
-                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS);
+                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS,videoAraeList.getMsg());
 
             }
             videoAreaRespList = videoAraeList.getData();
@@ -161,7 +161,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             }
             CommonResponse<VideoAreaResp> videoAraeInfo = authServerApi.getVideoAraeInfo(deviceExpansionListReq.getVideoAreaId());
             if(ObjectUtils.isEmpty(videoAraeInfo.getData())){
-                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS);
+                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS,videoAraeInfo.getMsg());
 
             }
             videoAreaData = videoAraeInfo.getData();
