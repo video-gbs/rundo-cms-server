@@ -129,6 +129,9 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
 
     @Override
     public void taskSuccess(Long taskId, Object data) {
+        if (Objects.isNull(taskId)){
+            return;
+        }
         gatewayTaskMapper.updateState(taskId, TaskState.SUCCESS.getCode(), null, LocalDateTime.now());
         DeferredResult deferredResult = asynReqMap.remove(taskId);
         deferredResult.setResult(CommonResponse.success(data));
