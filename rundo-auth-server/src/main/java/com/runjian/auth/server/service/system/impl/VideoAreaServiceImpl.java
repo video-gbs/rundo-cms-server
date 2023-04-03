@@ -76,7 +76,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public VideoAreaVO findById(Long id) {
-        VideoArea videoArea = videoAraeMapper.selectById(id);
+        VideoArea videoArea = videoAraeMapper.mySelectById(id);
         VideoAreaVO videoAreaVO = new VideoAreaVO();
         BeanUtils.copyProperties(videoArea, videoAreaVO);
         return videoAreaVO;
@@ -151,15 +151,11 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public List<VideoAreaVO> findByList(Long areaId) {
-        LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
         List<VideoArea> videoAreaList = new ArrayList<>();
-        if (areaId != null) {
-            VideoArea videoArea = videoAraeMapper.selectById(areaId);
-            queryWrapper.likeRight(VideoArea::getAreaPids, videoArea.getAreaPids() + "[" + videoArea.getId() + "]");
-            videoAreaList = videoAraeMapper.selectList(queryWrapper);
-            videoAreaList.add(videoArea);
+        if (null == areaId){
+            videoAreaList = videoAraeMapper.mySelectListById2(1L);
         } else {
-            videoAreaList = videoAraeMapper.selectList(queryWrapper);
+            videoAreaList = videoAraeMapper.mySelectListById(areaId);
         }
         return videoAreaList.stream().map(
                 item -> {

@@ -14,4 +14,50 @@
             </if>
         </trim>
     </select>
+
+    <select id="mySelectById" resultType="com.runjian.auth.server.domain.entity.VideoArea">
+        WITH RECURSIVE area_path AS (
+            SELECT id, area_pid, area_name
+            FROM video_area
+            WHERE id = 1
+            UNION ALL
+            SELECT va.id, va.area_pid, CONCAT(ap.area_name,'/',va.area_name) as area_name
+            FROM video_area va
+                INNER JOIN area_path ap ON va.area_pid = ap.id
+        )
+        SELECT ap.area_name as area_names , va.*
+        FROM area_path ap
+                 JOIN video_area va ON ap.id = va.id
+        WHERE va.id = #{id,jdbcType=BIGINT};
+    </select>
+
+    <select id="mySelectListById" resultType="com.runjian.auth.server.domain.entity.VideoArea">
+        WITH RECURSIVE area_path AS (
+            SELECT id, area_pid, area_name
+            FROM video_area
+            WHERE id = #{areaId,jdbcType=BIGINT}
+            UNION ALL
+            SELECT va.id, va.area_pid, CONCAT(ap.area_name,'/',va.area_name) as area_name
+            FROM video_area va
+                INNER JOIN area_path ap ON va.area_pid = ap.id
+        )
+        SELECT ap.area_name as area_names , va.*
+        FROM area_path ap
+        JOIN video_area va ON ap.id = va.id;
+    </select>
+
+    <select id="mySelectListById2" resultType="com.runjian.auth.server.domain.entity.VideoArea">
+        WITH RECURSIVE area_path AS (
+            SELECT id, area_pid, area_name
+            FROM video_area
+            WHERE id = #{areaId,jdbcType=BIGINT}
+            UNION ALL
+            SELECT va.id, va.area_pid, CONCAT(ap.area_name,'/',va.area_name) as area_name
+            FROM video_area va
+            INNER JOIN area_path ap ON va.area_pid = ap.id
+        )
+        SELECT ap.area_name as area_names , va.*
+        FROM area_path ap
+        JOIN video_area va ON ap.id = va.id;
+    </select>
 </mapper>

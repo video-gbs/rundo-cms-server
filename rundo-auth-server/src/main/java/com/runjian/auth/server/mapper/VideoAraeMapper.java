@@ -21,4 +21,10 @@ public interface VideoAraeMapper extends BaseMapper<VideoArea> {
     List<Long> selectByRoleId(Long roleId);
 
     List<VideoArea> selectTree(@Param("id")Long id, @Param("areaName") String areaName);
+
+    VideoArea mySelectById(@Param("id") Long id);
+
+    List<VideoArea> mySelectListById(@Param("areaId")Long areaId);
+
+    List<VideoArea> mySelectListById2(Long areaId);
 }
