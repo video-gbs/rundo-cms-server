@@ -34,6 +34,12 @@ public class VideoAreaController {
     @Autowired
     private VideoAreaSaervice videoAreaSaervice;
 
+    @GetMapping("/tree")
+    @ApiOperation("获取安防区域层级树")
+    public CommonResponse<List<VideoAreaTree>> getTreeList() {
+        return CommonResponse.success(videoAreaSaervice.findByTree());
+    }
+
     @PostMapping("/add")
     @ApiOperation("添加安防区域")
     public CommonResponse<VideoAreaVO> save(@RequestBody @Valid AddVideoAreaDTO dto) {
@@ -45,12 +51,6 @@ public class VideoAreaController {
     @ApiOperation("删除安防区域")
     public CommonResponse<?> delete(@PathVariable Long id) {
         return videoAreaSaervice.erasureById(id);
-    }
-
-    @PostMapping("/batchDelete")
-    @ApiOperation("批量删除安防区域")
-    public CommonResponse<String> batchDelete(@RequestBody List<Long> ids) {
-        return CommonResponse.success(videoAreaSaervice.erasureBatch(ids));
     }
 
     @PostMapping("/update")
@@ -73,13 +73,6 @@ public class VideoAreaController {
     public CommonResponse<VideoAreaVO> getById(@PathVariable Long id) {
         return CommonResponse.success(videoAreaSaervice.findById(id));
     }
-
-    @GetMapping("/tree")
-    @ApiOperation("获取安防区域层级树")
-    public CommonResponse<List<VideoAreaTree>> getTreeList() {
-        return CommonResponse.success(videoAreaSaervice.findByTree());
-    }
-
 
     @PostMapping("/getList")
     @ApiOperation("获取安防区域列表")

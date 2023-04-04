@@ -2,6 +2,7 @@ package com.runjian.auth.server.mapper;
 
 import com.runjian.auth.server.domain.entity.VideoArea;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,12 +19,20 @@ import java.util.List;
 @Mapper
 public interface VideoAraeMapper extends BaseMapper<VideoArea> {
 
-    List<Long> selectByRoleId(Long roleId);
+    /**
+     * 自定义获取节点信息
+     *
+     * @param id
+     * @return
+     */
+    VideoAreaVO mySelectById(@Param("id") Long id);
 
-    List<VideoArea> selectTree(@Param("id")Long id, @Param("areaName") String areaName);
-
-    VideoArea mySelectById(@Param("id") Long id);
-
-    List<VideoArea> mySelectListById(@Param("areaId")Long areaId);
+    /**
+     * 自定义获取节点及子节点列表
+     *
+     * @param areaId
+     * @return
+     */
+    List<VideoAreaVO> mySelectListById(@Param("areaId") Long areaId);
 
 }

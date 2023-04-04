@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -53,15 +54,11 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         VideoArea area = new VideoArea();
         area.setAreaName(dto.getAreaName());
         area.setAreaPid(dto.getAreaPid());
-        String pids = prentInfo.getAreaPids() + "[" + dto.getAreaPid() + "]";
-        String areaNames = prentInfo.getAreaNames() + "/" + dto.getAreaName();
-        area.setAreaPids(pids);
-        area.setAreaNames(areaNames);
         area.setDescription(dto.getDescription());
         area.setLevel(prentInfo.getLevel() + 1);
         log.info("添加安防区域入库数据信息{}", JSONUtil.toJsonStr(area));
         videoAraeMapper.insert(area);
-        VideoAreaVO videoAreaVO = new VideoAreaVO();
+        VideoAreaVO videoAreaVO = videoAraeMapper.mySelectById(area.getId());
         BeanUtils.copyProperties(area, videoAreaVO);
         return videoAreaVO;
     }
@@ -75,31 +72,27 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public VideoAreaVO findById(Long id) {
-        VideoArea videoArea = videoAraeMapper.mySelectById(id);
-        VideoAreaVO videoAreaVO = new VideoAreaVO();
-        BeanUtils.copyProperties(videoArea, videoAreaVO);
-        return videoAreaVO;
+        return videoAraeMapper.mySelectById(id);
     }
 
     @Override
     public CommonResponse erasureById(Long id) {
         // 1.判断是否为根节点
-        VideoArea videoArea = videoAraeMapper.selectById(id);
-        if (videoArea.getAreaPid().equals(0L)) {
+        if (id == 1L) {
             return CommonResponse.failure(BusinessErrorEnums.DEFAULT_MEDIA_DELETE_ERROR);
         }
         // 2.确认当前需要删除的安防区域有无下级安防区域
-        LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.likeRight(VideoArea::getAreaPids, "[" + videoArea.getAreaPid() + "]");
-        List<VideoArea> videoAreaChildren = videoAraeMapper.selectList(queryWrapper);
-        // 3.剔除自己之后确认是否还存在子节点
+        VideoArea videoArea = videoAraeMapper.selectById(id);
+        List<VideoAreaVO> videoAreaChildren = videoAraeMapper.mySelectListById(id);
         int size = videoAreaChildren.size();
         for (int i = size - 1; i >= 0; i--) {
-            VideoArea area = videoAreaChildren.get(i);
+            VideoAreaVO area = videoAreaChildren.get(i);
             if (area.getId().equals(videoArea.getId())) {
+                // 2-1.剔除自己之后确认是否还存在子节点
                 videoAreaChildren.remove(area);
             }
         }
+        // 2-2.剔除自己之后确认是否还存在子节点
         if (CollUtil.isNotEmpty(videoAreaChildren)) {
             return CommonResponse.failure(BusinessErrorEnums.VALID_ILLEGAL_AREA_OPERATION2);
         }
@@ -116,46 +109,61 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     public void moveVideoArea(MoveVideoAreaDTO dto) {
         //  0-1 禁止本级移动到本级
         if (dto.getId().equals(dto.getAreaPid())) {
-            return;
+            log.info("禁止本级移动到本级");
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "禁止本级移动到本级");
+            // return;
         }
-        // 1.根据上级区域ID，获取上级信息
-        VideoArea parentInfo = videoAraeMapper.selectById(dto.getAreaPid());
-        VideoArea parentInfoId = videoAraeMapper.selectById(dto.getId());
-        if (parentInfoId.getAreaPid().equals(parentInfo.getAreaPid())) {
+        // 目标位置的信息
+        VideoArea targetInfo = videoAraeMapper.selectById(dto.getAreaPid());
+        // 被移动项信息
+        VideoArea info = videoAraeMapper.selectById(dto.getId());
+        // 1.如果目标位置与被移动项的父级ID相同，为同级别移动
+        if (info.getAreaPid().equals(targetInfo.getAreaPid())) {
+            log.info("同级别移动");
             // 切换排序顺序
-            parentInfoId.setAreaSort(parentInfo.getAreaSort());
-            videoAraeMapper.updateById(parentInfo);
-            parentInfo.setAreaSort(parentInfoId.getAreaSort());
-            videoAraeMapper.updateById(parentInfo);
+            info.setAreaSort(targetInfo.getAreaSort());
+            videoAraeMapper.updateById(targetInfo);
+            targetInfo.setAreaSort(info.getAreaSort());
+            videoAraeMapper.updateById(targetInfo);
             return;
         }
-        // 2.根据id，查询当前节点信息
-        VideoArea videoArea = videoAraeMapper.selectById(dto.getId());
-        // 3.根据id，查询当前组织的直接下级组织信息
-        List<VideoArea> childrenList = getChildren(dto.getId());
-        // 4.更新当前节点信息
-        videoArea.setAreaPid(parentInfo.getId());
-        videoArea.setAreaPids(parentInfo.getAreaPids() + "[" + parentInfo.getId() + "]");
-        videoArea.setLevel(parentInfo.getLevel() + 1);
-        videoAraeMapper.updateById(videoArea);
-        // 5.更新子节点信息
-        if (childrenList.size() > 0) {
-            for (VideoArea area : childrenList) {
-                updateChildren(area, childrenList);
-            }
+        // 2.如果目标位置与是移动项的子级，禁止移动
+        List<VideoAreaVO> childrenList = videoAraeMapper.mySelectListById(dto.getId());
+        List<Long> ids = childrenList.stream().map(VideoAreaVO::getId).collect(Collectors.toList());
+        if (ids.contains(dto.getAreaPid())) {
+            log.info("父级向子级移动");
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "禁止父级向子级移动");
+            // return;
         }
+        // 3.更新当前节点信息
+        info.setAreaPid(dto.getAreaPid());
+        info.setLevel(targetInfo.getLevel() + 1);
+        videoAraeMapper.updateById(info);
+        // 5.根据id，更新子节点层级信息
+        updateChildren(info.getId(), info.getLevel());
 
     }
 
+    private void updateChildren(Long id, Integer level) {
+        List<VideoArea> infoList = getChildren(id);
+        infoList.stream().peek(obj -> obj.setLevel(level + 1)).collect(Collectors.toList());
+        updateBatchById(infoList);
+        for (VideoArea videoArea : infoList) {
+            updateChildren(videoArea.getId(), videoArea.getLevel());
+        }
+    }
+
+    private List<VideoArea> getChildren(Long id) {
+        LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(VideoArea::getAreaPid, id);
+        queryWrapper.orderBy(true, true, VideoArea::getAreaSort, VideoArea::getUpdatedTime);
+        return videoAraeMapper.selectList(queryWrapper);
+    }
 
     @Override
     public List<VideoAreaVO> findByList(Long areaId) {
-        List<VideoArea> videoAreaList;
-        if (null == areaId){
-            videoAreaList = videoAraeMapper.mySelectListById(1L);
-        } else {
-            videoAreaList = videoAraeMapper.mySelectListById(areaId);
-        }
+        List<VideoAreaVO> videoAreaList;
+        videoAreaList = videoAraeMapper.mySelectListById(Objects.requireNonNullElse(areaId, 1L));
         return videoAreaList.stream().map(
                 item -> {
                     VideoAreaVO videoAreaVO = new VideoAreaVO();
@@ -166,31 +174,8 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     }
 
     @Override
-    public String erasureBatch(List<Long> ids) {
-        // 1.确定节点ID不为空
-        if (ids.size() <= 0) {
-            return "没有选定删除目标";
-        }
-        // 2.检索删除的节点中是否包含根节点
-        List<VideoArea> videoAreaList = videoAraeMapper.selectBatchIds(ids);
-        boolean flag = false;
-        for (VideoArea area : videoAreaList) {
-            if (area.getAreaPid().equals(0L)) {
-                flag = true;
-            }
-        }
-        if (flag) {
-            return "删除目标中包含系统内置根节点";
-        }
-        videoAraeMapper.deleteBatchIds(ids);
-        return "删除组织，操作成功!";
-    }
-
-    @Override
     public List<VideoAreaTree> findByTree() {
-        LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
-        // queryWrapper.orderBy(true, true, VideoArea::getAreaSort, VideoArea::getUpdatedTime);
-        List<VideoArea> videoList = videoAraeMapper.selectList(queryWrapper);
+        List<VideoAreaVO> videoList = videoAraeMapper.mySelectListById(1L);
         List<VideoAreaTree> videoAreaTreeList = videoList.stream().map(
                 item -> {
                     VideoAreaTree bean = new VideoAreaTree();
@@ -199,27 +184,5 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
                 }
         ).collect(Collectors.toList());
         return DataTreeUtil.buildTree(videoAreaTreeList, 1L);
-    }
-
-    private void updateChildren(VideoArea area, List<VideoArea> childrenList) {
-        VideoArea parentInfo = videoAraeMapper.selectById(area.getAreaPid());
-        for (VideoArea videoArea : childrenList) {
-            videoArea.setAreaPids(parentInfo.getAreaPids() + "[" + area.getAreaPid() + "]");
-            videoArea.setLevel(parentInfo.getLevel() + 1);
-            videoAraeMapper.updateById(videoArea);
-            List<VideoArea> sunChildrenList = getChildren(videoArea.getId());
-            if (sunChildrenList.size() > 0) {
-                for (VideoArea sun : sunChildrenList) {
-                    updateChildren(sun, sunChildrenList);
-                }
-            }
-        }
-    }
-
-    private List<VideoArea> getChildren(Long id) {
-        LambdaQueryWrapper<VideoArea> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(VideoArea::getAreaPid, id);
-        queryWrapper.orderBy(true, true, VideoArea::getAreaSort, VideoArea::getUpdatedTime);
-        return videoAraeMapper.selectList(queryWrapper);
     }
 }
