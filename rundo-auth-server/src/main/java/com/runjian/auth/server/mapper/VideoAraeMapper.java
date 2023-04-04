@@ -26,5 +26,4 @@ public interface VideoAraeMapper extends BaseMapper<VideoArea> {
 
     List<VideoArea> mySelectListById(@Param("areaId")Long areaId);
 
-    List<VideoArea> mySelectListById2(Long areaId);
 }

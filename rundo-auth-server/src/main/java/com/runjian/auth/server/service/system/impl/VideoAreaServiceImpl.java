@@ -22,7 +22,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -151,9 +150,9 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public List<VideoAreaVO> findByList(Long areaId) {
-        List<VideoArea> videoAreaList = new ArrayList<>();
+        List<VideoArea> videoAreaList;
         if (null == areaId){
-            videoAreaList = videoAraeMapper.mySelectListById2(1L);
+            videoAreaList = videoAraeMapper.mySelectListById(1L);
         } else {
             videoAreaList = videoAraeMapper.mySelectListById(areaId);
         }
