@@ -1,6 +1,7 @@
 package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
+import com.runjian.auth.server.constant.AddGroup;
 import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
@@ -11,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,7 +37,7 @@ public class OrgInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加部门")
-    public CommonResponse<SysOrgVO> save(@RequestBody @Valid SysOrgDTO dto) {
+    public CommonResponse<SysOrgVO> save(@RequestBody @Validated({AddGroup.class}) SysOrgDTO dto) {
         log.info("添加部门前端传参信息{}", JSONUtil.toJsonStr(dto));
         return CommonResponse.success(orgInfoService.save(dto));
     }

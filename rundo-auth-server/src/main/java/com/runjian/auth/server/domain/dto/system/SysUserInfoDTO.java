@@ -1,6 +1,7 @@
 package com.runjian.auth.server.domain.dto.system;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.runjian.auth.server.constant.AddGroup;
 import com.runjian.auth.server.constant.UpdateGroup;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,24 +42,24 @@ public class SysUserInfoDTO {
     private String userName;
 
     @ApiModelProperty("用户密码")
-    @NotBlank(message = "用户密码不能为空")
+    @NotBlank(groups = {AddGroup.class}, message = "用户密码不能为空")
     private String password;
 
     @ApiModelProperty("确认密码")
-    @NotBlank(message = "确认密码不能为空")
+    @NotBlank(groups = {AddGroup.class}, message = "确认密码不能为空")
     private String rePassword;
 
     @ApiModelProperty("有效期起")
-    @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @NotNull(groups = {AddGroup.class, UpdateGroup.class}, message = "有效期起不能为空")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expiryDateStart;
 
     @ApiModelProperty("有效期终")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expiryDateEnd;
 
     @ApiModelProperty("所属部门编号")
-    @NotNull
+    @NotNull(message = "所属部门编号不能为空")
     private Long orgId;
 
     @ApiModelProperty("工号")

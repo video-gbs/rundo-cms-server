@@ -2,6 +2,7 @@ package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.runjian.auth.server.constant.AddGroup;
 import com.runjian.auth.server.domain.dto.system.QueryEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysRoleInfoDTO;
@@ -17,6 +18,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,7 +43,7 @@ public class RoleInfoController {
 
     @PostMapping("/add")
     @ApiOperation("新建角色")
-    public CommonResponse<?> addRole(@RequestBody SysRoleInfoDTO dto) {
+    public CommonResponse<?> addRole(@RequestBody @Validated({AddGroup.class}) SysRoleInfoDTO dto) {
         log.info("新建角色前端传参{}", JSONUtil.toJsonStr(dto));
         roleInfoService.save(dto);
         return CommonResponse.success();
