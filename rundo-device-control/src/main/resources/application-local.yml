@@ -57,7 +57,9 @@ spring:
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1000
       #stat-view-servlet.url-pattern: /admin/druid/*
-
+  mvc:
+    async:
+      request-timeout: 15000
 server:
   port: ${SERVER_PORT:8090}
 
