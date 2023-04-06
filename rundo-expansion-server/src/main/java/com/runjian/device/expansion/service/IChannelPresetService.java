@@ -6,11 +6,14 @@ import com.runjian.device.expansion.entity.ChannelPresetLists;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.ChannelPresetControlReq;
+import com.runjian.device.expansion.vo.request.ChannelPresetEditReq;
 import com.runjian.device.expansion.vo.request.PlayBackReq;
 import com.runjian.device.expansion.vo.request.PlayReq;
 import com.runjian.device.expansion.vo.response.ChannelPresetListsResp;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * @author chenjialing
@@ -22,23 +25,23 @@ public interface IChannelPresetService extends IService<ChannelPresetLists> {
      * @param channelExpansionId
      * @return
      */
-    CommonResponse<ChannelPresetListsResp> presetSelect(Long channelExpansionId);
+    CommonResponse<List<ChannelPresetListsResp>> presetSelect(Long channelExpansionId);
 
 
     /**
      * 预置位编辑
-     * @param channelExpansionId
+     * @param channelPresetEditReq
      * @return
      */
-    CommonResponse<Boolean> presetEdit(Long channelExpansionId);
+    CommonResponse<Boolean> presetEdit(ChannelPresetEditReq channelPresetEditReq);
 
 
     /**
      * 预置位删除
-     * @param channelExpansionId
+     * @param channelPresetControlReq
      * @return
      */
-    CommonResponse<Boolean> presetDelete(Long channelExpansionId);
+    CommonResponse<Boolean> presetDelete(ChannelPresetControlReq channelPresetControlReq);
 
     /**
      * 预置位执行
