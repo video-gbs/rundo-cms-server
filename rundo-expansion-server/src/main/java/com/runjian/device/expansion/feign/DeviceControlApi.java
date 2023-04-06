@@ -4,6 +4,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.DeviceControlApiFallbackFactory;
 import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.*;
+import com.runjian.device.expansion.vo.response.ChannelPresetListsResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -94,4 +95,29 @@ public interface DeviceControlApi {
      */
     @PostMapping(value = "/channel/north/playback",produces = MediaType.APPLICATION_JSON_VALUE)
     CommonResponse<StreamInfo> playBack(@RequestBody PlayBackFeignReq playBackReq);
+
+
+    /**
+     * 云台控制
+     * @param req 云台控制请求体
+     * @return
+     */
+    @PutMapping("/ptz/control")
+    CommonResponse<?> ptzControl(@RequestBody FeignPtzControlReq req);
+
+    /**
+     * 获取预置位
+     * @param channelId 通道id
+     * @return
+     */
+    @GetMapping("/ptz/preset")
+    CommonResponse<List<ChannelPresetListsResp>> getPtzPreset(@RequestParam Long channelId);
+
+    /**
+     * 3d放大放小控制
+     * @param req 云台控制请求体
+     * @return
+     */
+    @PutMapping("/ptz/3d")
+    CommonResponse<?> ptz3d(@RequestBody FeignPtz3dReq req);
 }
