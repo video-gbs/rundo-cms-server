@@ -1,6 +1,7 @@
 package com.runjian.device.service.north.impl;
 
 import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -351,26 +352,69 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 云台控制状态
-     *
      * @param channelId     通道ID
-     * @param cmdCode       指令code
-     * @param horizonSpeed  水平速度
-     * @param verticalSpeed 垂直速度
-     * @param zoomSpeed     缩放速度
-     * @param totalSpeed    总速度
+     * @param cmdCode  指令code
+     * @param valueMap  值map
      */
     @Override
-    public void channelPtzControl(Long channelId, Integer cmdCode, Integer horizonSpeed, Integer verticalSpeed, Integer zoomSpeed, Integer totalSpeed) {
+    public void channelPtzControl(Long channelId, Integer cmdCode, Integer cmdValue, Map<String, Object> valueMap) {
         getChannelInfoAndValid(channelId);
         DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_CONTROL, 10L);
         req.putData(StandardName.PTZ_CMD_CODE, cmdCode);
-        req.putData(StandardName.PTZ_HORIZON_SPEED, horizonSpeed);
-        req.putData(StandardName.PTZ_VERTICAL_SPEED, verticalSpeed);
-        req.putData(StandardName.PTZ_ZOOM_SPEED, zoomSpeed);
-        req.putData(StandardName.PTZ_TOTAL_SPEED, totalSpeed);
+        req.putData(StandardName.PTZ_CMD_VALUE, cmdValue);
+        req.putAllData(valueMap);
         CommonResponse<?> response = parsingEngineApi.customEvent(req);
         if (response.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "云台控制失败", response.getData(), response.getMsg());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
+        }
+    }
+
+    /**
+     * 预置位查询
+     * @param channelId 通道id
+     * @return
+     */
+    @Override
+    public List<PtzPresetRsp> channelPtzPresetGet(Long channelId) {
+        getChannelInfoAndValid(channelId);
+        DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_PRESET, 10L);
+        CommonResponse<?> response = parsingEngineApi.customEvent(req);
+        if (response.isError()) {
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "预置位查询失败", response.getData(), response.getMsg());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
+        }
+        if (Objects.isNull(response.getData())){
+            return Collections.EMPTY_LIST;
+        }
+        return JSONArray.parseArray(JSONArray.toJSONString(response.getData())).toList(PtzPresetRsp.class);
+    }
+
+    /**
+     * 3D控制
+     * @param channelId 通道id
+     * @param dragType 放大-1 缩小-2
+     * @param length 拉宽长度
+     * @param width 拉宽宽度
+     * @param midPointX 拉框中心的横轴坐标像素值
+     * @param midPointY 拉框中心的纵轴坐标像素值
+     * @param lengthX 拉框长度像素值
+     * @param lengthY 拉框宽度像素值
+     */
+    @Override
+    public void channelPtz3d(Long channelId, Integer dragType, Integer length, Integer width, Integer midPointX, Integer midPointY, Integer lengthX, Integer lengthY) {
+        getChannelInfoAndValid(channelId);
+        DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_3D, 10L);
+        req.putData(StandardName.PTZ_3D_DRAG_TYPE, dragType);
+        req.putData(StandardName.PTZ_3D_LENGTH, length);
+        req.putData(StandardName.PTZ_3D_WIDTH, width);
+        req.putData(StandardName.PTZ_3D_POINT_X, midPointX);
+        req.putData(StandardName.PTZ_3D_POINT_Y, midPointY);
+        req.putData(StandardName.PTZ_3D_LENGTH_X, lengthX);
+        req.putData(StandardName.PTZ_3D_LENGTH_Y, lengthY);
+        CommonResponse<?> response = parsingEngineApi.customEvent(req);
+        if (response.isError()) {
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "3D控制", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
     }

@@ -1,5 +1,6 @@
 package com.runjian.stream.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.stream.entity.StreamInfo;
@@ -130,6 +131,16 @@ public class StreamNorthController {
     @GetMapping("/stream/data")
     public CommonResponse<List<StreamInfo>> getStream(@RequestParam List<String> streamIdList, @RequestParam Integer recordState, @RequestParam Integer streamState){
         return CommonResponse.success(streamNorthService.getRecordStates(streamIdList, recordState, streamState));
+    }
+
+    /**
+     * 获取流信息
+     * @param streamId 流Id
+     * @return
+     */
+    @GetMapping("/stream/media/info")
+    public CommonResponse<JSONObject> getStreamMediaInfo(@RequestParam String streamId){
+        return CommonResponse.success(streamNorthService.getStreamMediaInfo(streamId));
     }
 
 }
