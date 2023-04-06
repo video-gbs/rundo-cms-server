@@ -228,7 +228,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         //封装返回目前数据库中的编码器名称
         if(channelByPage.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--待添加的通道列表获取失败",originName, channelByPage);
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR,channelByPage.getMsg());
         }
         PageResp<ChannelExpansionFindlistRsp> listPageResp = new PageResp<>();
         PageListResp<GetChannelByPageRsp> originPage = channelByPage.getData();
