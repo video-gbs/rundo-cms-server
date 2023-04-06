@@ -38,7 +38,7 @@ public class StreamController {
     public DeferredResult<CommonResponse<?>> customEvent(@RequestBody StreamManageReq req){
         validatorService.validateRequest(req);
         final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(req.getOutTime());
-        streamNorthService.customEvent(req.getDispatchId(), req.getStreamId(), req.getMapData(), MsgType.getByStr(req.getMsgType()), response);
+        streamNorthService.customEvent(req.getDispatchId(), req.getStreamId(), req.getDataMap(), MsgType.getByStr(req.getMsgType()), response);
         return response;
     }
 

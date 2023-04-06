@@ -112,6 +112,11 @@ public class StandardName {
     /**
      * 云柜控制横向速度
      */
+    public static final String PTZ_CMD_VALUE = "cmdValue";
+
+    /**
+     * 云柜控制横向速度
+     */
     public static final String PTZ_HORIZON_SPEED = "horizonSpeed";
 
     /**
@@ -128,6 +133,41 @@ public class StandardName {
      * 云柜控制总体速度
      */
     public static final String PTZ_TOTAL_SPEED = "totalSpeed";
+
+    /**
+     * 放大-1 缩小-2
+     */
+    public static final String PTZ_3D_DRAG_TYPE = "dragType";
+
+    /**
+     * 拉宽长度
+     */
+    public static final String PTZ_3D_LENGTH = "length";
+
+    /**
+     * 拉宽宽度
+     */
+    public static final String PTZ_3D_WIDTH = "width";
+
+    /**
+     * 拉框中心的横轴坐标像素值
+     */
+    public static final String PTZ_3D_POINT_X = "midPointX";
+
+    /**
+     * 拉框中心的纵轴坐标像素值
+     */
+    public static final String PTZ_3D_POINT_Y = "midPointY";
+
+    /**
+     * 拉框长度像素值
+     */
+    public static final String PTZ_3D_LENGTH_X = "lengthX";
+
+    /**
+     * 拉框宽度像素值
+     */
+    public static final String PTZ_3D_LENGTH_Y = "lengthY";
 
     /***************************公共类标准名称****************************/
 
@@ -178,5 +218,5 @@ public class StandardName {
     public static final String COM_RESULT = "result";
 
 
-
+    public static final String STREAM_CHECK_TIME = "checkTime";
 }

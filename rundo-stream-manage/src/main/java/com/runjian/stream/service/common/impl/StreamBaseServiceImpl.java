@@ -63,40 +63,42 @@ public class StreamBaseServiceImpl implements StreamBaseService {
     @Override
     @Scheduled(fixedDelay = 180000)
     public void checkPlayingStream(){
-        checkStreamState();
-        checkRecordState();
+        LocalDateTime nowTime = LocalDateTime.now();
+        checkStreamState(nowTime);
+        checkRecordState(nowTime);
     }
 
     @Override
-    public void checkStreamState(){
+    public void checkStreamState(LocalDateTime nowTime){
         List<StreamInfo> streamInfoList = streamMapper.selectByStreamState(CommonEnum.ENABLE.getCode());
         Map<Long, List<StreamInfo>> dispatchRecordMap = streamInfoList.stream().collect(Collectors.groupingBy(StreamInfo::getDispatchId));
         if (dispatchRecordMap.size() > 0){
-            List<Long> unUseStream = getUnUseStream(dispatchRecordMap);
+            List<Long> unUseStream = getUnUseStream(dispatchRecordMap, nowTime);
             if (unUseStream.size() > 0){
-                streamMapper.deleteByIds(unUseStream);
+                streamMapper.deleteByIdsAndCreateTime(unUseStream, nowTime);
             }
         }
     }
 
     @Override
-    public void checkRecordState() {
+    public void checkRecordState(LocalDateTime nowTime) {
         List<StreamInfo> streamInfoList = streamMapper.selectByRecordStateAndStreamState(CommonEnum.ENABLE.getCode(), CommonEnum.ENABLE.getCode());
         Map<Long, List<StreamInfo>> dispatchRecordMap = streamInfoList.stream().collect(Collectors.groupingBy(StreamInfo::getDispatchId));
         if (dispatchRecordMap.size() > 0){
-            List<Long> noRecordIds = getUnUseStream(dispatchRecordMap);
+            List<Long> noRecordIds = getUnUseStream(dispatchRecordMap, nowTime);
             if (noRecordIds.size() > 0){
-                streamMapper.batchUpdateRecordState(noRecordIds, CommonEnum.DISABLE.getCode(), LocalDateTime.now());
+                streamMapper.batchUpdateRecordState(noRecordIds, CommonEnum.DISABLE.getCode(), nowTime);
             }
         }
     }
 
-    private List<Long> getUnUseStream(Map<Long, List<StreamInfo>> dispatchRecordMap) {
+    private List<Long> getUnUseStream(Map<Long, List<StreamInfo>> dispatchRecordMap, LocalDateTime nowTime) {
         List<Long> noRecordIds = new ArrayList<>();
         for (Map.Entry<Long, List<StreamInfo>> entry : dispatchRecordMap.entrySet()){
             dataBaseService.getDispatchInfo(entry.getKey());
             StreamManageDto streamManageDto = new StreamManageDto(entry.getKey(), null, MsgType.STREAM_CHECK_STREAM, 10L);
             streamManageDto.put(StandardName.STREAM_ID_LIST, entry.getValue().stream().map(StreamInfo::getStreamId).collect(Collectors.toList()));
+            streamManageDto.put(StandardName.STREAM_CHECK_TIME, nowTime);
             CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
             if (commonResponse.isError()){
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "定时检测流播放状态服务", "流媒体交互失败", String.format("流媒体id:%s", entry.getKey()), commonResponse.getMsg());
@@ -116,10 +118,10 @@ public class StreamBaseServiceImpl implements StreamBaseService {
     @Override
     public void initClearPrepareStream() {
         // 清空所有“准备中”的流
-        List<Long> idList = streamMapper.selectIdByStreamState(CommonEnum.DISABLE.getCode());
+        Set<String> idList = streamMapper.selectIdByStreamState(CommonEnum.DISABLE.getCode());
         if (Objects.isNull(idList) || idList.isEmpty()){
             return;
         }
-        streamMapper.deleteByIds(idList);
+        StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(idList, 5L);
     }
 }

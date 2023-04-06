@@ -78,7 +78,7 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                 return;
             }
 
-            switch (MsgType.getByStr(MsgType.GATEWAY_HEARTBEAT.getMsg())){
+            switch (MsgType.getByStr(mqRequest.getMsgType())){
                 case GATEWAY_HEARTBEAT:
                     Long gatewayId = gatewayService.heartbeat(mqRequest.getSerialNum(), mqRequest.getData().toString());
                     CommonMqDto<?> gatewayResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
@@ -135,16 +135,19 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
         String key1;
         String key2;
         String exchangeId;
+        SimpleMessageListenerContainer dispatch;
         switch (moduleType){
             case GATEWAY:
                 key1 = MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + signInRsp.getGatewayId();
                 key2 = MqConstant.GATEWAY_PREFIX + MqConstant.SET_GET_PREFIX + signInRsp.getGatewayId();
                 exchangeId = mqDefaultProperties.getGatewayExchangeId();
+                dispatch = MqListenerConfig.containerMap.get(MqConstant.GATEWAY_PREFIX);
                 break;
             case STREAM:
-                key1 = MqConstant.STREAM_PREFIX + MqConstant.GET_SET_PREFIX + signInRsp.getGatewayId();
-                key2 = MqConstant.STREAM_PREFIX + MqConstant.SET_GET_PREFIX + signInRsp.getGatewayId();
+                key1 = MqConstant.STREAM_PREFIX + MqConstant.GET_SET_PREFIX + signInRsp.getDispatchId();
+                key2 = MqConstant.STREAM_PREFIX + MqConstant.SET_GET_PREFIX + signInRsp.getDispatchId();
                 exchangeId = mqDefaultProperties.getStreamExchangeId();
+                dispatch = MqListenerConfig.containerMap.get(MqConstant.STREAM_PREFIX);
                 break;
             default:
                 return;
@@ -156,7 +159,6 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
             rabbitMqConfig.addQueue(exchangeId, key1, 15000);
             Queue queue = rabbitMqConfig.addQueue(exchangeId, key2, 15000);
             // 添加监听队列
-            SimpleMessageListenerContainer dispatch = MqListenerConfig.containerMap.get(MqConstant.GATEWAY_PREFIX);
             if (Objects.isNull(dispatch)) {
                 throw new BusinessException(BusinessErrorEnums.MQ_CONTAINER_NOT_FOUND);
             }
