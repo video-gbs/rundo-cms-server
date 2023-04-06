@@ -7,6 +7,7 @@ import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.*;
+import com.runjian.device.expansion.vo.response.ChannelPresetListsResp;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -99,6 +100,24 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
             public CommonResponse<StreamInfo> playBack(PlayBackFeignReq playBackReq) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--通道播放失败",playBackReq, throwable);
                 return (CommonResponse<StreamInfo>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<?> ptzControl(FeignPtzControlReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--ptz失败",req, throwable);
+                return  finalFailure;
+            }
+
+            @Override
+            public CommonResponse<List<ChannelPresetListsResp>> getPtzPreset(Long channelId) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--预置位获取失败",channelId, throwable);
+                return (CommonResponse<List<ChannelPresetListsResp>>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<?> ptz3d(FeignPtz3dReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--3d操作败",req, throwable);
+                return  finalFailure;
             }
         };
     }

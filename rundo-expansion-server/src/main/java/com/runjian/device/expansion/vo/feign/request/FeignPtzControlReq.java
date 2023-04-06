@@ -1,4 +1,4 @@
-package com.runjian.device.vo.request;
+package com.runjian.device.expansion.vo.feign.request;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
@@ -13,7 +13,7 @@ import java.util.Map;
  * @date 2023/1/9 14:23
  */
 @Data
-public class PutPtzControlReq {
+public class FeignPtzControlReq {
 
     /**
      * 通道Id

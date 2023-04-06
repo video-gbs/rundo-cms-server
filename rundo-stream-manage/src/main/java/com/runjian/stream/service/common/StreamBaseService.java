@@ -2,6 +2,8 @@ package com.runjian.stream.service.common;
 
 import com.runjian.common.utils.CircleArray;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Miracle
  * @date 2023/2/14 9:49
@@ -29,17 +31,19 @@ public interface StreamBaseService {
     void checkPlayingStream();
 
     /**
+     * 检测流播放状态
+     */
+    void checkStreamState(LocalDateTime nowTime);
+
+    /**
      * 检查录像状态
      */
-    void checkRecordState();
+    void checkRecordState(LocalDateTime nowTime);
 
     /**
      * 重启清空所有正在播放的流
      */
     void initClearPrepareStream();
 
-    /**
-     * 检测流播放状态
-     */
-    void checkStreamState();
+
 }
