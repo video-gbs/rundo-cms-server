@@ -1,6 +1,7 @@
 package com.runjian.stream.service.north;
 
 
+import com.alibaba.fastjson2.JSONObject;
 import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
 
@@ -14,11 +15,11 @@ import java.util.List;
  */
 public interface StreamNorthService {
 
-
     /**
      * 申请流
      */
     PostApplyStreamRsp applyStreamId(Long gatewayId, Long channelId, Integer playType, Integer recordState, Integer autoCloseState);
+
 
     /**
      * 停止播放
@@ -70,5 +71,12 @@ public interface StreamNorthService {
      * @param streamId 流id
      */
     void resumeRecord(String streamId);
+
+    /**
+     * 获取流信息
+     * @param streamId 流id
+     * @return
+     */
+    JSONObject getStreamMediaInfo(String streamId);
 
 }

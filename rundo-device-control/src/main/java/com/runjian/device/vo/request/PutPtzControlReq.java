@@ -4,6 +4,8 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.Map;
 
 /**
  * 云台控制请求体
@@ -28,28 +30,14 @@ public class PutPtzControlReq {
     private Integer cmdCode;
 
     /**
-     * 水平速度
+     * 通用指令值
      */
-    @Range(min = 0, max = 255, message = "速度取值范围在0-255")
-    private Integer horizonSpeed;
+    private Integer cmdValue;
 
     /**
-     * 垂直速度
+     * 指令值
      */
-    @Range(min = 0, max = 255, message = "速度取值范围在0-255")
-    private Integer verticalSpeed;
-
-    /**
-     * 缩放速度
-     */
-    @Range(min = 0, max = 255, message = "速度取值范围在0-255")
-    private Integer zoomSpeed;
-
-    /**
-     * 总速度
-     */
-    @Range(min = 0, max = 255, message = "速度取值范围在0-255")
-    private Integer totalSpeed;
-
+    @Size(max = 30, message = "指令参数超出合法值")
+    private Map<String, Object> valueMap;
 
 }
