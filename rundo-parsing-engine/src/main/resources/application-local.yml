@@ -58,7 +58,6 @@ spring:
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1000
       #stat-view-servlet.url-pattern: /admin/druid/*
-
   # rabbitmq 配置
   rabbitmq:
     host:  ${RABBITMQ_HOST:124.71.20.118}
@@ -76,6 +75,9 @@ spring:
         acknowledge-mode: manual  # 采用手动应答
         retry:
           enabled: true           # 是否支持重试
+  mvc:
+    async:
+      request-timeout: 15000
 
 server:
   port: ${SERVER_PORT:8091}
@@ -153,9 +155,9 @@ resilience4j:
     configs:
       default:
         failureRateThreshold: 80 #失败请求百分⽐，超过这个⽐例，CircuitBreaker变为OPEN状态
-        slidingWindowSize: 60 #滑动窗⼝的⼤⼩，配置COUNT_BASED,表示10个请求，配置TIME_BASED表示10秒
-        minimumNumberOfCalls: 30 #最⼩请求个数，只有在滑动窗⼝内，请求个数达到这个个数，才会触发CircuitBreader对于断路器的判断
-        slidingWindowType: COUNT_BASED #滑动窗⼝的类型
+        slidingWindowSize: 3 #滑动窗⼝的⼤⼩，配置COUNT_BASED,表示10个请求，配置TIME_BASED表示10秒
+        minimumNumberOfCalls: 10 #最⼩请求个数，只有在滑动窗⼝内，请求个数达到这个个数，才会触发CircuitBreader对于断路器的判断
+        slidingWindowType: TIME_BASED #滑动窗⼝的类型
         permittedNumberOfCallsInHalfOpenState: 3 #当CircuitBreaker处于HALF_OPEN状态的时候，允许通过的请求个数
         automaticTransitionFromOpenToHalfOpenEnabled: true #设置true，表示⾃动从OPEN变成HALF_OPEN，即使没有请求过来
         waitDurationInOpenState: 1s #从OPEN到HALF_OPEN状态需要等待的时间
