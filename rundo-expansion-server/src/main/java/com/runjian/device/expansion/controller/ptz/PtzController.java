@@ -2,6 +2,7 @@ package com.runjian.device.expansion.controller.ptz;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
+import com.runjian.device.expansion.service.IPtzService;
 import com.runjian.device.expansion.vo.request.ChannelPresetControlReq;
 import com.runjian.device.expansion.vo.request.ChannelPtzControlReq;
 import com.runjian.device.expansion.vo.request.DeviceChannelExpansionReq;
@@ -24,12 +25,16 @@ public class PtzController {
     @Autowired
     private ValidatorService validatorService;
 
+    @Autowired
+    IPtzService ptzService;
+
+
     @PutMapping(value = "/operation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("ptz相关的指令")
-    public CommonResponse<Boolean> edit(@RequestBody ChannelPtzControlReq request) {
+    public CommonResponse<?> edit(@RequestBody ChannelPtzControlReq request) {
 
         validatorService.validateRequest(request);
-        return null;
+        return ptzService.ptzOperation(request);
     }
 
     @GetMapping(value = "/preset/select", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

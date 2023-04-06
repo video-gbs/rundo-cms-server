@@ -19,7 +19,7 @@ public class ChannelPtzControlReq {
 
     @ApiModelProperty("主键ID")
     @NotNull(message = "通道id不能为空")
-    private Long id;
+    private Long channelExpansionId;
 
     @ApiModelProperty("指令操作值;0-255")
     @Range(min = 0,max = 255,message = "指令操作值需要为;0-255")
