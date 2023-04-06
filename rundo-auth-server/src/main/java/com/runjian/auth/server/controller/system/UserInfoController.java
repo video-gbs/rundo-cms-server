@@ -2,10 +2,9 @@ package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.runjian.auth.server.domain.dto.system.AddSysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.SysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysUserInfoDTO;
 import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
 import com.runjian.auth.server.service.system.UserInfoService;
@@ -39,7 +38,7 @@ public class UserInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加用户")
-    public CommonResponse<?> addUser(@RequestBody @Valid AddSysUserInfoDTO dto) {
+    public CommonResponse<?> addUser(@RequestBody @Valid SysUserInfoDTO dto) {
         log.info("添加用户前端传参{}", JSONUtil.toJsonStr(dto));
         if (null != dto.getPassword() && null != dto.getRePassword()) {
             if (!Objects.equals(dto.getPassword(), dto.getPassword())) {
@@ -59,7 +58,7 @@ public class UserInfoController {
 
     @PostMapping("/update")
     @ApiOperation("编辑用户")
-    public CommonResponse<?> updateUser(@RequestBody UpdateSysUserInfoDTO dto) {
+    public CommonResponse<?> updateUser(@RequestBody SysUserInfoDTO dto) {
         log.info("编辑用户前端传参{}", JSONUtil.toJsonStr(dto));
         if (null != dto.getPassword() && null != dto.getRePassword()) {
             if (!Objects.equals(dto.getPassword(), dto.getRePassword())) {

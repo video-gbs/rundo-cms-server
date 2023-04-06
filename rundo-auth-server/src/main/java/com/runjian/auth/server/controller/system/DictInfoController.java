@@ -2,9 +2,8 @@ package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.runjian.auth.server.domain.dto.system.AddSysDictDTO;
+import com.runjian.auth.server.domain.dto.system.SysDictDTO;
 import com.runjian.auth.server.domain.dto.system.QureySysDictDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysDictDTO;
 import com.runjian.auth.server.domain.vo.system.SysDictVO;
 import com.runjian.auth.server.service.system.DictInfoService;
 import com.runjian.common.config.response.CommonResponse;
@@ -36,7 +35,7 @@ public class DictInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加数据字典")
-    public CommonResponse<?> save(@RequestBody @Valid AddSysDictDTO dto) {
+    public CommonResponse<?> save(@RequestBody @Valid SysDictDTO dto) {
         log.info("添加数据字典前端传参{}", JSONUtil.toJsonStr(dto));
         dictInfoService.save(dto);
         return CommonResponse.success();
@@ -52,7 +51,7 @@ public class DictInfoController {
 
     @PostMapping("/update")
     @ApiOperation("修改数据字典")
-    public CommonResponse<?> updateSysDict(@RequestBody UpdateSysDictDTO dto) {
+    public CommonResponse<?> updateSysDict(@RequestBody SysDictDTO dto) {
         dictInfoService.modifyById(dto);
         return CommonResponse.success();
     }

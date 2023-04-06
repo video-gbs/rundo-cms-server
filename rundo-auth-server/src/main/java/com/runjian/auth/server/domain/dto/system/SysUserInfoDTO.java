@@ -1,8 +1,9 @@
 package com.runjian.auth.server.domain.dto.system;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
+import com.runjian.auth.server.constant.UpdateGroup;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,8 +25,12 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "新建用户", description = "用户信息")
-public class AddSysUserInfoDTO {
+@Schema(name = "新建用户", description = "用户信息")
+public class SysUserInfoDTO {
+
+    @ApiModelProperty("编号ID")
+    @NotNull(groups = {UpdateGroup.class}, message = "id不能为空")
+    private Long id;
 
     @ApiModelProperty("用户账户")
     @NotBlank(message = "用户账户不能为空")

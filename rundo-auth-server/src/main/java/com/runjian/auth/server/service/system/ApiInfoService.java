@@ -2,10 +2,9 @@ package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
+import com.runjian.auth.server.domain.dto.system.SysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
 import com.runjian.auth.server.domain.entity.ApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.ApiInfoTree;
@@ -22,9 +21,9 @@ import java.util.List;
  */
 public interface ApiInfoService extends IService<ApiInfo> {
 
-    void save(AddSysApiInfoDTO dto);
+    void save(SysApiInfoDTO dto);
 
-    void modifyById(UpdateSysApiInfoDTO dto);
+    void modifyById(SysApiInfoDTO dto);
 
     SysApiInfoVO findById(Long id);
 

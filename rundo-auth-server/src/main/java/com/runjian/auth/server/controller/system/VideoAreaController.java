@@ -1,9 +1,10 @@
 package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
-import com.runjian.auth.server.domain.dto.system.AddVideoAreaDTO;
+import com.runjian.auth.server.constant.AddGroup;
+import com.runjian.auth.server.constant.UpdateGroup;
+import com.runjian.auth.server.domain.dto.system.VideoAreaDTO;
 import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateVideoAreaDTO;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.service.system.VideoAreaSaervice;
@@ -12,9 +13,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class VideoAreaController {
 
     @PostMapping("/add")
     @ApiOperation("添加安防区域")
-    public CommonResponse<VideoAreaVO> save(@RequestBody @Valid AddVideoAreaDTO dto) {
+    public CommonResponse<VideoAreaVO> save(@RequestBody @Validated({AddGroup.class}) VideoAreaDTO dto) {
         log.info("添加安防区域前端传参信息{}", JSONUtil.toJsonStr(dto));
         return CommonResponse.success(videoAreaSaervice.save(dto));
     }
@@ -55,7 +56,7 @@ public class VideoAreaController {
 
     @PostMapping("/update")
     @ApiOperation("编辑安防区域")
-    public CommonResponse<?> update(@RequestBody UpdateVideoAreaDTO dto) {
+    public CommonResponse<?> update(@RequestBody @Validated({UpdateGroup.class}) VideoAreaDTO dto) {
         videoAreaSaervice.modifyById(dto);
         return CommonResponse.success();
     }

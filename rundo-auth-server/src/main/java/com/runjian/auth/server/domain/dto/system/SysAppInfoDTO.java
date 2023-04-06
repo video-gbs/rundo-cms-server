@@ -1,12 +1,14 @@
 package com.runjian.auth.server.domain.dto.system;
 
-import io.swagger.annotations.ApiModel;
+import com.runjian.auth.server.constant.UpdateGroup;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Jiang4Yu
@@ -18,8 +20,12 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "添加应用", description = "应用信息")
-public class AddSysAppInfoDTO {
+@Schema(name = "应用信息", description = "应用信息")
+public class SysAppInfoDTO {
+
+    @ApiModelProperty("编号ID")
+    @NotNull(groups = {UpdateGroup.class}, message = "id不能为空")
+    private Long id;
 
     @ApiModelProperty(value = "应用分类", required = true)
     @NotBlank

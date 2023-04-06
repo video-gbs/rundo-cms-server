@@ -1,4 +1,4 @@
-package com.runjian.auth.server.common;
+package com.runjian.auth.server.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.properties.DruidStatProperties;

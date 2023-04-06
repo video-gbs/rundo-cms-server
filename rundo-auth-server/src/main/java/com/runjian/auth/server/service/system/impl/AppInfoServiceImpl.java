@@ -38,7 +38,7 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
     private ApiInfoService apiInfoService;
 
     @Override
-    public void save(AddSysAppInfoDTO dto) {
+    public void save(SysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
         BeanUtils.copyProperties(dto, appInfo);
         appInfoMapper.insert(appInfo);
@@ -68,7 +68,7 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
     }
 
     @Override
-    public void modifyById(UpdateSysAppInfoDTO dto) {
+    public void modifyById(SysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
         BeanUtils.copyProperties(dto, appInfo);
         appInfoMapper.updateById(appInfo);

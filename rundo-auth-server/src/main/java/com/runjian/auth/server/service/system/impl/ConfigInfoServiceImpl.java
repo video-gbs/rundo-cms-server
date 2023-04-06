@@ -3,8 +3,7 @@ package com.runjian.auth.server.service.system.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.entity.ConfigInfo;
 import com.runjian.auth.server.mapper.ConfigInfoMapper;
-import com.runjian.auth.server.domain.dto.system.AddSysConfigDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysConfigDTO;
+import com.runjian.auth.server.domain.dto.system.SysConfigDTO;
 import com.runjian.auth.server.domain.vo.system.SysConfigVO;
 import com.runjian.auth.server.service.system.ConfigInfoService;
 import org.springframework.beans.BeanUtils;
@@ -28,14 +27,14 @@ public class ConfigInfoServiceImpl extends ServiceImpl<ConfigInfoMapper, ConfigI
     private ConfigInfoMapper configInfoMapper;
 
     @Override
-    public void save(AddSysConfigDTO dto) {
+    public void save(SysConfigDTO dto) {
         ConfigInfo configInfo = new ConfigInfo();
         BeanUtils.copyProperties(dto, configInfo);
         configInfoMapper.insert(configInfo);
     }
 
     @Override
-    public void modifyById(UpdateSysConfigDTO dto) {
+    public void modifyById(SysConfigDTO dto) {
         ConfigInfo configInfo = configInfoMapper.selectById(dto.getId());
 
 

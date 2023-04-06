@@ -127,7 +127,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     }
 
     @Override
-    public void save(AddSysMenuInfoDTO dto) {
+    public void save(SysMenuInfoDTO dto) {
         MenuInfo menuInfo = new MenuInfo();
         BeanUtils.copyProperties(dto, menuInfo);
         MenuInfo parentInfo = menuInfoMapper.selectById(dto.getMenuPid());
@@ -158,7 +158,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     }
 
     @Override
-    public void modifyById(UpdateSysMenuInfoDTO dto) {
+    public void modifyById(SysMenuInfoDTO dto) {
         MenuInfo menuInfo = new MenuInfo();
         BeanUtils.copyProperties(dto, menuInfo);
         menuInfoMapper.updateById(menuInfo);

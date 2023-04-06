@@ -49,7 +49,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     private OrgInfoMapper orgInfoMapper;
 
     @Override
-    public void save(AddSysUserInfoDTO dto) {
+    public void save(SysUserInfoDTO dto) {
         LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserInfo::getUserAccount, dto.getUserAccount());
         long count = userInfoMapper.selectCount(queryWrapper);
@@ -89,7 +89,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     @Override
-    public void modifyById(UpdateSysUserInfoDTO dto) {
+    public void modifyById(SysUserInfoDTO dto) {
         // 根据id查取原始信息
         UserInfo userInfo = userInfoMapper.selectById(dto.getId());
         // 根据id查取角色信息

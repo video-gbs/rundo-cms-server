@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.system.QureySysDictDTO;
 import com.runjian.auth.server.domain.entity.DictInfo;
-import com.runjian.auth.server.domain.dto.system.AddSysDictDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysDictDTO;
+import com.runjian.auth.server.domain.dto.system.SysDictDTO;
 import com.runjian.auth.server.domain.vo.system.SysDictVO;
 
 import java.util.List;
@@ -20,9 +19,9 @@ import java.util.List;
  */
 public interface DictInfoService extends IService<DictInfo> {
 
-    void save(AddSysDictDTO dto);
+    void save(SysDictDTO dto);
 
-    void modifyById(UpdateSysDictDTO dto);
+    void modifyById(SysDictDTO dto);
 
     SysDictVO findById(Long id);
 

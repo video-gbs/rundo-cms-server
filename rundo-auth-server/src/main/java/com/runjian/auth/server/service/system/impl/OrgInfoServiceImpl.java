@@ -6,9 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
+import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
 import com.runjian.auth.server.domain.entity.OrgInfo;
 import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
@@ -46,7 +45,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     private UserInfoMapper userInfoMapper;
 
     @Override
-    public SysOrgVO save(AddSysOrgDTO dto) {
+    public SysOrgVO save(SysOrgDTO dto) {
         OrgInfo orgInfo = new OrgInfo();
         orgInfo.setOrgPid(dto.getOrgPid());
         OrgInfo parentInfo = orgInfoMapper.selectById(dto.getOrgPid());
@@ -113,7 +112,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     }
 
     @Override
-    public void modifyById(UpdateSysOrgDTO dto) {
+    public void modifyById(SysOrgDTO dto) {
         OrgInfo orgInfo = new OrgInfo();
         BeanUtils.copyProperties(dto, orgInfo);
         orgInfoMapper.updateById(orgInfo);

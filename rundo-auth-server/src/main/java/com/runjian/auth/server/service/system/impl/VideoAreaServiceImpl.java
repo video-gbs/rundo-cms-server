@@ -4,9 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.dto.system.AddVideoAreaDTO;
+import com.runjian.auth.server.domain.dto.system.VideoAreaDTO;
 import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateVideoAreaDTO;
 import com.runjian.auth.server.domain.entity.VideoArea;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
@@ -45,7 +44,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     private ExpansionClient expansionClient;
 
     @Override
-    public VideoAreaVO save(AddVideoAreaDTO dto) {
+    public VideoAreaVO save(VideoAreaDTO dto) {
         // 确认父级安全区域是否存在
         VideoArea prentInfo = videoAraeMapper.selectById(dto.getAreaPid());
         if (prentInfo == null) {
@@ -64,7 +63,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     }
 
     @Override
-    public void modifyById(UpdateVideoAreaDTO dto) {
+    public void modifyById(VideoAreaDTO dto) {
         VideoArea videoArea = new VideoArea();
         BeanUtils.copyProperties(dto, videoArea);
         videoAraeMapper.updateById(videoArea);

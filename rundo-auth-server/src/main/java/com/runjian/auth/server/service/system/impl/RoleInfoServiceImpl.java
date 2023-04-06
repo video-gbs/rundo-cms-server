@@ -48,7 +48,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
 
 
     @Override
-    public void save(AddSysRoleInfoDTO dto) {
+    public void save(SysRoleInfoDTO dto) {
         RoleInfo role = new RoleInfo();
         Long roleId = idUtil.nextId();
         role.setId(roleId);
@@ -115,7 +115,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     }
 
     @Override
-    public void modifyById(UpdateSysRoleInfoDTO dto) {
+    public void modifyById(SysRoleInfoDTO dto) {
         // 1 查取原始角色基础信息
         RoleInfo roleInfo = roleInfoMapper.selectById(dto.getId());
         roleInfo.setRoleName(dto.getRoleName());
@@ -313,6 +313,11 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
 
         return roleInfoMapper.MySelectPage(page);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        roleInfoMapper.deleteById(id);
     }
 
     @Override

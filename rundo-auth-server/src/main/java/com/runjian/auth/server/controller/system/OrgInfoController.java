@@ -1,9 +1,8 @@
 package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
-import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
+import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.service.system.OrgInfoService;
@@ -36,7 +35,7 @@ public class OrgInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加部门")
-    public CommonResponse<SysOrgVO> save(@RequestBody @Valid AddSysOrgDTO dto) {
+    public CommonResponse<SysOrgVO> save(@RequestBody @Valid SysOrgDTO dto) {
         log.info("添加部门前端传参信息{}", JSONUtil.toJsonStr(dto));
         return CommonResponse.success(orgInfoService.save(dto));
     }
@@ -49,7 +48,7 @@ public class OrgInfoController {
 
     @PostMapping("/update")
     @ApiOperation("编辑部门信息")
-    public CommonResponse<?> update(@RequestBody UpdateSysOrgDTO dto) {
+    public CommonResponse<?> update(@RequestBody SysOrgDTO dto) {
         log.info("编辑部门信息前端传参信息{}", JSONUtil.toJsonStr(dto));
         orgInfoService.modifyById(dto);
         return CommonResponse.success();

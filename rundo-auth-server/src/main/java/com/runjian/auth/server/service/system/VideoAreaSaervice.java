@@ -1,9 +1,8 @@
 package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.domain.dto.system.AddVideoAreaDTO;
+import com.runjian.auth.server.domain.dto.system.VideoAreaDTO;
 import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateVideoAreaDTO;
 import com.runjian.auth.server.domain.entity.VideoArea;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
@@ -34,14 +33,14 @@ public interface VideoAreaSaervice extends IService<VideoArea> {
      * @param dto
      * @return VideoAreaVO
      */
-    VideoAreaVO save(AddVideoAreaDTO dto);
+    VideoAreaVO save(VideoAreaDTO dto);
 
     /**
      * 编辑安防区域
      *
      * @param dto
      */
-    void modifyById(UpdateVideoAreaDTO dto);
+    void modifyById(VideoAreaDTO dto);
 
     /**
      * 根据ID 查询安防区域信息

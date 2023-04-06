@@ -46,7 +46,7 @@ public class MenuInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加菜单")
-    public CommonResponse<?> addSysMenu(@RequestBody AddSysMenuInfoDTO dto) {
+    public CommonResponse<?> addSysMenu(@RequestBody SysMenuInfoDTO dto) {
         log.info("添加菜单前端传参信息{}", JSONUtil.toJsonStr(dto));
         menuInfoService.save(dto);
         return CommonResponse.success();
@@ -54,7 +54,7 @@ public class MenuInfoController {
 
     @PostMapping("/update")
     @ApiOperation("编辑菜单")
-    public CommonResponse<?> updateSysMenu(@RequestBody UpdateSysMenuInfoDTO dto) {
+    public CommonResponse<?> updateSysMenu(@RequestBody SysMenuInfoDTO dto) {
         log.info("编辑菜单前端传参信息{}", JSONUtil.toJsonStr(dto));
         menuInfoService.modifyById(dto);
         return CommonResponse.success();
