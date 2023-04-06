@@ -218,4 +218,5 @@ public class StandardName {
     public static final String COM_RESULT = "result";
 
 
+    public static final String STREAM_CHECK_TIME = "checkTime";
 }

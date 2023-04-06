@@ -91,6 +91,7 @@ public interface StreamMapper {
             " SET update_time = #{updateTime}  " +
             " , record_state = #{recordState} " +
             " WHERE id = #{item} "+
+            " AND create_time &lt;= #{updateTime}" +
             " </foreach> " +
             " </script> ")
     void batchUpdateRecordState(List<Long> noRecordIds, Integer recordState, LocalDateTime updateTime);
@@ -115,4 +116,12 @@ public interface StreamMapper {
             " <foreach collection='dispatchIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
     void deleteByDispatchIds(Set<Long> dispatchIds);
+
+    @Delete(" <script> " +
+            " DELETE FROM " + STREAM_TABLE_NAME +
+            " WHERE id IN " +
+            " <foreach collection='idList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " AND create_time &lt;= #{nowTime}" +
+            " </script> ")
+    void deleteByIdsAndCreateTime(List<Long> unUseStream, LocalDateTime nowTime);
 }
