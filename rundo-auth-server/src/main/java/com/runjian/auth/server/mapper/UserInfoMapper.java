@@ -30,8 +30,6 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
 
     void deleteUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
 
-    Page<ListSysUserInfoVO> MySelectPage(PageSysUserInfoDTO page);
-
     Page<ListSysUserInfoVO> MySelectPageByContain(@Param("page") PageSysUserInfoDTO page, @Param("orgIds") List<Long> orgIds);
 
     OrgInfoVO selectOrgInfoByUserId(@Param("userId") Long userId);

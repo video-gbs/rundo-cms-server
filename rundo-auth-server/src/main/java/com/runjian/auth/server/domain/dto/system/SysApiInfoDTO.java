@@ -46,5 +46,6 @@ public class SysApiInfoDTO {
     private Integer apiSort;
 
     @ApiModelProperty(value = "禁用状态",notes = "0正常，1禁用")
+    @NotNull
     private Integer status;
 }
