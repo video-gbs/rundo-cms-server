@@ -333,6 +333,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频回放失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, videoPlayRspCommonResponse.getMsg());
         }
+        log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频回放失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
         return JSONObject.parseObject(JSONObject.toJSONString(videoPlayRspCommonResponse.getData()), VideoPlayRsp.class);
     }
 
