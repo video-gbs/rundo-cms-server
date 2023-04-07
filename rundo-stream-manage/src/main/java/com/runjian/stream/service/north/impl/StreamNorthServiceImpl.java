@@ -182,7 +182,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     @Override
     public void speedRecord(String streamId, Float speed) {
         StreamInfo streamInfo = dataBaseService.getStreamInfoByStreamId(streamId);
-        if (streamInfo.getRecordState().equals(CommonEnum.DISABLE.getCode())){
+        if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "视频未正常播放，无法调整速度");
         }
         StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_SPEED, 10L);
@@ -194,7 +194,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     @Override
     public void seekRecord(String streamId, LocalDateTime currentTime, LocalDateTime targetTime) {
         StreamInfo streamInfo = dataBaseService.getStreamInfoByStreamId(streamId);
-        if (streamInfo.getRecordState().equals(CommonEnum.DISABLE.getCode())){
+        if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "视频未正常播放，无法拖动进度条");
         }
         StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_SEEK, 10L);
@@ -207,7 +207,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     @Override
     public void pauseRecord(String streamId) {
         StreamInfo streamInfo = dataBaseService.getStreamInfoByStreamId(streamId);
-        if (streamInfo.getRecordState().equals(CommonEnum.DISABLE.getCode())){
+        if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "视频未正常播放，无法暂停视频");
         }
         StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_PAUSE, 10L);
@@ -218,7 +218,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     @Override
     public void resumeRecord(String streamId) {
         StreamInfo streamInfo = dataBaseService.getStreamInfoByStreamId(streamId);
-        if (streamInfo.getRecordState().equals(CommonEnum.DISABLE.getCode())){
+        if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "视频未正常播放，无法恢复视频");
         }
         StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_RESUME, 10L);
@@ -229,7 +229,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     @Override
     public JSONObject getStreamMediaInfo(String streamId) {
         StreamInfo streamInfo = dataBaseService.getStreamInfoByStreamId(streamId);
-        if (streamInfo.getRecordState().equals(CommonEnum.DISABLE.getCode())){
+        if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "视频未正常播放，无法获取视频信息");
         }
         StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_MEDIA_INFO, 10L);
