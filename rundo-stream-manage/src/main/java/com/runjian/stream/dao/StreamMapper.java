@@ -123,5 +123,5 @@ public interface StreamMapper {
             " <foreach collection='idList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " AND create_time &lt;= #{nowTime}" +
             " </script> ")
-    void deleteByIdsAndCreateTime(List<Long> unUseStream, LocalDateTime nowTime);
+    void deleteByIdsAndCreateTime(List<Long> idList, LocalDateTime nowTime);
 }
