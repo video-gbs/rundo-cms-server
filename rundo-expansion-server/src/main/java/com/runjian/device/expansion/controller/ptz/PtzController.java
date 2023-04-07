@@ -42,7 +42,7 @@ public class PtzController {
         return ptzService.ptzOperation(request);
     }
 
-    @GetMapping(value = "/preset/select", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/preset/select",produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("预置位查询:channelExpansionId为通道id")
     public CommonResponse<List<ChannelPresetListsResp>> presetSelect(@RequestParam Long channelExpansionId) {
 
