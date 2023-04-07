@@ -17,22 +17,30 @@ public interface StreamNorthService {
 
     /**
      * 申请流
+     * @param gatewayId 网关id
+     * @param channelId 通道id
+     * @param playType 播放类型
+     * @param recordState 是否开启录播
+     * @param autoCloseState 是否无人观看
      */
     PostApplyStreamRsp applyStreamId(Long gatewayId, Long channelId, Integer playType, Integer recordState, Integer autoCloseState);
 
 
     /**
      * 停止播放
+     * @param streamId 通道id
      */
     void stopPlay(String streamId);
 
     /**
      * 开启录像
+     * @param streamId 通道id
      */
     Boolean startRecord(String streamId);
 
     /**
      * 关闭录像
+     * @param streamId 通道id
      */
     Boolean stopRecord(String streamId);
 
@@ -48,7 +56,7 @@ public interface StreamNorthService {
     /**
      * 调整播放速度
      * @param streamId 流id
-     * @param speed 速递
+     * @param speed 速度
      */
     void speedRecord(String streamId, Float speed);
 

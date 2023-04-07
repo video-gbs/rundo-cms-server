@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * @author chenjialing
  */
 @Data
-@ApiModel(value = "ptz操作指令")
+@ApiModel(value = "预置位编辑")
 public class ChannelPresetControlReq {
 
 

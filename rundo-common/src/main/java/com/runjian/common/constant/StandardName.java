@@ -85,6 +85,11 @@ public class StandardName {
      */
     public static final String STREAM_DISPATCH_ID = "dispatchId";
 
+    /**
+     * 检测时间
+     */
+    public static final String STREAM_CHECK_TIME = "checkTime";
+
     /***************************录像播放标准名称****************************/
 
     /**
@@ -123,16 +128,6 @@ public class StandardName {
      * 云柜控制垂直速度
      */
     public static final String PTZ_VERTICAL_SPEED = "verticalSpeed";
-
-    /**
-     * 云柜控制焦距速度
-     */
-    public static final String PTZ_ZOOM_SPEED = "zoomSpeed";
-
-    /**
-     * 云柜控制总体速度
-     */
-    public static final String PTZ_TOTAL_SPEED = "totalSpeed";
 
     /**
      * 放大-1 缩小-2
@@ -218,5 +213,5 @@ public class StandardName {
     public static final String COM_RESULT = "result";
 
 
-    public static final String STREAM_CHECK_TIME = "checkTime";
+
 }

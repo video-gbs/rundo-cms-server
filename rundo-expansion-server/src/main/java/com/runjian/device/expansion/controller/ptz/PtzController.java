@@ -4,10 +4,8 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.expansion.service.IChannelPresetService;
 import com.runjian.device.expansion.service.IPtzService;
-import com.runjian.device.expansion.vo.request.ChannelPresetControlReq;
-import com.runjian.device.expansion.vo.request.ChannelPresetEditReq;
-import com.runjian.device.expansion.vo.request.ChannelPtzControlReq;
-import com.runjian.device.expansion.vo.request.DeviceChannelExpansionReq;
+import com.runjian.device.expansion.vo.feign.request.FeignPtz3dReq;
+import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.ChannelPresetListsResp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,7 +42,7 @@ public class PtzController {
         return ptzService.ptzOperation(request);
     }
 
-    @GetMapping(value = "/preset/select", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/preset/select",produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("预置位查询:channelExpansionId为通道id")
     public CommonResponse<List<ChannelPresetListsResp>> presetSelect(@RequestParam Long channelExpansionId) {
 
@@ -69,5 +67,12 @@ public class PtzController {
     public CommonResponse<Boolean> presetInvoke(@RequestBody ChannelPresetControlReq channelPresetControlReq) {
 
         return channelPresetService.presetInvoke(channelPresetControlReq);
+    }
+
+    @PutMapping(value = "/3d/zoom", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation("3d放大缩小")
+    public CommonResponse<?> dragZoom(@RequestBody Ptz3dReq request) {
+        validatorService.validateRequest(request);
+        return channelPresetService.dragZoom(request);
     }
 }

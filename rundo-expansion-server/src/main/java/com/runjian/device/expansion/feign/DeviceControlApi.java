@@ -102,7 +102,7 @@ public interface DeviceControlApi {
      * @param req 云台控制请求体
      * @return
      */
-    @PutMapping("/ptz/control")
+    @PutMapping("/channel/north/ptz/control")
     CommonResponse<?> ptzControl(@RequestBody FeignPtzControlReq req);
 
     /**
@@ -110,7 +110,7 @@ public interface DeviceControlApi {
      * @param channelId 通道id
      * @return
      */
-    @GetMapping("/ptz/preset")
+    @GetMapping("/channel/north/ptz/preset")
     CommonResponse<List<ChannelPresetListsResp>> getPtzPreset(@RequestParam Long channelId);
 
     /**
@@ -118,6 +118,6 @@ public interface DeviceControlApi {
      * @param req 云台控制请求体
      * @return
      */
-    @PutMapping("/ptz/3d")
+    @PutMapping("/channel/north/ptz/3d")
     CommonResponse<?> ptz3d(@RequestBody FeignPtz3dReq req);
 }
