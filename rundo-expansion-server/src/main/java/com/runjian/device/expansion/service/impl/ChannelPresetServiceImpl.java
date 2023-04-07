@@ -55,7 +55,9 @@ public class ChannelPresetServiceImpl extends ServiceImpl<ChannelPresetMapper, C
                 List<ChannelPresetListsResp> feignPtzPresetList = ptzPresetCompose.getData();
                 //插入数据库 并且返回数据
                 List<ChannelPresetLists> channelPresetListsDao = BeanUtil.copyToList(feignPtzPresetList, ChannelPresetLists.class);
-
+                channelPresetListsDao.forEach(channelPresetListDto -> {
+                    channelPresetListDto.setChannelExpansionId(channelExpansionId);
+                });
                 this.saveBatch(channelPresetListsDao);
                 //返回数据
                 channelPresetListsResps = feignPtzPresetList;
