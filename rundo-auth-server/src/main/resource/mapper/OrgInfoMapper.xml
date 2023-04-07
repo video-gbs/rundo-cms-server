@@ -41,6 +41,7 @@
         SELECT va.*
         FROM org_path ap
             JOIN org_info va ON ap.id = va.id
+        WHERE va.delete_flag = 0
         ;
     </select>
 </mapper>
