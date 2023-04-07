@@ -30,6 +30,7 @@
         SELECT ap.area_name as area_names , va.*
         FROM area_path ap
             JOIN video_area va ON ap.id = va.id
+        WHERE va.delete_flag = 0
         ;
     </select>
 </mapper>
