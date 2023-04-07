@@ -262,22 +262,31 @@
     </select>
 
     <select id="relationSysUserInfoPage" resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
+        WITH RECURSIVE org_info_str AS (
+            SELECT id, org_pid, org_name
+            FROM org_info
+            WHERE id = 1
+            UNION ALL
+            SELECT va.id, va.org_pid, CONCAT( ap.org_name, '/', va.org_name ) AS org_name
+            FROM org_info va
+                INNER JOIN org_info_str ap ON va.org_pid = ap.id
+        )
         SELECT userInfo.id,
-               userInfo.user_account,
-               userInfo.user_name,
-               userInfo.expiry_date_start,
-               userInfo.expiry_date_end,
-               userInfo.job_no,
-               userInfo.address,
-               userInfo.email,
-               userInfo.phone,
-               org.org_name_str                                                org_name,
-               GROUP_CONCAT(role.role_name ORDER BY userInfo.id SEPARATOR '/') role_name,
-               userInfo.description
+            userInfo.user_account,
+            userInfo.user_name,
+            userInfo.expiry_date_start,
+            userInfo.expiry_date_end,
+            userInfo.job_no,
+            userInfo.address,
+            userInfo.email,
+            userInfo.phone,
+            org.org_name,
+            GROUP_CONCAT(role.role_name ORDER BY userInfo.id SEPARATOR '/') role_name,
+            userInfo.description
         FROM user_info userInfo
-                 LEFT JOIN role_user ru ON ru.user_id = userInfo.id
-                 LEFT JOIN role_info role ON role.id = ru.role_id
-                 LEFT JOIN org_info org ON org.id = userInfo.org_id
+            LEFT JOIN role_user ru ON ru.user_id = userInfo.id
+            LEFT JOIN role_info role ON role.id = ru.role_id
+            LEFT JOIN org_info_str org ON org.id = userInfo.org_id
         WHERE userInfo.delete_flag = 0
         <if test="userAccount != null and userAccount != ''">
             <bind name="patternAccount" value="'%' + userAccount + '%'"/>
@@ -286,7 +295,7 @@
         <if test="roleId != null">
             AND ru.role_id = #{roleId,jdbcType=BIGINT}
         </if>
-        GROUP BY userInfo.id
+        GROUP BY userInfo.id, org.org_name
         ORDER BY userInfo.id
     </select>
 

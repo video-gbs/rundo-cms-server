@@ -25,7 +25,7 @@
         )
         SELECT ap.id
         FROM org_info_str ap
-                 JOIN org_info_str va ON ap.id = va.id;
+            JOIN org_info_str va ON ap.id = va.id;
     </select>
 
     <select id="mySelectListById" resultType="com.runjian.auth.server.domain.vo.system.SysOrgVO">
