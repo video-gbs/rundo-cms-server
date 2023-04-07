@@ -105,7 +105,7 @@ public class ChannelPresetServiceImpl extends ServiceImpl<ChannelPresetMapper, C
             queryWrapper.eq(ChannelPresetLists::getChannelExpansionId,channelPresetEditReq.getChannelExpansionId());
             queryWrapper.eq(ChannelPresetLists::getPresetId,channelPresetEditReq.getPresetId());
             queryWrapper.eq(ChannelPresetLists::getDeleted,0);
-            channelPresetLists.setPresetName(channelPresetLists.getPresetName());
+            channelPresetLists.setPresetName(channelPresetEditReq.getPresetName());
             channelPresetMapper.update(channelPresetLists,editQueryWrapper);
         }
 
