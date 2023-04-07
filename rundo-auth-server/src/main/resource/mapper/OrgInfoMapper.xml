@@ -13,4 +13,18 @@
         </trim>
     </select>
 
+    <select id="mySelectOrg" resultType="java.lang.Long">
+        WITH RECURSIVE org_info_str AS (
+            SELECT id, org_pid, org_name
+            FROM org_info
+            WHERE id = #{orgId,jdbcType=BIGINT}
+            UNION ALL
+            SELECT va.id, va.org_pid, CONCAT( ap.org_name, '/', va.org_name ) AS org_name
+            FROM org_info va
+                     INNER JOIN org_info_str ap ON va.org_pid = ap.id
+        )
+        SELECT ap.id
+        FROM org_info_str ap
+                 JOIN org_info_str va ON ap.id = va.id;
+    </select>
 </mapper>

@@ -1,13 +1,14 @@
 package com.runjian.auth.server.controller.system;
 
-import com.runjian.auth.server.domain.dto.system.AddSysConfigDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysConfigDTO;
+import com.runjian.auth.server.constant.AddGroup;
+import com.runjian.auth.server.domain.dto.system.SysConfigDTO;
 import com.runjian.auth.server.domain.vo.system.SysConfigVO;
 import com.runjian.auth.server.service.system.ConfigInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,14 +31,14 @@ public class ConfigInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加系统参数配置")
-    public CommonResponse<?> add(@RequestBody AddSysConfigDTO dto) {
+    public CommonResponse<?> add(@RequestBody @Validated({AddGroup.class}) SysConfigDTO dto) {
         configInfoService.save(dto);
         return CommonResponse.success();
     }
 
     @PostMapping("/update")
     @ApiOperation("编辑系统参数配置")
-    public CommonResponse<?> update(@RequestBody UpdateSysConfigDTO dto) {
+    public CommonResponse<?> update(@RequestBody SysConfigDTO dto) {
         configInfoService.modifyById(dto);
         return CommonResponse.success();
     }

@@ -1,7 +1,8 @@
 package com.runjian.auth.server.domain.dto.system;
 
-import io.swagger.annotations.ApiModel;
+import com.runjian.auth.server.constant.UpdateGroup;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,8 +19,13 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "添加接口", description = "接口信息")
-public class AddSysApiInfoDTO {
+@Schema(name = "接口信息", description = "接口信息")
+public class SysApiInfoDTO {
+
+    @ApiModelProperty("编号ID")
+    @NotNull(groups = {UpdateGroup.class}, message = "id不能为空")
+    private Long id;
+
     @ApiModelProperty("应用ID")
     @NotNull
     private Long appId;
@@ -40,5 +46,6 @@ public class AddSysApiInfoDTO {
     private Integer apiSort;
 
     @ApiModelProperty(value = "禁用状态",notes = "0正常，1禁用")
+    @NotNull
     private Integer status;
 }

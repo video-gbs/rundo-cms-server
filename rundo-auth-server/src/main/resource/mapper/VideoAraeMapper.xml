@@ -1,17 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.runjian.auth.server.mapper.VideoAraeMapper">
-    <select id="selectByRoleId" resultType="java.lang.Long">
+    <select id="mySelectById" resultType="com.runjian.auth.server.domain.vo.system.VideoAreaVO">
+        WITH RECURSIVE area_path AS (
+            SELECT id, area_pid, area_name
+            FROM video_area
+            WHERE id = 1
+            UNION ALL
+            SELECT va.id, va.area_pid, CONCAT(ap.area_name,'/',va.area_name) as area_name
+            FROM video_area va
+                INNER JOIN area_path ap ON va.area_pid = ap.id
+        )
+        SELECT ap.area_name as area_names , va.*
+        FROM area_path ap
+            JOIN video_area va ON ap.id = va.id
+        WHERE va.id = #{id,jdbcType=BIGINT};
     </select>
 
-    <select id="selectTree" resultType="com.runjian.auth.server.domain.entity.VideoArea">
-        SELECT *
-        FROM video_area
-        <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
-            AND (area_pids like CONCAT('%[', #{id,jdbcType=BIGINT}, ']%') OR id = #{id,jdbcType=BIGINT})
-            <if test="areaName != null and areaName != ''">
-                AND area_name like CONCAT('%', #{areaName,jdbcType=VARCHAR}, '%')
-            </if>
-        </trim>
+    <select id="mySelectListById" resultType="com.runjian.auth.server.domain.vo.system.VideoAreaVO">
+        WITH RECURSIVE area_path AS (
+            SELECT id, area_pid, area_name
+            FROM video_area
+            WHERE id = #{areaId,jdbcType=BIGINT}
+            UNION ALL
+            SELECT va.id, va.area_pid, CONCAT(ap.area_name,'/',va.area_name) as area_name
+            FROM video_area va
+                INNER JOIN area_path ap ON va.area_pid = ap.id
+        )
+        SELECT ap.area_name as area_names , va.*
+        FROM area_path ap
+            JOIN video_area va ON ap.id = va.id
+        ;
     </select>
 </mapper>

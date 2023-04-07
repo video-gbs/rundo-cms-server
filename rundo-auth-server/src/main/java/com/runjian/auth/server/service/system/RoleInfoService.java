@@ -22,11 +22,13 @@ import java.util.List;
  */
 public interface RoleInfoService extends IService<RoleInfo> {
 
-    void save(AddSysRoleInfoDTO dto);
+    void save(SysRoleInfoDTO dto);
 
-    void modifyById(UpdateSysRoleInfoDTO dto);
+    void modifyById(SysRoleInfoDTO dto);
 
     Page<SysRoleInfoVO> findByPage(QuerySysRoleInfoDTO dto);
+
+    void deleteById(Long id);
 
     void erasureBatch(List<Long> ids);
 
@@ -39,7 +41,8 @@ public interface RoleInfoService extends IService<RoleInfo> {
     List<AppMenuApiTree> getAppMenuApiTree(Integer appType);
 
     void addRelationUser(RoleRelationUserDTO dto);
-    Page<RelationSysUserInfoVO>  listRelationUser(QueryRoleRelationSysUserInfoDTO dto);
+
+    Page<RelationSysUserInfoVO> listRelationUser(QueryRoleRelationSysUserInfoDTO dto);
 
     void rightRelationUser(RoleRelationUserDTO dto);
 

@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageRelationSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysUserInfoDTO;
-import com.runjian.auth.server.domain.dto.system.*;
-import com.runjian.auth.server.domain.entity.OrgInfo;
+import com.runjian.auth.server.domain.dto.system.QueryRelationSysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.SysUserInfoDTO;
 import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +52,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     private OrgInfoMapper orgInfoMapper;
 
     @Override
-    public void save(AddSysUserInfoDTO dto) {
+    public void save(SysUserInfoDTO dto) {
         LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserInfo::getUserAccount, dto.getUserAccount());
         long count = userInfoMapper.selectCount(queryWrapper);
@@ -89,7 +92,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     @Override
-    public void modifyById(UpdateSysUserInfoDTO dto) {
+    public void modifyById(SysUserInfoDTO dto) {
         // 根据id查取原始信息
         UserInfo userInfo = userInfoMapper.selectById(dto.getId());
         // 根据id查取角色信息
@@ -142,13 +145,10 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Override
     public Page<ListSysUserInfoVO> findByPage(QuerySysUserInfoDTO dto) {
+        PageSysUserInfoDTO page = new PageSysUserInfoDTO();
+        List<Long> orgIds = new ArrayList<>();
         switch (dto.getContain()) {
             case 0: { // 没有勾选 查询包含下级子节点
-                Long zero = 0L;
-                PageSysUserInfoDTO page = new PageSysUserInfoDTO();
-                if (dto.getOrgId() != null && !zero.equals(dto.getOrgId())) {
-                    page.setOrgId(dto.getOrgId());
-                }
                 if (null != dto.getUserName() && !"".equals(dto.getUserName())) {
                     page.setUserName(dto.getUserName());
                 }
@@ -165,59 +165,26 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
                 } else {
                     page.setSize(20);
                 }
-                return userInfoMapper.MySelectPage(page);
+                orgIds = Collections.singletonList(dto.getOrgId());
+                return userInfoMapper.MySelectPageByContain(page,orgIds);
             }
             case 1: { // 已经勾选 查询包含下级子节点
-                PageSysUserInfoDTO page = new PageSysUserInfoDTO();
-                // 0. 确认所传入的组织机构不为零
-                Long zero = 0L;
-                if (dto.getOrgId() == null || zero.equals(dto.getOrgId())) {
-                    if (null != dto.getUserName() && !"".equals(dto.getUserName())) {
-                        page.setUserName(dto.getUserName());
-                    }
-                    if (null != dto.getUserAccount() && !"".equals(dto.getUserAccount())) {
-                        page.setUserAccount(dto.getUserAccount());
-                    }
-                    if (null != dto.getCurrent() && dto.getCurrent() > 0) {
-                        page.setCurrent(dto.getCurrent());
-                    } else {
-                        page.setCurrent(1);
-                    }
-                    if (null != dto.getPageSize() && dto.getPageSize() > 0) {
-                        page.setSize(dto.getPageSize());
-                    } else {
-                        page.setSize(20);
-                    }
-                    return userInfoMapper.MySelectPage(page);
-                } else {
-                    // 1. 查询当前组织得所有下级组并获取Org
-                    OrgInfo orgInfo = orgInfoMapper.selectById(dto.getOrgId());
-                    LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.likeRight(OrgInfo::getOrgPids, orgInfo.getOrgPids() + "[" + orgInfo.getId() + "]");
-                    List<OrgInfo> orgInfoList = orgInfoMapper.selectList(queryWrapper);
-                    List<Long> orgIds = new ArrayList<>();
-                    orgIds.add(orgInfo.getId());
-                    for (OrgInfo info : orgInfoList) {
-                        orgIds.add(info.getId());
-                    }
-                    
-                    if (null != dto.getUserAccount() && !"".equals(dto.getUserAccount())) {
-                        page.setUserAccount(dto.getUserAccount());
-                    }
-                    if (null != dto.getCurrent() && dto.getCurrent() > 0) {
-                        page.setCurrent(dto.getCurrent());
-                    } else {
-                        page.setCurrent(1);
-                    }
-                    if (null != dto.getPageSize() && dto.getPageSize() > 0) {
-                        page.setSize(dto.getPageSize());
-                    } else {
-                        page.setSize(20);
-                    }
-                    return userInfoMapper.MySelectPageByContain(page, orgIds);
+                // 查询当前组织的下级组织，并获取ID
+                orgIds = orgInfoMapper.mySelectOrg(dto.getOrgId());
+                if (null != dto.getUserAccount() && !"".equals(dto.getUserAccount())) {
+                    page.setUserAccount(dto.getUserAccount());
                 }
-
-
+                if (null != dto.getCurrent() && dto.getCurrent() > 0) {
+                    page.setCurrent(dto.getCurrent());
+                } else {
+                    page.setCurrent(1);
+                }
+                if (null != dto.getPageSize() && dto.getPageSize() > 0) {
+                    page.setSize(dto.getPageSize());
+                } else {
+                    page.setSize(20);
+                }
+                return userInfoMapper.MySelectPageByContain(page, orgIds);
             }
             default: {
                 throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);

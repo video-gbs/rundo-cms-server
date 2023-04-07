@@ -3,10 +3,9 @@ package com.runjian.auth.server.service.system.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.dto.system.AddSysApiInfoDTO;
+import com.runjian.auth.server.domain.dto.system.SysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysApiInfoDTO;
 import com.runjian.auth.server.domain.entity.ApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.ApiInfoTree;
@@ -35,7 +34,7 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
     private ApiInfoMapper apiInfoMapper;
 
     @Override
-    public void save(AddSysApiInfoDTO dto) {
+    public void save(SysApiInfoDTO dto) {
         ApiInfo apiInfo = new ApiInfo();
         BeanUtils.copyProperties(dto, apiInfo);
         ApiInfo parentApiInfo = apiInfoMapper.selectById(dto.getApiPid());
@@ -46,7 +45,7 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
     }
 
     @Override
-    public void modifyById(UpdateSysApiInfoDTO dto) {
+    public void modifyById(SysApiInfoDTO dto) {
         ApiInfo apiInfo = new ApiInfo();
         BeanUtils.copyProperties(dto, apiInfo);
         apiInfoMapper.updateById(apiInfo);

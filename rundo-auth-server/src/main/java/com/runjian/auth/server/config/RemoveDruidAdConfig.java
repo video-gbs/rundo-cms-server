@@ -1,4 +1,4 @@
-package com.runjian.auth.server.common;
+package com.runjian.auth.server.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.properties.DruidStatProperties;
@@ -17,16 +17,23 @@ import java.io.IOException;
  * @author Jiang4Yu
  * @version V1.0.0
  * @ClassName DruidConfig
- * @Description druid 配置
+ * @Description 去除druid底部的广告配置类
  * @date 2023-03-07 周二 15:44
  */
 @Configuration
-public class DruidConfig {
+public class RemoveDruidAdConfig {
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource druid() {
         return new DruidDataSource();
     }
+
+    /**
+     * 除去页面底部的广告
+     *
+     * @param properties
+     * @return org.springframework.boot.web.servlet.FilterRegistrationBean
+     */
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Bean

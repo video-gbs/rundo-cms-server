@@ -1,8 +1,9 @@
 package com.runjian.auth.server.domain.dto.system;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
+import com.runjian.auth.server.constant.UpdateGroup;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,12 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "添加菜单", description = "菜单信息")
-public class AddSysMenuInfoDTO {
+@Schema(name = "菜单信息", description = "菜单信息")
+public class SysMenuInfoDTO {
+
+    @ApiModelProperty("编号ID")
+    @NotNull(groups = {UpdateGroup.class}, message = "id不能为空")
+    private Long id;
 
     @ApiModelProperty("所属应用ID")
     @NotNull

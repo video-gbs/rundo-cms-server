@@ -1,11 +1,13 @@
 package com.runjian.auth.server.domain.dto.system;
 
-import io.swagger.annotations.ApiModel;
+import com.runjian.auth.server.constant.UpdateGroup;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -18,8 +20,12 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ApiModel(value = "添加角色", description = "角色信息")
-public class AddSysRoleInfoDTO {
+@Schema(name = "添加角色", description = "角色信息")
+public class SysRoleInfoDTO {
+
+    @ApiModelProperty("编号ID")
+    @NotNull(groups = {UpdateGroup.class}, message = "id不能为空")
+    private Long id;
 
     @ApiModelProperty(value = "角色名称", required = true)
     private String roleName;

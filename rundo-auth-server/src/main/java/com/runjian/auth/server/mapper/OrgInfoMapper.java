@@ -19,4 +19,7 @@ import java.util.List;
 public interface OrgInfoMapper extends BaseMapper<OrgInfo> {
 
     List<OrgInfo> selectOrgTree(@Param("orgId") Long orgId, @Param("orgName") String orgName);
+
+
+    List<Long> mySelectOrg(@Param("orgId") Long orgId);
 }

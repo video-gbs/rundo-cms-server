@@ -20,9 +20,9 @@ import java.util.List;
  */
 public interface UserInfoService extends IService<UserInfo> {
 
-    void save(AddSysUserInfoDTO dto);
+    void save(SysUserInfoDTO dto);
 
-    void modifyById(UpdateSysUserInfoDTO dto);
+    void modifyById(SysUserInfoDTO dto);
 
     void modifyByStatus(StatusSysUserInfoDTO dto);
 

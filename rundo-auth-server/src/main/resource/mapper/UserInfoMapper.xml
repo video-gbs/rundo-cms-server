@@ -29,38 +29,6 @@
         </where>
     </delete>
 
-    <select id="MySelectPage" resultType="com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO">
-        SELECT user.id,
-               user.user_account,
-               user.user_name,
-               org.org_name_str AS org_name,
-               GROUP_CONCAT(role.role_name ORDER BY user.id SEPARATOR '/') AS role_name,
-               user.job_no,
-               user.status,
-               user.created_time,
-               user.updated_time
-        FROM user_info user
-                 LEFT JOIN org_info org ON org.id = user.org_id
-                 LEFT JOIN role_user ru ON ru.user_id = user.id
-                 LEFT JOIN role_info role ON role.id = ru.role_id
-        <where>
-            user.delete_flag = 0
-            <if test="orgId != null">
-                AND user.org_id = #{orgId,jdbcType=BIGINT}
-            </if>
-            <if test="userAccount != null and userAccount != ''">
-                <bind name="patternUserAccount" value="'%' + userAccount + '%'"/>
-                AND user.user_account LIKE #{patternUserAccount}
-            </if>
-            <if test="userName != null and userName != ''">
-                <bind name="patternUserName" value="'%' + userName + '%'"/>
-                AND user.user_name LIKE #{patternUserName}
-            </if>
-        </where>
-        GROUP BY user.id
-        ORDER BY user.created_time DESC
-    </select>
-
     <select id="selectOrgInfoByUserId" resultType="com.runjian.auth.server.domain.vo.system.OrgInfoVO">
         SELECT userInfo.org_id,
                orgInfo.org_name
@@ -75,6 +43,15 @@
 
     <select id="selectRelationSysUserInfoById"
             resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
+        WITH RECURSIVE org_info_str AS (
+            SELECT id, org_pid, org_name
+            FROM org_info
+            WHERE id = 1
+            UNION ALL
+            SELECT va.id, va.org_pid, CONCAT(ap.org_name,'/',va.org_name) as org_name
+            FROM org_info va
+            INNER JOIN org_info_str ap ON va.org_pid = ap.id
+        )
         SELECT
             user.id,
             user.user_account,
@@ -85,13 +62,13 @@
             user.address,
             user.email,
             user.phone,
-            org.org_name_str org_name,
-            GROUP_CONCAT(role.role_name ORDER BY user.id SEPARATOR '/') role_name,
+            org.org_name,
+            GROUP_CONCAT(role.role_name SEPARATOR '/') role_name,
             user.description
         FROM user_info user
         LEFT JOIN role_user ru ON ru.user_id = user.id
         LEFT JOIN role_info role ON role.id = ru.role_id
-        LEFT JOIN org_info org ON org.id = user.org_id
+        LEFT JOIN org_info_str org ON org.id = user.org_id
         <where>
             <if test="userId != null">
                 user.id = #{userId,jdbcType=BIGINT}
@@ -101,6 +78,15 @@
     </select>
 
     <select id="relationSysUserInfoPage" resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
+        WITH RECURSIVE org_info_str AS (
+            SELECT id, org_pid, org_name
+            FROM org_info
+            WHERE id = 1
+            UNION ALL
+            SELECT va.id, va.org_pid, CONCAT(ap.org_name,'/',va.org_name) as org_name
+            FROM org_info va
+                INNER JOIN org_info_str ap ON va.org_pid = ap.id
+        )
         SELECT
             user.id,
             user.user_account,
@@ -111,13 +97,13 @@
             user.address,
             user.email,
             user.phone,
-            org.org_name_str org_name,
-            GROUP_CONCAT(role.role_name ORDER BY user.id SEPARATOR '/') role_name,
+            org.org_name,
+            GROUP_CONCAT(role.role_name SEPARATOR '/') role_name,
             user.description
         FROM user_info user
-                 LEFT JOIN role_user ru ON ru.user_id = user.id
-                 LEFT JOIN role_info role ON role.id = ru.role_id
-                 LEFT JOIN org_info org ON org.id = user.org_id
+            LEFT JOIN role_user ru ON ru.user_id = user.id
+            LEFT JOIN role_info role ON role.id = ru.role_id
+            LEFT JOIN org_info_str org ON org.id = user.org_id
         WHERE user.delete_flag = 0
             <if test="userAccount != null and userAccount != ''">
                 <bind name="patternAccount" value="'%' + userAccount + '%'"/>
@@ -129,11 +115,19 @@
 
 
     <select id="selectAreaNameByUserId" resultType="java.lang.String">
-        SELECT
-            area.area_names
-        FROM
-            video_area area
-            LEFT JOIN role_area ra ON ra.area_id = area.id
+        WITH RECURSIVE area_path AS (
+            SELECT id, area_pid, area_name
+            FROM video_area
+            WHERE id = 1
+            UNION ALL
+            SELECT va.id, va.area_pid, CONCAT(ap.area_name,'/',va.area_name) as area_name
+            FROM video_area va
+                INNER JOIN area_path ap ON va.area_pid = ap.id
+        )
+        SELECT ap.area_name as area_names
+        FROM area_path ap
+            JOIN video_area va ON ap.id = va.id
+            LEFT JOIN role_area ra ON ra.area_id = ap.id
             LEFT JOIN role_user ru ON ru.role_id = ra.role_id
             LEFT JOIN user_info user ON user.id = ru.user_id
         <where>
@@ -144,25 +138,37 @@
     </select>
 
     <select id="MySelectPageByContain" resultType="com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO">
-        SELECT user.id,
-        user.user_account,
-        user.user_name,
-        org.org_name_str AS org_name,
-        GROUP_CONCAT(role.role_name ORDER BY user.id SEPARATOR '/') AS role_name,
-        user.job_no,
-        user.status,
-        user.created_time,
-        user.updated_time
+        WITH RECURSIVE org_info_str AS (
+            SELECT id, org_pid, org_name
+            FROM org_info
+            WHERE id = 1
+            UNION ALL
+            SELECT va.id, va.org_pid, CONCAT( ap.org_name, '/', va.org_name ) AS org_name
+            FROM org_info va
+                INNER JOIN org_info_str ap ON va.org_pid = ap.id
+        )
+        SELECT
+            user.id,
+            user.user_account,
+            user.user_name,
+            org.org_name,
+            GROUP_CONCAT(role.role_name SEPARATOR '/') AS role_name,
+            user.job_no,
+            user.status,
+            user.created_time,
+            user.updated_time
         FROM user_info user
-        LEFT JOIN org_info org ON org.id = user.org_id
-        LEFT JOIN role_user ru ON ru.user_id = user.id
-        LEFT JOIN role_info role ON role.id = ru.role_id
+            LEFT JOIN org_info_str org ON org.id = user.org_id
+            LEFT JOIN role_user ru ON ru.user_id = user.id
+            LEFT JOIN role_info role ON role.id = ru.role_id
         <where>
             user.delete_flag = 0
-            AND org.id IN
-            <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
-                #{orgId}
-            </foreach>
+            <if test="orgIds != null and orgIds.size() != 0">
+                AND org.id IN
+                <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
+                    #{orgId}
+                </foreach>
+            </if>
             <if test="page.userAccount != null and page.userAccount != ''">
                 <bind name="patternUserAccount" value="'%' + page.userAccount + '%'"/>
                 AND user.user_account LIKE #{patternUserAccount}

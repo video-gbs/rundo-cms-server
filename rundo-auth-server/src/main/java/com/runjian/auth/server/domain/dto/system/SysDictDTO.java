@@ -1,6 +1,8 @@
 package com.runjian.auth.server.domain.dto.system;
 
+import com.runjian.auth.server.constant.UpdateGroup;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +19,13 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddSysDictDTO {
+@Schema(name = "数字字典", description = "数字字典")
+public class SysDictDTO {
+
+    @ApiModelProperty("编号ID")
+    @NotNull(groups = {UpdateGroup.class}, message = "id不能为空")
+    private Long id;
+
     @ApiModelProperty("分组名称")
     @NotNull
     private String groupName;

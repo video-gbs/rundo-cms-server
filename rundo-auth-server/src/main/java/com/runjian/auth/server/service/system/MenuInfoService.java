@@ -20,9 +20,9 @@ public interface MenuInfoService extends IService<MenuInfo> {
 
     List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto);
 
-    void save(AddSysMenuInfoDTO dto);
+    void save(SysMenuInfoDTO dto);
 
-    void modifyById(UpdateSysMenuInfoDTO dto);
+    void modifyById(SysMenuInfoDTO dto);
 
     MenuInfoVO findById(Long id);
 
