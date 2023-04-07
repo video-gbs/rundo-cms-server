@@ -102,9 +102,9 @@ public class ChannelPresetServiceImpl extends ServiceImpl<ChannelPresetMapper, C
         }else {
             //数据存在进行修改数据库，修改对应通道的中文
             LambdaQueryWrapper<ChannelPresetLists> editQueryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(ChannelPresetLists::getChannelExpansionId,channelPresetEditReq.getChannelExpansionId());
-            queryWrapper.eq(ChannelPresetLists::getPresetId,channelPresetEditReq.getPresetId());
-            queryWrapper.eq(ChannelPresetLists::getDeleted,0);
+            editQueryWrapper.eq(ChannelPresetLists::getChannelExpansionId,channelPresetEditReq.getChannelExpansionId());
+            editQueryWrapper.eq(ChannelPresetLists::getPresetId,channelPresetEditReq.getPresetId());
+            editQueryWrapper.eq(ChannelPresetLists::getDeleted,0);
             channelPresetLists.setPresetName(channelPresetEditReq.getPresetName());
             channelPresetMapper.update(channelPresetLists,editQueryWrapper);
         }
