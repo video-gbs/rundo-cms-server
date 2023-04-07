@@ -27,4 +27,20 @@
         FROM org_info_str ap
                  JOIN org_info_str va ON ap.id = va.id;
     </select>
+
+    <select id="mySelectListById" resultType="com.runjian.auth.server.domain.vo.system.SysOrgVO">
+        WITH RECURSIVE org_path AS (
+            SELECT id, org_pid, org_name
+            FROM org_info
+            WHERE id = #{orgId,jdbcType=BIGINT}
+            UNION ALL
+            SELECT va.id, va.org_pid, CONCAT(ap.org_name,'/',va.org_name) as org_name
+            FROM org_info va
+                INNER JOIN org_path ap ON va.org_pid = ap.id
+        )
+        SELECT va.*
+        FROM org_path ap
+            JOIN org_info va ON ap.id = va.id
+        ;
+    </select>
 </mapper>

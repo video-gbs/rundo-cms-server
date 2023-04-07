@@ -2,6 +2,7 @@ package com.runjian.auth.server.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.runjian.auth.server.domain.entity.OrgInfo;
+import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,4 +23,6 @@ public interface OrgInfoMapper extends BaseMapper<OrgInfo> {
 
 
     List<Long> mySelectOrg(@Param("orgId") Long orgId);
+
+    List<SysOrgVO> mySelectListById(@Param("orgId") Long orgId);
 }

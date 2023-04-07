@@ -32,21 +32,9 @@ public class OrgInfo implements Serializable {
     @TableField("org_pid")
     private Long orgPid;
 
-    @ApiModelProperty("所有间接组织父级ID")
-    @TableField("org_pids")
-    private String orgPids;
-
     @ApiModelProperty("组织机构名称")
     @TableField("org_name")
     private String orgName;
-
-    @ApiModelProperty("组织机构全名")
-    @TableField("org_name_str")
-    private String orgNameStr;
-
-    @ApiModelProperty("组织结构编码")
-    @TableField("org_code")
-    private String orgCode;
 
     @ApiModelProperty("组织机构排序")
     @TableField("org_sort")
@@ -71,10 +59,6 @@ public class OrgInfo implements Serializable {
     @ApiModelProperty("层级")
     @TableField("level")
     private Integer level;
-
-    @ApiModelProperty("是否叶子节点")
-    @TableField("leaf")
-    private Integer leaf;
 
     @ApiModelProperty("描述信息")
     @TableField("description")

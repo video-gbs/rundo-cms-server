@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -110,12 +111,15 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         if (dto.getId().equals(dto.getAreaPid())) {
             log.info("禁止本级移动到本级");
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "禁止本级移动到本级");
-            // return;
         }
         // 目标位置的信息
         VideoArea targetInfo = videoAraeMapper.selectById(dto.getAreaPid());
         // 被移动项信息
         VideoArea info = videoAraeMapper.selectById(dto.getId());
+        // 判断目标是否存在
+        Optional.ofNullable(info).orElseThrow(() -> new BusinessException(BusinessErrorEnums.VALID_METHOD_NOT_SUPPORTED, "移动的节点不存在或已删除"));
+        Optional.ofNullable(targetInfo).orElseThrow(() -> new BusinessException(BusinessErrorEnums.VALID_METHOD_NOT_SUPPORTED, "目标位置不存在或已删除"));
+
         // 1.如果目标位置与被移动项的父级ID相同，为同级别移动
         if (info.getAreaPid().equals(targetInfo.getAreaPid())) {
             log.info("同级别移动");

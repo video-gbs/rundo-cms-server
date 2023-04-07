@@ -8,10 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 
 /**
  * @author Jiang4Yu
@@ -31,7 +28,7 @@ public class SysOrgDTO {
     private Long id;
 
     @ApiModelProperty(value = "上级部门", required = true)
-    @NotNull(message = "上级部门")
+    @NotNull(message = "上级部门Id不能为空")
     private Long orgPid;
 
     @ApiModelProperty(value = "部门名称", required = true)
@@ -41,9 +38,6 @@ public class SysOrgDTO {
     @NotEmpty(message = "部门名称名称不能为空")
     @Length(max = 32 ,message = "部门名称,最长为32字符")
     private String orgName;
-
-    @ApiModelProperty("部门结构编码")
-    private String orgCode;
 
     @ApiModelProperty("排序")
     private Integer orgSort;
