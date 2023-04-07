@@ -363,7 +363,9 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_CONTROL, 10L);
         req.putData(StandardName.PTZ_CMD_CODE, cmdCode);
         req.putData(StandardName.PTZ_CMD_VALUE, cmdValue);
-        req.putAllData(valueMap);
+        if (Objects.nonNull(valueMap) && valueMap.size() > 0){
+            req.putAllData(valueMap);
+        }
         CommonResponse<?> response = parsingEngineApi.customEvent(req);
         if (response.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "云台控制失败", response.getData(), response.getMsg());
