@@ -12,7 +12,7 @@ import java.util.Date;
  * @author chenjialing
  */
 @Data
-@ApiModel(value = "设备信息表", description = "接口信息表")
+@ApiModel(value = "预置位信息", description = "接口信息表")
 public class ChannelPresetReq {
     private static final long serialVersionUID = 1L;
 
