@@ -27,7 +27,7 @@ import javax.validation.Valid;
 @Api(tags = "关联用户管理")
 @Slf4j
 @RestController
-@RequestMapping("/sysUserInfo")
+@RequestMapping("/")
 public class RelationController {
 
     @Autowired
@@ -36,20 +36,20 @@ public class RelationController {
     @Autowired
     private RoleInfoService roleInfoService;
 
-    @PostMapping("/getRelationSysUserInfo/{id}")
+    @PostMapping("sysUserInfo/getRelationSysUserInfo/{id}")
     @ApiOperation("关联用户查看单个用户信息")
     public CommonResponse<RelationSysUserInfoVO> getRelationSysUserInfoById(@PathVariable Long id) {
         return CommonResponse.success(userInfoService.findRelationById(id));
     }
 
-    @PostMapping("/getRelationSysUserInfoList")
+    @PostMapping("sysUserInfo/getRelationSysUserInfoList")
     @ApiOperation("关联用户用户列表")
     public CommonResponse<IPage<RelationSysUserInfoVO>> getRelationSysUserInfoList(@RequestBody QueryRelationSysUserInfoDTO dto) {
         log.info("关联用户用户列表前端传参{}", JSONUtil.toJsonStr(dto));
         return CommonResponse.success(userInfoService.findRelationList(dto));
     }
 
-    @PostMapping("/relationUser/add")
+    @PostMapping("sysRoleInfo/relationUser/add")
     @ApiOperation("提交关联用户列表")
     public CommonResponse<?> addRelationUser(@RequestBody RoleRelationUserDTO dto) {
         log.info("提交关联用户列表前端传参{}", JSONUtil.toJsonStr(dto));
@@ -57,7 +57,7 @@ public class RelationController {
         return CommonResponse.success();
     }
 
-    @PostMapping("/relationUser/right")
+    @PostMapping("sysRoleInfo/relationUser/right")
     @ApiOperation("右移从关联用户列表中移除用户")
     public CommonResponse<?> rightRelationUser(@RequestBody RoleRelationUserDTO dto) {
         log.info("右移从关联用户列表中移除用户，前端传参{}", JSONUtil.toJsonStr(dto));
@@ -65,7 +65,7 @@ public class RelationController {
         return CommonResponse.success();
     }
 
-    @PostMapping("/relationUser/left")
+    @PostMapping("sysRoleInfo/relationUser/left")
     @ApiOperation("左移提交用户到已关联用户列表")
     public CommonResponse<?> leftRelationUser(@RequestBody RoleRelationUserDTO dto) {
         log.info("左移提交用户到已关联用户列表，前端传参{}", JSONUtil.toJsonStr(dto));
@@ -73,7 +73,7 @@ public class RelationController {
         return CommonResponse.success();
     }
 
-    @PostMapping("/relationUserByRole")
+    @PostMapping("sysRoleInfo/relationUserByRole")
     @ApiOperation("查询已关联用户列表")
     public CommonResponse<IPage<RelationSysUserInfoVO>> listRelationUser(@RequestBody @Valid QueryRoleRelationSysUserInfoDTO dto) {
         log.info("查询已关联用户列表传参{}", JSONUtil.toJsonStr(dto));
