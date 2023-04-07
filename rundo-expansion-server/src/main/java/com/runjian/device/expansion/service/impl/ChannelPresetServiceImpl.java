@@ -53,18 +53,17 @@ public class ChannelPresetServiceImpl extends ServiceImpl<ChannelPresetMapper, C
             CommonResponse<List<ChannelPresetListsResp>> ptzPresetCompose = deviceControlApi.getPtzPreset(channelExpansionId);
             if(ptzPresetCompose.getCode() == BusinessErrorEnums.SUCCESS.getErrCode()){
                 List<ChannelPresetListsResp> feignPtzPresetList = ptzPresetCompose.getData();
-
                 //插入数据库 并且返回数据
-                BeanUtil.copyToList(feignPtzPresetList,channelPresetLists.getClass());
+                List<ChannelPresetLists> channelPresetListsDao = BeanUtil.copyToList(feignPtzPresetList, ChannelPresetLists.class);
 
-                this.saveBatch(channelPresetLists);
+                this.saveBatch(channelPresetListsDao);
                 //返回数据
                 channelPresetListsResps = feignPtzPresetList;
 
             }
 
         }else {
-            BeanUtil.copyToList(channelPresetLists,channelPresetListsResps.getClass());
+            channelPresetListsResps = BeanUtil.copyToList(channelPresetLists, ChannelPresetListsResp.class);
         }
 
         return CommonResponse.success(channelPresetListsResps);
