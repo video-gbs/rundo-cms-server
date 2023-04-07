@@ -12,9 +12,11 @@ import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.ChannelPresetMapper;
 import com.runjian.device.expansion.service.IChannelPresetService;
+import com.runjian.device.expansion.vo.feign.request.FeignPtz3dReq;
 import com.runjian.device.expansion.vo.feign.request.FeignPtzControlReq;
 import com.runjian.device.expansion.vo.request.ChannelPresetControlReq;
 import com.runjian.device.expansion.vo.request.ChannelPresetEditReq;
+import com.runjian.device.expansion.vo.request.Ptz3dReq;
 import com.runjian.device.expansion.vo.response.ChannelPresetListsResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,5 +160,13 @@ public class ChannelPresetServiceImpl extends ServiceImpl<ChannelPresetMapper, C
             throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR,commonResponse.getMsg());
         }
         return CommonResponse.success();
+    }
+
+    @Override
+    public CommonResponse<?> dragZoom(Ptz3dReq request) {
+        FeignPtz3dReq feignPtz3dReq = new FeignPtz3dReq();
+        BeanUtil.copyProperties(request,feignPtz3dReq);
+        feignPtz3dReq.setChannelId(request.getChannelExpansionId());
+        return deviceControlApi.ptz3d(feignPtz3dReq);
     }
 }
