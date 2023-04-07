@@ -134,8 +134,8 @@ public class ChannelPresetServiceImpl extends ServiceImpl<ChannelPresetMapper, C
         }
         ChannelPresetLists channelPresetLists = new ChannelPresetLists();
         LambdaQueryWrapper<ChannelPresetLists> editQueryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ChannelPresetLists::getChannelExpansionId,channelPresetControlReq.getChannelExpansionId());
-        queryWrapper.eq(ChannelPresetLists::getPresetId,channelPresetControlReq.getPresetId());
+        editQueryWrapper.eq(ChannelPresetLists::getChannelExpansionId,channelPresetControlReq.getChannelExpansionId());
+        editQueryWrapper.eq(ChannelPresetLists::getPresetId,channelPresetControlReq.getPresetId());
         channelPresetLists.setDeleted(1);
         channelPresetMapper.update(channelPresetLists,editQueryWrapper);
 
