@@ -118,7 +118,7 @@ public class ChannelNorthController {
     @PutMapping("/ptz/control")
     public CommonResponse<?> ptzControl(@RequestBody PutPtzControlReq req){
         validatorService.validateRequest(req);
-        channelNorthService.channelPtzControl(req.getChannelId(),req.getCmdCode(), req.getCmdCode(), req.getValueMap());
+        channelNorthService.channelPtzControl(req.getChannelId(),req.getCmdCode(), req.getCmdValue(), req.getValueMap());
         return CommonResponse.success();
     }
 
