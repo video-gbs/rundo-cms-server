@@ -11,6 +11,7 @@ import com.runjian.stream.vo.request.PutRecordSpeedReq;
 import com.runjian.stream.vo.request.PutStreamOperationReq;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -135,12 +136,13 @@ public class StreamNorthController {
 
     /**
      * 获取流信息
-     * @param streamId 流Id
+     * @param req 流Id
      * @return
      */
     @GetMapping("/stream/media/info")
-    public CommonResponse<JSONObject> getStreamMediaInfo(@RequestParam String streamId){
-        return CommonResponse.success(streamNorthService.getStreamMediaInfo(streamId));
+    public CommonResponse<JSONObject> getStreamMediaInfo(@SpringQueryMap PutStreamOperationReq req){
+        validatorService.validateRequest(req);
+        return CommonResponse.success(streamNorthService.getStreamMediaInfo(req.getStreamId()));
     }
 
 }
