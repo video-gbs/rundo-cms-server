@@ -87,11 +87,10 @@ public class ChannelPlayController {
 
     @GetMapping("/streamId/info")
     @ApiOperation("通道流信息")
-    public CommonResponse<?> streamIdInfo(@RequestBody ChannelStreamOperationReq req){
-        validatorService.validateRequest(req);
+    public CommonResponse<?> streamIdInfo(@RequestParam Long channelExpansionId,@RequestParam String streamId){
         FeignStreamOperationReq feignStreamOperationReq = new FeignStreamOperationReq();
-        feignStreamOperationReq.setChannelId(req.getChannelId());
-        feignStreamOperationReq.setStreamId(req.getStreamId());
+        feignStreamOperationReq.setChannelId(channelExpansionId);
+        feignStreamOperationReq.setStreamId(streamId);
         return streamManageApi.getStreamMediaInfo(feignStreamOperationReq);
     }
 }
