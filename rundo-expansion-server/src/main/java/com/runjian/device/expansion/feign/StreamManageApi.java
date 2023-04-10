@@ -55,7 +55,7 @@ public interface StreamManageApi {
      * @param req
      * @return
      */
-    @GetMapping("/stream/media/info")
+    @GetMapping("/stream/north/stream/media/info")
     public CommonResponse<JSONObject> getStreamMediaInfo(@SpringQueryMap FeignStreamOperationReq req);
 
 
