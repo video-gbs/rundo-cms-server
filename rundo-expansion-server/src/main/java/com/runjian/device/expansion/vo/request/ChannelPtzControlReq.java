@@ -25,7 +25,8 @@ public class ChannelPtzControlReq {
     @Range(min = 0,max = 255,message = "指令操作值需要为;0-255")
     private Integer operationValue;
 
-    @ApiModelProperty("指令操作类型--" +
+    @ApiModelProperty("指令操作类型（0--255）    " +
+            "//云镜控制\n" +
             "    PTZ_LEFT(2,\"PTZ_LEFT\"),\n" +
             "    PTZ_RIGHT(1,\"PTZ_RIGHT\"),\n" +
             "    PTZ_UP(8,\"PTZ_UP\"),\n" +
@@ -35,9 +36,9 @@ public class ChannelPtzControlReq {
             "    PTZ_DOWNLEFT(6,\"PTZ_DOWNLEFT\"),\n" +
             "    PTZ_DOWNRIGHT(5,\"PTZ_DOWNRIGHT\"),\n" +
             "    //倍率缩小\n" +
-            "    ZOOM_IN(20,\"ZOOM_IN\"),\n" +
+            "    ZOOM_IN(16,\"ZOOM_IN\"),\n" +
             "    //倍率放大\n" +
-            "    ZOOM_OUT(10,\"ZOOM_OUT\"),\n" +
+            "    ZOOM_OUT(32,\"ZOOM_OUT\"),\n" +
             "\n" +
             "    PTZ_STOP(0,\"PTZ_STOP\"),\n" +
             "    //预置位\n" +
@@ -47,14 +48,13 @@ public class ChannelPtzControlReq {
             "\n" +
             "    //F1 指令\n" +
             "    //光圈缩小放大\n" +
-            "    IRIS_REDUCE(48,\"IRIS_REDUCE\"),\n" +
-            "    IRIS_GROW(44,\"IRIS_GROW\"),\n" +
+            "    IRIS_REDUCE(72,\"IRIS_REDUCE\"),\n" +
+            "    IRIS_GROW(68,\"IRIS_GROW\"),\n" +
             "    //聚焦近远\n" +
-            "    FOCUS_FAR(41,\"FOCUS_FAR\"),\n" +
-            "    FOCUS_NEAR(42,\"FOCUS_NEAR\"),\n" +
+            "    FOCUS_FAR(65,\"FOCUS_FAR\"),\n" +
+            "    FOCUS_NEAR(66,\"FOCUS_NEAR\"),\n" +
             "    //F1停止stop\n" +
-            "    IRISE_AND_FOCUS_STOP(40,\"IRISE_AND_FOCUS_STOP\")," +
-            ";0-255")
+            "    IRISE_AND_FOCUS_STOP(64,\"IRISE_AND_FOCUS_STOP\"),")
     @Range(min = 0,max = 255,message = "指令操作类型需要为;0-255")
     private Integer ptzOperationType;
 

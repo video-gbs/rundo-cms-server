@@ -22,8 +22,8 @@ public enum PtzType {
     MOVE_DOWN_LEFT(6),
     MOVE_DOWN_RIGHT(5),
     //倍率
-    ZOOM_IN(20),
-    ZOOM_OUT(10),
+    ZOOM_IN(16),
+    ZOOM_OUT(32),
 
 
     //预置位
@@ -33,13 +33,13 @@ public enum PtzType {
 
     //F1 指令
     //光圈缩小放大
-    IRIS_REDUCE(48),
-    IRIS_GROW(44),
+    IRIS_REDUCE(72),
+    IRIS_GROW(68),
     //聚焦近远
-    FOCUS_FAR(41),
-    FOCUS_NEAR(42),
+    FOCUS_FAR(65),
+    FOCUS_NEAR(66),
     //F1停止stop
-    IRIS_AND_FOCUS_STOP(40);
+    IRIS_AND_FOCUS_STOP(64);
 
 
     private final Integer code;
