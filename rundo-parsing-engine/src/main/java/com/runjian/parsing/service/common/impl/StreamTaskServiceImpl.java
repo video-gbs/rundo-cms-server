@@ -117,16 +117,23 @@ public class StreamTaskServiceImpl implements StreamTaskService {
 
     @Override
     public void taskSuccess(Long taskId, Object data) {
-        streamTaskMapper.updateState(taskId, TaskState.SUCCESS.getCode(), null, LocalDateTime.now());
         DeferredResult deferredResult = asynReqMap.remove(taskId);
+        if (Objects.isNull(deferredResult)){
+            streamTaskMapper.updateState(taskId, TaskState.ERROR.getCode(), String.format("任务成功返回，任务%s的返回请求丢失，消息内容：%s", taskId, data), LocalDateTime.now());
+            return;
+        }
         deferredResult.setResult(CommonResponse.success(data));
+        streamTaskMapper.updateState(taskId, TaskState.SUCCESS.getCode(), null, LocalDateTime.now());
     }
 
     @Override
     public void taskError(Long taskId, BusinessErrorEnums errorEnums, String detail) {
-        streamTaskMapper.updateState(taskId, TaskState.SUCCESS.getCode(), detail, LocalDateTime.now());
         DeferredResult deferredResult = asynReqMap.remove(taskId);
+        if (Objects.isNull(deferredResult)){
+            streamTaskMapper.updateState(taskId, TaskState.ERROR.getCode(), String.format("任务失败返回，任务%s的返回请求丢失，异常信息%s, 消息内容：%s", taskId, errorEnums.getErrMsg(), detail), LocalDateTime.now());
+            return;
+        }
         deferredResult.setResult(CommonResponse.failure(errorEnums, detail));
-
+        streamTaskMapper.updateState(taskId, TaskState.ERROR.getCode(), detail, LocalDateTime.now());
     }
 }
