@@ -4,6 +4,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.expansion.feign.StreamManageApi;
 import com.runjian.device.expansion.service.IPlayService;
+import com.runjian.device.expansion.vo.feign.request.FeignStreamOperationReq;
 import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.*;
 import io.swagger.annotations.Api;
@@ -82,5 +83,14 @@ public class ChannelPlayController {
     @ApiOperation("设备录像拖拉")
     public CommonResponse<?> recordSeek(@RequestBody RecordStreamSeekOperationReq req){
         return streamManageApi.recordSeek(req);
+    }
+
+    @GetMapping("/streamId/info")
+    @ApiOperation("通道流信息")
+    public CommonResponse<?> streamIdInfo(@RequestParam Long channelExpansionId,@RequestParam String streamId){
+        FeignStreamOperationReq feignStreamOperationReq = new FeignStreamOperationReq();
+        feignStreamOperationReq.setChannelId(channelExpansionId);
+        feignStreamOperationReq.setStreamId(streamId);
+        return streamManageApi.getStreamMediaInfo(feignStreamOperationReq);
     }
 }

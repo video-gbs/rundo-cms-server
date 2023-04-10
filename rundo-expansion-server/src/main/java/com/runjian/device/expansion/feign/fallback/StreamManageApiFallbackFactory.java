@@ -1,10 +1,12 @@
 package com.runjian.device.expansion.feign.fallback;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.expansion.feign.StreamManageApi;
+import com.runjian.device.expansion.vo.feign.request.FeignStreamOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSeekOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSpeedOperationReq;
@@ -63,6 +65,12 @@ public class StreamManageApiFallbackFactory implements FallbackFactory<StreamMan
             public CommonResponse<?> recordSeek(RecordStreamSeekOperationReq req) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--操作失败",req, throwable);
                 return finalFailure;
+            }
+
+            @Override
+            public CommonResponse<JSONObject> getStreamMediaInfo(FeignStreamOperationReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--操作失败",req, throwable);
+                return (CommonResponse<JSONObject>) finalFailure;
             }
         };
     }
