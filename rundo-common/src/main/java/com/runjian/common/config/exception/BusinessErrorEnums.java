@@ -111,6 +111,8 @@ public enum BusinessErrorEnums {
 
     DEFAULT_MEDIA_DELETE_ERROR(400, 30011, "默认配置节点不可删除"),
 
+    PRESETID_NOT_FOUND(400, 30012, "通道预置位信息不存在，请先查询"),
+
 
 
     /****************************  数据错误：50001-599999 Start ****************************/

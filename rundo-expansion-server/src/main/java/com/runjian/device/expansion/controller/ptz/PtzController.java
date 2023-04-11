@@ -50,7 +50,7 @@ public class PtzController {
     }
 
     @PutMapping(value = "/preset/edit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation("预置位编辑:channelExpansionId为通道id")
+    @ApiOperation("预置位编辑/添加:channelExpansionId为通道id")
     public CommonResponse<Boolean> presetEdit(@RequestBody ChannelPresetEditReq channelPresetEditReq) {
         return  channelPresetService.presetEdit(channelPresetEditReq);
     }
