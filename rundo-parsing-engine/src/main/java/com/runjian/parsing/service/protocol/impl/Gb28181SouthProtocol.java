@@ -125,7 +125,7 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
                 jsonObject.put(StandardName.ORIGIN_ID, channelInfo.getOriginId());
             }
         }
-        gatewayTaskService.taskSuccess(taskId, jsonData);
+        customEvent(taskId, jsonData);
     }
 
     /**

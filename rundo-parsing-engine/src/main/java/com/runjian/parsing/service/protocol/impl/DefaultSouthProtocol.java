@@ -165,7 +165,7 @@ public class DefaultSouthProtocol implements SouthProtocol {
         }
         JSONObject jsonObject = JSON.parseObject(data.toString());
         jsonObject.put(StandardName.DEVICE_ID, gatewayTaskInfo.getDeviceId());
-        gatewayTaskService.taskSuccess(taskId, data);
+        customEvent(taskId, data);
     }
 
     /**
@@ -188,7 +188,7 @@ public class DefaultSouthProtocol implements SouthProtocol {
         deviceInfo.setCreateTime(nowTime);
         deviceInfo.setUpdateTime(nowTime);
         deviceMapper.save(deviceInfo);
-        gatewayTaskService.taskSuccess(taskId, deviceInfo.getId());
+        customEvent(taskId, deviceInfo.getId());
     }
 
 
@@ -209,7 +209,7 @@ public class DefaultSouthProtocol implements SouthProtocol {
             channelMapper.deleteByDeviceId(gatewayTaskInfo.getDeviceId());
             deviceMapper.deleteById(gatewayTaskInfo.getDeviceId());
         }
-        gatewayTaskService.taskSuccess(taskId, isSuccess);
+        customEvent(taskId, isSuccess);
     }
 
     /**
@@ -250,8 +250,7 @@ public class DefaultSouthProtocol implements SouthProtocol {
         if (channelInfoList.size() > 0){
             channelMapper.batchSave(channelInfoList);
         }
-
-        gatewayTaskService.taskSuccess(taskId, objects);
+        customEvent(taskId, objects);
     }
 
 }
