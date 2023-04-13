@@ -76,58 +76,56 @@ public class ChannelPresetServiceImpl extends ServiceImpl<ChannelPresetMapper, C
     public CommonResponse<Boolean> presetEdit(ChannelPresetEditReq channelPresetEditReq) {
         //预置位编辑和设置
         //哦按段
-        LambdaQueryWrapper<ChannelPresetLists> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ChannelPresetLists::getChannelExpansionId,channelPresetEditReq.getChannelExpansionId());
-        queryWrapper.eq(ChannelPresetLists::getDeleted,0);
-        Long aLong = channelPresetMapper.selectCount(queryWrapper);
+//        LambdaQueryWrapper<ChannelPresetLists> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(ChannelPresetLists::getChannelExpansionId,channelPresetEditReq.getChannelExpansionId());
+//        queryWrapper.eq(ChannelPresetLists::getDeleted,0);
+//        Long aLong = channelPresetMapper.selectCount(queryWrapper);
         ChannelPresetLists channelPresetLists = new ChannelPresetLists();
-        if(aLong <= 0 ){
-            //数据不存在 重新调用和插入数据库
-            log.error(LogTemplate.ERROR_LOG_TEMPLATE,"预置位编辑","通道预置位信息不存在",channelPresetEditReq);
-            throw new BusinessException(BusinessErrorEnums.PRESETID_NOT_FOUND);
 
-        }else {
-            if(ObjectUtils.isEmpty(channelPresetEditReq.getPresetId())){
-                //预置位添加 预置位倒叙
-                LambdaQueryWrapper<ChannelPresetLists> lastedQueryWrapper = new LambdaQueryWrapper<>();
-                lastedQueryWrapper.eq(ChannelPresetLists::getChannelExpansionId,channelPresetEditReq.getChannelExpansionId());
-                lastedQueryWrapper.eq(ChannelPresetLists::getDeleted,0);
-                lastedQueryWrapper.orderByDesc(ChannelPresetLists::getPresetId);
-                lastedQueryWrapper.last("limit 1");
-                ChannelPresetLists channelPresetListsLasted = channelPresetMapper.selectOne(lastedQueryWrapper);
-                Integer insertPresetId = channelPresetListsLasted.getPresetId()+1;
-                //
-                FeignPtzControlReq feignPtzControlReq = new FeignPtzControlReq();
-                feignPtzControlReq.setChannelId(channelPresetEditReq.getChannelExpansionId());
-                feignPtzControlReq.setCmdCode(PtzType.PRESET_SET.getCode());
-                feignPtzControlReq.setCmdValue(insertPresetId);
-                //调用feign 进行预置位设置
-                CommonResponse<?> commonResponse = deviceControlApi.ptzControl(feignPtzControlReq);
-                if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-                    throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR,commonResponse.getMsg());
-                }
-
-
-                channelPresetLists.setChannelExpansionId(channelPresetEditReq.getChannelExpansionId());
-                channelPresetLists.setPresetId(channelPresetEditReq.getPresetId());
-                channelPresetLists.setPresetName(channelPresetEditReq.getPresetName());
-                channelPresetMapper.insert(channelPresetLists);
-
-            }else {
-                //进行预置位对应位置编辑
-
-                //数据存在进行修改数据库，修改对应通道的中文
-                LambdaQueryWrapper<ChannelPresetLists> editQueryWrapper = new LambdaQueryWrapper<>();
-                editQueryWrapper.eq(ChannelPresetLists::getChannelExpansionId,channelPresetEditReq.getChannelExpansionId());
-                editQueryWrapper.eq(ChannelPresetLists::getPresetId,channelPresetEditReq.getPresetId());
-                editQueryWrapper.eq(ChannelPresetLists::getDeleted,0);
-                channelPresetLists.setPresetName(channelPresetEditReq.getPresetName());
-                channelPresetMapper.update(channelPresetLists,editQueryWrapper);
+        if(ObjectUtils.isEmpty(channelPresetEditReq.getPresetId())){
+            //预置位添加 预置位倒叙
+            LambdaQueryWrapper<ChannelPresetLists> lastedQueryWrapper = new LambdaQueryWrapper<>();
+            lastedQueryWrapper.eq(ChannelPresetLists::getChannelExpansionId,channelPresetEditReq.getChannelExpansionId());
+            lastedQueryWrapper.eq(ChannelPresetLists::getDeleted,0);
+            lastedQueryWrapper.orderByDesc(ChannelPresetLists::getPresetId);
+            lastedQueryWrapper.last("limit 1");
+            ChannelPresetLists channelPresetListsLasted = channelPresetMapper.selectOne(lastedQueryWrapper);
+            int insertPresetId = 0;
+            if(!ObjectUtils.isEmpty(channelPresetListsLasted)){
+                insertPresetId = channelPresetListsLasted.getPresetId();
+            }
+            insertPresetId = insertPresetId+1;
+            //
+            FeignPtzControlReq feignPtzControlReq = new FeignPtzControlReq();
+            feignPtzControlReq.setChannelId(channelPresetEditReq.getChannelExpansionId());
+            feignPtzControlReq.setCmdCode(PtzType.PRESET_SET.getCode());
+            feignPtzControlReq.setCmdValue(insertPresetId);
+            //调用feign 进行预置位设置
+            CommonResponse<?> commonResponse = deviceControlApi.ptzControl(feignPtzControlReq);
+            if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR,commonResponse.getMsg());
             }
 
 
+            channelPresetLists.setChannelExpansionId(channelPresetEditReq.getChannelExpansionId());
+            channelPresetLists.setPresetId(channelPresetEditReq.getPresetId());
+            channelPresetLists.setPresetName(channelPresetEditReq.getPresetName());
+            channelPresetMapper.insert(channelPresetLists);
 
+        }else {
+            //进行预置位对应位置编辑
+
+            //数据存在进行修改数据库，修改对应通道的中文
+            LambdaQueryWrapper<ChannelPresetLists> editQueryWrapper = new LambdaQueryWrapper<>();
+            editQueryWrapper.eq(ChannelPresetLists::getChannelExpansionId,channelPresetEditReq.getChannelExpansionId());
+            editQueryWrapper.eq(ChannelPresetLists::getPresetId,channelPresetEditReq.getPresetId());
+            editQueryWrapper.eq(ChannelPresetLists::getDeleted,0);
+            channelPresetLists.setPresetName(channelPresetEditReq.getPresetName());
+            channelPresetMapper.update(channelPresetLists,editQueryWrapper);
         }
+
+
+
 
 
 
