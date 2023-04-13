@@ -34,4 +34,6 @@ public interface ApiInfoService extends IService<ApiInfo> {
     List<ApiInfoTree> findByTree(QuerySysApiInfoDTO dto);
 
     List<SysApiInfoVO> findByList(QuerySysApiInfoDTO dto);
+
+    List<ApiInfoTree> getTreeByAppId(Long appId);
 }
