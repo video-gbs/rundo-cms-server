@@ -73,7 +73,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         StreamInfo streamInfo;
         if (playType.equals(PlayType.LIVE.getCode())) {
             String streamId = PlayType.getMsgByCode(playType) + "_" + channelId;
-            RLock lock = redissonClient.getLock(streamId);
+            RLock lock = redissonClient.getLock(MarkConstant.REDIS_STREAM_LIVE_PLAY_LOCK + streamId);
             try{
                 lock.lock();
                 Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);

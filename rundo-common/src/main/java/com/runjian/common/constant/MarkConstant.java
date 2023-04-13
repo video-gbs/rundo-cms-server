@@ -31,6 +31,7 @@ public class MarkConstant {
 
     /*********************************视频类型标志*******************************************/
 
+    public static final String REDIS_STREAM_LIVE_PLAY_LOCK = "STREAM_LIVE_PLAY_LOCK:";
 
     /*******************************录像计划定时器标志****************************************/
 
