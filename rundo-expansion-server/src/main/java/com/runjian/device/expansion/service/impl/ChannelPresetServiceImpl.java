@@ -108,7 +108,7 @@ public class ChannelPresetServiceImpl extends ServiceImpl<ChannelPresetMapper, C
 
 
             channelPresetLists.setChannelExpansionId(channelPresetEditReq.getChannelExpansionId());
-            channelPresetLists.setPresetId(channelPresetEditReq.getPresetId());
+            channelPresetLists.setPresetId(insertPresetId);
             channelPresetLists.setPresetName(channelPresetEditReq.getPresetName());
             channelPresetMapper.insert(channelPresetLists);
 
