@@ -43,27 +43,27 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         BeanUtils.copyProperties(dto, appInfo);
         appInfoMapper.insert(appInfo);
         // 向菜单表中插入一条虚拟根菜单，并将虚拟根挂在到菜单的默认根节点下
-        // AddSysMenuInfoDTO menuInfoDTO = new AddSysMenuInfoDTO();
-        // menuInfoDTO.setAppId(appInfo.getId());
-        // menuInfoDTO.setMenuPid(1L);
-        // menuInfoDTO.setMenuSort(1);
-        // menuInfoDTO.setPath(appInfo.getAppUrl());
-        // menuInfoDTO.setComponent(appInfo.getComponent());
-        // menuInfoDTO.setIcon(appInfo.getAppIcon());
-        // menuInfoDTO.setTitle(appInfo.getAppName());
-        // menuInfoDTO.setStatus(0);
-        // menuInfoDTO.setHidden(0);
-        // menuInfoService.save(menuInfoDTO);
+        SysMenuInfoDTO menuInfoDTO = new SysMenuInfoDTO();
+        menuInfoDTO.setAppId(appInfo.getId());
+        menuInfoDTO.setMenuPid(1L);
+        menuInfoDTO.setMenuSort(1);
+        menuInfoDTO.setPath(appInfo.getAppUrl());
+        menuInfoDTO.setComponent(appInfo.getComponent());
+        menuInfoDTO.setIcon(appInfo.getAppIcon());
+        menuInfoDTO.setTitle(appInfo.getAppName());
+        menuInfoDTO.setStatus(0);
+        menuInfoDTO.setHidden(0);
+        menuInfoService.save(menuInfoDTO);
 
         // 向接口表中插入一条虚拟应用的根接口并将虚拟根挂在到接口的默认根节点下
-        // AddSysApiInfoDTO apiInfoDTO = new AddSysApiInfoDTO();
-        // apiInfoDTO.setAppId(appInfo.getId());
-        // apiInfoDTO.setApiPid(1L);
-        // apiInfoDTO.setApiName(appInfo.getAppName());
-        // apiInfoDTO.setUrl(appInfo.getAppUrl());
-        // apiInfoDTO.setApiSort(1);
-        // apiInfoDTO.setStatus(0);
-        // apiInfoService.save(apiInfoDTO);
+        SysApiInfoDTO apiInfoDTO = new SysApiInfoDTO();
+        apiInfoDTO.setAppId(appInfo.getId());
+        apiInfoDTO.setApiPid(1L);
+        apiInfoDTO.setApiName(appInfo.getAppName());
+        apiInfoDTO.setUrl(appInfo.getAppUrl());
+        apiInfoDTO.setApiSort(1);
+        apiInfoDTO.setStatus(0);
+        apiInfoService.save(apiInfoDTO);
 
     }
 
