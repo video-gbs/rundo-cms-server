@@ -61,7 +61,7 @@ public class ApiInfoController {
 
     @GetMapping("/getTree/{appId}")
     @ApiOperation("根据应用ID获取接口信息下拉树状列表")
-    public CommonResponse<?> getTreeByAppId(@PathVariable Long appId){
+    public CommonResponse<List<ApiInfoTree>> getTreeByAppId(@PathVariable Long appId){
         return CommonResponse.success(apiInfoService.getTreeByAppId(appId));
     }
 
