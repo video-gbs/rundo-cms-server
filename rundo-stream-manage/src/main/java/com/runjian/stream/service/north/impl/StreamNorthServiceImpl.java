@@ -16,7 +16,10 @@ import com.runjian.stream.service.common.StreamBaseService;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.StreamManageDto;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -42,10 +45,14 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     @Autowired
     private DataBaseService dataBaseService;
 
+    @Autowired
+    private RedissonClient redissonClient;
+
     /**
      * 通道最大播放数
      */
 //    private static final int CHANNEL_MAX_PLAY_NUM = 3;
+
 
     /**
      * 播放未响应超时时间
@@ -66,21 +73,27 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         StreamInfo streamInfo;
         if (playType.equals(PlayType.LIVE.getCode())) {
             String streamId = PlayType.getMsgByCode(playType) + "_" + channelId;
-            Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
-            if (streamInfoOp.isEmpty()) {
-                streamInfo = saveStream(gatewayId, channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
-                // 设置“准备中”状态的超时时间
-                StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
-            } else {
-                streamInfo = streamInfoOp.get();
-                if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
+            RLock lock = redissonClient.getLock(MarkConstant.REDIS_STREAM_LIVE_PLAY_LOCK + streamId);
+            try{
+                lock.lock();
+                Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
+                if (streamInfoOp.isEmpty()) {
+                    streamInfo = saveStream(gatewayId, channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
                     // 设置“准备中”状态的超时时间
                     StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
+                } else {
+                    streamInfo = streamInfoOp.get();
+                    if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
+                        // 设置“准备中”状态的超时时间
+                        StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
+                    }
+                    // 判断是否需要开启录像
+                    if (!streamInfo.getRecordState().equals(recordState) || recordState.equals(CommonEnum.ENABLE.getCode())) {
+                        startRecord(streamId);
+                    }
                 }
-                // 判断是否需要开启录像
-                if (!streamInfo.getRecordState().equals(recordState) || recordState.equals(CommonEnum.ENABLE.getCode())) {
-                    startRecord(streamId);
-                }
+            }finally {
+                lock.unlock();
             }
         } else {
 //            List<StreamInfo> streamInfoList = streamMapper.selectByChannelId(channelId);
@@ -96,7 +109,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         return res;
     }
 
-    private StreamInfo saveStream(Long gatewayId, Long channelId, Long dispatchId, Integer playType, Integer recordState, Integer autoCloseState, String streamId) {
+    private  StreamInfo saveStream(Long gatewayId, Long channelId, Long dispatchId, Integer playType, Integer recordState, Integer autoCloseState, String streamId) {
         LocalDateTime nowTime = LocalDateTime.now();
         StreamInfo streamInfo = new StreamInfo();
         streamInfo.setChannelId(channelId);
