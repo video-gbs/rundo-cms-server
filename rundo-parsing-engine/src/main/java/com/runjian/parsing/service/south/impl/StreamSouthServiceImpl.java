@@ -88,7 +88,7 @@ public class StreamSouthServiceImpl implements StreamSouthService {
         StreamConvertDto streamConvertDto = new StreamConvertDto(streamId);
         streamConvertDto.setStreamId(streamId);
         streamConvertDto.put(StandardName.COM_RESULT, commonResponse.getData());
-        streamTaskService.sendMsgToGateway(dispatchId, null, streamId, MsgType.STREAM_CLOSE.getMsg(), streamConvertDto, null);
+        streamTaskService.sendMsgToGateway(dispatchId, streamId, MsgType.STREAM_CLOSE.getMsg(), streamConvertDto, null);
     }
 
 

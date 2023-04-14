@@ -24,24 +24,23 @@ public interface StreamTaskService {
     /**
      * 发送消息
      * @param dispatchId 网关id
-     * @param channelId 通道id
      * @param streamId 流id
      * @param response 消息返回体
      * @param msgType 消息类型
      * @param data 数据
      */
-    void sendMsgToGateway(Long dispatchId, Long channelId, String streamId, String msgType, Object data, DeferredResult<CommonResponse<?>> response);
+    void sendMsgToGateway(Long dispatchId, String streamId, String msgType, Object data, DeferredResult<CommonResponse<?>> response);
 
     /**
      * 创建异步任务
      * @return 任务id
      */
-    Long createAsyncTask(Long dispatchId, Long channelId, String streamId, String mqId, String msgType, DeferredResult<CommonResponse<?>> deferredResult);
+    Long createAsyncTask(Long dispatchId, String streamId, String mqId, String msgType, DeferredResult<CommonResponse<?>> deferredResult);
 
     /**
      * 创建任务
      */
-    Long createTask(Long dispatchId, Long channelId, String streamId, String mqId, String msgType, TaskState taskState);
+    Long createTask(Long dispatchId, String streamId, String mqId, String msgType, TaskState taskState);
 
     /**
      * 获取任务

@@ -2,6 +2,12 @@ package com.runjian.parsing.service.north.impl;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.MsgType;
+import com.runjian.common.constant.StandardName;
+import com.runjian.parsing.constant.MqConstant;
+import com.runjian.parsing.entity.ChannelInfo;
+import com.runjian.parsing.entity.DeviceInfo;
+import com.runjian.parsing.entity.GatewayInfo;
+import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.StreamTaskService;
 import com.runjian.parsing.service.north.StreamNorthService;
 import com.runjian.parsing.vo.dto.StreamConvertDto;
@@ -22,6 +28,8 @@ public class StreamNorthServiceImpl implements StreamNorthService {
 
     private final StreamTaskService streamTaskService;
 
+    private final DataBaseService dataBaseService;
+
     /**
      * 通用消息处理
      * @param dispatchId 调度服务id
@@ -34,7 +42,16 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     public void customEvent(Long dispatchId, String streamId, Map<String, Object> mapData, MsgType msgType, DeferredResult<CommonResponse<?>> response) {
         StreamConvertDto streamConvertDto = new StreamConvertDto();
         streamConvertDto.setStreamId(streamId);
+        Object channelIdOb = mapData.get(StandardName.CHANNEL_ID);
+        if (Objects.nonNull(channelIdOb)){
+            Long channelId = (Long) channelIdOb;
+            ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
+            DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
+            mapData.put(StandardName.CHANNEL_ID, channelInfo.getOriginId());
+            mapData.put(StandardName.DEVICE_ID, deviceInfo.getOriginId());
+            mapData.put(StandardName.GATEWAY_MQ, MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + deviceInfo.getGatewayId());
+        }
         streamConvertDto.setDataMap(mapData);
-        streamTaskService.sendMsgToGateway(dispatchId, null, streamId, msgType.getMsg(), streamConvertDto, response);
+        streamTaskService.sendMsgToGateway(dispatchId,  streamId, msgType.getMsg(), streamConvertDto, response);
     }
 }
