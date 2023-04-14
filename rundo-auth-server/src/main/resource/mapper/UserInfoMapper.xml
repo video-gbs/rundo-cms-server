@@ -109,7 +109,7 @@
                 <bind name="patternAccount" value="'%' + userAccount + '%'"/>
                 AND user.user_account LIKE #{patternAccount}
             </if>
-        GROUP BY user.id
+        GROUP BY user.id, org.org_name
         ORDER BY user.id
     </select>
 

@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.constant.StatusConstant;
 import com.runjian.auth.server.domain.dto.page.PageRelationSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QueryRelationSysUserInfoDTO;
@@ -65,6 +66,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         // 处理密码
         String password = passwordUtil.encode(dto.getPassword());
         userInfo.setPassword(password);
+        userInfo.setStatus(StatusConstant.ENABLE);
         // sysUserInfo.setTenantId();
         userInfoMapper.insert(userInfo);
         // 处理角色信息
@@ -199,9 +201,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Override
     public void erasureBatch(List<Long> ids) {
-        for (Long id : ids) {
-            userInfoMapper.deleteById(id);
-        }
+        userInfoMapper.deleteBatchIds(ids);
     }
 
     @Override
