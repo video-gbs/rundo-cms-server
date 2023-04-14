@@ -1,8 +1,7 @@
 package com.runjian.auth.server.service.login;
 
 import com.runjian.auth.server.domain.dto.login.UserInfoDTO;
-
-import java.util.Map;
+import com.runjian.common.config.response.CommonResponse;
 
 /**
  * @author Jiang4Yu
@@ -12,8 +11,8 @@ import java.util.Map;
  * @date 2023-01-05 周四 17:12
  */
 public interface LoginService {
-    Map login(UserInfoDTO dto);
-    Map getCode();
+    CommonResponse login(UserInfoDTO dto);
+    CommonResponse getCode();
 
     void logout();
 
