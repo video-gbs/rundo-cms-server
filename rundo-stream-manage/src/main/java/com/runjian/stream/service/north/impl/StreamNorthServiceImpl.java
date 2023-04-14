@@ -96,9 +96,11 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             }
 
         StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamInfo.getStreamId(), MsgType.STREAM_LIVE_PLAY_START, 15L);
+        streamManageDto.put(StandardName.CHANNEL_ID, channelId);
         streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
         streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
+        streamManageDto.put(StandardName.STREAM_MEDIA_URL, dispatchInfo.getUrl());
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
         commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
 
@@ -143,9 +145,11 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         StreamInfo streamInfo = saveStream(gatewayDispatchInfo.getGatewayId(), channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
 
         StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamInfo.getStreamId(), MsgType.STREAM_RECORD_PLAY_START, 15L);
+        streamManageDto.put(StandardName.CHANNEL_ID, channelId);
         streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
         streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
+        streamManageDto.put(StandardName.STREAM_MEDIA_URL, dispatchInfo.getUrl());
         streamManageDto.put(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         streamManageDto.put(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);

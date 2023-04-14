@@ -49,5 +49,5 @@ public interface GatewayNorthService {
      * @param channelId 通道id
      * @return 通道id
      */
-    Long getGatewayIdByChannelId(Long channelId);
+    Long getGatewayInfoByChannelId(Long channelId);
 }
