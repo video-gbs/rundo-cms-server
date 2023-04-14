@@ -11,11 +11,9 @@ import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Miracle
@@ -71,9 +69,9 @@ public class GatewayNorthController {
      * @param channelId 通道id
      * @return
      */
-    @GetMapping("/id/channel")
+    @GetMapping("/data/channel")
     public CommonResponse<Long> getGatewayId(@RequestParam Long channelId){
-        return CommonResponse.success(gatewayNorthService.getGatewayIdByChannelId(channelId));
+        return CommonResponse.success(gatewayNorthService.getGatewayInfoByChannelId(channelId));
     }
 
 

@@ -15,6 +15,11 @@ public class StandardName {
     public static final String GATEWAY_ID = "gatewayId";
 
     /**
+     * 网关mq
+     */
+    public static final String GATEWAY_MQ = "gatewayMq";
+
+    /**
      * 标准消息类型名称
      */
     public static final String MSG_TYPE = "msgType";
@@ -95,6 +100,11 @@ public class StandardName {
      */
     public static final String STREAM_CHECK_TIME = "checkTime";
 
+    /**
+     * 流媒体访问地址
+     */
+    public static final String STREAM_MEDIA_URL = "mediaUrl";
+
     /***************************录像播放标准名称****************************/
 
     /**
@@ -111,6 +121,8 @@ public class StandardName {
      * 录像播放目标播放时间
      */
     public static final String RECORD_TARGET_TIME = "targetTime";
+
+
 
     /***************************云台控制类标准名称****************************/
 

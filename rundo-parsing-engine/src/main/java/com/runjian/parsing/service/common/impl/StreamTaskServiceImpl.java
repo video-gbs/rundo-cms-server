@@ -44,14 +44,14 @@ public class StreamTaskServiceImpl implements StreamTaskService {
     private static final String OUT_TIME = "OUT_TIME";
 
     @Override
-    public void sendMsgToGateway(Long dispatchId, Long channelId, String streamId, String msgType, Object data, DeferredResult<CommonResponse<?>> response) {
+    public void sendMsgToGateway(Long dispatchId, String streamId, String msgType, Object data, DeferredResult<CommonResponse<?>> response) {
         DispatchInfo dispatchInfo = dataBaseService.getDispatchInfo(dispatchId);
         String mqId = UUID.randomUUID().toString().replace("-", "");
         Long taskId;
         if (Objects.isNull(response)){
-            taskId = createTask(dispatchId, channelId, streamId, mqId, msgType, TaskState.SUCCESS);
+            taskId = createTask(dispatchId, streamId, mqId, msgType, TaskState.SUCCESS);
         }else {
-            taskId = createAsyncTask(dispatchId, channelId, streamId, mqId, msgType, response);
+            taskId = createAsyncTask(dispatchId, streamId, mqId, msgType, response);
         }
         String mqKey = MqConstant.STREAM_PREFIX + MqConstant.GET_SET_PREFIX + dispatchId;
         CommonMqDto<Object> request = new CommonMqDto<>(dispatchInfo.getSerialNum(), msgType, taskId.toString(), LocalDateTime.now());
@@ -60,8 +60,8 @@ public class StreamTaskServiceImpl implements StreamTaskService {
     }
 
     @Override
-    public Long createAsyncTask(Long dispatchId, Long channelId, String streamId, String mqId, String msgType, DeferredResult<CommonResponse<?>> deferredResult) {
-        Long taskId = createTask(dispatchId, channelId, streamId, mqId, msgType, TaskState.RUNNING);
+    public Long createAsyncTask(Long dispatchId, String streamId, String mqId, String msgType, DeferredResult<CommonResponse<?>> deferredResult) {
+        Long taskId = createTask(dispatchId, streamId, mqId, msgType, TaskState.RUNNING);
         asynReqMap.put(taskId, deferredResult);
         deferredResult.onTimeout(() -> {
             deferredResult.setResult(CommonResponse.failure(BusinessErrorEnums.FEIGN_REQUEST_TIME_OUT));
@@ -73,11 +73,10 @@ public class StreamTaskServiceImpl implements StreamTaskService {
 
 
     @Override
-    public Long createTask(Long dispatchId, Long channelId, String streamId, String mqId, String msgType, TaskState taskState) {
+    public Long createTask(Long dispatchId, String streamId, String mqId, String msgType, TaskState taskState) {
         LocalDateTime nowTime = LocalDateTime.now();
         StreamTaskInfo streamTaskInfo = new StreamTaskInfo();
         streamTaskInfo.setDispatchId(dispatchId);
-        streamTaskInfo.setChannelId(channelId);
         streamTaskInfo.setStreamId(streamId);
         streamTaskInfo.setMqId(mqId);
         streamTaskInfo.setMsgType(msgType);

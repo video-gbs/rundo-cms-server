@@ -91,7 +91,7 @@ public class GatewayNorthServiceImpl implements GatewayNorthService {
      * @return
      */
     @Override
-    public Long getGatewayIdByChannelId(Long channelId) {
+    public Long getGatewayInfoByChannelId(Long channelId) {
         ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
         return deviceInfo.getGatewayId();
