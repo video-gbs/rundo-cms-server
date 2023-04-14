@@ -25,6 +25,6 @@ public interface DeviceControlApi {
     @GetMapping("/gateway/north/page")
     CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByName(@RequestParam int page, @RequestParam int num, @RequestParam(required = false) String name);
 
-    @GetMapping("/channel/gateway_id")
+    @GetMapping("/gateway/id/channel")
     CommonResponse<Long> getGatewayIdByChannelId(@RequestParam Long channelId);
 }

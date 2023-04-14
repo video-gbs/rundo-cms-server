@@ -66,6 +66,16 @@ public class GatewayNorthController {
         return CommonResponse.success(gatewayNorthService.getGatewayNameList(gatewayId));
     }
 
+    /**
+     * 获取gatewayId
+     * @param channelId 通道id
+     * @return
+     */
+    @GetMapping("/id/channel")
+    public CommonResponse<Long> getGatewayId(@RequestParam Long channelId){
+        return CommonResponse.success(gatewayNorthService.getGatewayIdByChannelId(channelId));
+    }
+
 
     /**
      * 修改网关信息
