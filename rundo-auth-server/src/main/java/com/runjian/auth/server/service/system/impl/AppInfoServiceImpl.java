@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageSysAppInfoDTO;
@@ -51,6 +52,8 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         menuInfoDTO.setComponent(appInfo.getComponent());
         menuInfoDTO.setIcon(appInfo.getAppIcon());
         menuInfoDTO.setTitle(appInfo.getAppName());
+        menuInfoDTO.setName(StrUtil.removePrefix("/", appInfo.getAppUrl()));
+        menuInfoDTO.setRedirect(appInfo.getRedirect());
         menuInfoDTO.setStatus(0);
         menuInfoDTO.setHidden(0);
         menuInfoService.save(menuInfoDTO);
