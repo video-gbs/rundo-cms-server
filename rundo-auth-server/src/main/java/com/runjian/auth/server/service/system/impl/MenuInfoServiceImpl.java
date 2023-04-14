@@ -127,6 +127,24 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     }
 
     @Override
+    public List<MenuInfoTree> getTreeByAppId(Long appId) {
+        LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(MenuInfo::getAppId, appId);
+        List<MenuInfo> menuInfoList = menuInfoMapper.selectList(queryWrapper);
+        long root = 0L;
+        List<MenuInfoTree> menuInfoTreeList = new ArrayList<>();
+        for (MenuInfo menuInfo : menuInfoList) {
+            if (menuInfo.getAppId().longValue() == appId && menuInfo.getMenuPid() == 1L) {
+                root = menuInfo.getId();
+            }
+            MenuInfoTree bean = new MenuInfoTree();
+            BeanUtils.copyProperties(menuInfo, bean);
+            menuInfoTreeList.add(bean);
+        }
+        return DataTreeUtil.buildTree(menuInfoTreeList, root);
+    }
+
+    @Override
     public void save(SysMenuInfoDTO dto) {
         MenuInfo menuInfo = new MenuInfo();
         BeanUtils.copyProperties(dto, menuInfo);

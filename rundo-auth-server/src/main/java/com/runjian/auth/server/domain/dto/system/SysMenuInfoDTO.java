@@ -51,10 +51,16 @@ public class SysMenuInfoDTO {
     @ApiModelProperty("前端组件import路径")
     private String component;
 
+    @ApiModelProperty("重定向地址")
+    private String redirect;
+
+    @ApiModelProperty("菜单名称")
+    private String name;
+
     @ApiModelProperty("图标")
     private String icon;
 
-    @ApiModelProperty("菜单名称")
+    @ApiModelProperty("菜单标题")
     private String title;
 
     @ApiModelProperty(value = "禁用状态",notes = "0正常，1禁用")

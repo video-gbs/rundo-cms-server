@@ -34,4 +34,6 @@ public interface MenuInfoService extends IService<MenuInfo> {
     void modifyByStatus(StatusChangeDTO dto);
 
     void modifyByHidden(HiddenChangeDTO dto);
+
+    List<MenuInfoTree> getTreeByAppId(Long appId);
 }
