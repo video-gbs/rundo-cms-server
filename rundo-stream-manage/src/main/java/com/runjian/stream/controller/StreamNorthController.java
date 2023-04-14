@@ -5,11 +5,9 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.service.north.StreamNorthService;
-import com.runjian.stream.vo.request.PostStreamApplyStreamReq;
-import com.runjian.stream.vo.request.PutRecordSeekReq;
-import com.runjian.stream.vo.request.PutRecordSpeedReq;
-import com.runjian.stream.vo.request.PutStreamOperationReq;
-import com.runjian.stream.vo.response.PostApplyStreamRsp;
+import com.runjian.stream.vo.request.*;
+import com.runjian.stream.vo.response.PostVideoPlayRsp;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
@@ -21,24 +19,34 @@ import java.util.List;
  * @date 2023/2/7 20:36
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/stream/north")
 public class StreamNorthController {
 
-    @Autowired
-    private ValidatorService validatorService;
+    private final ValidatorService validatorService;
 
-    @Autowired
-    private StreamNorthService streamNorthService;
+    private final StreamNorthService streamNorthService;
 
     /**
-     * 申请流id
+     * 直播播放
      * @param req
      * @return
      */
-    @PostMapping("/play/apply")
-    public CommonResponse<PostApplyStreamRsp> applyStreamId(@RequestBody PostStreamApplyStreamReq req){
+    @PostMapping("/play/live")
+    public CommonResponse<PostVideoPlayRsp> applyStreamId(@RequestBody PostStreamLivePlayReq req){
         validatorService.validateRequest(req);
-        return CommonResponse.success(streamNorthService.applyStreamId(req.getGatewayId(), req.getChannelId(), req.getPlayType(), req.getRecordState(), req.getAutoCloseState()));
+        return CommonResponse.success(streamNorthService.streamLivePlay(req.getChannelId(), req.getEnableAudio(), req.getSsrcCheck(), req.getRecordState(), req.getAutoCloseState()));
+    }
+
+    /**
+     * 录像播放
+     * @param req
+     * @return
+     */
+    @PostMapping("/play/record")
+    public CommonResponse<PostVideoPlayRsp> applyStreamId(@RequestBody PostStreamRecordPlayReq req){
+        validatorService.validateRequest(req);
+        return CommonResponse.success(streamNorthService.streamRecordPlay(req.getChannelId(), req.getEnableAudio(), req.getSsrcCheck(), req.getPlayType(), req.getRecordState(), req.getAutoCloseState(), req.getStartTime(), req.getEndTime()));
     }
 
     /**

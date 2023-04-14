@@ -5,6 +5,7 @@ import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.south.GatewaySouthService;
 import com.runjian.device.vo.request.PostGatewaySignInReq;
 import com.runjian.device.vo.request.PutHeartbeatReq;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,13 +16,12 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/gateway/south")
+@RequiredArgsConstructor
 public class GatewaySouthController {
 
-    @Autowired
-    private ValidatorService validatorService;
+    private final ValidatorService validatorService;
 
-    @Autowired
-    private GatewaySouthService gatewaySouthService;
+    private final GatewaySouthService gatewaySouthService;
 
     /**
      * 网关注册

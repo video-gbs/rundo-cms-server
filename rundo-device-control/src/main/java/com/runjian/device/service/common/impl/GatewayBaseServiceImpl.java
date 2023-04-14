@@ -12,6 +12,7 @@ import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.service.common.GatewayBaseService;
 import com.runjian.device.service.common.RedisBaseService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,22 +31,18 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GatewayBaseServiceImpl implements GatewayBaseService {
 
-    @Autowired
-    private GatewayMapper gatewayMapper;
+    private final GatewayMapper gatewayMapper;
 
-    @Autowired
-    private DeviceMapper deviceMapper;
+    private final DeviceMapper deviceMapper;
 
-    @Autowired
-    private ChannelMapper channelMapper;
+    private final ChannelMapper channelMapper;
 
-    @Autowired
-    private RedisBaseService redisBaseService;
+    private final RedisBaseService redisBaseService;
 
-    @Autowired
-    private ParsingEngineApi parsingEngineApi;
+    private final ParsingEngineApi parsingEngineApi;
 
 
     @Override

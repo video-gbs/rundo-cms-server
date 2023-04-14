@@ -10,6 +10,7 @@ import com.runjian.device.service.north.GatewayNorthService;
 import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +23,10 @@ import java.util.Optional;
  * @date 2023/2/6 17:21
  */
 @Service
+@RequiredArgsConstructor
 public class GatewayNorthServiceImpl implements GatewayNorthService {
 
-    @Autowired
-    private GatewayMapper gatewayMapper;
+    private final GatewayMapper gatewayMapper;
 
     @Override
     public List<GetGatewayNameRsp> getGatewayNameList(Long gatewayId) {

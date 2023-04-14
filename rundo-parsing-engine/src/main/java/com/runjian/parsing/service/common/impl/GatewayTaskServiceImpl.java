@@ -13,6 +13,7 @@ import com.runjian.parsing.mq.listener.MqDefaultProperties;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.GatewayTaskService;
 import com.runjian.parsing.vo.CommonMqDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,19 +31,16 @@ import java.util.UUID;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GatewayTaskServiceImpl implements GatewayTaskService {
 
-    @Autowired
-    private GatewayTaskMapper gatewayTaskMapper;
+    private final GatewayTaskMapper gatewayTaskMapper;
 
-    @Autowired
-    private RabbitMqSender rabbitMqSender;
+    private final RabbitMqSender rabbitMqSender;
 
-    @Autowired
-    private DataBaseService dataBaseService;
+    private final DataBaseService dataBaseService;
 
-    @Autowired
-    private MqDefaultProperties mqDefaultProperties;
+    private final MqDefaultProperties mqDefaultProperties;
 
 
     private static final String OUT_TIME = "OUT_TIME";

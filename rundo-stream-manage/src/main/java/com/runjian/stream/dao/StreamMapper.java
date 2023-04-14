@@ -124,4 +124,10 @@ public interface StreamMapper {
             " AND create_time &lt;= #{nowTime}" +
             " </script> ")
     void deleteByIdsAndCreateTime(List<Long> idList, LocalDateTime nowTime);
+
+    @Delete(" <script> " +
+            " DELETE FROM " + STREAM_TABLE_NAME +
+            " WHERE stream_state = #{streamState} " +
+            " </script> ")
+    void deleteByStreamState(Integer streamState);
 }

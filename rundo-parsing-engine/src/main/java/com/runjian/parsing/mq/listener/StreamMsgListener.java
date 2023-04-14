@@ -14,6 +14,7 @@ import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.service.south.StreamSouthService;
 import com.runjian.parsing.vo.CommonMqDto;
 import com.runjian.parsing.vo.dto.StreamConvertDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
@@ -29,19 +30,16 @@ import java.util.UUID;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class StreamMsgListener implements ChannelAwareMessageListener {
 
-    @Autowired
-    private DispatchMapper dispatchMapper;
+    private final DispatchMapper dispatchMapper;
 
-    @Autowired
-    private RabbitMqSender rabbitMqSender;
+    private final RabbitMqSender rabbitMqSender;
 
-    @Autowired
-    private StreamSouthService streamSouthService;
+    private final StreamSouthService streamSouthService;
 
-    @Autowired
-    private MqDefaultProperties mqDefaultProperties;
+    private final MqDefaultProperties mqDefaultProperties;
 
 
     @Override

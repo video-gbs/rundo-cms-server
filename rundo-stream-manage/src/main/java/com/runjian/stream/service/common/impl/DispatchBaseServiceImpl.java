@@ -4,6 +4,7 @@ import com.runjian.common.constant.CommonEnum;
 import com.runjian.stream.dao.DispatchMapper;
 import com.runjian.stream.dao.StreamMapper;
 import com.runjian.stream.service.common.DispatchBaseService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -18,13 +19,12 @@ import java.util.Set;
  * @date 2023/2/22 11:07
  */
 @Service
+@RequiredArgsConstructor
 public class DispatchBaseServiceImpl implements DispatchBaseService {
 
-    @Autowired
-    private DispatchMapper dispatchMapper;
+    private final DispatchMapper dispatchMapper;
 
-    @Autowired
-    private StreamMapper streamMapper;
+    private final StreamMapper streamMapper;
 
     @Override
     @PostConstruct

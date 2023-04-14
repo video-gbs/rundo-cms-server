@@ -9,6 +9,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.StandardName;
 import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.dao.ChannelMapper;
+import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.ChannelInfo;
 import com.runjian.parsing.entity.GatewayTaskInfo;
 import com.runjian.parsing.feign.DeviceControlApi;
@@ -24,16 +25,13 @@ import java.util.Optional;
  * @date 2023/1/31 10:46
  */
 @Service
-public class Gb28181SouthProtocol extends DefaultSouthProtocol {
+public class Gb28181SouthProtocol extends AbstractSouthProtocol {
 
-    @Autowired
-    private GatewayTaskService gatewayTaskService;
+    private final GatewayTaskService gatewayTaskService;
 
-    @Autowired
-    private ChannelMapper channelMapper;
+    private final ChannelMapper channelMapper;
 
-    @Autowired
-    private DeviceControlApi deviceControlApi;
+    private final DeviceControlApi deviceControlApi;
 
     private final static String IP = "ipAddress";
 
@@ -42,6 +40,18 @@ public class Gb28181SouthProtocol extends DefaultSouthProtocol {
     private final static String CHANNEL_ONLINE_STATE = "status";
 
     private final static String CHANNEL_NAME = "channelName";
+
+    public Gb28181SouthProtocol(GatewayTaskService gatewayTaskService, DeviceMapper deviceMapper, ChannelMapper channelMapper, DeviceControlApi deviceControlApi) {
+        super(gatewayTaskService, deviceMapper, channelMapper, deviceControlApi);
+        this.gatewayTaskService = gatewayTaskService;
+        this.channelMapper = channelMapper;
+        this.deviceControlApi = deviceControlApi;
+    }
+
+    @Override
+    public String getProtocolName() {
+        return "GB28181";
+    }
 
 
     /**

@@ -4,6 +4,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.south.DeviceSouthService;
 import com.runjian.device.vo.request.PostDeviceSignInReq;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,15 +19,13 @@ import java.util.List;
  * @date 2023/01/06 16:56
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/device/south")
 public class DeviceSouthController {
 
+    private final ValidatorService validatorService;
 
-    @Autowired
-    private ValidatorService validatorService;
-
-    @Autowired
-    private DeviceSouthService deviceSouthService;
+    private final DeviceSouthService deviceSouthService;
 
     /**
      * 设备主动注册

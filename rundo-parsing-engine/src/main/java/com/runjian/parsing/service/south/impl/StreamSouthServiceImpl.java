@@ -13,6 +13,7 @@ import com.runjian.parsing.service.common.StreamTaskService;
 import com.runjian.parsing.service.south.StreamSouthService;
 import com.runjian.parsing.vo.CommonMqDto;
 import com.runjian.parsing.vo.dto.StreamConvertDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,13 +26,12 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class StreamSouthServiceImpl implements StreamSouthService {
 
-    @Autowired
-    private StreamManageApi streamManageApi;
+    private final StreamManageApi streamManageApi;
 
-    @Autowired
-    private StreamTaskService streamTaskService;
+    private final StreamTaskService streamTaskService;
 
 
     @Override

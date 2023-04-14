@@ -71,6 +71,11 @@ public class StandardName {
     public static final String STREAM_MODE = "streamMode";
 
     /**
+     * 录像状态
+     */
+    public static final String STREAM_RECORD_STATE = "recordState";
+
+    /**
      * 流id
      */
     public static final String STREAM_ID = "streamId";

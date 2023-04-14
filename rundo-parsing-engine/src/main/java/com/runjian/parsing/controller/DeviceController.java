@@ -6,6 +6,7 @@ import com.runjian.common.constant.IdType;
 import com.runjian.common.constant.MsgType;
 import com.runjian.parsing.service.common.ProtocolService;
 import com.runjian.parsing.vo.request.DeviceControlReq;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -19,15 +20,14 @@ import java.util.Set;
  */
 @RestController
 @RequestMapping("/device-control")
+@RequiredArgsConstructor
 public class DeviceController {
 
     private static final long OUT_TIME = 10000L;
 
-    @Autowired
-    private ProtocolService protocolService;
+    private final ProtocolService protocolService;
 
-    @Autowired
-    private ValidatorService validatorService;
+    private final ValidatorService validatorService;
 
 
     /**

@@ -14,6 +14,7 @@ import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.service.common.ProtocolService;
 import com.runjian.parsing.vo.CommonMqDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
@@ -25,19 +26,16 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GatewayMsgListener implements ChannelAwareMessageListener {
 
-    @Autowired
-    private ProtocolService protocolService;
+    private final ProtocolService protocolService;
 
-    @Autowired
-    private GatewayMapper gatewayMapper;
+    private final GatewayMapper gatewayMapper;
 
-    @Autowired
-    private RabbitMqSender rabbitMqSender;
+    private final RabbitMqSender rabbitMqSender;
 
-    @Autowired
-    private MqDefaultProperties mqDefaultProperties;
+    private final MqDefaultProperties mqDefaultProperties;
 
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {

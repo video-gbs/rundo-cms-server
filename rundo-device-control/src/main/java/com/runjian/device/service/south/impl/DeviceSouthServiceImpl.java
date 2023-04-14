@@ -15,6 +15,7 @@ import com.runjian.device.service.common.RedisBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.south.DeviceSouthService;
 import com.runjian.device.vo.request.PostDeviceSignInReq;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,22 +30,23 @@ import java.util.stream.Collectors;
  * @date 2023/01/06 16:56
  */
 @Service
+@RequiredArgsConstructor
 public class DeviceSouthServiceImpl implements DeviceSouthService {
 
     @Autowired
-    private DeviceMapper deviceMapper;
+    private final DeviceMapper deviceMapper;
 
     @Autowired
-    private ChannelMapper channelMapper;
+    private final ChannelMapper channelMapper;
 
     @Autowired
-    private ChannelNorthService channelNorthService;
+    private final ChannelNorthService channelNorthService;
 
     @Autowired
-    private RedisBaseService redisBaseService;
+    private final RedisBaseService redisBaseService;
 
     @Autowired
-    private DetailBaseService detailBaseService;
+    private final DetailBaseService detailBaseService;
 
     /**
      * 设备添加注册

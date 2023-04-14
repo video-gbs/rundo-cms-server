@@ -8,6 +8,7 @@ import com.runjian.stream.dao.StreamMapper;
 import com.runjian.stream.entity.DispatchInfo;
 import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.service.common.DataBaseService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +19,12 @@ import java.util.Optional;
  * @date 2023/2/3 15:00
  */
 @Service
+@RequiredArgsConstructor
 public class DataBaseServiceImpl implements DataBaseService {
 
-    @Autowired
-    private DispatchMapper dispatchMapper;
+    private final DispatchMapper dispatchMapper;
 
-    @Autowired
-    private StreamMapper streamMapper;
+    private final StreamMapper streamMapper;
 
     @Override
     public DispatchInfo getDispatchInfo(Long dispatchId) {

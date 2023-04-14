@@ -6,6 +6,7 @@ import com.runjian.parsing.service.protocol.SouthProtocol;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.ProtocolService;
 import com.runjian.parsing.service.protocol.NorthProtocol;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,12 @@ import java.util.Map;
  * @date 2023/1/17 14:45
  */
 @Service
+@RequiredArgsConstructor
 public class ProtocolServiceImpl implements ProtocolService {
 
-    @Autowired
-    private DataBaseService dataBaseService;
+    private final DataBaseService dataBaseService;
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
 
     /**

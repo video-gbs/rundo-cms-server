@@ -10,6 +10,7 @@ import com.runjian.device.vo.request.PutGatewayReq;
 import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,13 +23,12 @@ import java.util.Objects;
  */
 @RestController
 @RequestMapping(("/gateway/north"))
+@RequiredArgsConstructor
 public class GatewayNorthController {
 
-    @Autowired
-    private GatewayNorthService gatewayNorthService;
+    private final GatewayNorthService gatewayNorthService;
 
-    @Autowired
-    private ValidatorService validatorService;
+    private final ValidatorService validatorService;
 
     /**
      * 根据网关id获取数据

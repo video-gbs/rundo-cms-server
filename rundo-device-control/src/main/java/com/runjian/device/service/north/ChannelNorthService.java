@@ -44,12 +44,6 @@ public interface ChannelNorthService {
     void channelDeleteByDeviceId(Long deviceId, Boolean isDeleteData);
 
     /**
-     * 点播
-     * @param chId 通道id
-     */
-    VideoPlayRsp channelPlay(Long chId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType, Integer recordState, Integer autoCloseState);
-
-    /**
      * 获取录像数据
      * @param chId 通道id
      * @param startTime 开始时间
@@ -57,16 +51,6 @@ public interface ChannelNorthService {
      * @return
      */
     VideoRecordRsp channelRecord(Long chId, LocalDateTime startTime, LocalDateTime endTime);
-
-
-
-    /**
-     * 回放
-     * @param chId 通道id
-     * @param startTime 开始时间
-     * @param endTime 结束时间
-     */
-    VideoPlayRsp channelPlayback(Long chId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType, LocalDateTime startTime, LocalDateTime endTime, Integer recordState, Integer autoCloseState);
 
     /**
      * 云台控制

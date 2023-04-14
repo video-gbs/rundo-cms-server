@@ -8,6 +8,7 @@ import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.request.*;
 import com.runjian.device.vo.response.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +22,13 @@ import java.util.List;
  * @date 2023/1/10 10:05
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/channel/north")
 public class ChannelNorthController {
 
-    @Autowired
-    private ValidatorService validatorService;
+    private final ValidatorService validatorService;
 
-    @Autowired
-    private ChannelNorthService channelNorthService;
+    private final ChannelNorthService channelNorthService;
 
     /**
      * 分页获取待添加的通道信息
@@ -77,17 +77,6 @@ public class ChannelNorthController {
     }
 
     /**
-     * 视频点播
-     * @param request 点播请求体
-     * @return 视频播放返回体
-     */
-    @PostMapping("/play")
-    public CommonResponse<VideoPlayRsp> videoPlay(@RequestBody PutChannelPlayReq request) {
-        validatorService.validateRequest(request);
-        return CommonResponse.success(channelNorthService.channelPlay(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStreamType(), request.getRecordState(), request.getAutoCloseState()));
-    }
-
-    /**
      * 视频回放
      * @param channelId 回放请求体
      * @param startTime 开始时间
@@ -97,17 +86,6 @@ public class ChannelNorthController {
     @GetMapping("/record")
     public CommonResponse<VideoRecordRsp> videoRecordInfo(@RequestParam Long channelId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime){
         return CommonResponse.success(channelNorthService.channelRecord(channelId, startTime, endTime));
-    }
-
-    /**
-     * 视频回放
-     * @param request 回放请求体
-     * @return 视频播放返回体
-     */
-    @PostMapping("/playback")
-    public CommonResponse<VideoPlayRsp> videoPlayback(@RequestBody PutChannelPlaybackReq request){
-        validatorService.validateRequest(request);
-        return CommonResponse.success(channelNorthService.channelPlayback(request.getChannelId(), request.getEnableAudio(), request.getSsrcCheck(), request.getStreamType(), request.getStartTime(), request.getEndTime(), request.getRecordState(), request.getAutoCloseState()));
     }
 
     /**

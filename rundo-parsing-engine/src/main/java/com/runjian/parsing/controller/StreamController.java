@@ -6,6 +6,7 @@ import com.runjian.common.validator.ValidatorService;
 import com.runjian.common.constant.MsgType;
 import com.runjian.parsing.service.north.StreamNorthService;
 import com.runjian.parsing.vo.request.StreamManageReq;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -21,13 +22,12 @@ import java.util.Set;
  */
 @RestController
 @RequestMapping("/stream-manage")
+@RequiredArgsConstructor
 public class StreamController {
 
-    @Autowired
-    private ValidatorService validatorService;
+    private final ValidatorService validatorService;
 
-    @Autowired
-    private StreamNorthService streamNorthService;
+    private final StreamNorthService streamNorthService;
 
     /**
      * 流通用消息处理

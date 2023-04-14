@@ -5,6 +5,7 @@ import com.runjian.stream.dao.StreamMapper;
 import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.service.common.StreamBaseService;
 import com.runjian.stream.service.south.StreamSouthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,28 +17,10 @@ import java.util.Optional;
  * @date 2023/2/7 19:57
  */
 @Service
+@RequiredArgsConstructor
 public class StreamSouthServiceImpl implements StreamSouthService {
 
-    @Autowired
-    private StreamMapper streamMapper;
-
-
-    @Override
-    public void receiveResult(String streamId, Boolean isSuccess) {
-        StreamBaseService.STREAM_OUT_TIME_ARRAY.deleteTime(streamId);
-        Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
-        if (streamInfoOp.isEmpty()) {
-            return;
-        }
-        if (isSuccess) {
-            StreamInfo streamInfo = streamInfoOp.get();
-            streamInfo.setStreamState(CommonEnum.ENABLE.getCode());
-            streamInfo.setUpdateTime(LocalDateTime.now());
-            streamMapper.updateStreamState(streamInfo);
-        } else {
-            streamMapper.deleteByStreamId(streamId);
-        }
-    }
+    private final StreamMapper streamMapper;
 
     @Override
     public Boolean streamCloseHandle(String streamId, Boolean canClose) {

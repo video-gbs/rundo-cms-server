@@ -9,6 +9,7 @@ import com.runjian.stream.service.north.DispatchNorthService;
 import com.runjian.stream.vo.response.GetDispatchNameRsp;
 import com.runjian.stream.vo.response.GetDispatchRsp;
 import com.runjian.stream.vo.response.PutDispatchExtraDataReq;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,14 +20,13 @@ import java.util.List;
  * @date 2023/2/7 20:01
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/dispatch/north")
 public class DispatchNorthController {
 
-    @Autowired
-    private DispatchNorthService dispatchNorthService;
+    private final DispatchNorthService dispatchNorthService;
 
-    @Autowired
-    private ValidatorService validatorService;
+    private final ValidatorService validatorService;
 
     /**
      * 获取所有调度服务的名称

@@ -5,6 +5,7 @@ import com.runjian.common.validator.ValidatorService;
 import com.runjian.stream.service.south.DispatchSouthService;
 import com.runjian.stream.vo.request.PostDispatchSignInReq;
 import com.runjian.stream.vo.request.PutHeartbeatReq;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,14 +14,15 @@ import org.springframework.web.bind.annotation.*;
  * @date 2023/2/3 17:47
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/dispatch/south")
 public class DispatchSouthController {
 
-    @Autowired
-    private ValidatorService validatorService;
 
-    @Autowired
-    private DispatchSouthService dispatchSouthService;
+    private final ValidatorService validatorService;
+
+
+    private final DispatchSouthService dispatchSouthService;
 
 
     /**

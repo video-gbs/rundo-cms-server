@@ -11,6 +11,7 @@ import com.runjian.device.vo.request.PutDeviceSignSuccessReq;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
 import com.runjian.device.vo.response.PostDeviceAddRsp;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,14 +20,13 @@ import org.springframework.web.bind.annotation.*;
  * @date 2023/1/9 15:18
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/device/north")
 public class DeviceNorthController {
 
-    @Autowired
-    private DeviceNorthService deviceNorthService;
+    private final DeviceNorthService deviceNorthService;
 
-    @Autowired
-    private ValidatorService validatorService;
+    private final ValidatorService validatorService;
 
     /**
      * 设备分页获取

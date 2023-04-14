@@ -11,6 +11,7 @@ import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.entity.DispatchInfo;
 import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.service.common.DataBaseService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,19 +22,16 @@ import java.util.Optional;
  * @date 2023/1/17 16:28
  */
 @Service
+@RequiredArgsConstructor
 public class DataBaseServiceImpl implements DataBaseService {
 
-    @Autowired
-    private GatewayMapper gatewayMapper;
+    private final GatewayMapper gatewayMapper;
 
-    @Autowired
-    private DeviceMapper deviceMapper;
+    private final DeviceMapper deviceMapper;
 
-    @Autowired
-    private ChannelMapper channelMapper;
+    private final ChannelMapper channelMapper;
 
-    @Autowired
-    private DispatchMapper dispatchMapper;
+    private final DispatchMapper dispatchMapper;
 
     @Override
     public GatewayInfo getGatewayInfo(Long gatewayId) {
