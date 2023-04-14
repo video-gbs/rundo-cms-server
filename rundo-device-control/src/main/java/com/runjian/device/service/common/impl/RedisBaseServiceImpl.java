@@ -4,6 +4,7 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.service.common.RedisBaseService;
+import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,10 @@ import java.util.concurrent.TimeUnit;
  * @date 2023/2/23 11:07
  */
 @Service
+@RequiredArgsConstructor
 public class RedisBaseServiceImpl implements RedisBaseService {
 
-    @Autowired
-    private RedissonClient redissonClient;
+    private final RedissonClient redissonClient;
 
     @Override
     public void batchUpdateChannelOnlineState(Map<Long, Integer> channelOnlineStateMap) {

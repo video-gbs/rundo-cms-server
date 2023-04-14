@@ -14,6 +14,7 @@ import com.runjian.stream.service.common.DataBaseService;
 import com.runjian.stream.service.north.GatewayDispatchNorthService;
 import com.runjian.stream.vo.request.PostGetGatewayByDispatchReq;
 import com.runjian.stream.vo.response.GetGatewayByIdsRsp;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,22 +28,18 @@ import java.util.stream.Collectors;
  * @date 2023/2/3 15:13
  */
 @Service
+@RequiredArgsConstructor
 public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthService {
 
-    @Autowired
-    private GatewayDispatchMapper gatewayDispatchMapper;
+    private final GatewayDispatchMapper gatewayDispatchMapper;
 
-    @Autowired
-    private DataBaseService dataBaseService;
+    private final DataBaseService dataBaseService;
 
-    @Autowired
-    private DeviceControlApi deviceControlApi;
+    private final DeviceControlApi deviceControlApi;
 
-    @Autowired
-    private ParsingEngineApi parsingEngineApi;
+    private final ParsingEngineApi parsingEngineApi;
 
-    @Autowired
-    private StreamMapper streamMapper;
+    private final StreamMapper streamMapper;
 
     @Override
     public Long getDispatchIdByGatewayId(Long gatewayId) {

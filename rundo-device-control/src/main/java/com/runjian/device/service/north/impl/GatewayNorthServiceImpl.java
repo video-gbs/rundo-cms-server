@@ -5,11 +5,15 @@ import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.device.dao.GatewayMapper;
+import com.runjian.device.entity.ChannelInfo;
+import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.entity.GatewayInfo;
+import com.runjian.device.service.common.DataBaseService;
 import com.runjian.device.service.north.GatewayNorthService;
 import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +26,12 @@ import java.util.Optional;
  * @date 2023/2/6 17:21
  */
 @Service
+@RequiredArgsConstructor
 public class GatewayNorthServiceImpl implements GatewayNorthService {
 
-    @Autowired
-    private GatewayMapper gatewayMapper;
+    private final GatewayMapper gatewayMapper;
+
+    private final DataBaseService dataBaseService;
 
     @Override
     public List<GetGatewayNameRsp> getGatewayNameList(Long gatewayId) {
@@ -77,6 +83,18 @@ public class GatewayNorthServiceImpl implements GatewayNorthService {
         }
         PageHelper.startPage(page, num);
         return new PageInfo<>(gatewayMapper.selectByIds(gatewayIds, isIn, name));
+    }
+
+    /**
+     * 获取网关id
+     * @param channelId 通道id
+     * @return
+     */
+    @Override
+    public Long getGatewayIdByChannelId(Long channelId) {
+        ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
+        return deviceInfo.getGatewayId();
     }
 
 }

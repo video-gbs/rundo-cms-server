@@ -13,6 +13,7 @@ import com.runjian.stream.service.common.DataBaseService;
 import com.runjian.stream.service.common.StreamBaseService;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.StreamManageDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,35 +30,21 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class StreamBaseServiceImpl implements StreamBaseService {
 
-    @Autowired
-    private StreamMapper streamMapper;
+    private final StreamMapper streamMapper;
 
-    @Autowired
-    private StreamNorthService streamNorthService;
+    private final DataBaseService dataBaseService;
 
-    @Autowired
-    private DataBaseService dataBaseService;
-
-    @Autowired
-    private ParsingEngineApi parsingEngineApi;
+    private final ParsingEngineApi parsingEngineApi;
 
 
     @Override
     @PostConstruct
     public void init() {
-        initClearPrepareStream();
-    }
-
-    @Override
-    @Scheduled(fixedRate = 1000)
-    public void checkOutTimeStream() {
-        Set<String> idList = STREAM_OUT_TIME_ARRAY.pullAndNext();
-        if (Objects.isNull(idList) || idList.isEmpty()){
-            return;
-        }
-        idList.forEach(streamId -> streamNorthService.stopPlay(streamId));
+        // 清空所有“准备中”的流
+        streamMapper.deleteByStreamState(CommonEnum.DISABLE.getCode());
     }
 
     @Override
@@ -115,13 +102,4 @@ public class StreamBaseServiceImpl implements StreamBaseService {
         return noRecordIds;
     }
 
-    @Override
-    public void initClearPrepareStream() {
-        // 清空所有“准备中”的流
-        Set<String> idList = streamMapper.selectIdByStreamState(CommonEnum.DISABLE.getCode());
-        if (Objects.isNull(idList) || idList.isEmpty()){
-            return;
-        }
-        StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(idList, 5L);
-    }
 }

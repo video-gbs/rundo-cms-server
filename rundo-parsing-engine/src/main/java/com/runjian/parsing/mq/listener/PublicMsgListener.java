@@ -18,6 +18,7 @@ import com.runjian.parsing.vo.CommonMqDto;
 import com.runjian.parsing.vo.request.DispatchSignInReq;
 import com.runjian.parsing.vo.request.GatewaySignInReq;
 import com.runjian.parsing.vo.response.SignInRsp;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -36,28 +37,22 @@ import java.util.UUID;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PublicMsgListener implements ChannelAwareMessageListener {
 
-    @Autowired
-    private GatewayService gatewayService;
+    private final GatewayService gatewayService;
 
-    @Autowired
-    private DispatchService dispatchService;
+    private final DispatchService dispatchService;
 
-    @Autowired
-    private RabbitMqConfig rabbitMqConfig;
+    private final RabbitMqConfig rabbitMqConfig;
 
-    @Autowired
-    private RabbitMqProperties rabbitMqProperties;
+    private final RabbitMqProperties rabbitMqProperties;
 
-    @Autowired
-    private RabbitMqSender rabbitMqSender;
+    private final RabbitMqSender rabbitMqSender;
 
-    @Autowired
-    private ValidatorService validatorService;
+    private final ValidatorService validatorService;
 
-    @Autowired
-    private MqDefaultProperties mqDefaultProperties;
+    private final MqDefaultProperties mqDefaultProperties;
 
 
     /**

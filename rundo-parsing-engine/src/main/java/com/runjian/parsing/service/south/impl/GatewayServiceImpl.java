@@ -13,6 +13,7 @@ import com.runjian.parsing.vo.request.PostGatewaySignInReq;
 import com.runjian.parsing.service.south.GatewayService;
 import com.runjian.parsing.vo.request.PutGatewayHeartbeatReq;
 import com.runjian.parsing.vo.response.SignInRsp;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,13 +24,12 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GatewayServiceImpl implements GatewayService {
 
-    @Autowired
-    private GatewayMapper gatewayMapper;
+    private final GatewayMapper gatewayMapper;
 
-    @Autowired
-    private DeviceControlApi deviceControlApi;
+    private final DeviceControlApi deviceControlApi;
 
     /**
      * 网关注册

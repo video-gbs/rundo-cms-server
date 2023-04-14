@@ -4,6 +4,7 @@ package com.runjian.stream.service.north;
 import com.alibaba.fastjson2.JSONObject;
 import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
+import com.runjian.stream.vo.response.PostVideoPlayRsp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,13 +18,28 @@ public interface StreamNorthService {
 
     /**
      * 申请流
-     * @param gatewayId 网关id
      * @param channelId 通道id
+     * @param enableAudio 是否播放音频
+     * @param ssrcCheck 是否使用ssrc
+     * @param recordState 是否开启录播
+     * @param autoCloseState 是否无人观看
+     * @return  PostVideoPlayRsp
+     */
+    PostVideoPlayRsp streamLivePlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState);
+
+    /**
+     * 录播播放
+     * @param channelId 通道id
+     * @param enableAudio 是否播放音频
+     * @param ssrcCheck 是否使用ssrc
      * @param playType 播放类型
      * @param recordState 是否开启录播
      * @param autoCloseState 是否无人观看
+     * @param startTime 播放时间
+     * @param endTime 结束时间
+     * @return PostVideoPlayRsp
      */
-    PostApplyStreamRsp applyStreamId(Long gatewayId, Long channelId, Integer playType, Integer recordState, Integer autoCloseState);
+    PostVideoPlayRsp streamRecordPlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer playType, Integer recordState, Integer autoCloseState, LocalDateTime startTime, LocalDateTime endTime);
 
 
     /**

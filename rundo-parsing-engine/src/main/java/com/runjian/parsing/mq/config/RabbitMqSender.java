@@ -3,6 +3,7 @@ package com.runjian.parsing.mq.config;
 import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.LogTemplate;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -17,13 +18,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @ConditionalOnBean(RabbitMqConfig.class)
+@RequiredArgsConstructor
 public class RabbitMqSender {
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private RabbitMqProperties rabbitMqProperties;
+    private final RabbitMqProperties rabbitMqProperties;
 
     /**
      * @param queueId 队列名称

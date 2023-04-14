@@ -21,11 +21,6 @@ public interface StreamBaseService {
     void init();
 
     /**
-     * 检测超时未成功播放的流
-     */
-    void checkOutTimeStream();
-
-    /**
      * 检测播放中的流状态
      */
     void checkPlayingStream();
@@ -39,11 +34,6 @@ public interface StreamBaseService {
      * 检查录像状态
      */
     void checkRecordState(LocalDateTime nowTime);
-
-    /**
-     * 重启清空所有正在播放的流
-     */
-    void initClearPrepareStream();
 
 
 }

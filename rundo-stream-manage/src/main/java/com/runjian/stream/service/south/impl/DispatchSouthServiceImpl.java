@@ -9,6 +9,7 @@ import com.runjian.stream.dao.DispatchMapper;
 import com.runjian.stream.entity.DispatchInfo;
 import com.runjian.stream.service.common.DispatchBaseService;
 import com.runjian.stream.service.south.DispatchSouthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +23,10 @@ import java.util.Optional;
  * @date 2023/2/3 14:22
  */
 @Service
+@RequiredArgsConstructor
 public class DispatchSouthServiceImpl implements DispatchSouthService {
 
-    @Autowired
-    private DispatchMapper dispatchMapper;
+    private final DispatchMapper dispatchMapper;
 
     @Override
     public void signIn(Long dispatchId, String serialNum, String ip, String port, LocalDateTime outTime) {

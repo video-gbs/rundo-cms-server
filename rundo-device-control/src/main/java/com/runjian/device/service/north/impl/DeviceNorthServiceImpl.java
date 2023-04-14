@@ -25,6 +25,7 @@ import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
 import com.runjian.device.vo.response.PostDeviceAddRsp;
 import com.runjian.device.vo.response.VideoPlayRsp;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,28 +43,22 @@ import java.util.Optional;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DeviceNorthServiceImpl implements DeviceNorthService {
 
-    @Autowired
-    private DeviceMapper deviceMapper;
+    private final DeviceMapper deviceMapper;
 
-    @Autowired
-    private DetailMapper detailMapper;
+    private final DetailMapper detailMapper;
 
-    @Autowired
-    private ParsingEngineApi parsingEngineApi;
+    private final ParsingEngineApi parsingEngineApi;
 
-    @Autowired
-    private DetailBaseService detailBaseService;
+    private final DetailBaseService detailBaseService;
 
-    @Autowired
-    private ChannelNorthService channelNorthService;
+    private final ChannelNorthService channelNorthService;
 
-    @Autowired
-    private DataBaseService dataBaseService;
+    private final DataBaseService dataBaseService;
 
-    @Autowired
-    private RedisBaseService redisBaseService;
+    private final RedisBaseService redisBaseService;
 
     @Override
     public PageInfo<GetDevicePageRsp> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {

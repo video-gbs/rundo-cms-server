@@ -4,6 +4,7 @@ import com.runjian.device.constant.DetailType;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.service.common.DetailBaseService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,10 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DetailBaseServiceImpl implements DetailBaseService {
 
-    @Autowired
-    private DetailMapper detailMapper;
+    private final DetailMapper detailMapper;
 
     /**
      * 保存设备或者通道的详细信息

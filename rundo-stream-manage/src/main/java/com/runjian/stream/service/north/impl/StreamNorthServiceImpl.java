@@ -5,17 +5,21 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.*;
+import com.runjian.common.utils.DateUtils;
 import com.runjian.stream.dao.GatewayDispatchMapper;
 import com.runjian.stream.dao.StreamMapper;
 import com.runjian.stream.entity.DispatchInfo;
 import com.runjian.stream.entity.GatewayDispatchInfo;
 import com.runjian.stream.entity.StreamInfo;
+import com.runjian.stream.feign.DeviceControlApi;
 import com.runjian.stream.feign.ParsingEngineApi;
 import com.runjian.stream.service.common.DataBaseService;
 import com.runjian.stream.service.common.StreamBaseService;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.StreamManageDto;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
+import com.runjian.stream.vo.response.PostVideoPlayRsp;
+import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -31,22 +35,20 @@ import java.util.*;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class StreamNorthServiceImpl implements StreamNorthService {
 
-    @Autowired
-    private StreamMapper streamMapper;
+    private final StreamMapper streamMapper;
 
-    @Autowired
-    private ParsingEngineApi parsingEngineApi;
+    private final ParsingEngineApi parsingEngineApi;
 
-    @Autowired
-    private GatewayDispatchMapper gatewayDispatchMapper;
+    private final GatewayDispatchMapper gatewayDispatchMapper;
 
-    @Autowired
-    private DataBaseService dataBaseService;
+    private final DataBaseService dataBaseService;
 
-    @Autowired
-    private RedissonClient redissonClient;
+    private final RedissonClient redissonClient;
+
+    private final DeviceControlApi deviceControlApi;
 
     /**
      * 通道最大播放数
@@ -60,33 +62,30 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     private static final long PREPARE_STREAM_OUT_TIME = 10L;
 
 
+    /**
+     * 直播播放
+     * @param channelId 通道id
+     * @param enableAudio 是否播放音频
+     * @param ssrcCheck 是否使用ssrc
+     * @param recordState 是否开启录播
+     * @param autoCloseState 是否无人观看
+     * @return
+     */
     @Override
-    public PostApplyStreamRsp applyStreamId(Long gatewayId, Long channelId, Integer playType, Integer recordState, Integer autoCloseState) {
-        Optional<GatewayDispatchInfo> dispatchIdOp = gatewayDispatchMapper.selectByGatewayId(gatewayId);
-        if (dispatchIdOp.isEmpty()) {
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("该网关模块%s未绑定流媒体模块，无法播放", gatewayId));
-        }
-        DispatchInfo dispatchInfo = dataBaseService.getOnlineDispatchInfo(dispatchIdOp.get().getDispatchId());
-        PostApplyStreamRsp res = new PostApplyStreamRsp();
-        res.setDispatchUrl(dispatchInfo.getUrl());
-        res.setRecordState(recordState);
+    public PostVideoPlayRsp streamLivePlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState) {
+        GatewayDispatchInfo gatewayDispatchInfo = getGatewayDispatchInfoByChannelId(channelId);
+        DispatchInfo dispatchInfo = dataBaseService.getOnlineDispatchInfo(gatewayDispatchInfo.getDispatchId());
         StreamInfo streamInfo;
-        if (playType.equals(PlayType.LIVE.getCode())) {
-            String streamId = PlayType.getMsgByCode(playType) + "_" + channelId;
+
+            String streamId = PlayType.LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + channelId;
             RLock lock = redissonClient.getLock(MarkConstant.REDIS_STREAM_LIVE_PLAY_LOCK + streamId);
             try{
                 lock.lock();
                 Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
                 if (streamInfoOp.isEmpty()) {
-                    streamInfo = saveStream(gatewayId, channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
-                    // 设置“准备中”状态的超时时间
-                    StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
+                    streamInfo = saveStream(gatewayDispatchInfo.getGatewayId(), channelId, dispatchInfo.getId(), PlayType.LIVE.getCode(), recordState, autoCloseState, streamId);
                 } else {
                     streamInfo = streamInfoOp.get();
-                    if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
-                        // 设置“准备中”状态的超时时间
-                        StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
-                    }
                     // 判断是否需要开启录像
                     if (!streamInfo.getRecordState().equals(recordState) || recordState.equals(CommonEnum.ENABLE.getCode())) {
                         startRecord(streamId);
@@ -95,18 +94,71 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             }finally {
                 lock.unlock();
             }
-        } else {
-//            List<StreamInfo> streamInfoList = streamMapper.selectByChannelId(channelId);
+
+        StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamInfo.getStreamId(), MsgType.STREAM_LIVE_PLAY_START, 15L);
+        streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
+        streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
+        streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
+        streamManageDto.put(StandardName.STREAM_MODE, streamMode);
+        CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
+        commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+
+        return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()), PostVideoPlayRsp.class);
+    }
+
+    /**
+     * 获取网关与流媒体关系信息
+     * @param channelId
+     * @return
+     */
+    private GatewayDispatchInfo getGatewayDispatchInfoByChannelId(Long channelId){
+        CommonResponse<Long> commonResponse = deviceControlApi.getGatewayIdByChannelId(channelId);
+        commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+        Long gatewayId = commonResponse.getData();
+        if (Objects.isNull(gatewayId)){
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("设备%s未绑定网关", channelId));
+        }
+        Optional<GatewayDispatchInfo> dispatchIdOp = gatewayDispatchMapper.selectByGatewayId(gatewayId);
+        if (dispatchIdOp.isEmpty()) {
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("该网关模块%s未绑定流媒体模块，无法播放", gatewayId));
+        }
+        return dispatchIdOp.get();
+    }
+
+    /**
+     * 录播播放
+     * @param channelId
+     * @param enableAudio
+     * @param ssrcCheck
+     * @param playType
+     * @param recordState
+     * @param autoCloseState
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public PostVideoPlayRsp streamRecordPlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer playType, Integer recordState, Integer autoCloseState, LocalDateTime startTime, LocalDateTime endTime){
+        //            List<StreamInfo> streamInfoList = streamMapper.selectByChannelId(channelId);
 //            if (streamInfoList.size() >= CHANNEL_MAX_PLAY_NUM) {
 //                throw new BusinessException(BusinessErrorEnums.VALID_REPETITIVE_OPERATION_ERROR, String.format("设备%s已达到并发播放数上限,请稍后重试", channelId));
 //            }
-            String streamId = PlayType.getMsgByCode(playType) + "_" + channelId + "_" + System.currentTimeMillis() + new Random().nextInt(100);
-            streamInfo = saveStream(gatewayId, channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
-            // 设置“准备中”状态的超时时间
-            StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
-        }
-        res.setStreamId(streamInfo.getStreamId());
-        return res;
+        GatewayDispatchInfo gatewayDispatchInfo = getGatewayDispatchInfoByChannelId(channelId);
+        DispatchInfo dispatchInfo = dataBaseService.getOnlineDispatchInfo(gatewayDispatchInfo.getDispatchId());
+        String streamId = PlayType.getMsgByCode(playType) + MarkConstant.MARK_SPLIT_SYMBOL + channelId + MarkConstant.MARK_SPLIT_SYMBOL + System.currentTimeMillis() + new Random().nextInt(100);
+        StreamInfo streamInfo = saveStream(gatewayDispatchInfo.getGatewayId(), channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
+
+        StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamInfo.getStreamId(), MsgType.STREAM_RECORD_PLAY_START, 15L);
+        streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
+        streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
+        streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
+        streamManageDto.put(StandardName.STREAM_MODE, streamMode);
+        streamManageDto.put(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
+        streamManageDto.put(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
+        CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
+        commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+
+        return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()), PostVideoPlayRsp.class);
     }
 
     private  StreamInfo saveStream(Long gatewayId, Long channelId, Long dispatchId, Integer playType, Integer recordState, Integer autoCloseState, String streamId) {
@@ -147,8 +199,6 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         }
         if ((Boolean) commonResponse.getData()){
             streamMapper.deleteByStreamId(streamId);
-        } else {
-            StreamBaseService.STREAM_OUT_TIME_ARRAY.addOrUpdateTime(streamInfo.getStreamId(), PREPARE_STREAM_OUT_TIME);
         }
     }
 

@@ -14,6 +14,7 @@ import com.runjian.parsing.mq.listener.MqListenerConfig;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.StreamTaskService;
 import com.runjian.parsing.vo.CommonMqDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,19 +30,16 @@ import java.util.UUID;
  * @date 2023/2/10 11:31
  */
 @Service
+@RequiredArgsConstructor
 public class StreamTaskServiceImpl implements StreamTaskService {
 
-    @Autowired
-    private StreamTaskMapper streamTaskMapper;
+    private final StreamTaskMapper streamTaskMapper;
 
-    @Autowired
-    private RabbitMqSender rabbitMqSender;
+    private final RabbitMqSender rabbitMqSender;
 
-    @Autowired
-    private MqDefaultProperties mqDefaultProperties;
+    private final MqDefaultProperties mqDefaultProperties;
 
-    @Autowired
-    private DataBaseService dataBaseService;
+    private final DataBaseService dataBaseService;
 
     private static final String OUT_TIME = "OUT_TIME";
 

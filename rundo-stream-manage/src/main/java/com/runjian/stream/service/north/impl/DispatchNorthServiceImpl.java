@@ -8,6 +8,7 @@ import com.runjian.stream.service.common.DataBaseService;
 import com.runjian.stream.service.north.DispatchNorthService;
 import com.runjian.stream.vo.response.GetDispatchNameRsp;
 import com.runjian.stream.vo.response.GetDispatchRsp;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +20,12 @@ import java.util.List;
  * @date 2023/2/7 19:50
  */
 @Service
+@RequiredArgsConstructor
 public class DispatchNorthServiceImpl implements DispatchNorthService {
 
-    @Autowired
-    private DispatchMapper dispatchMapper;
+    private final DispatchMapper dispatchMapper;
 
-    @Autowired
-    private DataBaseService dataBaseService;
+    private final DataBaseService dataBaseService;
 
     @Override
     public PageInfo<GetDispatchRsp> getDispatchByPage(int page, int num, String name) {

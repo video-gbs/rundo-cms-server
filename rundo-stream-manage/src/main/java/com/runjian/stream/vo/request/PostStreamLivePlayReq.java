@@ -1,6 +1,6 @@
 package com.runjian.stream.vo.request;
 
-import com.runjian.common.constant.PlayType;
+
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
@@ -11,15 +11,7 @@ import javax.validation.constraints.NotNull;
  * @date 2023/2/7 20:39
  */
 @Data
-public class PostStreamApplyStreamReq {
-
-    /**
-     * 网关id不能为空
-     */
-    @NotNull(message = "网关id不能为空")
-    @Range(min = 1, message = "非法网关id")
-    private Long gatewayId;
-
+public class PostStreamLivePlayReq {
 
     /**
      * 通道id不能为空
@@ -29,11 +21,22 @@ public class PostStreamApplyStreamReq {
     private Long channelId;
 
     /**
-     * 播放模式 {@link PlayType}
+     * 是否播放音频
      */
-    @NotNull(message = "播放模式不能为空")
-    @Range( min = 1, max = 4, message = "非法播放模式")
-    private Integer playType;
+    @NotNull(message = "播放音频选项不能为空")
+    private Boolean enableAudio;
+
+    /**
+     * 是否使用ssrc
+     */
+    @NotNull(message = "ssrc选项不能为空")
+    private Boolean ssrcCheck;
+
+    /**
+     * 流类型 (1-udp 2-tcp)
+     */
+    @NotNull(message = "流类型不能为空")
+    private Integer streamType;
 
     /**
      * 录像状态

@@ -10,6 +10,7 @@ import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.mq.config.RabbitMqConfig;
 import com.runjian.parsing.mq.config.RabbitMqProperties;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -29,31 +30,24 @@ import java.util.Objects;
  */
 @Data
 @Configuration
+@RequiredArgsConstructor
 public class MqListenerConfig {
 
-    @Autowired
-    private PublicMsgListener publicMsgListener;
+    private final PublicMsgListener publicMsgListener;
 
-    @Autowired
-    private GatewayMsgListener gatewayMsgListener;
+    private final GatewayMsgListener gatewayMsgListener;
 
-    @Autowired
-    private StreamMsgListener streamMsgListener;
+    private final StreamMsgListener streamMsgListener;
 
-    @Autowired
-    private RabbitMqProperties rabbitMqProperties;
+    private final RabbitMqProperties rabbitMqProperties;
 
-    @Autowired
-    private GatewayMapper gatewayMapper;
+    private final GatewayMapper gatewayMapper;
 
-    @Autowired
-    private DispatchMapper dispatchMapper;
+    private final DispatchMapper dispatchMapper;
 
-    @Autowired
-    private RabbitMqConfig rabbitMqConfig;
+    private final RabbitMqConfig rabbitMqConfig;
 
-    @Autowired
-    private MqDefaultProperties mqDefaultProperties;
+    private final MqDefaultProperties mqDefaultProperties;
 
     public static Map<String, SimpleMessageListenerContainer> containerMap = new HashMap<>(3);
 

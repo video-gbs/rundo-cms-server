@@ -5,6 +5,7 @@ import com.runjian.common.constant.MsgType;
 import com.runjian.parsing.service.common.StreamTaskService;
 import com.runjian.parsing.service.north.StreamNorthService;
 import com.runjian.parsing.vo.dto.StreamConvertDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -16,10 +17,10 @@ import java.util.*;
  * @date 2023/2/10 10:26
  */
 @Service
+@RequiredArgsConstructor
 public class StreamNorthServiceImpl implements StreamNorthService {
 
-    @Autowired
-    private StreamTaskService streamTaskService;
+    private final StreamTaskService streamTaskService;
 
     /**
      * 通用消息处理

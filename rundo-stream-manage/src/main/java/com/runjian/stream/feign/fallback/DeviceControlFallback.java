@@ -27,6 +27,11 @@ public class DeviceControlFallback implements FallbackFactory<DeviceControlApi> 
             public CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByName(int page, int num, String name) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
+
+            @Override
+            public CommonResponse<Long> getGatewayIdByChannelId(Long channelId) {
+                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
+            }
         };
     }
 }
