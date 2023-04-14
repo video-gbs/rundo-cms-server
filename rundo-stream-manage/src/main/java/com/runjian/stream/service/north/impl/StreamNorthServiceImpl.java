@@ -72,12 +72,12 @@ public class StreamNorthServiceImpl implements StreamNorthService {
      * @return
      */
     @Override
-    public PostVideoPlayRsp streamLivePlay(Long channelId, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState) {
+    public PostVideoPlayRsp streamLivePlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState) {
         GatewayDispatchInfo gatewayDispatchInfo = getGatewayDispatchInfoByChannelId(channelId);
         DispatchInfo dispatchInfo = dataBaseService.getOnlineDispatchInfo(gatewayDispatchInfo.getDispatchId());
         StreamInfo streamInfo;
 
-            String streamId = PlayType.LIVE.getMsg() + "_" + channelId;
+            String streamId = PlayType.LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + channelId;
             RLock lock = redissonClient.getLock(MarkConstant.REDIS_STREAM_LIVE_PLAY_LOCK + streamId);
             try{
                 lock.lock();
@@ -99,12 +99,18 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
         streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
+        streamManageDto.put(StandardName.STREAM_MODE, streamMode);
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
         commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
 
         return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()), PostVideoPlayRsp.class);
     }
 
+    /**
+     * 获取网关与流媒体关系信息
+     * @param channelId
+     * @return
+     */
     private GatewayDispatchInfo getGatewayDispatchInfoByChannelId(Long channelId){
         CommonResponse<Long> commonResponse = deviceControlApi.getGatewayIdByChannelId(channelId);
         commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
@@ -132,20 +138,21 @@ public class StreamNorthServiceImpl implements StreamNorthService {
      * @return
      */
     @Override
-    public PostVideoPlayRsp streamRecordPlay(Long channelId, Boolean enableAudio, Boolean ssrcCheck, Integer playType, Integer recordState, Integer autoCloseState, LocalDateTime startTime, LocalDateTime endTime){
+    public PostVideoPlayRsp streamRecordPlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer playType, Integer recordState, Integer autoCloseState, LocalDateTime startTime, LocalDateTime endTime){
         //            List<StreamInfo> streamInfoList = streamMapper.selectByChannelId(channelId);
 //            if (streamInfoList.size() >= CHANNEL_MAX_PLAY_NUM) {
 //                throw new BusinessException(BusinessErrorEnums.VALID_REPETITIVE_OPERATION_ERROR, String.format("设备%s已达到并发播放数上限,请稍后重试", channelId));
 //            }
         GatewayDispatchInfo gatewayDispatchInfo = getGatewayDispatchInfoByChannelId(channelId);
         DispatchInfo dispatchInfo = dataBaseService.getOnlineDispatchInfo(gatewayDispatchInfo.getDispatchId());
-        String streamId = PlayType.getMsgByCode(playType) + "_" + channelId + "_" + System.currentTimeMillis() + new Random().nextInt(100);
+        String streamId = PlayType.getMsgByCode(playType) + MarkConstant.MARK_SPLIT_SYMBOL + channelId + MarkConstant.MARK_SPLIT_SYMBOL + System.currentTimeMillis() + new Random().nextInt(100);
         StreamInfo streamInfo = saveStream(gatewayDispatchInfo.getGatewayId(), channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
 
         StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamInfo.getStreamId(), MsgType.STREAM_RECORD_PLAY_START, 15L);
         streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
         streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
+        streamManageDto.put(StandardName.STREAM_MODE, streamMode);
         streamManageDto.put(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         streamManageDto.put(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);

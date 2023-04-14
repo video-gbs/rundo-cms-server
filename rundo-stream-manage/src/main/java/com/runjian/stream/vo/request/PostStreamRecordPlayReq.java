@@ -35,10 +35,16 @@ public class PostStreamRecordPlayReq {
     private Boolean ssrcCheck;
 
     /**
+     * 流类型 (1-udp 2-tcp)
+     */
+    @NotNull(message = "流类型不能为空")
+    private Integer streamType;
+
+    /**
      * 播放模式 {@link PlayType}
      */
     @NotNull(message = "播放模式不能为空")
-    @Range( min = 1, max = 4, message = "非法播放模式")
+    @Range( min = 2, max = 4, message = "非法播放模式")
     private Integer playType;
 
     /**

@@ -33,6 +33,12 @@ public class PostStreamLivePlayReq {
     private Boolean ssrcCheck;
 
     /**
+     * 流类型 (1-udp 2-tcp)
+     */
+    @NotNull(message = "流类型不能为空")
+    private Integer streamType;
+
+    /**
      * 录像状态
      */
     @NotNull(message = "录像状态不能为空")
