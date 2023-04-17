@@ -7,6 +7,8 @@ import com.runjian.parsing.constant.MqConstant;
 import com.runjian.parsing.entity.ChannelInfo;
 import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.entity.GatewayInfo;
+import com.runjian.parsing.mq.config.RabbitMqProperties;
+import com.runjian.parsing.mq.listener.MqDefaultProperties;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.StreamTaskService;
 import com.runjian.parsing.service.north.StreamNorthService;
@@ -30,6 +32,10 @@ public class StreamNorthServiceImpl implements StreamNorthService {
 
     private final DataBaseService dataBaseService;
 
+    private final MqDefaultProperties mqDefaultProperties;
+
+    private final RabbitMqProperties rabbitMqProperties;
+
     /**
      * 通用消息处理
      * @param dispatchId 调度服务id
@@ -50,6 +56,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             mapData.put(StandardName.CHANNEL_ID, channelInfo.getOriginId());
             mapData.put(StandardName.DEVICE_ID, deviceInfo.getOriginId());
             mapData.put(StandardName.GATEWAY_MQ, MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + deviceInfo.getGatewayId());
+            mapData.put(StandardName.GATEWAY_EXCHANGE_NAME, rabbitMqProperties.getExchangeData(mqDefaultProperties.getGatewayExchangeId()).getExchange().getName());
         }
         streamConvertDto.setDataMap(mapData);
         streamTaskService.sendMsgToGateway(dispatchId,  streamId, msgType.getMsg(), streamConvertDto, response);

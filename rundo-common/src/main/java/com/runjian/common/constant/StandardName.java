@@ -24,6 +24,11 @@ public class StandardName {
      */
     public static final String MSG_TYPE = "msgType";
 
+    /**
+     * 交换机名字
+     */
+    public static final String GATEWAY_EXCHANGE_NAME = "exchangeName";
+
     /***************************设备类标准名称****************************/
 
     /**
