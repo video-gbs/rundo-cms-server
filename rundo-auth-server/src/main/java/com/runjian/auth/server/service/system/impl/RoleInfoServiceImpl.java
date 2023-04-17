@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
@@ -311,6 +312,8 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         } else {
             page.setSize(20);
         }
+        long userId = StpUtil.getLoginIdAsLong();
+        page.setCreatedBy(userId);
 
         return roleInfoMapper.MySelectPage(page);
     }
