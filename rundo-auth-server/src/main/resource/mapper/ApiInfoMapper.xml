@@ -16,4 +16,19 @@
             sai.delete_flag = 0
     </select>
 
+    <select id="selectApiInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.ApiInfo">
+        SELECT sai.*
+        FROM api_info sai
+            LEFT JOIN role_api sra ON sra.api_id = sai.id
+            LEFT JOIN role_info sri ON sri.id = sra.role_id
+        WHERE sri.role_code = #{roleCode}
+    </select>
+
+    <select id="selectApiUrlByRoleCode" resultType="java.lang.String">
+        SELECT sai.url
+        FROM api_info sai
+            LEFT JOIN role_api sra ON sra.api_id = sai.id
+            LEFT JOIN role_info sri ON sri.id = sra.role_id
+        WHERE sri.role_code = #{roleCode}
+    </select>
 </mapper>

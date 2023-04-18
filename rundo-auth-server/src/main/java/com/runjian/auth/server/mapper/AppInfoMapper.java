@@ -6,6 +6,9 @@ import com.runjian.auth.server.domain.dto.page.PageSysAppInfoDTO;
 import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,6 +21,28 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface AppInfoMapper extends BaseMapper<AppInfo> {
 
+    /**
+     * 分页查询应用
+     *
+     * @param dto
+     * @return
+     */
     Page<SysAppInfoVO> MySelectPage(PageSysAppInfoDTO dto);
+
+    /**
+     * 根据角色编码查询应用权限
+     *
+     * @param roleCode
+     * @return
+     */
+    List<AppInfo> selectAppByRoleCode(@Param("roleCode") String roleCode);
+
+    /**
+     * 根据角色编码列表查询应用权限
+     *
+     * @param roleList
+     * @return
+     */
+    List<AppInfo> selectAppByRolelist(List<String> roleList);
 
 }

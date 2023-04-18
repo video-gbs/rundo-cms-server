@@ -29,4 +29,13 @@
         </where>
         ORDER BY menu.level,menu.menu_sort,menu.id
     </select>
+
+    <select id="selectMenuByRoleCode" resultType="com.runjian.auth.server.domain.entity.MenuInfo">
+        SELECT smi.*
+        FROM menu_info smi
+            LEFT JOIN role_menu srm ON srm.menu_id = smi.id
+            LEFT JOIN role_info sri ON sri.id = srm.role_id
+        WHERE sri.status = 0
+        AND sri.role_code = #{roleCode}
+    </select>
 </mapper>

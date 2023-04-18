@@ -27,7 +27,7 @@ import java.util.List;
 public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
 
     /**
-     * 根据用户ID查询用户角色
+     * 根据用户ID查询用户角色编码
      *
      * @param userId
      * @return
