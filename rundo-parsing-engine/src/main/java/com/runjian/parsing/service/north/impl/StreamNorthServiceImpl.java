@@ -50,7 +50,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         streamConvertDto.setStreamId(streamId);
         Object channelIdOb = mapData.get(StandardName.CHANNEL_ID);
         if (Objects.nonNull(channelIdOb)){
-            Long channelId = (Long) channelIdOb;
+            Long channelId = Long.parseLong(channelIdOb.toString());
             ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
             DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
             mapData.put(StandardName.CHANNEL_ID, channelInfo.getOriginId());

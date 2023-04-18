@@ -22,6 +22,11 @@ public interface StreamTaskService {
     Map<Long, DeferredResult<?>> asynReqMap = new ConcurrentHashMap<>();
 
     /**
+     * 清楚超时任务
+     */
+    void clearOutTimeTask();
+
+    /**
      * 发送消息
      * @param dispatchId 网关id
      * @param streamId 流id

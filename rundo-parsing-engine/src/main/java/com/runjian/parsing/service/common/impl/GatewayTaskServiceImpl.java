@@ -16,10 +16,12 @@ import com.runjian.parsing.vo.CommonMqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,6 +47,22 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
 
     private static final String OUT_TIME = "OUT_TIME";
 
+
+    @Override
+    @Scheduled(fixedDelay = 60000)
+    public void clearOutTimeTask() {
+        LocalDateTime outTime = LocalDateTime.now().plusSeconds(-60);
+        List<GatewayTaskInfo> gatewayTaskInfoList = gatewayTaskMapper.selectByOutTimeTask(TaskState.RUNNING.getCode(), outTime);
+        for (GatewayTaskInfo gatewayTaskInfo : gatewayTaskInfoList){
+            asynReqMap.remove(gatewayTaskInfo.getId());
+            gatewayTaskInfo.setState(TaskState.ERROR.getCode());
+            gatewayTaskInfo.setUpdateTime(LocalDateTime.now());
+            gatewayTaskInfo.setDetail(OUT_TIME);
+        }
+        if (gatewayTaskInfoList.size() > 0){
+            gatewayTaskMapper.updateAll(gatewayTaskInfoList);
+        }
+    }
 
     /**
      * 发送消息
