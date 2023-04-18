@@ -6,15 +6,15 @@ import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.vo.system.HomeVO;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
-import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.login.HomeSevice;
+import com.runjian.auth.server.service.system.AppInfoService;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +29,8 @@ import java.util.List;
 @Service
 public class HomeServiceImpl implements HomeSevice {
 
-    @Resource
-    private RoleInfoMapper roleInfoMapper;
+    @Autowired
+    private AppInfoService appInfoService;
 
     @Override
     public CommonResponse getIndex() {
@@ -43,7 +43,7 @@ public class HomeServiceImpl implements HomeSevice {
         }
         log.debug("用户角色列表:{}", JSONUtil.toJsonStr(roleCodeList));
         // 查取角色已经授权的应用
-        List<AppInfo> roleAppInfoList = roleInfoMapper.selectAppByRolelist(roleCodeList);
+        List<AppInfo> roleAppInfoList = appInfoService.getAppByRolelist(roleCodeList);
         if (CollUtil.isEmpty(roleAppInfoList)) {
             return CommonResponse.failure(BusinessErrorEnums.PERM_NOT_FOUND, "未对用户" + userId + "进行应用授权");
         }

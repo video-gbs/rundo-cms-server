@@ -33,4 +33,6 @@ public interface AppInfoService extends IService<AppInfo> {
     Page<SysAppInfoVO> findByPage(QuerySysAppInfoDTO dto);
 
     void modifyByStatus(StatusSysAppInfoDTO dto);
+
+    List<AppInfo> getAppByRolelist(List<String> roleCodeList);
 }

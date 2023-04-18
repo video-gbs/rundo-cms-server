@@ -109,6 +109,11 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
     }
 
     @Override
+    public List<AppInfo> getAppByRolelist(List<String> roleCodeList) {
+        return appInfoMapper.selectAppByRolelist(roleCodeList);
+    }
+
+    @Override
     public SysAppInfoVO findById(Long id) {
         AppInfo appInfo = appInfoMapper.selectById(id);
         SysAppInfoVO sysAppInfoVO = new SysAppInfoVO();
