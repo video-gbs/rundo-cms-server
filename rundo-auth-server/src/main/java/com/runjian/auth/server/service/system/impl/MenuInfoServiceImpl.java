@@ -3,7 +3,6 @@ package com.runjian.auth.server.service.system.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.HiddenChangeDTO;
@@ -27,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -111,26 +109,39 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
 
     @Override
     public List<MenuInfoTree> findByTreeByAppType(Integer appType) {
-        List<MenuInfoTree> menuInfoTreeByAppTypelist = new ArrayList<>();
-        LambdaQueryWrapper<AppInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(AppInfo::getAppType, appType);
+        // 取出当前登录的用户的所有角色
         List<String> roleCodeList = StpUtil.getRoleList();
         // 去重
         List<AppInfo> appInfoList = CollUtil.distinct(roleInfoMapper.selectAppByRolelist(roleCodeList));
         // 过滤掉不满足条件的数据
-        Iterator<AppInfo> it = appInfoList.iterator();
-        while (it.hasNext()){
-            AppInfo appInfo = it.next();
-            if (!appInfo.getAppType().equals(appType)) {
-                it.remove();
-            }
-        }
-        log.info("{}", JSONUtil.toJsonStr(appInfoList));
+        appInfoList.removeIf(appInfo -> !appInfo.getAppType().equals(appType));
+        List<Long> appIds = appInfoList.stream().map(AppInfo::getId).collect(Collectors.toList());
 
-        for (AppInfo appInfo : appInfoList) {
-            QuerySysMenuInfoDTO dto = new QuerySysMenuInfoDTO();
-            dto.setAppId(appInfo.getId());
-            menuInfoTreeByAppTypelist.addAll(findByTree(dto));
+        List<MenuInfoTree> menuInfoTreeByAppTypelist = new ArrayList<>();
+        for (Long appId : appIds) {
+            LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(MenuInfo::getAppId, appId);
+            List<MenuInfo> menuInfoList = menuInfoMapper.selectList(queryWrapper);
+            long rootId = 0L;
+            for (MenuInfo menuInfo : menuInfoList) {
+                if (menuInfo.getMenuPid().equals(1L) && menuInfo.getLevel().equals(2)) {
+                    rootId = menuInfo.getId();
+                }
+            }
+            menuInfoTreeByAppTypelist.addAll(
+                    DataTreeUtil.buildTree(menuInfoList.stream().map(
+                            item -> {
+                                MenuInfoTree bean = new MenuInfoTree();
+                                BeanUtils.copyProperties(item, bean);
+                                MyMetaClass metaClass = new MyMetaClass();
+                                metaClass.setTitle(item.getTitle());
+                                metaClass.setIcon(item.getIcon());
+                                bean.setMeta(metaClass);
+                                return bean;
+                            }
+                    ).collect(Collectors.toList()), rootId)
+            );
+
         }
         return menuInfoTreeByAppTypelist;
     }
