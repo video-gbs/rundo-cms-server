@@ -6,17 +6,24 @@ spring:
       matching-strategy: ant_path_matcher
   cloud:
     nacos:
+      server-addr: ${NACOS_SERVER:124.71.21.11:8848}
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:rundo@nacos*2023}
       discovery:
-        username: nacos
-        password: rundo@nacos*2023
-        server-addr: rundo-nacos:8848
-        namespace: public
+        namespace: ${NACOS_NAMESPACE:public}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+      config:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: ${NACOS_GROUP:DEFAULT_GROUP}
+  config:
+    import:
+      - optional:nacos:${spring.application.name}-${spring.profiles.active}.yml
 
 
   # REDIS数据库配置
   redis:
     # [必须修改] Redis服务器IP, REDIS安装在本机的,使用127.0.0.1
-    host: rundo-redis
+    host: 124.71.20.118
     # [必须修改] 端口号
     port: 6379
     # [可选] 数据库 DB
@@ -61,7 +68,7 @@ spring:
 
   # rabbitmq 配置
   rabbitmq:
-    host: rundo-mq
+    host: 124.71.20.118
     port: 5672
     username: wvp
     password: wvp12345678

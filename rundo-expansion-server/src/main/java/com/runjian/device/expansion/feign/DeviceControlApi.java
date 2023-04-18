@@ -85,6 +85,7 @@ public interface DeviceControlApi {
      * @param playFeignReq
      * @return
      */
+    @Deprecated
     @PostMapping(value = "/channel/north/play",produces = MediaType.APPLICATION_JSON_VALUE)
     CommonResponse<StreamInfo> play(@RequestBody PlayFeignReq playFeignReq);
 
@@ -94,6 +95,7 @@ public interface DeviceControlApi {
      * @return
      */
     @PostMapping(value = "/channel/north/playback",produces = MediaType.APPLICATION_JSON_VALUE)
+    @Deprecated
     CommonResponse<StreamInfo> playBack(@RequestBody PlayBackFeignReq playBackReq);
 
 
