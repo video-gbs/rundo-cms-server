@@ -7,6 +7,9 @@ import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.expansion.feign.StreamManageApi;
 import com.runjian.device.expansion.vo.feign.request.FeignStreamOperationReq;
+import com.runjian.device.expansion.vo.feign.request.PlayBackFeignReq;
+import com.runjian.device.expansion.vo.feign.request.PlayFeignReq;
+import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.RecordStreamOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSeekOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSpeedOperationReq;
@@ -43,6 +46,18 @@ public class StreamManageApiFallbackFactory implements FallbackFactory<StreamMan
         final CommonResponse<?> finalFailure = failure;
 
         return new StreamManageApi() {
+            @Override
+            public CommonResponse<StreamInfo> play(PlayFeignReq playFeignReq) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--操作失败",playFeignReq, throwable);
+                return (CommonResponse<StreamInfo>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<StreamInfo> playBack(PlayBackFeignReq playBackReq) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--操作失败",playBackReq, throwable);
+                return (CommonResponse<StreamInfo>) finalFailure;
+            }
+
             @Override
             public CommonResponse<Boolean> recordPause(RecordStreamOperationReq req) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--操作失败",req, throwable);

@@ -4,18 +4,38 @@ import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.StreamManageApiFallbackFactory;
 import com.runjian.device.expansion.vo.feign.request.FeignStreamOperationReq;
+import com.runjian.device.expansion.vo.feign.request.PlayBackFeignReq;
+import com.runjian.device.expansion.vo.feign.request.PlayFeignReq;
+import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.RecordStreamOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSeekOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSpeedOperationReq;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(value = "stream-manage",fallbackFactory= StreamManageApiFallbackFactory.class)
 public interface StreamManageApi {
 
+    /**
+     * 点播接口
+     * @param playFeignReq
+     * @return
+     */
+    @PostMapping(value = "/stream/north/play/live",produces = MediaType.APPLICATION_JSON_VALUE)
+    CommonResponse<StreamInfo> play(@RequestBody PlayFeignReq playFeignReq);
+
+    /**
+     * 回放接口
+     * @param playBackReq
+     * @return
+     */
+    @PostMapping(value = "/stream/north/play/record",produces = MediaType.APPLICATION_JSON_VALUE)
+    CommonResponse<StreamInfo> playBack(@RequestBody PlayBackFeignReq playBackReq);
     /**
      * 开启录像
      * @param req
