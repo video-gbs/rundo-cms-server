@@ -37,9 +37,6 @@ public class StreamSouthServiceImpl implements StreamSouthService {
     @Override
     public void msgDistribute(String msgType, Long dispatchId, Long taskId, Object data) {
         switch (MsgType.getByStr(msgType)){
-            case STREAM_PLAY_RESULT:
-                streamPlayResult(data);
-                break;
             case STREAM_CLOSE:
                 streamClose(dispatchId, data);
                 break;
@@ -66,14 +63,6 @@ public class StreamSouthServiceImpl implements StreamSouthService {
         }else {
             streamManageApi.commonError(response);
         }
-    }
-
-    private void streamPlayResult(Object data) {
-        if (Objects.isNull(data)){
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "data为空");
-        }
-        CommonResponse<?> commonResponse = streamManageApi.streamReceiveResult(JSONObject.parseObject(data.toString()));
-        commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
     }
 
 
