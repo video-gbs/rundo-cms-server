@@ -69,7 +69,7 @@ public class GatewayNorthController {
      * @param channelId 通道id
      * @return
      */
-    @GetMapping("/data/channel")
+    @GetMapping("/id/channel")
     public CommonResponse<Long> getGatewayId(@RequestParam Long channelId){
         return CommonResponse.success(gatewayNorthService.getGatewayInfoByChannelId(channelId));
     }

@@ -22,6 +22,11 @@ public interface GatewayTaskService {
     Map<Long, DeferredResult<?>> asynReqMap = new ConcurrentHashMap<>();
 
     /**
+     * 定时清理超时任务
+     */
+    void clearOutTimeTask();
+
+    /**
      * 发送消息
      * @param gatewayId 网关id
      * @param deviceId 设备id

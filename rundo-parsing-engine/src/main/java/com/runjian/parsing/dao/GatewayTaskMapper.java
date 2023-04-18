@@ -1,5 +1,6 @@
 package com.runjian.parsing.dao;
 
+import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.entity.GatewayTaskInfo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
@@ -52,4 +53,21 @@ public interface GatewayTaskMapper {
             " </script> ")
     void updateState(Long taskId, Integer state, String detail, LocalDateTime updateTime);
 
+    @Select(" <script>" +
+            " SELECT * FROM " + GATEWAY_TASK_TABLE_NAME +
+            " WHERE state = #{state} " +
+            " AND update_time &lt;= #{outTime} " +
+            " </script>")
+    List<GatewayTaskInfo> selectByOutTimeTask(Integer state, LocalDateTime outTime);
+
+    @Update(" <script> " +
+            " <foreach collection='gatewayTaskInfoList' item='item' separator=';'> " +
+            " UPDATE " + GATEWAY_TASK_TABLE_NAME +
+            " SET update_time = #{item.updateTime}  " +
+            " , state = #{item.state} " +
+            " , detail = #{item.detail}" +
+            " WHERE id = #{item.id} "+
+            " </foreach> " +
+            " </script> ")
+    void updateAll(List<GatewayTaskInfo> gatewayTaskInfoList);
 }

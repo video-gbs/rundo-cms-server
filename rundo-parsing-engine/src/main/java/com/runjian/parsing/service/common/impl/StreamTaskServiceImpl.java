@@ -7,6 +7,7 @@ import com.runjian.parsing.constant.MqConstant;
 import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.dao.StreamTaskMapper;
 import com.runjian.parsing.entity.DispatchInfo;
+import com.runjian.parsing.entity.GatewayTaskInfo;
 import com.runjian.parsing.entity.StreamTaskInfo;
 import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.mq.listener.MqDefaultProperties;
@@ -17,10 +18,12 @@ import com.runjian.parsing.vo.CommonMqDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,6 +45,22 @@ public class StreamTaskServiceImpl implements StreamTaskService {
     private final DataBaseService dataBaseService;
 
     private static final String OUT_TIME = "OUT_TIME";
+
+    @Override
+    @Scheduled(fixedDelay = 60000)
+    public void clearOutTimeTask() {
+        LocalDateTime outTime = LocalDateTime.now().plusSeconds(-60);
+        List<StreamTaskInfo> streamTaskInfoList = streamTaskMapper.selectByOutTimeTask(TaskState.RUNNING.getCode(), outTime);
+        for (StreamTaskInfo streamTaskInfo : streamTaskInfoList){
+            asynReqMap.remove(streamTaskInfo.getId());
+            streamTaskInfo.setState(TaskState.ERROR.getCode());
+            streamTaskInfo.setUpdateTime(LocalDateTime.now());
+            streamTaskInfo.setDetail(OUT_TIME);
+        }
+        if (streamTaskInfoList.size() > 0){
+            streamTaskMapper.updateAll(streamTaskInfoList);
+        }
+    }
 
     @Override
     public void sendMsgToGateway(Long dispatchId, String streamId, String msgType, Object data, DeferredResult<CommonResponse<?>> response) {
