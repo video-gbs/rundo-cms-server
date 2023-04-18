@@ -9,8 +9,8 @@ import com.pig4cloud.captcha.SpecCaptcha;
 import com.pig4cloud.captcha.base.Captcha;
 import com.runjian.auth.server.domain.dto.login.UserInfoDTO;
 import com.runjian.auth.server.domain.entity.UserInfo;
-import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.login.LoginService;
+import com.runjian.auth.server.service.system.UserInfoService;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.util.RedisCache;
@@ -34,8 +34,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class LoginServiceImpl implements LoginService {
+
     @Autowired
-    private UserInfoMapper userInfoMapper;
+    private UserInfoService userInfoService;
+
     @Autowired
     private RedisCache redisCache;
 
@@ -46,7 +48,7 @@ public class LoginServiceImpl implements LoginService {
         // 从数据库中查取用户
         LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserInfo::getUserAccount, userAccount);
-        UserInfo userInfo = userInfoMapper.selectOne(queryWrapper);
+        UserInfo userInfo = userInfoService.getOne(queryWrapper);
         // 校验用户是否存在
         if (Objects.isNull(userInfo)) {
             return CommonResponse.failure(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "用户不存在");
