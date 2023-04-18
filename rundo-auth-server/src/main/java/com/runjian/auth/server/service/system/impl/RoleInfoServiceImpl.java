@@ -52,13 +52,15 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     private OrgInfoService orgInfoService;
 
     @Autowired
+    private VideoAreaService videoAreaService;
+
+    @Autowired
     private RundoIdUtil idUtil;
     @Autowired
     private RoleInfoMapper roleInfoMapper;
 
     @Autowired
     private AppMenuApiMapper appMenuApiMapper;
-
 
 
     @Override
@@ -402,7 +404,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         orgIds = orgIds.stream().distinct().collect(Collectors.toList());
         roleDetailVO.setOrgIds(orgIds);
         // 查询该角色已授权的安防区域
-        List<VideoArea> areaList = roleInfoMapper.selectVideoAreaByRoleCode(roleInfo.getRoleCode());
+        List<VideoArea> areaList = videoAreaService.getVideoAreaByRoleCode(roleInfo.getRoleCode());
         List<String> areaIds = areaList.stream().map(item -> item.getId().toString()).collect(Collectors.toList());
         areaIds = areaIds.stream().distinct().collect(Collectors.toList());
         roleDetailVO.setAreaIds(areaIds);
@@ -660,7 +662,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                 if (menuInfo.getId().equals(1L)) {
                     continue;
                 }
-                if (appInfo.getId().equals(menuInfo.getAppId())){
+                if (appInfo.getId().equals(menuInfo.getAppId())) {
                     myMenuInfoList.add(menuInfo);
                 }
             }
@@ -672,7 +674,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                 if (apiInfo.getId().equals(1L)) {
                     continue;
                 }
-                if (appInfo.getId().equals(apiInfo.getAppId())){
+                if (appInfo.getId().equals(apiInfo.getAppId())) {
                     myApiInfoList.add(apiInfo);
                 }
             }

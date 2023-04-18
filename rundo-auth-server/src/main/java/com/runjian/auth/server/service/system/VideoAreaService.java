@@ -18,7 +18,7 @@ import java.util.List;
  * @author Jiang4Yu@126.com
  * @since 2023-01-03 11:45:53
  */
-public interface VideoAreaSaervice extends IService<VideoArea> {
+public interface VideoAreaService extends IService<VideoArea> {
 
     /**
      * 获取安防区域层级树
@@ -73,4 +73,5 @@ public interface VideoAreaSaervice extends IService<VideoArea> {
      */
     List<VideoAreaVO> findByList(Long areaId);
 
+    List<VideoArea> getVideoAreaByRoleCode(String roleCode);
 }

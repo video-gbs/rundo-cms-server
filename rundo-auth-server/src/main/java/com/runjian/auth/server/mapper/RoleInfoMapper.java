@@ -34,14 +34,6 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
      */
     List<String> selectRoleCodeByUserId(@Param("userId") Long userId);
 
-    /**
-     * 通过角色编码，查取角色已有的安防区域信息
-     *
-     * @param roleCode
-     * @return
-     */
-    List<VideoArea> selectVideoAreaByRoleCode(@Param("roleCode") String roleCode);
-
     Page<EditUserSysRoleInfoVO> selectEditUserSysRoleInfoPage(PageEditUserSysRoleInfoDTO page);
 
     Page<SysRoleInfoVO> MySelectPage(PageSysRoleInfoDto page);

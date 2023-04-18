@@ -11,7 +11,7 @@ import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.feign.ExpansionClient;
 import com.runjian.auth.server.mapper.VideoAraeMapper;
-import com.runjian.auth.server.service.system.VideoAreaSaervice;
+import com.runjian.auth.server.service.system.VideoAreaService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea> implements VideoAreaSaervice {
+public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea> implements VideoAreaService {
 
     @Autowired
     private VideoAraeMapper videoAraeMapper;
@@ -174,6 +174,11 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
                     return videoAreaVO;
                 }
         ).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VideoArea> getVideoAreaByRoleCode(String roleCode) {
+        return videoAraeMapper.selectVideoAreaByRoleCode(roleCode);
     }
 
     @Override

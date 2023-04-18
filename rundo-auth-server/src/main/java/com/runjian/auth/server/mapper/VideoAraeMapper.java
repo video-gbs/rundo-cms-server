@@ -35,4 +35,12 @@ public interface VideoAraeMapper extends BaseMapper<VideoArea> {
      */
     List<VideoAreaVO> mySelectListById(@Param("areaId") Long areaId);
 
+    /**
+     * 通过角色编码，查取角色已有的安防区域信息
+     *
+     * @param roleCode
+     * @return
+     */
+    List<VideoArea> selectVideoAreaByRoleCode(@Param("roleCode") String roleCode);
+
 }

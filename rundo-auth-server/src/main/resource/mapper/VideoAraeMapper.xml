@@ -33,4 +33,12 @@
         WHERE va.delete_flag = 0
         ;
     </select>
+
+    <select id="selectVideoAreaByRoleCode" resultType="com.runjian.auth.server.domain.entity.VideoArea">
+        SELECT area.*
+        FROM video_area area
+            LEFT JOIN role_area rva ON rva.area_id = area.id
+            LEFT JOIN role_info sri ON sri.id = rva.role_id
+        WHERE sri.role_code = #{roleCode}
+    </select>
 </mapper>
