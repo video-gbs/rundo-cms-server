@@ -35,22 +35,6 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
     List<String> selectRoleCodeByUserId(@Param("userId") Long userId);
 
     /**
-     * 通过角色编码，查取角色已有的角色
-     *
-     * @param roleCode
-     * @return
-     */
-    List<ApiInfo> selectApiInfoByRoleCode(@Param("roleCode") String roleCode);
-
-    /**
-     * 通过角色编码，查取角色已有部门信息
-     *
-     * @param roleCode
-     * @return
-     */
-    List<OrgInfo> selectOrgInfoByRoleCode(@Param("roleCode") String roleCode);
-
-    /**
      * 通过角色编码，查取角色已有的安防区域信息
      *
      * @param roleCode

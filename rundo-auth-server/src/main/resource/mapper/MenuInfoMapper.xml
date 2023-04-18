@@ -38,4 +38,10 @@
         WHERE sri.status = 0
         AND sri.role_code = #{roleCode}
     </select>
+
+    <select id="findMenuIdListByRoleId" resultType="java.lang.Long">
+        SELECT org_id
+        FROM role_org
+        WHERE role_org.role_id = #{roleId,jdbcType=BIGINT}
+    </select>
 </mapper>

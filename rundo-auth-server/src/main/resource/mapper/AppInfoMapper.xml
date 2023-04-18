@@ -44,4 +44,10 @@
             AND sai.delete_flag = 0
             AND sai.status = 0
     </select>
+
+    <select id="findAppIdListByRoleId" resultType="java.lang.Long">
+        SELECT app_id
+        FROM role_app
+        WHERE role_app.role_id = #{roleId,jdbcType=BIGINT}
+    </select>
 </mapper>

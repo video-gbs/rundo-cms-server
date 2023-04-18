@@ -2,12 +2,13 @@ package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.domain.dto.system.SysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
+import com.runjian.auth.server.domain.dto.system.SysApiInfoDTO;
 import com.runjian.auth.server.domain.entity.ApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.ApiInfoTree;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -36,4 +37,8 @@ public interface ApiInfoService extends IService<ApiInfo> {
     List<SysApiInfoVO> findByList(QuerySysApiInfoDTO dto);
 
     List<ApiInfoTree> getTreeByAppId(Long appId);
+
+    List<ApiInfo> getApiInfoByRoleCode(String roleCode);
+
+    List<Long> getApiIdListByRoleId(@Param("roleId") Long roleId);
 }

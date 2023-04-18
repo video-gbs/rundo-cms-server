@@ -174,6 +174,16 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     }
 
     @Override
+    public List<OrgInfo> getOrgInfoByRoleCode(String roleCode) {
+        return orgInfoMapper.selectOrgInfoByRoleCode(roleCode);
+    }
+
+    @Override
+    public List<Long> getOrgIdListByRoleId(Long roleId) {
+        return orgInfoMapper.findOrgIdListByRoleId(roleId);
+    }
+
+    @Override
     public List<SysOrgTree> findByTree() {
         LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByAsc(true, OrgInfo::getOrgSort);

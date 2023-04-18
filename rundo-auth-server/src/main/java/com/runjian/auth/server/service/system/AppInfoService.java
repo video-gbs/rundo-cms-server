@@ -2,9 +2,9 @@ package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.domain.dto.system.SysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysAppInfoDTO;
+import com.runjian.auth.server.domain.dto.system.SysAppInfoDTO;
 import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 
@@ -37,4 +37,6 @@ public interface AppInfoService extends IService<AppInfo> {
     List<AppInfo> getAppByRoleCode(String roleCode);
 
     List<AppInfo> getAppByRoleCodelist(List<String> roleCodeList);
+
+    List<Long> getAppIdListByRoleId(Long roleId);
 }

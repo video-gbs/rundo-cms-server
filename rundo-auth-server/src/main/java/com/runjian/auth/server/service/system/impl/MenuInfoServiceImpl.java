@@ -180,6 +180,11 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     }
 
     @Override
+    public List<Long> getMenuIdListByRoleId(Long roleId) {
+        return menuInfoMapper.findMenuIdListByRoleId(roleId);
+    }
+
+    @Override
     public void save(SysMenuInfoDTO dto) {
         MenuInfo menuInfo = new MenuInfo();
         BeanUtils.copyProperties(dto, menuInfo);

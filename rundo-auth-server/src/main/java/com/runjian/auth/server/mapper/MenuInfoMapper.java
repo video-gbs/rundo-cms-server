@@ -32,4 +32,6 @@ public interface MenuInfoMapper extends BaseMapper<MenuInfo> {
      * @return
      */
     List<MenuInfo> selectMenuByRoleCode(@Param("roleCode") String roleCode);
+
+    List<Long> findMenuIdListByRoleId(@Param("roleId") Long roleId);
 }

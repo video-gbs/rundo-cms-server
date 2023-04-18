@@ -25,4 +25,16 @@ public interface OrgInfoMapper extends BaseMapper<OrgInfo> {
     List<Long> mySelectOrg(@Param("orgId") Long orgId);
 
     List<SysOrgVO> mySelectListById(@Param("orgId") Long orgId);
+
+    /**
+     * 通过角色编码，查取角色已有部门信息
+     *
+     * @param roleCode
+     * @return
+     */
+    List<OrgInfo> selectOrgInfoByRoleCode(@Param("roleCode") String roleCode);
+
+    List<Long> findOrgIdListByRoleId(@Param("roleId") Long roleId);
+
+
 }

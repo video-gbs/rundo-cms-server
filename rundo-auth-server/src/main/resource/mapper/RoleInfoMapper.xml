@@ -10,23 +10,6 @@
           AND sui.id = #{userId,jdbcType=BIGINT}
     </select>
 
-
-    <select id="selectApiInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.ApiInfo">
-        SELECT sai.*
-        FROM api_info sai
-                 LEFT JOIN role_api sra ON sra.api_id = sai.id
-                 LEFT JOIN role_info sri ON sri.id = sra.role_id
-        WHERE sri.role_code = #{roleCode}
-    </select>
-
-    <select id="selectOrgInfoByRoleCode" resultType="com.runjian.auth.server.domain.entity.OrgInfo">
-        SELECT org.*
-        FROM org_info org
-                 LEFT JOIN role_org sro ON sro.org_id = org.id
-                 LEFT JOIN role_info sri ON sri.id = sro.role_id
-        WHERE sri.role_code = #{roleCode}
-    </select>
-
     <select id="selectVideoAreaByRoleCode" resultType="com.runjian.auth.server.domain.entity.VideoArea">
         SELECT area.*
         FROM video_area area

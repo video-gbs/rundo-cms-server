@@ -13,6 +13,7 @@ import com.runjian.auth.server.service.system.AppInfoService;
 import com.runjian.auth.server.service.system.MenuInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,9 +33,11 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
     @Autowired
     private AppInfoMapper appInfoMapper;
 
+    @Lazy
     @Autowired
     private MenuInfoService menuInfoService;
 
+    @Lazy
     @Autowired
     private ApiInfoService apiInfoService;
 
@@ -116,6 +119,11 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
     @Override
     public List<AppInfo> getAppByRoleCodelist(List<String> roleCodeList) {
         return appInfoMapper.selectAppByRoleCodeList(roleCodeList);
+    }
+
+    @Override
+    public List<Long> getAppIdListByRoleId(Long roleId) {
+        return appInfoMapper.findAppIdListByRoleId(roleId);
     }
 
     @Override

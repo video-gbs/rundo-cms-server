@@ -31,4 +31,10 @@
             LEFT JOIN role_info sri ON sri.id = sra.role_id
         WHERE sri.role_code = #{roleCode}
     </select>
+
+    <select id="findApiIdListByRoleId" resultType="java.lang.Long">
+        SELECT org_id
+        FROM role_org
+        WHERE role_org.role_id = #{roleId,jdbcType=BIGINT}
+    </select>
 </mapper>

@@ -8,6 +8,7 @@ import com.runjian.auth.server.domain.dto.system.SysMenuInfoDTO;
 import com.runjian.auth.server.domain.entity.MenuInfo;
 import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -41,4 +42,6 @@ public interface MenuInfoService extends IService<MenuInfo> {
     List<MenuInfoTree> getTreeByAppId(Long appId);
 
     List<MenuInfo> getMenuByRoleCode(String roleCode);
+
+    List<Long> getMenuIdListByRoleId(@Param("roleId") Long roleId);
 }

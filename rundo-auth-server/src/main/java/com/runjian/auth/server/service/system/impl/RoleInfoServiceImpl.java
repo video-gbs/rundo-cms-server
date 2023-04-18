@@ -16,9 +16,7 @@ import com.runjian.auth.server.domain.vo.system.*;
 import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
 import com.runjian.auth.server.mapper.AppMenuApiMapper;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
-import com.runjian.auth.server.service.system.AppInfoService;
-import com.runjian.auth.server.service.system.MenuInfoService;
-import com.runjian.auth.server.service.system.RoleInfoService;
+import com.runjian.auth.server.service.system.*;
 import com.runjian.auth.server.util.RundoIdUtil;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +43,15 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     private AppInfoService appInfoService;
 
     @Autowired
+    private MenuInfoService menuInfoService;
+
+    @Autowired
+    private ApiInfoService apiInfoService;
+
+    @Autowired
+    private OrgInfoService orgInfoService;
+
+    @Autowired
     private RundoIdUtil idUtil;
     @Autowired
     private RoleInfoMapper roleInfoMapper;
@@ -52,8 +59,6 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     @Autowired
     private AppMenuApiMapper appMenuApiMapper;
 
-    @Autowired
-    private MenuInfoService menuInfoService;
 
 
     @Override
@@ -376,7 +381,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         // 查询该角色已授权的菜单列表
         List<MenuInfo> menuInfoList = menuInfoService.getMenuByRoleCode(roleInfo.getRoleCode());
         // 查询该角色已授权的接口列表
-        List<ApiInfo> apiInfoList = roleInfoMapper.selectApiInfoByRoleCode(roleInfo.getRoleCode());
+        List<ApiInfo> apiInfoList = apiInfoService.getApiInfoByRoleCode(roleInfo.getRoleCode());
 
         // 应用类
         List<String> appIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 1);
@@ -392,7 +397,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         roleDetailVO.setDevopsIds(devopsIds);
 
         // 查询该角色已授权的部门列表
-        List<OrgInfo> orgList = roleInfoMapper.selectOrgInfoByRoleCode(roleInfo.getRoleCode());
+        List<OrgInfo> orgList = orgInfoService.getOrgInfoByRoleCode(roleInfo.getRoleCode());
         List<String> orgIds = orgList.stream().map(item -> item.getId().toString()).collect(Collectors.toList());
         orgIds = orgIds.stream().distinct().collect(Collectors.toList());
         roleDetailVO.setOrgIds(orgIds);

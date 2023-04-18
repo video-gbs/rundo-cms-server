@@ -106,6 +106,16 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
     }
 
     @Override
+    public List<ApiInfo> getApiInfoByRoleCode(String roleCode) {
+        return apiInfoMapper.selectApiInfoByRoleCode(roleCode);
+    }
+
+    @Override
+    public List<Long> getApiIdListByRoleId(Long roleId) {
+        return apiInfoMapper.findApiIdListByRoleId(roleId);
+    }
+
+    @Override
     public List<SysApiInfoVO> findByList(QuerySysApiInfoDTO dto) {
         return getByList(dto).stream().map(
                 item -> {

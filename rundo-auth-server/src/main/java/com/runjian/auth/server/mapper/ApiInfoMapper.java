@@ -44,4 +44,5 @@ public interface ApiInfoMapper extends BaseMapper<ApiInfo> {
      */
     List<String> selectApiUrlByRoleCode(@Param("roleCode") String roleCode);
 
+    List<Long> findApiIdListByRoleId(@Param("roleId") Long roleId);
 }

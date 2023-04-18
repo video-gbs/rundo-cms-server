@@ -45,4 +45,5 @@ public interface AppInfoMapper extends BaseMapper<AppInfo> {
      */
     List<AppInfo> selectAppByRoleCodeList(List<String> roleList);
 
+    List<Long> findAppIdListByRoleId(@Param("roleId") Long roleId);
 }
