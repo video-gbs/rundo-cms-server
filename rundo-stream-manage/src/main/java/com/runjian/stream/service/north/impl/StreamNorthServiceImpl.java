@@ -95,7 +95,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
                 lock.unlock();
             }
 
-        StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamInfo.getStreamId(), MsgType.STREAM_LIVE_PLAY_START, 15L);
+        StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamInfo.getStreamId(), MsgType.STREAM_LIVE_PLAY_START, 15000L);
         streamManageDto.put(StandardName.CHANNEL_ID, channelId);
         streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
@@ -150,7 +150,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         String streamId = PlayType.getMsgByCode(playType) + MarkConstant.MARK_SPLIT_SYMBOL + channelId + MarkConstant.MARK_SPLIT_SYMBOL + System.currentTimeMillis() + new Random().nextInt(100);
         StreamInfo streamInfo = saveStream(gatewayDispatchInfo.getGatewayId(), channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
 
-        StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamInfo.getStreamId(), MsgType.STREAM_RECORD_PLAY_START, 15L);
+        StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamInfo.getStreamId(), MsgType.STREAM_RECORD_PLAY_START, 15000L);
         streamManageDto.put(StandardName.CHANNEL_ID, channelId);
         streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
@@ -195,7 +195,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         streamInfo.setRecordState(CommonEnum.DISABLE.getCode());
         streamInfo.setUpdateTime(LocalDateTime.now());
         streamMapper.updateRecordAndAutoCloseState(streamInfo);
-        CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_PLAY_STOP, 10L));
+        CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_PLAY_STOP, 15000L));
         if (commonResponse.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向服务", "流媒体交互失败", streamId, commonResponse.getMsg());
             streamMapper.deleteByStreamId(streamId);
@@ -212,7 +212,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (streamInfo.getRecordState().equals(CommonEnum.ENABLE.getCode())){
             return true;
         }
-        CommonResponse<?> response = parsingEngineApi.streamCustomEvent(new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_START, 10L));
+        CommonResponse<?> response = parsingEngineApi.streamCustomEvent(new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_START, 15000L));
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         if ((Boolean) response.getData()){
             streamInfo.setRecordState(CommonEnum.ENABLE.getCode());
@@ -228,7 +228,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (streamInfo.getRecordState().equals(CommonEnum.DISABLE.getCode())){
             return true;
         }
-        CommonResponse<?> response = parsingEngineApi.streamCustomEvent(new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_STOP, 10L));
+        CommonResponse<?> response = parsingEngineApi.streamCustomEvent(new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_STOP, 15000L));
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         if ((Boolean) response.getData()){
             streamInfo.setRecordState(CommonEnum.DISABLE.getCode());
@@ -252,7 +252,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "视频未正常播放，无法调整速度");
         }
-        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_SPEED, 10L);
+        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_SPEED, 15000L);
         streamManageDto.put(StandardName.RECORD_SPEED, speed);
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
         commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
@@ -264,7 +264,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "视频未正常播放，无法拖动进度条");
         }
-        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_SEEK, 10L);
+        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_SEEK, 15000L);
         streamManageDto.put(StandardName.RECORD_CURRENT_TIME, currentTime);
         streamManageDto.put(StandardName.RECORD_TARGET_TIME, targetTime);
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
@@ -277,7 +277,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "视频未正常播放，无法暂停视频");
         }
-        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_PAUSE, 10L);
+        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_PAUSE, 15000L);
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
         commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
     }
@@ -288,7 +288,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "视频未正常播放，无法恢复视频");
         }
-        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_RESUME, 10L);
+        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_RECORD_RESUME, 15000L);
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
         commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
     }
@@ -299,7 +299,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         if (streamInfo.getStreamState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "视频未正常播放，无法获取视频信息");
         }
-        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_MEDIA_INFO, 10L);
+        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_MEDIA_INFO, 15000L);
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
         commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()));

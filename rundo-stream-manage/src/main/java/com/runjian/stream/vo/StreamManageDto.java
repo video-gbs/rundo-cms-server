@@ -40,7 +40,7 @@ public class StreamManageDto {
     /**
      * 过期时间
      */
-    private Long outTime;
+    private Long outTime = 15000L;
 
     /**
      * 其他数据

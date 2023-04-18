@@ -25,6 +25,8 @@ public class PlayFeignReq {
     @ApiModelProperty("推流模式，1UDP，2TCP")
     private Integer streamType = 1;
 
+    private Integer playType = 2;
+
     @ApiModelProperty("录像状态，0关，1开")
     private Integer recordState = 0;
 

@@ -1,8 +1,10 @@
 package com.runjian.stream.vo.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.runjian.common.constant.PlayType;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
@@ -66,11 +68,15 @@ public class PostStreamRecordPlayReq {
      */
     @PastOrPresent(message = "时间必须是过去的时间")
     @NotNull(message = "开始时间不能为空")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private LocalDateTime startTime;
 
     /**
      * 录像结束时间
      */
     @NotNull(message = "结束时间不能为空")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private LocalDateTime endTime;
 }

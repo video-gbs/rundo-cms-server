@@ -89,7 +89,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         LocalDateTime nowTime = LocalDateTime.now();
 
         // 发送注册请求，返回数据ID
-        DeviceControlReq req = new DeviceControlReq(gatewayId, IdType.GATEWAY, MsgType.DEVICE_ADD, 10L);
+        DeviceControlReq req = new DeviceControlReq(gatewayId, IdType.GATEWAY, MsgType.DEVICE_ADD, 15000L);
         req.putData(StandardName.DEVICE_ID, originId);
         req.putData(StandardName.DEVICE_TYPE, deviceType);
         req.putData(StandardName.COM_IP, ip);
@@ -173,7 +173,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("设备%s处于删除状态", deviceId));
         }
         // 请求解析引擎，进行设备同步
-        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_SYNC, 10L));
+        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_SYNC, 15000L));
         if (response.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备同步失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
@@ -193,7 +193,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     public void deviceDelete(Long deviceId) {
         DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(deviceId);
         // 触发删除流程，返回boolean
-        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE, 10l));
+        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE, 15000L));
         if (response.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备删除失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());

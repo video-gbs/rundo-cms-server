@@ -83,7 +83,7 @@ public class StreamBaseServiceImpl implements StreamBaseService {
         List<Long> noRecordIds = new ArrayList<>();
         for (Map.Entry<Long, List<StreamInfo>> entry : dispatchRecordMap.entrySet()){
             dataBaseService.getDispatchInfo(entry.getKey());
-            StreamManageDto streamManageDto = new StreamManageDto(entry.getKey(), null, MsgType.STREAM_CHECK_STREAM, 10L);
+            StreamManageDto streamManageDto = new StreamManageDto(entry.getKey(), null, MsgType.STREAM_CHECK_STREAM, 15000L);
             streamManageDto.put(StandardName.STREAM_ID_LIST, entry.getValue().stream().map(StreamInfo::getStreamId).collect(Collectors.toList()));
             streamManageDto.put(StandardName.STREAM_CHECK_TIME, nowTime);
             CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);

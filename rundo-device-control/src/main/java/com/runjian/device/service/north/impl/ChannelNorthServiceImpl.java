@@ -88,7 +88,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         if (!deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, String.format("设备%s是未注册成功的设备，不允许操作", deviceId));
         }
-        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.CHANNEL_SYNC, 10L));
+        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.CHANNEL_SYNC, 15000L));
         if (response.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
@@ -264,7 +264,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Override
     public VideoRecordRsp channelRecord(Long channelId, LocalDateTime startTime, LocalDateTime endTime) {
         getChannelInfoAndValid(channelId);
-        DeviceControlReq deviceReq = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_RECORD_INFO, 10L);
+        DeviceControlReq deviceReq = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_RECORD_INFO, 15000L);
         deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         CommonResponse<?> response = parsingEngineApi.customEvent(deviceReq);
@@ -298,7 +298,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Override
     public void channelPtzControl(Long channelId, Integer cmdCode, Integer cmdValue, Map<String, Object> valueMap) {
         getChannelInfoAndValid(channelId);
-        DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_CONTROL, 10L);
+        DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_CONTROL, 15000L);
         req.putData(StandardName.PTZ_CMD_CODE, cmdCode);
         req.putData(StandardName.PTZ_CMD_VALUE, cmdValue);
         if (Objects.nonNull(valueMap) && valueMap.size() > 0){
@@ -319,7 +319,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Override
     public List<PtzPresetRsp> channelPtzPresetGet(Long channelId) {
         getChannelInfoAndValid(channelId);
-        DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_PRESET, 10L);
+        DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_PRESET, 15000L);
         CommonResponse<?> response = parsingEngineApi.customEvent(req);
         if (response.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "预置位查询失败", response.getData(), response.getMsg());
@@ -345,7 +345,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Override
     public void channelPtz3d(Long channelId, Integer dragType, Integer length, Integer width, Integer midPointX, Integer midPointY, Integer lengthX, Integer lengthY) {
         getChannelInfoAndValid(channelId);
-        DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_3D, 10L);
+        DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_3D, 15000L);
         req.putData(StandardName.PTZ_3D_DRAG_TYPE, dragType);
         req.putData(StandardName.PTZ_3D_LENGTH, length);
         req.putData(StandardName.PTZ_3D_WIDTH, width);
