@@ -43,7 +43,7 @@ public class HomeServiceImpl implements HomeSevice {
         }
         log.debug("用户角色列表:{}", JSONUtil.toJsonStr(roleCodeList));
         // 查取角色已经授权的应用
-        List<AppInfo> roleAppInfoList = appInfoService.getAppByRolelist(roleCodeList);
+        List<AppInfo> roleAppInfoList = appInfoService.getAppByRoleCodelist(roleCodeList);
         if (CollUtil.isEmpty(roleAppInfoList)) {
             return CommonResponse.failure(BusinessErrorEnums.PERM_NOT_FOUND, "未对用户" + userId + "进行应用授权");
         }

@@ -43,6 +43,6 @@ public interface AppInfoMapper extends BaseMapper<AppInfo> {
      * @param roleList
      * @return
      */
-    List<AppInfo> selectAppByRolelist(List<String> roleList);
+    List<AppInfo> selectAppByRoleCodeList(List<String> roleList);
 
 }

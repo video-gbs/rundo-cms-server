@@ -34,5 +34,7 @@ public interface AppInfoService extends IService<AppInfo> {
 
     void modifyByStatus(StatusSysAppInfoDTO dto);
 
-    List<AppInfo> getAppByRolelist(List<String> roleCodeList);
+    List<AppInfo> getAppByRoleCode(String roleCode);
+
+    List<AppInfo> getAppByRoleCodelist(List<String> roleCodeList);
 }

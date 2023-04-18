@@ -22,7 +22,7 @@
         </where>
     </select>
 
-    <select id="selectAppByRolelist" resultType="com.runjian.auth.server.domain.entity.AppInfo">
+    <select id="selectAppByRoleCodeList" resultType="com.runjian.auth.server.domain.entity.AppInfo">
         SELECT sai.*
         FROM app_info sai
         LEFT JOIN role_app sra ON sra.app_id = sai.id
