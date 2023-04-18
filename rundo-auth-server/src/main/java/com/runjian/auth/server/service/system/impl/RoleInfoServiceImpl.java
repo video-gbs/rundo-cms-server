@@ -17,6 +17,7 @@ import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
 import com.runjian.auth.server.mapper.AppMenuApiMapper;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.system.AppInfoService;
+import com.runjian.auth.server.service.system.MenuInfoService;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.util.RundoIdUtil;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
@@ -50,6 +51,9 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
 
     @Autowired
     private AppMenuApiMapper appMenuApiMapper;
+
+    @Autowired
+    private MenuInfoService menuInfoService;
 
 
     @Override
@@ -370,7 +374,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         // 查询该角色已授权的应用列表
         List<AppInfo> appInfoList = appInfoService.getAppByRoleCode(roleInfo.getRoleCode());
         // 查询该角色已授权的菜单列表
-        List<MenuInfo> menuInfoList = roleInfoMapper.selectMenuByRoleCode(roleInfo.getRoleCode());
+        List<MenuInfo> menuInfoList = menuInfoService.getMenuByRoleCode(roleInfo.getRoleCode());
         // 查询该角色已授权的接口列表
         List<ApiInfo> apiInfoList = roleInfoMapper.selectApiInfoByRoleCode(roleInfo.getRoleCode());
 

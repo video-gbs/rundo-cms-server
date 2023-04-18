@@ -14,7 +14,6 @@ import com.runjian.auth.server.domain.entity.MenuInfo;
 import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
 import com.runjian.auth.server.domain.vo.system.MyMetaClass;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
-import com.runjian.auth.server.mapper.AppInfoMapper;
 import com.runjian.auth.server.mapper.MenuInfoMapper;
 import com.runjian.auth.server.service.system.AppInfoService;
 import com.runjian.auth.server.service.system.MenuInfoService;
@@ -46,9 +45,6 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     @Autowired
     private MenuInfoMapper menuInfoMapper;
 
-    @Autowired
-    private AppInfoMapper appInfoMapper;
-
     @Override
     public List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
         LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
@@ -77,7 +73,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         }
 
         if (null != dto.getAppId()) {
-            AppInfo appInfo = appInfoMapper.selectById(dto.getAppId());
+            AppInfo appInfo = appInfoService.getById(dto.getAppId());
             menuInfoList.stream().filter(bean -> {
                 if (bean.getId().equals(rootNodeId)) {
                     bean.setAppId(appInfo.getId());
@@ -176,6 +172,11 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
             menuInfoTreeList.add(bean);
         }
         return DataTreeUtil.buildTree(menuInfoTreeList, root);
+    }
+
+    @Override
+    public List<MenuInfo> getMenuByRoleCode(String roleCode) {
+        return menuInfoMapper.selectMenuByRoleCode(roleCode);
     }
 
     @Override
