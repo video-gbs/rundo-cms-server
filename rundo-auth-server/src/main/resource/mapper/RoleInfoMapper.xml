@@ -10,29 +10,6 @@
           AND sui.id = #{userId,jdbcType=BIGINT}
     </select>
 
-    <select id="selectAppByRoleCode" resultType="com.runjian.auth.server.domain.entity.AppInfo">
-        SELECT sai.*
-        FROM app_info sai
-                 LEFT JOIN role_app sra ON sra.app_id = sai.id
-                 LEFT JOIN role_info sri ON sri.id = sra.role_id
-        WHERE sri.role_code = #{roleCode}
-          AND sai.delete_flag = 0
-          AND sai.status = 0
-    </select>
-
-    <select id="selectAppByRolelist" resultType="com.runjian.auth.server.domain.entity.AppInfo">
-        SELECT sai.*
-        FROM app_info sai
-                 LEFT JOIN role_app sra ON sra.app_id = sai.id
-                 LEFT JOIN role_info sri ON sri.id = sra.role_id
-        WHERE sai.delete_flag = 0
-            AND sai.status = 0
-            AND sri.role_code IN
-        <foreach collection="roleList" item="roleCode" open="(" close=")" separator=",">
-            #{roleCode}
-        </foreach>
-    </select>
-
     <select id="selectMenuByRoleCode" resultType="com.runjian.auth.server.domain.entity.MenuInfo">
         SELECT smi.*
         FROM menu_info smi

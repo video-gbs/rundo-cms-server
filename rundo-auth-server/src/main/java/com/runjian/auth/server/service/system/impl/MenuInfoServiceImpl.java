@@ -16,7 +16,7 @@ import com.runjian.auth.server.domain.vo.system.MyMetaClass;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
 import com.runjian.auth.server.mapper.AppInfoMapper;
 import com.runjian.auth.server.mapper.MenuInfoMapper;
-import com.runjian.auth.server.mapper.RoleInfoMapper;
+import com.runjian.auth.server.service.system.AppInfoService;
 import com.runjian.auth.server.service.system.MenuInfoService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessException;
@@ -41,13 +41,13 @@ import java.util.stream.Collectors;
 @Service
 public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> implements MenuInfoService {
     @Autowired
+    private AppInfoService appInfoService;
+
+    @Autowired
     private MenuInfoMapper menuInfoMapper;
 
     @Autowired
     private AppInfoMapper appInfoMapper;
-
-    @Autowired
-    private RoleInfoMapper roleInfoMapper;
 
     @Override
     public List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
@@ -112,7 +112,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         // 取出当前登录的用户的所有角色
         List<String> roleCodeList = StpUtil.getRoleList();
         // 去重
-        List<AppInfo> appInfoList = CollUtil.distinct(roleInfoMapper.selectAppByRolelist(roleCodeList));
+        List<AppInfo> appInfoList = CollUtil.distinct(appInfoService.getAppByRoleCodelist(roleCodeList));
         // 过滤掉不满足条件的数据
         appInfoList.removeIf(appInfo -> !appInfo.getAppType().equals(appType));
         List<Long> appIds = appInfoList.stream().map(AppInfo::getId).collect(Collectors.toList());
