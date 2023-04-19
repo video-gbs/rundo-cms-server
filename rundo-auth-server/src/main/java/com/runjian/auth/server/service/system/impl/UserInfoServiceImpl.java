@@ -86,9 +86,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         // 处理角色信息
         List<Long> roleIds = dto.getRoleIds();
         if (roleIds.size() > 0) {
-            for (Long roleId : roleIds) {
-                roleInfoService.saveRoleUser(roleId, userInfo.getId());
-            }
+            saveRoleUser(roleIds, userInfo.getId());
         }
     }
 
@@ -127,30 +125,24 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         // 原始关联角色为空 则提交关联角色为新增
         List<Long> newRoleIds = dto.getRoleIds();
         if (CollUtil.isEmpty(oldRoleIds)) {
-            for (Long roleId : newRoleIds) {
-                roleInfoService.saveRoleUser(roleId, userInfo.getId());
-            }
+            saveRoleUser(newRoleIds, userInfo.getId());
+            return;
         }
         // 如果提交的角色为空，则删除所有的角色关联
         if (CollUtil.isEmpty(newRoleIds)) {
-            roleInfoService.removeRoleUser(null, userInfo.getId());
+            removeRoleUser(null, userInfo.getId());
+            return;
         }
         // 提交的角色与原始的角色均不为空
         // 采取Lambda表达式取得相同的角色
-        List<Long> common = oldRoleIds.stream().filter(p -> newRoleIds.contains(p)).collect(Collectors.toList());
+        List<Long> common = oldRoleIds.stream().filter(newRoleIds::contains).collect(Collectors.toList());
         // 原始角色列表剔除相同部分后删除授权
         oldRoleIds.removeAll(common);
-        for (Long roleId : oldRoleIds) {
-            roleInfoService.removeRoleUser(roleId, userInfo.getId());
-        }
+        removeRoleUser(oldRoleIds, userInfo.getId());
         // 新提交的角色列表剔除相同部分后新增授权
         newRoleIds.removeAll(common);
-        for (Long roleId : newRoleIds) {
-            roleInfoService.saveRoleUser(roleId, userInfo.getId());
-        }
-
+        saveRoleUser(newRoleIds, userInfo.getId());
     }
-
 
     @Override
     public void modifyByStatus(StatusSysUserInfoDTO dto) {
@@ -251,5 +243,19 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         return userInfoMapper.selectUserIdListByRoleId(roleId);
     }
 
+    private void saveRoleUser(List<Long> roleIds, Long userId) {
+        for (Long roleId : roleIds) {
+            roleInfoService.saveRoleUser(roleId, userId);
+        }
+    }
 
+    private void removeRoleUser(List<Long> roleIds, Long userId) {
+        if (CollUtil.isEmpty(roleIds)) {
+            roleInfoService.removeRoleUser(null, userId);
+        } else {
+            for (Long roleId : roleIds) {
+                roleInfoService.removeRoleUser(roleId, userId);
+            }
+        }
+    }
 }
