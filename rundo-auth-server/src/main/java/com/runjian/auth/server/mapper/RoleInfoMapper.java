@@ -27,13 +27,19 @@ import java.util.List;
 public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
 
     /**
-     * 根据用户ID查询用户角色编码
+     * 根据用户ID查询,用户角色编码
      *
      * @param userId
      * @return
      */
     List<String> selectRoleCodeByUserId(@Param("userId") Long userId);
 
+    /**
+     * 根据用户ID查询,用户角色id
+     *
+     * @param userId
+     * @return
+     */
     List<Long> selectRoleByUserId(@Param("userId") Long userId);
 
     Page<SysRoleInfoVO> MySelectPage(PageSysRoleInfoDto page);
@@ -44,37 +50,49 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
 
     /**** 角色应用相关 ****/
     void insertRoleApp(@Param("roleId") Long roleId, @Param("appId") Long appId);
+
     void batchInsertRoleApp(@Param("appList") List<BatchDTO> appList);
+
     void removeRoleApp(@Param("roleId") Long roleId, @Param("appId") Long appId);
 
 
     /**** 角色菜单相关 ****/
     void insertRoleMenu(@Param("roleId") Long roleId, @Param("menuId") Long menuId);
+
     void batchInsertRoleMenu(@Param("menuList") List<BatchDTO> menuList);
+
     void removeRoleMenu(@Param("roleId") Long roleId, @Param("menuId") Long menuId);
 
 
     /**** 角色接口相关 ****/
     void insertRoleApi(@Param("roleId") Long roleId, @Param("apiId") Long apiId);
+
     void batchInsertRoleApi(@Param("apiList") List<BatchDTO> apiList);
+
     void removeRoleApi(@Param("roleId") Long roleId, @Param("apiId") Long apiId);
 
 
     /**** 角色部门相关 ****/
     void insertRoleOrg(@Param("roleId") Long roleId, @Param("orgId") Long orgId);
+
     void batchInsertRoleOrg(@Param("orgList") List<BatchDTO> orgList);
+
     void removeRoleOrg(@Param("roleId") Long roleId, @Param("orgId") Long orgId);
 
 
     /**** 角色区域相关 ****/
     void insertRoleArea(@Param("roleId") Long roleId, @Param("areaId") Long areaId);
+
     void batchInsertRoleArea(@Param("areaList") List<BatchDTO> areaList);
+
     void removeRoleArea(@Param("roleId") Long roleId, @Param("areaId") Long areaId);
 
 
     /**** 角色用户相关 ****/
     void insertRoleUser(@Param("roleId") Long roleId, @Param("userId") Long userId);
+
     void batchInsertRoleUser(@Param("userList") List<BatchDTO> userList);
+
     void removeRoleUser(@Param("roleId") Long roleId, @Param("userId") Long userId);
 
 }

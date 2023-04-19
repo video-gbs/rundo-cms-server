@@ -53,4 +53,7 @@ public interface RoleInfoService extends IService<RoleInfo> {
     List<Long> getRoleByUserId(Long userId);
 
     void removeRoleUser(Long roleId, Long userId);
+
+    List<String> getRoleCodeByUserId(Long userId);
+
 }

@@ -711,4 +711,9 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     public void removeRoleUser(Long roleId, Long userId) {
         roleInfoMapper.removeRoleUser(roleId, userId);
     }
+
+    @Override
+    public List<String> getRoleCodeByUserId(Long userId) {
+        return roleInfoMapper.selectRoleCodeByUserId(userId);
+    }
 }
