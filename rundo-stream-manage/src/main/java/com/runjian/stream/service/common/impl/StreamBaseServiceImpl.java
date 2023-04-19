@@ -61,6 +61,7 @@ public class StreamBaseServiceImpl implements StreamBaseService {
         Map<Long, List<StreamInfo>> dispatchRecordMap = streamInfoList.stream().collect(Collectors.groupingBy(StreamInfo::getDispatchId));
         if (dispatchRecordMap.size() > 0){
             List<Long> unUseStream = getUnUseStream(dispatchRecordMap, nowTime);
+            log.info(LogTemplate.PROCESS_LOG_TEMPLATE,"流检测--待删除数据",dispatchRecordMap);
             if (unUseStream.size() > 0){
                 streamMapper.deleteByIdsAndCreateTime(unUseStream, nowTime);
             }
@@ -93,7 +94,7 @@ public class StreamBaseServiceImpl implements StreamBaseService {
             }
             List<String> recordingStreamIds = JSONArray.parseArray(JSONArray.toJSONString(commonResponse.getData())).toJavaList(String.class);
             if (Objects.nonNull(recordingStreamIds) && recordingStreamIds.size() > 0){
-                List<Long> dispatchNoRecordIds = entry.getValue().stream().filter(streamInfo -> recordingStreamIds.contains(streamInfo.getStreamId())).map(StreamInfo::getId).collect(Collectors.toList());
+                List<Long> dispatchNoRecordIds = entry.getValue().stream().filter(streamInfo -> !recordingStreamIds.contains(streamInfo.getStreamId())).map(StreamInfo::getId).collect(Collectors.toList());
                 noRecordIds.addAll(dispatchNoRecordIds);
             }else {
                 noRecordIds.addAll(entry.getValue().stream().map(StreamInfo::getId).collect(Collectors.toList()));
