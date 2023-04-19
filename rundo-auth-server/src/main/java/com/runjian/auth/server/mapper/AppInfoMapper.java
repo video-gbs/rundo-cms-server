@@ -45,5 +45,11 @@ public interface AppInfoMapper extends BaseMapper<AppInfo> {
      */
     List<AppInfo> selectAppByRoleCodeList(List<String> roleList);
 
+
+    /**
+     * 通过角色ID，获取角色已有的应用ID
+     * @param roleId
+     * @return
+     */
     List<Long> findAppIdListByRoleId(@Param("roleId") Long roleId);
 }

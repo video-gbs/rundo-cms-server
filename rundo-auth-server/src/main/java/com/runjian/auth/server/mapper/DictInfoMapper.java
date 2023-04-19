@@ -18,5 +18,11 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface DictInfoMapper extends BaseMapper<DictInfo> {
 
+    /**
+     * 数据字典分页查询
+     *
+     * @param page
+     * @return
+     */
     Page<SysDictVO> MySelectPage(PageSysDictDTO page);
 }

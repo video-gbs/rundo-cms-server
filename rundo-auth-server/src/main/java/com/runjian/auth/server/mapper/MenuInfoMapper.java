@@ -20,6 +20,7 @@ public interface MenuInfoMapper extends BaseMapper<MenuInfo> {
 
     /**
      * 根据应用ID获取应用的菜单列表
+     *
      * @param appId
      * @return
      */
@@ -33,5 +34,11 @@ public interface MenuInfoMapper extends BaseMapper<MenuInfo> {
      */
     List<MenuInfo> selectMenuByRoleCode(@Param("roleCode") String roleCode);
 
+    /**
+     * 根据角色ID，获取角色已有的菜单ID列表
+     *
+     * @param roleId
+     * @return
+     */
     List<Long> findMenuIdListByRoleId(@Param("roleId") Long roleId);
 }

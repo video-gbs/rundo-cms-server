@@ -44,5 +44,11 @@ public interface ApiInfoMapper extends BaseMapper<ApiInfo> {
      */
     List<String> selectApiUrlByRoleCode(@Param("roleCode") String roleCode);
 
+    /**
+     * 通过角色ID，获取角色已授权的ApiId
+     *
+     * @param roleId
+     * @return
+     */
     List<Long> findApiIdListByRoleId(@Param("roleId") Long roleId);
 }

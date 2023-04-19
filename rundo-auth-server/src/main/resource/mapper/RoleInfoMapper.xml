@@ -11,6 +11,16 @@
           AND sui.id = #{userId,jdbcType=BIGINT}
     </select>
 
+    <select id="selectRoleByUserId" resultType="java.lang.Long">
+        SELECT sru.role_id
+        FROM role_user sru
+        <where>
+            <if test="userId != null">
+                sru.user_id = #{userId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
     <select id="selectEditUserSysRoleInfoPage"
             resultType="com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO">
         SELECT sri.id,
@@ -207,11 +217,16 @@
     </insert>
     <delete id="removeRoleUser">
         DELETE
-        FROM role_user t
-        WHERE t.role_id = #{roleId,jdbcType=BIGINT}
-        <if test="userId != null">
-            AND t.user_id = #{userId,jdbcType=BIGINT}
-        </if>
+        FROM role_user sru
+        <where>
+            <if test="userId != null">
+                sru.user_id = #{userId,jdbcType=BIGINT}
+            </if>
+            <if test="roleId != null">
+                AND sru.role_id = #{roleId,jdbcType=BIGINT}
+            </if>
+        </where>
     </delete>
+
 
 </mapper>

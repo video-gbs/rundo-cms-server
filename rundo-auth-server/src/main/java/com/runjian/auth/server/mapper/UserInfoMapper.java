@@ -24,21 +24,34 @@ import java.util.List;
 @Mapper
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
 
-    void insertUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
-
-    List<Long> selectRoleByUserId(@Param("userId") Long userId);
-
-    void deleteUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
 
     Page<ListSysUserInfoVO> MySelectPageByContain(@Param("page") PageSysUserInfoDTO page, @Param("orgIds") List<Long> orgIds);
 
+    /**
+     * 通过用户ID，查询用户已有的安全区域
+     *
+     * @param userId
+     * @return
+     */
     OrgInfoVO selectOrgInfoByUserId(@Param("userId") Long userId);
 
     RelationSysUserInfoVO selectRelationSysUserInfoById(@Param("userId") Long userId);
 
     Page<RelationSysUserInfoVO> relationSysUserInfoPage(PageRelationSysUserInfoDTO page);
 
+    /**
+     * 通过用户ID，查询用户已有的安全区域
+     *
+     * @param id
+     * @return
+     */
     List<String> selectAreaNameByUserId(@Param("id") Long id);
 
+    /**
+     * 通过角色ID，获取已授权的用户ID
+     *
+     * @param roleId
+     * @return
+     */
     List<Long> selectUserIdListByRoleId(@Param("roleId") Long roleId);
 }

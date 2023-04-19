@@ -34,6 +34,8 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
      */
     List<String> selectRoleCodeByUserId(@Param("userId") Long userId);
 
+    List<Long> selectRoleByUserId(@Param("userId") Long userId);
+
     Page<SysRoleInfoVO> MySelectPage(PageSysRoleInfoDto page);
 
     Page<EditUserSysRoleInfoVO> selectEditUserSysRoleInfoPage(PageEditUserSysRoleInfoDTO page);
@@ -74,7 +76,5 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
     void insertRoleUser(@Param("roleId") Long roleId, @Param("userId") Long userId);
     void batchInsertRoleUser(@Param("userList") List<BatchDTO> userList);
     void removeRoleUser(@Param("roleId") Long roleId, @Param("userId") Long userId);
-
-
 
 }

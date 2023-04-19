@@ -696,4 +696,19 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
         return resultList;
     }
+
+    @Override
+    public void saveRoleUser(Long roleId, Long userId) {
+        roleInfoMapper.insertRoleUser(roleId, userId);
+    }
+
+    @Override
+    public List<Long> getRoleByUserId(Long userId) {
+        return roleInfoMapper.selectRoleByUserId(userId);
+    }
+
+    @Override
+    public void removeRoleUser(Long roleId, Long userId) {
+        roleInfoMapper.removeRoleUser(roleId, userId);
+    }
 }

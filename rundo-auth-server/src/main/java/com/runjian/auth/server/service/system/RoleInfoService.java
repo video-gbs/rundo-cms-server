@@ -47,4 +47,10 @@ public interface RoleInfoService extends IService<RoleInfo> {
     void rightRelationUser(RoleRelationUserDTO dto);
 
     void leftRelationUser(RoleRelationUserDTO dto);
+
+    void saveRoleUser(Long roleId, Long userId);
+
+    List<Long> getRoleByUserId(Long userId);
+
+    void removeRoleUser(Long roleId, Long userId);
 }

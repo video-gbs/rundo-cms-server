@@ -18,6 +18,7 @@ import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.mapper.OrgInfoMapper;
 import com.runjian.auth.server.mapper.UserInfoMapper;
+import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.service.system.UserInfoService;
 import com.runjian.auth.server.util.PasswordUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
@@ -25,6 +26,7 @@ import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -52,6 +54,10 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Autowired
     private OrgInfoMapper orgInfoMapper;
 
+    @Lazy
+    @Autowired
+    private RoleInfoService roleInfoService;
+
     @Override
     public void save(SysUserInfoDTO dto) {
         LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
@@ -73,7 +79,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         List<Long> roleIds = dto.getRoleIds();
         if (roleIds.size() > 0) {
             for (Long roleId : roleIds) {
-                userInfoMapper.insertUserRole(userInfo.getId(), roleId);
+                roleInfoService.saveRoleUser(roleId, userInfo.getId());
             }
         }
     }
@@ -84,7 +90,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         UserInfo userInfo = userInfoMapper.selectById(id);
         BeanUtils.copyProperties(userInfo, vo);
         OrgInfoVO orgInfoVO = userInfoMapper.selectOrgInfoByUserId(id);
-        List<Long> roleIds = userInfoMapper.selectRoleByUserId(id);
+        List<Long> roleIds = roleInfoService.getRoleByUserId(id);
         vo.setPassword(null);
         vo.setRePassword(null);
         vo.setOrgId(orgInfoVO.getOrgId());
@@ -98,7 +104,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         // 根据id查取原始信息
         UserInfo userInfo = userInfoMapper.selectById(dto.getId());
         // 根据id查取角色信息
-        List<Long> oldRoleIds = userInfoMapper.selectRoleByUserId(dto.getId());
+        List<Long> oldRoleIds = roleInfoService.getRoleByUserId(dto.getId());
         // 处理信息
 
         if (!"".equals(dto.getPassword())) {
@@ -114,12 +120,12 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         List<Long> newRoleIds = dto.getRoleIds();
         if (CollUtil.isEmpty(oldRoleIds)) {
             for (Long roleId : newRoleIds) {
-                userInfoMapper.insertUserRole(userInfo.getId(), roleId);
+                roleInfoService.saveRoleUser(roleId, userInfo.getId());
             }
         }
         // 如果提交的角色为空，则删除所有的角色关联
         if (CollUtil.isEmpty(newRoleIds)) {
-            userInfoMapper.deleteUserRole(userInfo.getId(), null);
+            roleInfoService.removeRoleUser(null, userInfo.getId());
         }
         // 提交的角色与原始的角色均不为空
         // 采取Lambda表达式取得相同的角色
@@ -127,12 +133,12 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         // 原始角色列表剔除相同部分后删除授权
         oldRoleIds.removeAll(common);
         for (Long roleId : oldRoleIds) {
-            userInfoMapper.deleteUserRole(userInfo.getId(), roleId);
+            roleInfoService.removeRoleUser(roleId, userInfo.getId());
         }
         // 新提交的角色列表剔除相同部分后新增授权
         newRoleIds.removeAll(common);
         for (Long roleId : newRoleIds) {
-            userInfoMapper.insertUserRole(userInfo.getId(), roleId);
+            roleInfoService.saveRoleUser(roleId, userInfo.getId());
         }
 
     }
@@ -168,7 +174,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
                     page.setSize(20);
                 }
                 orgIds = Collections.singletonList(dto.getOrgId());
-                return userInfoMapper.MySelectPageByContain(page,orgIds);
+                return userInfoMapper.MySelectPageByContain(page, orgIds);
             }
             case 1: { // 已经勾选 查询包含下级子节点
                 // 查询当前组织的下级组织，并获取ID
