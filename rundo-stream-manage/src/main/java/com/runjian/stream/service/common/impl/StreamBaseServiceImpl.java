@@ -93,7 +93,7 @@ public class StreamBaseServiceImpl implements StreamBaseService {
             }
             List<String> recordingStreamIds = JSONArray.parseArray(JSONArray.toJSONString(commonResponse.getData())).toJavaList(String.class);
             if (Objects.nonNull(recordingStreamIds) && recordingStreamIds.size() > 0){
-                List<Long> dispatchNoRecordIds = entry.getValue().stream().filter(streamInfo -> recordingStreamIds.contains(streamInfo.getStreamId())).map(StreamInfo::getId).collect(Collectors.toList());
+                List<Long> dispatchNoRecordIds = entry.getValue().stream().filter(streamInfo -> !recordingStreamIds.remove(streamInfo.getStreamId())).map(StreamInfo::getId).collect(Collectors.toList());
                 noRecordIds.addAll(dispatchNoRecordIds);
             }else {
                 noRecordIds.addAll(entry.getValue().stream().map(StreamInfo::getId).collect(Collectors.toList()));
