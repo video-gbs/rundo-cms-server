@@ -130,4 +130,10 @@ public interface StreamMapper {
             " WHERE stream_state = #{streamState} " +
             " </script> ")
     void deleteByStreamState(Integer streamState);
+
+    @Update(" UPDATE " + STREAM_TABLE_NAME +
+            " SET update_time = #{nowTime}  " +
+            " , stream_state = #{streamState} " +
+            " WHERE stream_id = #{streamId} ")
+    void updateStreamStateByStreamId(String streamId, Integer streamState, LocalDateTime nowTime);
 }
