@@ -103,7 +103,12 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         streamManageDto.put(StandardName.STREAM_MODE, streamMode);
         streamManageDto.put(StandardName.STREAM_MEDIA_URL, dispatchInfo.getUrl());
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
-        commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+        if (commonResponse.isError()){
+            streamMapper.deleteByStreamId(streamId);
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向接口服务", "直播播放失败", commonResponse.getMsg(), commonResponse.getData());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+        streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
 
         return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()), PostVideoPlayRsp.class);
     }
@@ -160,8 +165,12 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         streamManageDto.put(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         streamManageDto.put(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
-        commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
-
+        if (commonResponse.isError()){
+            streamMapper.deleteByStreamId(streamId);
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向接口服务", "录像播放失败", commonResponse.getMsg(), commonResponse.getData());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+        streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
         return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()), PostVideoPlayRsp.class);
     }
 
