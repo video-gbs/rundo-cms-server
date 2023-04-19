@@ -21,6 +21,7 @@ import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.system.OrgInfoService;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.service.system.UserInfoService;
+import com.runjian.auth.server.service.system.VideoAreaService;
 import com.runjian.auth.server.util.PasswordUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
@@ -61,6 +62,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Lazy
     @Autowired
     private RoleInfoService roleInfoService;
+
+    @Autowired
+    private VideoAreaService videoAreaService;
 
     @Override
     public void save(SysUserInfoDTO dto) {
@@ -217,7 +221,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public RelationSysUserInfoVO findRelationById(Long id) {
         RelationSysUserInfoVO vo = userInfoMapper.selectRelationSysUserInfoById(id);
-        List<String> areaNameList = userInfoMapper.selectAreaNameByUserId(id);
+        List<String> areaNameList = videoAreaService.getAreaNameByUserId(id);
         String areaName = String.join(",", areaNameList);
         vo.setAreaName(areaName);
         return vo;

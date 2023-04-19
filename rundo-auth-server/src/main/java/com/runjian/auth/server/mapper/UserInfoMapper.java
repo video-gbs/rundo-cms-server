@@ -33,14 +33,6 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
     Page<ListSysUserInfoVO> MySelectPageByContain(@Param("page") PageSysUserInfoDTO page, @Param("orgIds") List<Long> orgIds);
 
     /**
-     * 关联用户查看单个用户信息
-     *
-     * @param userId
-     * @return
-     */
-    RelationSysUserInfoVO selectRelationSysUserInfoById(@Param("userId") Long userId);
-
-    /**
      * 关联用户用户列表
      *
      * @param page
@@ -49,12 +41,12 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
     Page<RelationSysUserInfoVO> relationSysUserInfoPage(PageRelationSysUserInfoDTO page);
 
     /**
-     * 通过用户ID，查询用户已有的安全区域
+     * 关联用户查看单个用户信息
      *
-     * @param id
+     * @param userId
      * @return
      */
-    List<String> selectAreaNameByUserId(@Param("id") Long id);
+    RelationSysUserInfoVO selectRelationSysUserInfoById(@Param("userId") Long userId);
 
     /**
      * 通过角色ID，获取已授权的用户ID

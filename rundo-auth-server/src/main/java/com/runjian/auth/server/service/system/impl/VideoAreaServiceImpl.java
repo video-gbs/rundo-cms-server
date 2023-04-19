@@ -198,4 +198,9 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         ).collect(Collectors.toList());
         return DataTreeUtil.buildTree(videoAreaTreeList, 1L);
     }
+
+    @Override
+    public List<String> getAreaNameByUserId(Long userId) {
+        return videoAraeMapper.selectAreaNameByUserId(userId);
+    }
 }

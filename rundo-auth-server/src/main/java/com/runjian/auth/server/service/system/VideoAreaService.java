@@ -76,4 +76,12 @@ public interface VideoAreaService extends IService<VideoArea> {
     List<VideoArea> getVideoAreaByRoleCode(String roleCode);
 
     List<Long> getAreaIdListByRoleId(Long id);
+
+    /**
+     * 通过用户ID，查去用户已有的安全区域名称
+     *
+     * @param userId
+     * @return
+     */
+    List<String> getAreaNameByUserId(Long userId);
 }
