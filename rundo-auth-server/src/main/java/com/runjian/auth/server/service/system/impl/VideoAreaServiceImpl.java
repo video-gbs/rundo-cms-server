@@ -182,6 +182,11 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     }
 
     @Override
+    public List<Long> getAreaIdListByRoleId(Long id) {
+        return videoAraeMapper.selectAreaIdListByRoleId(id);
+    }
+
+    @Override
     public List<VideoAreaTree> findByTree() {
         List<VideoAreaVO> videoList = videoAraeMapper.mySelectListById(1L);
         List<VideoAreaTree> videoAreaTreeList = videoList.stream().map(

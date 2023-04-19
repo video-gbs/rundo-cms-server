@@ -74,4 +74,6 @@ public interface VideoAreaService extends IService<VideoArea> {
     List<VideoAreaVO> findByList(Long areaId);
 
     List<VideoArea> getVideoAreaByRoleCode(String roleCode);
+
+    List<Long> getAreaIdListByRoleId(Long id);
 }

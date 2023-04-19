@@ -39,4 +39,6 @@ public interface UserInfoMapper extends BaseMapper<UserInfo> {
     Page<RelationSysUserInfoVO> relationSysUserInfoPage(PageRelationSysUserInfoDTO page);
 
     List<String> selectAreaNameByUserId(@Param("id") Long id);
+
+    List<Long> selectUserIdListByRoleId(@Param("roleId") Long roleId);
 }

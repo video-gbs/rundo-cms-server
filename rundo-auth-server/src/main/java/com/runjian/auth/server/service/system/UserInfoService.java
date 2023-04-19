@@ -37,4 +37,6 @@ public interface UserInfoService extends IService<UserInfo> {
     RelationSysUserInfoVO findRelationById(Long id);
 
     Page<RelationSysUserInfoVO> findRelationList(QueryRelationSysUserInfoDTO dto);
+
+    List<Long> getUserIdListByRoleId(Long roleId);
 }

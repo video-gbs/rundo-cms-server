@@ -43,4 +43,5 @@ public interface VideoAraeMapper extends BaseMapper<VideoArea> {
      */
     List<VideoArea> selectVideoAreaByRoleCode(@Param("roleCode") String roleCode);
 
+    List<Long> selectAreaIdListByRoleId(@Param("roleId") Long roleId);
 }

@@ -232,5 +232,10 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         return userInfoMapper.relationSysUserInfoPage(page);
     }
 
+    @Override
+    public List<Long> getUserIdListByRoleId(Long roleId) {
+        return userInfoMapper.selectUserIdListByRoleId(roleId);
+    }
+
 
 }

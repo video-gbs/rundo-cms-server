@@ -55,6 +55,9 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     private VideoAreaService videoAreaService;
 
     @Autowired
+    private UserInfoService userInfoService;
+
+    @Autowired
     private RundoIdUtil idUtil;
     @Autowired
     private RoleInfoMapper roleInfoMapper;
@@ -142,7 +145,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
          * 应用
          */
         // 获取原始已授权应用ID
-        List<Long> oldAppIdList = roleInfoMapper.findAppIdList(dto.getId());
+        List<Long> oldAppIdList = appInfoService.getAppIdListByRoleId(dto.getId());
         // 筛选出与A开头的id 应用
         List<Long> appIdList = new ArrayList<>();
         appIdList.addAll(getAppIds(dto.getAppIds()));
@@ -176,7 +179,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
          * 菜单
          */
         // 获取原始已授权 菜单ID
-        List<Long> oldMenuIdList = roleInfoMapper.findMenuIdList(dto.getId());
+        List<Long> oldMenuIdList = menuInfoService.getMenuIdListByRoleId(dto.getId());
         // 筛选出与M开头的id 菜单
         List<Long> menuIdList = new ArrayList<>();
         menuIdList.addAll(getMenuIds(dto.getAppIds()));
@@ -210,7 +213,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
          * 接口
          */
         // 获取原始已授权 接口ID
-        List<Long> oldApiIdList = roleInfoMapper.findApiIdList(dto.getId());
+        List<Long> oldApiIdList = apiInfoService.getApiIdListByRoleId(dto.getId());
         // 筛选出与U开头的id 接口
         List<Long> apiIdList = new ArrayList<>();
         apiIdList.addAll(getApiIds(dto.getAppIds()));
@@ -244,7 +247,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
          * 组织
          */
         // 获取原始已授权组织ID
-        List<Long> oldOrgIdList = roleInfoMapper.findOrgIdList(dto.getId());
+        List<Long> oldOrgIdList = orgInfoService.getOrgIdListByRoleId(dto.getId());
         List<Long> orgIdList = dto.getOrgIds();
         if (CollUtil.isEmpty(oldOrgIdList) && CollUtil.isNotEmpty(orgIdList)) {
             // 原始授权组织为空，本次为新增
@@ -273,7 +276,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
          * 区域
          */
         // 获取原始已授权区域的ID
-        List<Long> oldAreaIdList = roleInfoMapper.findAreaIdList(dto.getId());
+        List<Long> oldAreaIdList = videoAreaService.getAreaIdListByRoleId(dto.getId());
         List<Long> areaIdList = dto.getAreaIds();
         if (CollUtil.isEmpty(oldAreaIdList) && CollUtil.isNotEmpty(areaIdList)) {
             // 原始授权区域为空且本次参数不为空，本次为新增
@@ -483,7 +486,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     @Override
     public void addRelationUser(RoleRelationUserDTO dto) {
         // 1.根据角色ID查取以往关联的用户列表
-        List<Long> oldUserIds = roleInfoMapper.findUserIdList(dto.getRoleId());
+        List<Long> oldUserIds = userInfoService.getUserIdListByRoleId(dto.getRoleId());
         // 如果旧关联为空，则本次为新关联
         if (CollUtil.isEmpty(oldUserIds)) {
             List<BatchDTO> batchUserIdList = new ArrayList<>();
@@ -553,7 +556,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         if (CollUtil.isEmpty(dto.getUserIdList())) {
             return;
         }
-        List<Long> oldUserIds = roleInfoMapper.findUserIdList(dto.getRoleId());
+        List<Long> oldUserIds = userInfoService.getUserIdListByRoleId(dto.getRoleId());
         if (CollUtil.isEmpty(oldUserIds)) {
             return;
         }
@@ -569,7 +572,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         if (CollUtil.isEmpty(dto.getUserIdList())) {
             return;
         }
-        List<Long> oldUserIds = roleInfoMapper.findUserIdList(dto.getRoleId());
+        List<Long> oldUserIds = userInfoService.getUserIdListByRoleId(dto.getRoleId());
         if (CollUtil.isEmpty(oldUserIds)) {
             for (Long userId : dto.getUserIdList()) {
                 roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);

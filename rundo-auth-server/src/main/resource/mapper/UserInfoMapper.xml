@@ -181,4 +181,14 @@
         GROUP BY user.id, org.org_name,user.created_time
         ORDER BY user.created_time DESC
     </select>
+
+    <select id="selectUserIdListByRoleId" resultType="java.lang.Long">
+        SELECT ru.user_id userId
+        FROM role_user ru
+        <where>
+            <if test="roleId != null">
+                ru.role_id = #{roleId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
 </mapper>
