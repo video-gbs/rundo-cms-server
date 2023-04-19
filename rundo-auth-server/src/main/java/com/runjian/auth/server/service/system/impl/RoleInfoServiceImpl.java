@@ -81,6 +81,8 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         // role.setParentRoleIds();
         // role.setTenantId();
         roleInfoMapper.insert(role);
+
+
         List<String> appIds = dto.getAppIds();
         List<String> configIds = dto.getConfigIds();
         List<String> devopsIds = dto.getDevopsIds();

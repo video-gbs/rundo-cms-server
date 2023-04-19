@@ -1,5 +1,6 @@
 package com.runjian.auth.server.domain.dto.system;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.runjian.auth.server.constant.UpdateGroup;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -21,4 +22,20 @@ public class SysConfigDTO {
     @ApiModelProperty("编号ID")
     @NotNull(groups = {UpdateGroup.class}, message = "id不能为空")
     private Long id;
+
+    @ApiModelProperty("参数名称")
+    @TableField("param_name")
+    private String paramName;
+
+    @ApiModelProperty("参数编码")
+    @TableField("param_code")
+    private String paramCode;
+
+    @ApiModelProperty("参数值")
+    @TableField("param_value")
+    private String paramValue;
+
+    @ApiModelProperty("参数描述")
+    @TableField("param_desc")
+    private String paramDesc;
 }
