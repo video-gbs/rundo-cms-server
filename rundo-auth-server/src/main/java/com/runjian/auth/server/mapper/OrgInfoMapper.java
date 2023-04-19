@@ -2,6 +2,7 @@ package com.runjian.auth.server.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.runjian.auth.server.domain.entity.OrgInfo;
+import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -19,11 +20,21 @@ import java.util.List;
 @Mapper
 public interface OrgInfoMapper extends BaseMapper<OrgInfo> {
 
-    List<OrgInfo> selectOrgTree(@Param("orgId") Long orgId, @Param("orgName") String orgName);
 
-
+    /**
+     * 根据部门ID，当前部门及其下级部门的id
+     *
+     * @param orgId
+     * @return
+     */
     List<Long> mySelectOrg(@Param("orgId") Long orgId);
 
+    /**
+     * 根据部门ID，当前部门及其下级部门信息
+     *
+     * @param orgId
+     * @return
+     */
     List<SysOrgVO> mySelectListById(@Param("orgId") Long orgId);
 
     /**
@@ -42,5 +53,11 @@ public interface OrgInfoMapper extends BaseMapper<OrgInfo> {
      */
     List<Long> findOrgIdListByRoleId(@Param("roleId") Long roleId);
 
-
+    /**
+     * 通过用户ID，查询用户直属的部门
+     *
+     * @param userId
+     * @return
+     */
+    OrgInfoVO selectOrgInfoByUserId(@Param("userId") Long userId);
 }

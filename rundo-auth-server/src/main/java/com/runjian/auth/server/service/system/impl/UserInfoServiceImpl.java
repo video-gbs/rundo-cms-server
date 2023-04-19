@@ -18,6 +18,7 @@ import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.mapper.OrgInfoMapper;
 import com.runjian.auth.server.mapper.UserInfoMapper;
+import com.runjian.auth.server.service.system.OrgInfoService;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.service.system.UserInfoService;
 import com.runjian.auth.server.util.PasswordUtil;
@@ -54,6 +55,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Autowired
     private OrgInfoMapper orgInfoMapper;
 
+    @Autowired
+    private OrgInfoService orgInfoService;
+
     @Lazy
     @Autowired
     private RoleInfoService roleInfoService;
@@ -89,7 +93,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         EditSysUserInfoVO vo = new EditSysUserInfoVO();
         UserInfo userInfo = userInfoMapper.selectById(id);
         BeanUtils.copyProperties(userInfo, vo);
-        OrgInfoVO orgInfoVO = userInfoMapper.selectOrgInfoByUserId(id);
+        OrgInfoVO orgInfoVO = orgInfoService.getOrgInfoByUserId(id);
         List<Long> roleIds = roleInfoService.getRoleByUserId(id);
         vo.setPassword(null);
         vo.setRePassword(null);

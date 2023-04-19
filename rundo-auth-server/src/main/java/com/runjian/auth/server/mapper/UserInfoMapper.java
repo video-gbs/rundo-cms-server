@@ -6,7 +6,6 @@ import com.runjian.auth.server.domain.dto.page.PageRelationSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysUserInfoDTO;
 import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
-import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -24,19 +23,29 @@ import java.util.List;
 @Mapper
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
 
-
+    /**
+     * 自定义分页查询
+     *
+     * @param page
+     * @param orgIds
+     * @return
+     */
     Page<ListSysUserInfoVO> MySelectPageByContain(@Param("page") PageSysUserInfoDTO page, @Param("orgIds") List<Long> orgIds);
 
     /**
-     * 通过用户ID，查询用户已有的安全区域
+     * 关联用户查看单个用户信息
      *
      * @param userId
      * @return
      */
-    OrgInfoVO selectOrgInfoByUserId(@Param("userId") Long userId);
-
     RelationSysUserInfoVO selectRelationSysUserInfoById(@Param("userId") Long userId);
 
+    /**
+     * 关联用户用户列表
+     *
+     * @param page
+     * @return
+     */
     Page<RelationSysUserInfoVO> relationSysUserInfoPage(PageRelationSysUserInfoDTO page);
 
     /**

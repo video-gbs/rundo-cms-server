@@ -2,17 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.runjian.auth.server.mapper.OrgInfoMapper">
 
-    <select id="selectOrgTree" resultType="com.runjian.auth.server.domain.entity.OrgInfo">
-        SELECT *
-        FROM org_info org
-        <trim prefix="WHERE" prefixOverrides="AND|OR" suffixOverrides="AND|OR">
-            AND (org_pids like CONCAT('%[', #{orgId,jdbcType=BIGINT}, ']%') OR id = #{orgId,jdbcType=BIGINT})
-            <if test="orgName !=null and orgName != '' " >
-                AND org_name like CONCAT('%', #{orgName,jdbcType=VARCHAR},'%')
-            </if>
-        </trim>
-    </select>
-
     <select id="mySelectOrg" resultType="java.lang.Long">
         WITH RECURSIVE org_info_str AS (
             SELECT id, org_pid, org_name
@@ -59,5 +48,15 @@
         WHERE role_org.role_id = #{roleId,jdbcType=BIGINT}
     </select>
 
-
+    <select id="selectOrgInfoByUserId" resultType="com.runjian.auth.server.domain.vo.system.OrgInfoVO">
+        SELECT userInfo.org_id,
+        orgInfo.org_name
+        FROM user_info userInfo
+        LEFT JOIN org_info orgInfo ON orgInfo.id = userInfo.org_id
+        <where>
+            <if test="userId != null">
+                userInfo.id = #{userId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
 </mapper>

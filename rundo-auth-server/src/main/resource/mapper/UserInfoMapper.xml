@@ -2,18 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.runjian.auth.server.mapper.UserInfoMapper">
 
-    <select id="selectOrgInfoByUserId" resultType="com.runjian.auth.server.domain.vo.system.OrgInfoVO">
-        SELECT userInfo.org_id,
-               orgInfo.org_name
-        FROM user_info userInfo
-                 LEFT JOIN org_info orgInfo ON orgInfo.id = userInfo.org_id
-        <where>
-            <if test="userId != null">
-                userInfo.id = #{userId,jdbcType=BIGINT}
-            </if>
-        </where>
-    </select>
-
     <select id="selectRelationSysUserInfoById"
             resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
         WITH RECURSIVE org_info_str AS (

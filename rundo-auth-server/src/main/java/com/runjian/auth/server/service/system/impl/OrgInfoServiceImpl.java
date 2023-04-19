@@ -12,6 +12,7 @@ import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
 import com.runjian.auth.server.domain.entity.OrgInfo;
 import com.runjian.auth.server.domain.entity.UserInfo;
+import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.mapper.OrgInfoMapper;
@@ -181,6 +182,11 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     @Override
     public List<Long> getOrgIdListByRoleId(Long roleId) {
         return orgInfoMapper.findOrgIdListByRoleId(roleId);
+    }
+
+    @Override
+    public OrgInfoVO getOrgInfoByUserId(Long id) {
+        return orgInfoMapper.selectOrgInfoByUserId(id);
     }
 
     @Override
