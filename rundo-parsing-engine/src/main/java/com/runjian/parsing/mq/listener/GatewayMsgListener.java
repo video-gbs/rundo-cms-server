@@ -68,6 +68,7 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
             }else {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ网关消息处理服务", "处理失败", new String(message.getBody()), ex);
             }
+            throw ex;
         } finally {
             channel.basicAck(deliveryTag, true);
         }
