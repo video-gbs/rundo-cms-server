@@ -23,8 +23,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class DeviceController {
 
-    private static final long OUT_TIME = 10000L;
-
     private final ProtocolService protocolService;
 
     private final ValidatorService validatorService;
@@ -52,7 +50,7 @@ public class DeviceController {
     @PostMapping("/custom/event")
     public DeferredResult<CommonResponse<?>> customEvent(@RequestBody DeviceControlReq req){
         validatorService.validateRequest(req);
-        final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(OUT_TIME);
+        final DeferredResult<CommonResponse<?>> response = new DeferredResult<>(req.getOutTime());
         protocolService.getNorthProtocol(req.getMainId(), IdType.getByCode(req.getIdType())).msgDistribute(MsgType.getByStr(req.getMsgType()), req.getMainId(), IdType.getByCode(req.getIdType()), req.getDataMap(), response);
         return response;
     }
