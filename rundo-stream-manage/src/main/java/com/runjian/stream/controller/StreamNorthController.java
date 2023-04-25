@@ -8,7 +8,6 @@ import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.request.*;
 import com.runjian.stream.vo.response.PostVideoPlayRsp;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +25,12 @@ public class StreamNorthController {
     private final ValidatorService validatorService;
 
     private final StreamNorthService streamNorthService;
+
+    @PostMapping("/custom/live")
+    public CommonResponse<PostVideoPlayRsp> customLive(@RequestBody PostStreamCustomLiveReq req){
+        validatorService.validateRequest(req);
+        return CommonResponse.success(streamNorthService.customLive(req.getDispatchId(), req.getCode(), req.getProtocol(), req.getTransferMode(), req.getPort(), req.getIp(), req.getStreamMode(), req.getEnableAudio(), req.getSsrcCheck(), req.getRecordState(), req.getAutoCloseState()));
+    }
 
     /**
      * 直播播放

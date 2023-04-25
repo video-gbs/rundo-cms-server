@@ -12,6 +12,7 @@ import lombok.Getter;
 public enum PlayType {
 
     LIVE(1, "LIVE"),
+    CUSTOM_LIVE(5, "CUSTOM_LIVE"),
     RECORD(2, "RECORD"),
     ALARM(3, "ALARM"),
     DOWNLOAD(4, "DOWNLOAD");

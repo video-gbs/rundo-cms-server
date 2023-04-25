@@ -56,11 +56,31 @@ public class StreamNorthServiceImpl implements StreamNorthService {
 //    private static final int CHANNEL_MAX_PLAY_NUM = 3;
 
 
-    /**
-     * 播放未响应超时时间
-     */
-    private static final long PREPARE_STREAM_OUT_TIME = 10L;
-
+    @Override
+    public PostVideoPlayRsp customLive(Long dispatchId, Long code, String protocol, Integer transferMode, String port, String ip, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState) {
+        String streamId = PlayType.CUSTOM_LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + code;
+        saveLiveStream(code, recordState, autoCloseState, null, dispatchId, streamId);
+        StreamManageDto streamManageDto = new StreamManageDto(dispatchId, streamId, MsgType.STREAM_CUSTOM_LIVE_START, 15000L);
+        streamManageDto.put(StandardName.STREAM_CUSTOM_CODE, code);
+        streamManageDto.put(StandardName.STREAM_CUSTOM_PROTOCOL, protocol);
+        streamManageDto.put(StandardName.STREAM_CUSTOM_TRANSFER_MODE, transferMode);
+        streamManageDto.put(StandardName.STREAM_CUSTOM_PORT, port);
+        if (Objects.nonNull(ip)){
+            streamManageDto.put(StandardName.STREAM_CUSTOM_IP, ip);
+        }
+        streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
+        streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
+        streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
+        streamManageDto.put(StandardName.STREAM_MODE, streamMode);
+        CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
+        if (commonResponse.isError()){
+            streamMapper.deleteByStreamId(streamId);
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向接口服务", "自定义直播播放失败", commonResponse.getMsg(), commonResponse.getData());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+        streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
+        return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()), PostVideoPlayRsp.class);
+    }
 
     /**
      * 直播播放
@@ -75,27 +95,10 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     public PostVideoPlayRsp streamLivePlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState) {
         GatewayDispatchInfo gatewayDispatchInfo = getGatewayDispatchInfoByChannelId(channelId);
         DispatchInfo dispatchInfo = dataBaseService.getOnlineDispatchInfo(gatewayDispatchInfo.getDispatchId());
-        StreamInfo streamInfo;
+        String streamId = PlayType.LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + channelId;
+        saveLiveStream(channelId, recordState, autoCloseState, gatewayDispatchInfo.getGatewayId(), dispatchInfo.getId(), streamId);
 
-            String streamId = PlayType.LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + channelId;
-            RLock lock = redissonClient.getLock(MarkConstant.REDIS_STREAM_LIVE_PLAY_LOCK + streamId);
-            try{
-                lock.lock();
-                Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
-                if (streamInfoOp.isEmpty()) {
-                    streamInfo = saveStream(gatewayDispatchInfo.getGatewayId(), channelId, dispatchInfo.getId(), PlayType.LIVE.getCode(), recordState, autoCloseState, streamId);
-                } else {
-                    streamInfo = streamInfoOp.get();
-                    // 判断是否需要开启录像
-                    if (!streamInfo.getRecordState().equals(recordState) || recordState.equals(CommonEnum.ENABLE.getCode())) {
-                        startRecord(streamId);
-                    }
-                }
-            }finally {
-                lock.unlock();
-            }
-
-        StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamInfo.getStreamId(), MsgType.STREAM_LIVE_PLAY_START, 15000L);
+        StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamId, MsgType.STREAM_LIVE_PLAY_START, 15000L);
         streamManageDto.put(StandardName.CHANNEL_ID, channelId);
         streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
@@ -111,6 +114,26 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
 
         return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()), PostVideoPlayRsp.class);
+    }
+
+    private void saveLiveStream(Long channelId, Integer recordState, Integer autoCloseState, Long gatewayId, Long dispatchId, String streamId) {
+        StreamInfo streamInfo;
+        RLock lock = redissonClient.getLock(MarkConstant.REDIS_STREAM_LIVE_PLAY_LOCK + streamId);
+        try{
+            lock.lock();
+            Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
+            if (streamInfoOp.isEmpty()) {
+                saveStream(gatewayId, channelId, dispatchId, PlayType.LIVE.getCode(), recordState, autoCloseState, streamId);
+            } else {
+                streamInfo = streamInfoOp.get();
+                // 判断是否需要开启录像
+                if (!streamInfo.getRecordState().equals(recordState) || recordState.equals(CommonEnum.ENABLE.getCode())) {
+                    startRecord(streamId);
+                }
+            }
+        }finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -313,5 +336,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()));
     }
+
+
 
 }
