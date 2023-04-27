@@ -2,7 +2,7 @@ FROM harbor.runjian.com/syy-open/ubuntu-jdk-11:20.04
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
 
-EXPOSE 8090/tcp
+EXPOSE 8061/tcp
 
 ENV LC_ALL zh_CN.UTF-8
 RUN apt update && apt install -y language-pack-zh-hans vim
