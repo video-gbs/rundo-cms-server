@@ -49,6 +49,7 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         // 向菜单表中插入一条虚拟根菜单，并将虚拟根挂在到菜单的默认根节点下
         SysMenuInfoDTO menuInfoDTO = new SysMenuInfoDTO();
         menuInfoDTO.setAppId(appInfo.getId());
+        menuInfoDTO.setAppName(appInfo.getAppName());
         menuInfoDTO.setMenuPid(1L);
         menuInfoDTO.setMenuSort(1);
         menuInfoDTO.setPath(appInfo.getAppUrl());
@@ -64,6 +65,7 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         // 向接口表中插入一条虚拟应用的根接口并将虚拟根挂在到接口的默认根节点下
         SysApiInfoDTO apiInfoDTO = new SysApiInfoDTO();
         apiInfoDTO.setAppId(appInfo.getId());
+        apiInfoDTO.setAppName(appInfo.getAppName());
         apiInfoDTO.setApiPid(1L);
         apiInfoDTO.setApiName(appInfo.getAppName());
         apiInfoDTO.setUrl(appInfo.getAppUrl());

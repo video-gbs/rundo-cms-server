@@ -32,6 +32,10 @@ public class ApiInfo implements Serializable {
     @TableField("app_id")
     private Long appId;
 
+    @ApiModelProperty("所属应用")
+    @TableField("app_name")
+    private String appName;
+
     @ApiModelProperty("接口直接父ID")
     @TableField("api_pid")
     private Long apiPid;

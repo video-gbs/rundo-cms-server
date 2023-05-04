@@ -34,6 +34,10 @@ public class SysMenuInfoDTO {
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long appId;
 
+    @ApiModelProperty("所属应用名称")
+    @NotNull
+    private String appName;
+
     @ApiModelProperty("上级菜单ID")
     @NotNull
     @JsonFormat(shape =JsonFormat.Shape.STRING )
