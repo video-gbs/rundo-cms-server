@@ -28,9 +28,13 @@ public class MenuInfo implements Serializable {
     @TableId("id")
     private Long id;
 
-    @ApiModelProperty("所属应用")
+    @ApiModelProperty("所属应用ID")
     @TableField("app_id")
     private Long appId;
+
+    @ApiModelProperty("所属应用名称")
+    @TableField("app_name")
+    private String appName;
 
     @ApiModelProperty("父菜单ID")
     @TableField("menu_pid")

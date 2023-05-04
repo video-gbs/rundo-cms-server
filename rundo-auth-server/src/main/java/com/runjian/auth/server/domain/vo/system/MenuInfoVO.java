@@ -21,6 +21,9 @@ public class MenuInfoVO {
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long appId;
 
+    @ApiModelProperty("所属应用名称")
+    private String appName;
+
     @ApiModelProperty("直接父级菜单ID")
     @JsonFormat(shape =JsonFormat.Shape.STRING )
     private Long menuPid;

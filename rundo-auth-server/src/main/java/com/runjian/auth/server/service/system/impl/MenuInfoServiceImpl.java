@@ -2,7 +2,6 @@ package com.runjian.auth.server.service.system.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.HiddenChangeDTO;
@@ -51,10 +50,12 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         if (null != dto.getAppId()) {
             queryWrapper.eq(MenuInfo::getAppId, dto.getAppId());
         }
+        if (null != dto.getAppName() && !"".equals(dto.getAppName())){
+            queryWrapper.like(MenuInfo::getAppName, dto.getAppName());
+        }
         if (null != dto.getMenuName() && !"".equals(dto.getMenuName())) {
             queryWrapper.like(MenuInfo::getTitle, dto.getMenuName());
         }
-
         if (null != dto.getUrl() && !"".equals(dto.getUrl())) {
             queryWrapper.like(MenuInfo::getPath, dto.getUrl());
         }
@@ -66,29 +67,11 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                 flag = flag + 1;
             }
         }
-
         if (flag == 0) {
+            // TODO 此处可以通过写死模拟一个根节点
             MenuInfo menuInfo = menuInfoMapper.selectById(1);
             menuInfoList.add(menuInfo);
         }
-
-        if (null != dto.getAppId()) {
-            AppInfo appInfo = appInfoService.getById(dto.getAppId());
-            menuInfoList.stream().filter(bean -> {
-                if (bean.getId().equals(rootNodeId)) {
-                    bean.setAppId(appInfo.getId());
-                    bean.setIcon(appInfo.getAppIcon());
-                    bean.setTitle(appInfo.getAppName());
-                    bean.setPath(appInfo.getAppUrl());
-                    bean.setComponent(appInfo.getComponent());
-                    bean.setRedirect(appInfo.getRedirect());
-                    bean.setName(StrUtil.removePrefix(appInfo.getAppUrl(), "/"));
-                    bean.setLevel(1);
-                }
-                return true;
-            }).collect(Collectors.toList());
-        }
-        menuInfoList.stream().distinct().collect(Collectors.toList());
         List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
                 item -> {
                     MenuInfoTree bean = new MenuInfoTree();
