@@ -51,7 +51,7 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
         // 将所有的网关设置为离线状态
         Set<Long> gatewayIds = gatewayMapper.selectIdByOnlineState(CommonEnum.ENABLE.getCode());
         if (gatewayIds.size() > 0) {
-            heartbeatArray.addOrUpdateTime(gatewayIds, 60L);
+            heartbeatArray.addOrUpdateTime(gatewayIds, 90L);
         }
     }
 

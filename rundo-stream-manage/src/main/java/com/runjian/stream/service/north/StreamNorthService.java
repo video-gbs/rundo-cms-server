@@ -17,6 +17,22 @@ import java.util.List;
 public interface StreamNorthService {
 
     /**
+     * 流分发处理
+     * @param code
+     * @param protocol
+     * @param transferMode
+     * @param port
+     * @param ip
+     * @param streamType
+     * @param enableAudio
+     * @param ssrcCheck
+     * @param recordState
+     * @param autoCloseState
+     * @return
+     */
+    PostVideoPlayRsp customLive(Long dispatchId, Long code, String protocol, Integer transferMode, String port, String ip, Integer streamType, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState);
+
+    /**
      * 申请流
      * @param channelId 通道id
      * @param enableAudio 是否播放音频
@@ -102,5 +118,7 @@ public interface StreamNorthService {
      * @return
      */
     JSONObject getStreamMediaInfo(String streamId);
+
+
 
 }

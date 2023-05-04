@@ -3,6 +3,7 @@ package com.runjian.auth.gateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 
 /**
  * @author Jiang4Yu
@@ -11,6 +12,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @Description 应用启动类
  * @date 2022-12-22 周四 14:41
  */
+@RefreshScope
 @SpringBootApplication
 // 开启服务注册功能配置功能
 @EnableDiscoveryClient

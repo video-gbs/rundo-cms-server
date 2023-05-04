@@ -110,6 +110,31 @@ public class StandardName {
      */
     public static final String STREAM_MEDIA_URL = "mediaUrl";
 
+    /**
+     * 自定义流的识别编码
+     */
+    public static final String STREAM_CUSTOM_CODE = "code";
+
+    /**
+     * 自定义流的协议
+     */
+    public static final String STREAM_CUSTOM_PROTOCOL = "protocol";
+
+    /**
+     * 自定义流的推拉模式
+     */
+    public static final String STREAM_CUSTOM_TRANSFER_MODE = "transferMode";
+
+    /**
+     * 自定义流的端口
+     */
+    public static final String STREAM_CUSTOM_PORT = "port";
+
+    /**
+     * 自定义流的ip
+     */
+    public static final String STREAM_CUSTOM_IP = "ip";
+
     /***************************录像播放标准名称****************************/
 
     /**

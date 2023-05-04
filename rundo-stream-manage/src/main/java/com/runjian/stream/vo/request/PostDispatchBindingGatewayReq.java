@@ -1,15 +1,9 @@
 package com.runjian.stream.vo.request;
 
-import com.runjian.common.config.exception.BusinessException;
-import com.runjian.common.validator.ValidationResult;
-import com.runjian.common.validator.ValidatorFunction;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Collections;
-import java.util.Objects;
 import java.util.Set;
 
 /**
