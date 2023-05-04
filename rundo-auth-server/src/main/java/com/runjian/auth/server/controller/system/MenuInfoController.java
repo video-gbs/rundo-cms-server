@@ -76,6 +76,7 @@ public class MenuInfoController {
         menuInfoService.erasureById(id);
         return CommonResponse.success();
     }
+
     @GetMapping("/getById")
     @ApiOperation("通过ID获取菜单详情")
     public CommonResponse<MenuInfoVO> getById(@RequestParam Long id) {

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
@@ -50,7 +51,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         if (null != dto.getAppId()) {
             queryWrapper.eq(MenuInfo::getAppId, dto.getAppId());
         }
-        if (null != dto.getAppName() && !"".equals(dto.getAppName())){
+        if (null != dto.getAppName() && !"".equals(dto.getAppName())) {
             queryWrapper.like(MenuInfo::getAppName, dto.getAppName());
         }
         if (null != dto.getMenuName() && !"".equals(dto.getMenuName())) {
@@ -68,7 +69,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
             }
         }
         if (flag == 0) {
-            // TODO 此处可以通过写死模拟一个根节点
+            // 此处可以通过写死模拟一个根节点
             MenuInfo menuInfo = menuInfoMapper.selectById(1);
             menuInfoList.add(menuInfo);
         }
@@ -143,18 +144,23 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     public List<MenuInfoTree> getTreeByAppId(Long appId) {
         LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(MenuInfo::getAppId, appId);
+        AtomicLong root = new AtomicLong(0L);
         List<MenuInfo> menuInfoList = menuInfoMapper.selectList(queryWrapper);
-        long root = 0L;
-        List<MenuInfoTree> menuInfoTreeList = new ArrayList<>();
-        for (MenuInfo menuInfo : menuInfoList) {
-            if (menuInfo.getAppId().longValue() == appId && menuInfo.getMenuPid() == 1L) {
-                root = menuInfo.getId();
-            }
-            MenuInfoTree bean = new MenuInfoTree();
-            BeanUtils.copyProperties(menuInfo, bean);
-            menuInfoTreeList.add(bean);
-        }
-        return DataTreeUtil.buildTree(menuInfoTreeList, root);
+        List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
+                item -> {
+                    if (item.getAppId().longValue() == appId && item.getMenuPid() == 1L) {
+                        root.set(item.getId());
+                    }
+                    MenuInfoTree bean = new MenuInfoTree();
+                    BeanUtils.copyProperties(item, bean);
+                    MyMetaClass metaClass = new MyMetaClass();
+                    metaClass.setTitle(item.getTitle());
+                    metaClass.setIcon(item.getIcon());
+                    bean.setMeta(metaClass);
+                    return bean;
+                }
+        ).collect(Collectors.toList());
+        return DataTreeUtil.buildTree(menuInfoTreeList, root.get());
     }
 
     @Override
