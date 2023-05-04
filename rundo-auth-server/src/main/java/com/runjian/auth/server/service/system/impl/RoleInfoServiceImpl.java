@@ -19,6 +19,8 @@ import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.system.*;
 import com.runjian.auth.server.util.RundoIdUtil;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -376,9 +378,11 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     public RoleDetailVO getRoleDetailById(Long id) {
         // 返回实体
         RoleDetailVO roleDetailVO = new RoleDetailVO();
-
         // 查询角色基本信息
         RoleInfo roleInfo = roleInfoMapper.selectById(id);
+        if (null ==roleInfo){
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND);
+        }
         roleDetailVO.setId(roleInfo.getId());
         roleDetailVO.setRoleName(roleInfo.getRoleName());
         roleDetailVO.setRoleDesc(roleInfo.getRoleDesc());
