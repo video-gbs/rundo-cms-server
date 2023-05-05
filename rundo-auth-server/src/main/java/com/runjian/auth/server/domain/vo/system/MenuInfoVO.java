@@ -46,6 +46,9 @@ public class MenuInfoVO {
     @ApiModelProperty("菜单顺序")
     private Integer menuSort;
 
+    @ApiModelProperty("菜单类型")
+    private Integer menuType;
+
     @ApiModelProperty("层级")
     private Integer level;
 

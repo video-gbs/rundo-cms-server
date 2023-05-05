@@ -51,6 +51,10 @@ public class MenuInfo implements Serializable {
     @TableField("menu_sort")
     private Integer menuSort;
 
+    @ApiModelProperty("排序")
+    @TableField("menu_type")
+    private Integer menuType;
+
     @ApiModelProperty("是否子节点")
     @TableField("leaf")
     private Integer leaf;

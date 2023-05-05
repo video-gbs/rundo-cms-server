@@ -31,7 +31,7 @@ public class SysMenuInfoDTO {
 
     @ApiModelProperty("所属应用ID")
     @NotNull
-    @JsonFormat(shape =JsonFormat.Shape.STRING )
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long appId;
 
     @ApiModelProperty("所属应用名称")
@@ -40,7 +40,7 @@ public class SysMenuInfoDTO {
 
     @ApiModelProperty("上级菜单ID")
     @NotNull
-    @JsonFormat(shape =JsonFormat.Shape.STRING )
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Long menuPid;
 
     @ApiModelProperty("排序")
@@ -48,6 +48,12 @@ public class SysMenuInfoDTO {
     @Min(value = 0)
     @Max(100)
     private Integer menuSort;
+
+    @ApiModelProperty("排序")
+    @NotNull
+    @Min(value = 1)
+    @Max(value = 3)
+    private Integer menuType;
 
     @ApiModelProperty("跳转URL")
     private String path;
@@ -67,9 +73,9 @@ public class SysMenuInfoDTO {
     @ApiModelProperty("菜单标题")
     private String title;
 
-    @ApiModelProperty(value = "禁用状态",notes = "0正常，1禁用")
+    @ApiModelProperty(value = "禁用状态", notes = "0正常，1禁用")
     private Integer status;
 
-    @ApiModelProperty(value = "隐藏状态",notes = "0正常，1禁用")
+    @ApiModelProperty(value = "隐藏状态", notes = "0正常，1禁用")
     private Integer hidden;
 }
