@@ -11,7 +11,7 @@ import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.feign.ExpansionClient;
 import com.runjian.auth.server.mapper.VideoAraeMapper;
-import com.runjian.auth.server.service.system.VideoAreaSaervice;
+import com.runjian.auth.server.service.system.VideoAreaService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea> implements VideoAreaSaervice {
+public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea> implements VideoAreaService {
 
     @Autowired
     private VideoAraeMapper videoAraeMapper;
@@ -58,7 +58,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         area.setLevel(prentInfo.getLevel() + 1);
         log.info("添加安防区域入库数据信息{}", JSONUtil.toJsonStr(area));
         videoAraeMapper.insert(area);
-        VideoAreaVO videoAreaVO = videoAraeMapper.mySelectById(area.getId());
+        VideoAreaVO videoAreaVO = findById(area.getId());
         BeanUtils.copyProperties(area, videoAreaVO);
         return videoAreaVO;
     }
@@ -83,7 +83,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         }
         // 2.确认当前需要删除的安防区域有无下级安防区域
         VideoArea videoArea = videoAraeMapper.selectById(id);
-        List<VideoAreaVO> videoAreaChildren = videoAraeMapper.mySelectListById(id);
+        List<VideoAreaVO> videoAreaChildren = findVideoAreaListById(id);
         int size = videoAreaChildren.size();
         for (int i = size - 1; i >= 0; i--) {
             VideoAreaVO area = videoAreaChildren.get(i);
@@ -131,7 +131,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
             return;
         }
         // 2.如果目标位置与是移动项的子级，禁止移动
-        List<VideoAreaVO> childrenList = videoAraeMapper.mySelectListById(dto.getId());
+        List<VideoAreaVO> childrenList = findVideoAreaListById(dto.getId());
         List<Long> ids = childrenList.stream().map(VideoAreaVO::getId).collect(Collectors.toList());
         if (ids.contains(dto.getAreaPid())) {
             log.info("父级向子级移动");
@@ -165,8 +165,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public List<VideoAreaVO> findByList(Long areaId) {
-        List<VideoAreaVO> videoAreaList;
-        videoAreaList = videoAraeMapper.mySelectListById(Objects.requireNonNullElse(areaId, 1L));
+        List<VideoAreaVO> videoAreaList = findVideoAreaListById(Objects.requireNonNullElse(areaId, 1L));
         return videoAreaList.stream().map(
                 item -> {
                     VideoAreaVO videoAreaVO = new VideoAreaVO();
@@ -177,8 +176,18 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     }
 
     @Override
+    public List<VideoArea> getVideoAreaByRoleCode(String roleCode) {
+        return videoAraeMapper.selectVideoAreaByRoleCode(roleCode);
+    }
+
+    @Override
+    public List<Long> getAreaIdListByRoleId(Long id) {
+        return videoAraeMapper.selectAreaIdListByRoleId(id);
+    }
+
+    @Override
     public List<VideoAreaTree> findByTree() {
-        List<VideoAreaVO> videoList = videoAraeMapper.mySelectListById(1L);
+        List<VideoAreaVO> videoList = findVideoAreaListById(1L);
         List<VideoAreaTree> videoAreaTreeList = videoList.stream().map(
                 item -> {
                     VideoAreaTree bean = new VideoAreaTree();
@@ -187,5 +196,14 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
                 }
         ).collect(Collectors.toList());
         return DataTreeUtil.buildTree(videoAreaTreeList, 1L);
+    }
+
+    @Override
+    public List<String> getAreaNameByUserId(Long userId) {
+        return videoAraeMapper.selectAreaNameByUserId(userId);
+    }
+
+    private List<VideoAreaVO> findVideoAreaListById(Long id) {
+        return videoAraeMapper.mySelectListById(id);
     }
 }

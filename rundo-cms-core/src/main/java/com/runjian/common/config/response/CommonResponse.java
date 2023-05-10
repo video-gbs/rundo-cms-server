@@ -98,6 +98,17 @@ public class CommonResponse<T> implements Serializable {
         return create(businessErrorEnums.getErrCode(), businessErrorEnums.getErrMsg(), data);
     }
 
+    /**
+     * 失败自定义异常带数据
+     *
+     * @param businessErrorEnums
+     * @param msg
+     * @return
+     */
+    public static <T> CommonResponse<T> failure(BusinessErrorEnums businessErrorEnums,String msg) {
+        return create(businessErrorEnums.getErrCode(), msg, null);
+    }
+
 
     /**
      * 自创建异常

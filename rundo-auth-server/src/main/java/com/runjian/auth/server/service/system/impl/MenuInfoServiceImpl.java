@@ -1,16 +1,20 @@
 package com.runjian.auth.server.service.system.impl;
 
-import cn.hutool.core.util.StrUtil;
+import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.dto.system.*;
+import com.runjian.auth.server.domain.dto.system.HiddenChangeDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
+import com.runjian.auth.server.domain.dto.system.StatusChangeDTO;
+import com.runjian.auth.server.domain.dto.system.SysMenuInfoDTO;
 import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.entity.MenuInfo;
 import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
 import com.runjian.auth.server.domain.vo.system.MyMetaClass;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
-import com.runjian.auth.server.mapper.AppInfoMapper;
 import com.runjian.auth.server.mapper.MenuInfoMapper;
+import com.runjian.auth.server.service.system.AppInfoService;
 import com.runjian.auth.server.service.system.MenuInfoService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessException;
@@ -21,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
@@ -35,10 +40,10 @@ import java.util.stream.Collectors;
 @Service
 public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> implements MenuInfoService {
     @Autowired
-    private MenuInfoMapper menuInfoMapper;
+    private AppInfoService appInfoService;
 
     @Autowired
-    private AppInfoMapper appInfoMapper;
+    private MenuInfoMapper menuInfoMapper;
 
     @Override
     public List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
@@ -46,44 +51,28 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         if (null != dto.getAppId()) {
             queryWrapper.eq(MenuInfo::getAppId, dto.getAppId());
         }
+        if (null != dto.getAppName() && !"".equals(dto.getAppName())) {
+            queryWrapper.like(MenuInfo::getAppName, dto.getAppName());
+        }
         if (null != dto.getMenuName() && !"".equals(dto.getMenuName())) {
             queryWrapper.like(MenuInfo::getTitle, dto.getMenuName());
         }
-
         if (null != dto.getUrl() && !"".equals(dto.getUrl())) {
             queryWrapper.like(MenuInfo::getPath, dto.getUrl());
         }
         List<MenuInfo> menuInfoList = menuInfoMapper.selectList(queryWrapper);
-        Long rootNodeId = 1L;
+        long rootNodeId = 1L;
         int flag = 0;
         for (MenuInfo info : menuInfoList) {
-            if (info.getId().longValue() == rootNodeId) {
+            if (info.getId() == rootNodeId) {
                 flag = flag + 1;
             }
         }
-
         if (flag == 0) {
+            // 此处可以通过写死模拟一个根节点
             MenuInfo menuInfo = menuInfoMapper.selectById(1);
             menuInfoList.add(menuInfo);
         }
-
-        if (null != dto.getAppId()) {
-            AppInfo appInfo = appInfoMapper.selectById(dto.getAppId());
-            menuInfoList.stream().filter(bean -> {
-                if (bean.getId().equals(rootNodeId)) {
-                    bean.setAppId(appInfo.getId());
-                    bean.setIcon(appInfo.getAppIcon());
-                    bean.setTitle(appInfo.getAppName());
-                    bean.setPath(appInfo.getAppUrl());
-                    bean.setComponent(appInfo.getComponent());
-                    bean.setRedirect(appInfo.getRedirect());
-                    bean.setName(StrUtil.removePrefix(appInfo.getAppUrl(), "/"));
-                    bean.setLevel(1);
-                }
-                return true;
-            }).collect(Collectors.toList());
-        }
-        menuInfoList.stream().distinct().collect(Collectors.toList());
         List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
                 item -> {
                     MenuInfoTree bean = new MenuInfoTree();
@@ -100,14 +89,39 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
 
     @Override
     public List<MenuInfoTree> findByTreeByAppType(Integer appType) {
+        // 取出当前登录的用户的所有角色
+        List<String> roleCodeList = StpUtil.getRoleList();
+        // 去重
+        List<AppInfo> appInfoList = CollUtil.distinct(appInfoService.getAppByRoleCodelist(roleCodeList));
+        // 过滤掉不满足条件的数据
+        appInfoList.removeIf(appInfo -> !appInfo.getAppType().equals(appType));
+        List<Long> appIds = appInfoList.stream().map(AppInfo::getId).collect(Collectors.toList());
+
         List<MenuInfoTree> menuInfoTreeByAppTypelist = new ArrayList<>();
-        LambdaQueryWrapper<AppInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(AppInfo::getAppType, appType);
-        List<AppInfo> appInfoList = appInfoMapper.selectList(queryWrapper);
-        for (AppInfo appInfo : appInfoList) {
-            QuerySysMenuInfoDTO dto = new QuerySysMenuInfoDTO();
-            dto.setAppId(appInfo.getId());
-            menuInfoTreeByAppTypelist.addAll(findByTree(dto));
+        for (Long appId : appIds) {
+            LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(MenuInfo::getAppId, appId);
+            List<MenuInfo> menuInfoList = menuInfoMapper.selectList(queryWrapper);
+            long rootId = 0L;
+            for (MenuInfo menuInfo : menuInfoList) {
+                if (menuInfo.getMenuPid().equals(1L) && menuInfo.getLevel().equals(2)) {
+                    rootId = menuInfo.getId();
+                }
+            }
+            menuInfoTreeByAppTypelist.addAll(
+                    DataTreeUtil.buildTree(menuInfoList.stream().map(
+                            item -> {
+                                MenuInfoTree bean = new MenuInfoTree();
+                                BeanUtils.copyProperties(item, bean);
+                                MyMetaClass metaClass = new MyMetaClass();
+                                metaClass.setTitle(item.getTitle());
+                                metaClass.setIcon(item.getIcon());
+                                bean.setMeta(metaClass);
+                                return bean;
+                            }
+                    ).collect(Collectors.toList()), rootId)
+            );
+
         }
         return menuInfoTreeByAppTypelist;
     }
@@ -124,6 +138,39 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         MenuInfo menuInfo = menuInfoMapper.selectById(dto.getId());
         menuInfo.setHidden(dto.getHidden());
         menuInfoMapper.updateById(menuInfo);
+    }
+
+    @Override
+    public List<MenuInfoTree> getTreeByAppId(Long appId) {
+        LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(MenuInfo::getAppId, appId);
+        AtomicLong root = new AtomicLong(0L);
+        List<MenuInfo> menuInfoList = menuInfoMapper.selectList(queryWrapper);
+        List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
+                item -> {
+                    if (item.getAppId().longValue() == appId && item.getMenuPid() == 1L) {
+                        root.set(item.getId());
+                    }
+                    MenuInfoTree bean = new MenuInfoTree();
+                    BeanUtils.copyProperties(item, bean);
+                    MyMetaClass metaClass = new MyMetaClass();
+                    metaClass.setTitle(item.getTitle());
+                    metaClass.setIcon(item.getIcon());
+                    bean.setMeta(metaClass);
+                    return bean;
+                }
+        ).collect(Collectors.toList());
+        return DataTreeUtil.buildTree(menuInfoTreeList, root.get());
+    }
+
+    @Override
+    public List<MenuInfo> getMenuByRoleCode(String roleCode) {
+        return menuInfoMapper.selectMenuByRoleCode(roleCode);
+    }
+
+    @Override
+    public List<Long> getMenuIdListByRoleId(Long roleId) {
+        return menuInfoMapper.findMenuIdListByRoleId(roleId);
     }
 
     @Override

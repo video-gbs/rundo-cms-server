@@ -2,7 +2,7 @@ package com.runjian.auth.server.service.login.impl;
 
 import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpUtil;
-import com.runjian.auth.server.mapper.RoleInfoMapper;
+import com.runjian.auth.server.service.system.RoleInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class StpInterfaceImpl implements StpInterface {
 
     @Autowired
-    private RoleInfoMapper roleInfoMapper;
+    private RoleInfoService roleInfoService;
 
     /**
      * 返回此 loginId 拥有的权限码列表(权限与角色可分开校验)
@@ -33,9 +33,7 @@ public class StpInterfaceImpl implements StpInterface {
     public List<String> getPermissionList(Object loginId, String loginType) {
         // 在判断权限时，会调用该方法
         List<String> list = new ArrayList<>();
-
-
-        return roleInfoMapper.selectRoleCodeByUserId(StpUtil.getLoginIdAsLong());
+        return roleInfoService.getRoleCodeByUserId(StpUtil.getLoginIdAsLong());
     }
 
     /**
@@ -48,6 +46,6 @@ public class StpInterfaceImpl implements StpInterface {
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
         Long userId = Long.valueOf(loginId.toString());
-        return roleInfoMapper.selectRoleCodeByUserId(userId);
+        return roleInfoService.getRoleCodeByUserId(userId);
     }
 }

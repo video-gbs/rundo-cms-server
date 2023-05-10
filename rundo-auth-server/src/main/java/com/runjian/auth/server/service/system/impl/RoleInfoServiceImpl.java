@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
@@ -15,9 +16,11 @@ import com.runjian.auth.server.domain.vo.system.*;
 import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
 import com.runjian.auth.server.mapper.AppMenuApiMapper;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
-import com.runjian.auth.server.service.system.RoleInfoService;
+import com.runjian.auth.server.service.system.*;
 import com.runjian.auth.server.util.RundoIdUtil;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +40,24 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> implements RoleInfoService {
+
+    @Autowired
+    private AppInfoService appInfoService;
+
+    @Autowired
+    private MenuInfoService menuInfoService;
+
+    @Autowired
+    private ApiInfoService apiInfoService;
+
+    @Autowired
+    private OrgInfoService orgInfoService;
+
+    @Autowired
+    private VideoAreaService videoAreaService;
+
+    @Autowired
+    private UserInfoService userInfoService;
 
     @Autowired
     private RundoIdUtil idUtil;
@@ -62,6 +83,8 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         // role.setParentRoleIds();
         // role.setTenantId();
         roleInfoMapper.insert(role);
+
+
         List<String> appIds = dto.getAppIds();
         List<String> configIds = dto.getConfigIds();
         List<String> devopsIds = dto.getDevopsIds();
@@ -126,7 +149,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
          * 应用
          */
         // 获取原始已授权应用ID
-        List<Long> oldAppIdList = roleInfoMapper.findAppIdList(dto.getId());
+        List<Long> oldAppIdList = appInfoService.getAppIdListByRoleId(dto.getId());
         // 筛选出与A开头的id 应用
         List<Long> appIdList = new ArrayList<>();
         appIdList.addAll(getAppIds(dto.getAppIds()));
@@ -160,7 +183,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
          * 菜单
          */
         // 获取原始已授权 菜单ID
-        List<Long> oldMenuIdList = roleInfoMapper.findMenuIdList(dto.getId());
+        List<Long> oldMenuIdList = menuInfoService.getMenuIdListByRoleId(dto.getId());
         // 筛选出与M开头的id 菜单
         List<Long> menuIdList = new ArrayList<>();
         menuIdList.addAll(getMenuIds(dto.getAppIds()));
@@ -194,7 +217,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
          * 接口
          */
         // 获取原始已授权 接口ID
-        List<Long> oldApiIdList = roleInfoMapper.findApiIdList(dto.getId());
+        List<Long> oldApiIdList = apiInfoService.getApiIdListByRoleId(dto.getId());
         // 筛选出与U开头的id 接口
         List<Long> apiIdList = new ArrayList<>();
         apiIdList.addAll(getApiIds(dto.getAppIds()));
@@ -228,7 +251,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
          * 组织
          */
         // 获取原始已授权组织ID
-        List<Long> oldOrgIdList = roleInfoMapper.findOrgIdList(dto.getId());
+        List<Long> oldOrgIdList = orgInfoService.getOrgIdListByRoleId(dto.getId());
         List<Long> orgIdList = dto.getOrgIds();
         if (CollUtil.isEmpty(oldOrgIdList) && CollUtil.isNotEmpty(orgIdList)) {
             // 原始授权组织为空，本次为新增
@@ -257,7 +280,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
          * 区域
          */
         // 获取原始已授权区域的ID
-        List<Long> oldAreaIdList = roleInfoMapper.findAreaIdList(dto.getId());
+        List<Long> oldAreaIdList = videoAreaService.getAreaIdListByRoleId(dto.getId());
         List<Long> areaIdList = dto.getAreaIds();
         if (CollUtil.isEmpty(oldAreaIdList) && CollUtil.isNotEmpty(areaIdList)) {
             // 原始授权区域为空且本次参数不为空，本次为新增
@@ -311,6 +334,8 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         } else {
             page.setSize(20);
         }
+        long userId = StpUtil.getLoginIdAsLong();
+        page.setCreatedBy(userId);
 
         return roleInfoMapper.MySelectPage(page);
     }
@@ -353,19 +378,21 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     public RoleDetailVO getRoleDetailById(Long id) {
         // 返回实体
         RoleDetailVO roleDetailVO = new RoleDetailVO();
-
         // 查询角色基本信息
         RoleInfo roleInfo = roleInfoMapper.selectById(id);
+        if (null ==roleInfo){
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND);
+        }
         roleDetailVO.setId(roleInfo.getId());
         roleDetailVO.setRoleName(roleInfo.getRoleName());
         roleDetailVO.setRoleDesc(roleInfo.getRoleDesc());
 
         // 查询该角色已授权的应用列表
-        List<AppInfo> appInfoList = roleInfoMapper.selectAppByRoleCode(roleInfo.getRoleCode());
+        List<AppInfo> appInfoList = appInfoService.getAppByRoleCode(roleInfo.getRoleCode());
         // 查询该角色已授权的菜单列表
-        List<MenuInfo> menuInfoList = roleInfoMapper.selectMenuByRoleCode(roleInfo.getRoleCode());
+        List<MenuInfo> menuInfoList = menuInfoService.getMenuByRoleCode(roleInfo.getRoleCode());
         // 查询该角色已授权的接口列表
-        List<ApiInfo> apiInfoList = roleInfoMapper.selectApiInfoByRoleCode(roleInfo.getRoleCode());
+        List<ApiInfo> apiInfoList = apiInfoService.getApiInfoByRoleCode(roleInfo.getRoleCode());
 
         // 应用类
         List<String> appIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 1);
@@ -381,12 +408,12 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         roleDetailVO.setDevopsIds(devopsIds);
 
         // 查询该角色已授权的部门列表
-        List<OrgInfo> orgList = roleInfoMapper.selectOrgInfoByRoleCode(roleInfo.getRoleCode());
+        List<OrgInfo> orgList = orgInfoService.getOrgInfoByRoleCode(roleInfo.getRoleCode());
         List<String> orgIds = orgList.stream().map(item -> item.getId().toString()).collect(Collectors.toList());
         orgIds = orgIds.stream().distinct().collect(Collectors.toList());
         roleDetailVO.setOrgIds(orgIds);
         // 查询该角色已授权的安防区域
-        List<VideoArea> areaList = roleInfoMapper.selectVideoAreaByRoleCode(roleInfo.getRoleCode());
+        List<VideoArea> areaList = videoAreaService.getVideoAreaByRoleCode(roleInfo.getRoleCode());
         List<String> areaIds = areaList.stream().map(item -> item.getId().toString()).collect(Collectors.toList());
         areaIds = areaIds.stream().distinct().collect(Collectors.toList());
         roleDetailVO.setAreaIds(areaIds);
@@ -465,7 +492,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     @Override
     public void addRelationUser(RoleRelationUserDTO dto) {
         // 1.根据角色ID查取以往关联的用户列表
-        List<Long> oldUserIds = roleInfoMapper.findUserIdList(dto.getRoleId());
+        List<Long> oldUserIds = userInfoService.getUserIdListByRoleId(dto.getRoleId());
         // 如果旧关联为空，则本次为新关联
         if (CollUtil.isEmpty(oldUserIds)) {
             List<BatchDTO> batchUserIdList = new ArrayList<>();
@@ -535,7 +562,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         if (CollUtil.isEmpty(dto.getUserIdList())) {
             return;
         }
-        List<Long> oldUserIds = roleInfoMapper.findUserIdList(dto.getRoleId());
+        List<Long> oldUserIds = userInfoService.getUserIdListByRoleId(dto.getRoleId());
         if (CollUtil.isEmpty(oldUserIds)) {
             return;
         }
@@ -551,7 +578,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         if (CollUtil.isEmpty(dto.getUserIdList())) {
             return;
         }
-        List<Long> oldUserIds = roleInfoMapper.findUserIdList(dto.getRoleId());
+        List<Long> oldUserIds = userInfoService.getUserIdListByRoleId(dto.getRoleId());
         if (CollUtil.isEmpty(oldUserIds)) {
             for (Long userId : dto.getUserIdList()) {
                 roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
@@ -644,7 +671,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                 if (menuInfo.getId().equals(1L)) {
                     continue;
                 }
-                if (appInfo.getId().equals(menuInfo.getAppId())){
+                if (appInfo.getId().equals(menuInfo.getAppId())) {
                     myMenuInfoList.add(menuInfo);
                 }
             }
@@ -656,7 +683,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                 if (apiInfo.getId().equals(1L)) {
                     continue;
                 }
-                if (appInfo.getId().equals(apiInfo.getAppId())){
+                if (appInfo.getId().equals(apiInfo.getAppId())) {
                     myApiInfoList.add(apiInfo);
                 }
             }
@@ -674,5 +701,25 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             resultList.add("U_" + apiInfo.getId());
         }
         return resultList;
+    }
+
+    @Override
+    public void saveRoleUser(Long roleId, Long userId) {
+        roleInfoMapper.insertRoleUser(roleId, userId);
+    }
+
+    @Override
+    public List<Long> getRoleByUserId(Long userId) {
+        return roleInfoMapper.selectRoleByUserId(userId);
+    }
+
+    @Override
+    public void removeRoleUser(Long roleId, Long userId) {
+        roleInfoMapper.removeRoleUser(roleId, userId);
+    }
+
+    @Override
+    public List<String> getRoleCodeByUserId(Long userId) {
+        return roleInfoMapper.selectRoleCodeByUserId(userId);
     }
 }

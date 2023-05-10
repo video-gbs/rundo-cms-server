@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+  rundo-expansion-server:
+    image: xard-harbor.runjian.com:20443/hyy-rundo-gms/rundo-foreign-server:${version}
+    container_name: rundo-foreign-server
+    ports:
+      - 8061:8061
+    volumes:
+      - ./log:/opt/rundo-foreign-server/logs
+    environment:
+      TZ: Asia/Shanghai
+      PROFILES_ACTIVE: dev
+      NACOS_SERVER: 192.168.0.84:8848
+      NACOS_NAMESPACE: dev
+      NACOS_USERNAME: nacos
+      NACOS_GROUP: DEFAULT_GROUP
+      NACOS_PASSWORD: rundo@nacos*2023
+    networks:
+      - proxynet
+networks:
+  proxynet:
+    external:
+      name: rundo_network

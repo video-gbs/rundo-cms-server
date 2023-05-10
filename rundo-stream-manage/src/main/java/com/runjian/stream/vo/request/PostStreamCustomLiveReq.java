@@ -22,7 +22,6 @@ public class PostStreamCustomLiveReq implements ValidatorFunction {
     /**
      * 识别编码
      */
-    @NotBlank(message = "识别编码不能为空")
     @Range(min = 1, message = "非法设备识别编码")
     private Long code;
 

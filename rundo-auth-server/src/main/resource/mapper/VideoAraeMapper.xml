@@ -33,4 +33,41 @@
         WHERE va.delete_flag = 0
         ;
     </select>
+
+    <select id="selectVideoAreaByRoleCode" resultType="com.runjian.auth.server.domain.entity.VideoArea">
+        SELECT area.*
+        FROM video_area area
+            LEFT JOIN role_area rva ON rva.area_id = area.id
+            LEFT JOIN role_info sri ON sri.id = rva.role_id
+        WHERE sri.role_code = #{roleCode}
+    </select>
+
+    <select id="selectAreaIdListByRoleId" resultType="java.lang.Long">
+        SELECT area_id
+        FROM role_area
+        WHERE role_area.role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectAreaNameByUserId" resultType="java.lang.String">
+        WITH RECURSIVE area_path AS (
+            SELECT id, area_pid, area_name
+            FROM video_area
+            WHERE id = 1
+            UNION ALL
+            SELECT va.id, va.area_pid, CONCAT(ap.area_name,'/',va.area_name) as area_name
+            FROM video_area va
+                INNER JOIN area_path ap ON va.area_pid = ap.id
+        )
+        SELECT ap.area_name as area_names
+        FROM area_path ap
+            JOIN video_area va ON ap.id = va.id
+            LEFT JOIN role_area ra ON ra.area_id = ap.id
+            LEFT JOIN role_user ru ON ru.role_id = ra.role_id
+            LEFT JOIN user_info user ON user.id = ru.user_id
+        <where>
+            <if test="userId != null">
+                ru.user_id = #{userId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
 </mapper>

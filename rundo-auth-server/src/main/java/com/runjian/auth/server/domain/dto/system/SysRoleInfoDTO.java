@@ -52,16 +52,5 @@ public class SysRoleInfoDTO {
     @ApiModelProperty("安防区域ID列表")
     List<Long> areaIds;
 
-    // 2 资源权限
-
-    // 资源权限
-    // 视频通道资源
-    // @ApiModelProperty("视频通道ID列表")
-    // List<Long> channelIds;
-    // @ApiModelProperty("通道操作ID列表")
-    // List<Long> operationIds;
-    // 电视墙
-    // 。。。。
-
 
 }

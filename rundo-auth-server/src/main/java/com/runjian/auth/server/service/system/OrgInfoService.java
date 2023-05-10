@@ -2,9 +2,10 @@ package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
+import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
 import com.runjian.auth.server.domain.entity.OrgInfo;
+import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.common.config.response.CommonResponse;
@@ -37,4 +38,9 @@ public interface OrgInfoService extends IService<OrgInfo> {
 
     void moveSysOrg(MoveSysOrgDTO dto);
 
+    List<OrgInfo> getOrgInfoByRoleCode(String roleCode);
+
+    List<Long> getOrgIdListByRoleId(Long roleId);
+
+    OrgInfoVO getOrgInfoByUserId(Long id);
 }

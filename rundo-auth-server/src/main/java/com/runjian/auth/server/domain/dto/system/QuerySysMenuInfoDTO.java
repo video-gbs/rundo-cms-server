@@ -23,6 +23,9 @@ public class QuerySysMenuInfoDTO {
     @ApiModelProperty("应用ID")
     private Long appId;
 
+    @ApiModelProperty("应用名称")
+    private String appName;
+
     @ApiModelProperty("菜单名称")
     private String menuName;
 

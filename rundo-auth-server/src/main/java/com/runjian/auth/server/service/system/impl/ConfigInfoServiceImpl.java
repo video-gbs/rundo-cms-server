@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -35,18 +36,28 @@ public class ConfigInfoServiceImpl extends ServiceImpl<ConfigInfoMapper, ConfigI
 
     @Override
     public void modifyById(SysConfigDTO dto) {
-        ConfigInfo configInfo = configInfoMapper.selectById(dto.getId());
-
-
+        ConfigInfo configInfo = new ConfigInfo();
+        BeanUtils.copyProperties(dto, configInfo);
+        configInfoMapper.updateById(configInfo);
     }
 
     @Override
     public SysConfigVO findById(Long id) {
-        return null;
+        SysConfigVO sysConfigVO = new SysConfigVO();
+        ConfigInfo configInfo = configInfoMapper.selectById(id);
+        BeanUtils.copyProperties(configInfo, sysConfigVO);
+        return sysConfigVO;
     }
 
     @Override
     public List<SysConfigVO> findByList() {
-        return null;
+
+        return configInfoMapper.selectList(null).stream().map(
+                item -> {
+                    SysConfigVO sysConfigVO = new SysConfigVO();
+                    BeanUtils.copyProperties(item, sysConfigVO);
+                    return sysConfigVO;
+                }
+        ).collect(Collectors.toList());
     }
 }

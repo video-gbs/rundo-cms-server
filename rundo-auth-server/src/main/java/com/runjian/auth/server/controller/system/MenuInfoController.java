@@ -77,7 +77,6 @@ public class MenuInfoController {
         return CommonResponse.success();
     }
 
-
     @GetMapping("/getById")
     @ApiOperation("通过ID获取菜单详情")
     public CommonResponse<MenuInfoVO> getById(@RequestParam Long id) {
@@ -88,6 +87,12 @@ public class MenuInfoController {
     @ApiOperation("获取菜单层级树，列表页或者单个应用ID使用")
     public CommonResponse<List<MenuInfoTree>> getSysMenuTree(@RequestBody QuerySysMenuInfoDTO dto) {
         return CommonResponse.success(menuInfoService.findByTree(dto));
+    }
+
+    @PostMapping("/getTree/{appId}")
+    @ApiOperation("根据应用ID获取菜单层级树")
+    public CommonResponse<List<MenuInfoTree>> getTreeByAppId(@PathVariable Long appId) {
+        return CommonResponse.success(menuInfoService.getTreeByAppId(appId));
     }
 
     @PostMapping("/typeTree/{appType}")

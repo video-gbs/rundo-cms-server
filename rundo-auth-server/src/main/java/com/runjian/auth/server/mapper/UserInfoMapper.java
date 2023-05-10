@@ -6,7 +6,6 @@ import com.runjian.auth.server.domain.dto.page.PageRelationSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageSysUserInfoDTO;
 import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
-import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -24,19 +23,36 @@ import java.util.List;
 @Mapper
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
 
-    void insertUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
-
-    List<Long> selectRoleByUserId(@Param("userId") Long userId);
-
-    void deleteUserRole(@Param("userId") Long userId, @Param("roleId") Long roleId);
-
+    /**
+     * 自定义分页查询
+     *
+     * @param page
+     * @param orgIds
+     * @return
+     */
     Page<ListSysUserInfoVO> MySelectPageByContain(@Param("page") PageSysUserInfoDTO page, @Param("orgIds") List<Long> orgIds);
 
-    OrgInfoVO selectOrgInfoByUserId(@Param("userId") Long userId);
-
-    RelationSysUserInfoVO selectRelationSysUserInfoById(@Param("userId") Long userId);
-
+    /**
+     * 关联用户用户列表
+     *
+     * @param page
+     * @return
+     */
     Page<RelationSysUserInfoVO> relationSysUserInfoPage(PageRelationSysUserInfoDTO page);
 
-    List<String> selectAreaNameByUserId(@Param("id") Long id);
+    /**
+     * 关联用户查看单个用户信息
+     *
+     * @param userId
+     * @return
+     */
+    RelationSysUserInfoVO selectRelationSysUserInfoById(@Param("userId") Long userId);
+
+    /**
+     * 通过角色ID，获取已授权的用户ID
+     *
+     * @param roleId
+     * @return
+     */
+    List<Long> selectUserIdListByRoleId(@Param("roleId") Long roleId);
 }

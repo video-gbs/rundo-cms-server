@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,6 +85,34 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
         ).collect(Collectors.toList());
         return DataTreeUtil.buildTree(apiInfoTreeList, 1L);
 
+    }
+
+    @Override
+    public List<ApiInfoTree> getTreeByAppId(Long appId) {
+        LambdaQueryWrapper<ApiInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ApiInfo::getAppId, appId);
+        List<ApiInfo> apiInfoList = apiInfoMapper.selectList(queryWrapper);
+        long rootId = 0;
+        List<ApiInfoTree> apiInfoTreeList = new ArrayList<>();
+        for (ApiInfo apiInfo : apiInfoList) {
+            if (apiInfo.getAppId().longValue() == appId && apiInfo.getApiPid() == 1L) {
+                rootId = apiInfo.getId();
+            }
+            ApiInfoTree bean = new ApiInfoTree();
+            BeanUtils.copyProperties(apiInfo, bean);
+            apiInfoTreeList.add(bean);
+        }
+        return DataTreeUtil.buildTree(apiInfoTreeList, rootId);
+    }
+
+    @Override
+    public List<ApiInfo> getApiInfoByRoleCode(String roleCode) {
+        return apiInfoMapper.selectApiInfoByRoleCode(roleCode);
+    }
+
+    @Override
+    public List<Long> getApiIdListByRoleId(Long roleId) {
+        return apiInfoMapper.findApiIdListByRoleId(roleId);
     }
 
     @Override

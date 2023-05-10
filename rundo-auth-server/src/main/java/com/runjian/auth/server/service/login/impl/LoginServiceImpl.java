@@ -9,10 +9,10 @@ import com.pig4cloud.captcha.SpecCaptcha;
 import com.pig4cloud.captcha.base.Captcha;
 import com.runjian.auth.server.domain.dto.login.UserInfoDTO;
 import com.runjian.auth.server.domain.entity.UserInfo;
-import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.login.LoginService;
+import com.runjian.auth.server.service.system.UserInfoService;
 import com.runjian.common.config.exception.BusinessErrorEnums;
-import com.runjian.common.config.exception.BusinessException;
+import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.util.RedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,34 +34,36 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Service
 public class LoginServiceImpl implements LoginService {
+
     @Autowired
-    private UserInfoMapper userInfoMapper;
+    private UserInfoService userInfoService;
+
     @Autowired
     private RedisCache redisCache;
 
     @Override
-    public Map login(UserInfoDTO dto) {
+    public CommonResponse login(UserInfoDTO dto) {
         String userAccount = dto.getUsername();
         String password = dto.getPassword();
         // 从数据库中查取用户
         LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserInfo::getUserAccount, userAccount);
-        UserInfo userInfo = userInfoMapper.selectOne(queryWrapper);
+        UserInfo userInfo = userInfoService.getOne(queryWrapper);
         // 校验用户是否存在
         if (Objects.isNull(userInfo)) {
-            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "用户不存在");
+            return CommonResponse.failure(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "用户不存在");
         }
         // 校验密码是否正确
         if (!BCrypt.checkpw(password, userInfo.getPassword())) {
-            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "密码错误");
+            return CommonResponse.failure(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "密码错误");
         }
         // 检测账户是否已过期
         if (!isAccountNonExpired(userInfo)) {
-            throw new BusinessException(BusinessErrorEnums.USER_ACCOUNT_NOT_ENABLED, "账户已过期");
+            return CommonResponse.failure(BusinessErrorEnums.USER_ACCOUNT_NOT_ENABLED, "账户已过期");
         }
         // 检测账户是否已禁用
-        if (isEnabled(userInfo)){
-            throw new BusinessException(BusinessErrorEnums.USER_ACCOUNT_NOT_ENABLED, "账户已禁用");
+        if (isEnabled(userInfo)) {
+            return CommonResponse.failure(BusinessErrorEnums.USER_ACCOUNT_NOT_ENABLED, "账户已禁用");
         }
         // 登录
         StpUtil.login(userInfo.getId());
@@ -78,11 +80,11 @@ public class LoginServiceImpl implements LoginService {
         map.put("email", userInfo.getEmail());
         map.put("phone", userInfo.getPhone());
         map.put("description", userInfo.getDescription());
-        return map;
+        return CommonResponse.success(map);
     }
 
     @Override
-    public Map getCode() {
+    public CommonResponse getCode() {
         SpecCaptcha captcha = new SpecCaptcha(130, 48, 5);
         captcha.setCharType(Captcha.TYPE_ONLY_NUMBER);
         String verCode = captcha.text().toLowerCase();
@@ -91,7 +93,7 @@ public class LoginServiceImpl implements LoginService {
         Map<String, String> map = new HashMap<>();
         map.put("key", key);
         map.put("image", captcha.toBase64());
-        return map;
+        return CommonResponse.success(map);
     }
 
     @Override

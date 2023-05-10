@@ -1,80 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.runjian.auth.server.mapper.UserInfoMapper">
-    <insert id="insertUserRole">
-        INSERT INTO role_user(user_id, role_id)
-        VALUES (#{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT});
-    </insert>
 
-    <select id="selectRoleByUserId" resultType="java.lang.Long">
-        SELECT sru.role_id
-        FROM role_user sru
-        <where>
-            <if test="userId != null">
-                sru.user_id = #{userId,jdbcType=BIGINT}
-            </if>
-        </where>
-    </select>
-
-    <delete id="deleteUserRole">
-        DELETE
-        FROM role_user sru
-        <where>
-            <if test="userId != null">
-                sru.user_id = #{userId,jdbcType=BIGINT}
-            </if>
-            <if test="roleId != null">
-                AND sru.role_id = #{roleId,jdbcType=BIGINT}
-            </if>
-        </where>
-    </delete>
-
-    <select id="selectOrgInfoByUserId" resultType="com.runjian.auth.server.domain.vo.system.OrgInfoVO">
-        SELECT userInfo.org_id,
-               orgInfo.org_name
-        FROM user_info userInfo
-                 LEFT JOIN org_info orgInfo ON orgInfo.id = userInfo.org_id
-        <where>
-            <if test="userId != null">
-                userInfo.id = #{userId,jdbcType=BIGINT}
-            </if>
-        </where>
-    </select>
-
-    <select id="selectRelationSysUserInfoById"
-            resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
+    <select id="MySelectPageByContain" resultType="com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO">
         WITH RECURSIVE org_info_str AS (
-            SELECT id, org_pid, org_name
-            FROM org_info
-            WHERE id = 1
-            UNION ALL
-            SELECT va.id, va.org_pid, CONCAT(ap.org_name,'/',va.org_name) as org_name
-            FROM org_info va
-            INNER JOIN org_info_str ap ON va.org_pid = ap.id
+        SELECT id, org_pid, org_name
+        FROM org_info
+        WHERE id = 1
+        UNION ALL
+        SELECT va.id, va.org_pid, CONCAT( ap.org_name, '/', va.org_name ) AS org_name
+        FROM org_info va
+        INNER JOIN org_info_str ap ON va.org_pid = ap.id
         )
         SELECT
-            user.id,
-            user.user_account,
-            user.user_name,
-            user.expiry_date_start,
-            user.expiry_date_end,
-            user.job_no,
-            user.address,
-            user.email,
-            user.phone,
-            org.org_name,
-            GROUP_CONCAT(role.role_name SEPARATOR '/') role_name,
-            user.description
+        user.id,
+        user.user_account,
+        user.user_name,
+        org.org_name,
+        GROUP_CONCAT(role.role_name SEPARATOR '/') AS role_name,
+        user.job_no,
+        user.status,
+        user.created_time,
+        user.updated_time
         FROM user_info user
+        LEFT JOIN org_info_str org ON org.id = user.org_id
         LEFT JOIN role_user ru ON ru.user_id = user.id
         LEFT JOIN role_info role ON role.id = ru.role_id
-        LEFT JOIN org_info_str org ON org.id = user.org_id
         <where>
-            <if test="userId != null">
-                user.id = #{userId,jdbcType=BIGINT}
+            user.delete_flag = 0
+            <if test="orgIds != null and orgIds.size() != 0">
+                AND org.id IN
+                <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
+                    #{orgId}
+                </foreach>
+            </if>
+            <if test="page.userAccount != null and page.userAccount != ''">
+                <bind name="patternUserAccount" value="'%' + page.userAccount + '%'"/>
+                AND user.user_account LIKE #{patternUserAccount}
+            </if>
+            <if test="page.userName != null and page.userName != ''">
+                <bind name="patternUserName" value="'%' + page.userName + '%'"/>
+                AND user.user_name LIKE #{patternUserName}
             </if>
         </where>
-        GROUP BY user.id
+        GROUP BY user.id, org.org_name,user.created_time
+        ORDER BY user.created_time DESC
     </select>
 
     <select id="relationSysUserInfoPage" resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
@@ -109,76 +79,54 @@
                 <bind name="patternAccount" value="'%' + userAccount + '%'"/>
                 AND user.user_account LIKE #{patternAccount}
             </if>
-        GROUP BY user.id
+        GROUP BY user.id, org.org_name
         ORDER BY user.id
     </select>
 
-
-    <select id="selectAreaNameByUserId" resultType="java.lang.String">
-        WITH RECURSIVE area_path AS (
-            SELECT id, area_pid, area_name
-            FROM video_area
-            WHERE id = 1
-            UNION ALL
-            SELECT va.id, va.area_pid, CONCAT(ap.area_name,'/',va.area_name) as area_name
-            FROM video_area va
-                INNER JOIN area_path ap ON va.area_pid = ap.id
-        )
-        SELECT ap.area_name as area_names
-        FROM area_path ap
-            JOIN video_area va ON ap.id = va.id
-            LEFT JOIN role_area ra ON ra.area_id = ap.id
-            LEFT JOIN role_user ru ON ru.role_id = ra.role_id
-            LEFT JOIN user_info user ON user.id = ru.user_id
-        <where>
-            <if test="id != null">
-                ru.user_id = #{id,jdbcType=BIGINT}
-            </if>
-        </where>
-    </select>
-
-    <select id="MySelectPageByContain" resultType="com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO">
+    <select id="selectRelationSysUserInfoById"
+            resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
         WITH RECURSIVE org_info_str AS (
-            SELECT id, org_pid, org_name
-            FROM org_info
-            WHERE id = 1
-            UNION ALL
-            SELECT va.id, va.org_pid, CONCAT( ap.org_name, '/', va.org_name ) AS org_name
-            FROM org_info va
-                INNER JOIN org_info_str ap ON va.org_pid = ap.id
+        SELECT id, org_pid, org_name
+        FROM org_info
+        WHERE id = 1
+        UNION ALL
+        SELECT va.id, va.org_pid, CONCAT(ap.org_name,'/',va.org_name) as org_name
+        FROM org_info va
+        INNER JOIN org_info_str ap ON va.org_pid = ap.id
         )
         SELECT
-            user.id,
-            user.user_account,
-            user.user_name,
-            org.org_name,
-            GROUP_CONCAT(role.role_name SEPARATOR '/') AS role_name,
-            user.job_no,
-            user.status,
-            user.created_time,
-            user.updated_time
+        user.id,
+        user.user_account,
+        user.user_name,
+        user.expiry_date_start,
+        user.expiry_date_end,
+        user.job_no,
+        user.address,
+        user.email,
+        user.phone,
+        org.org_name,
+        GROUP_CONCAT(role.role_name SEPARATOR '/') role_name,
+        user.description
         FROM user_info user
-            LEFT JOIN org_info_str org ON org.id = user.org_id
-            LEFT JOIN role_user ru ON ru.user_id = user.id
-            LEFT JOIN role_info role ON role.id = ru.role_id
+        LEFT JOIN role_user ru ON ru.user_id = user.id
+        LEFT JOIN role_info role ON role.id = ru.role_id
+        LEFT JOIN org_info_str org ON org.id = user.org_id
         <where>
-            user.delete_flag = 0
-            <if test="orgIds != null and orgIds.size() != 0">
-                AND org.id IN
-                <foreach collection="orgIds" item="orgId" open="(" close=")" separator=",">
-                    #{orgId}
-                </foreach>
-            </if>
-            <if test="page.userAccount != null and page.userAccount != ''">
-                <bind name="patternUserAccount" value="'%' + page.userAccount + '%'"/>
-                AND user.user_account LIKE #{patternUserAccount}
-            </if>
-            <if test="page.userName != null and page.userName != ''">
-                <bind name="patternUserName" value="'%' + page.userName + '%'"/>
-                AND user.user_name LIKE #{patternUserName}
+            <if test="userId != null">
+                user.id = #{userId,jdbcType=BIGINT}
             </if>
         </where>
-        GROUP BY user.id, org.org_name,user.created_time
-        ORDER BY user.created_time DESC
+        GROUP BY user.id
     </select>
+
+    <select id="selectUserIdListByRoleId" resultType="java.lang.Long">
+        SELECT ru.user_id userId
+        FROM role_user ru
+        <where>
+            <if test="roleId != null">
+                ru.role_id = #{roleId,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
 </mapper>
