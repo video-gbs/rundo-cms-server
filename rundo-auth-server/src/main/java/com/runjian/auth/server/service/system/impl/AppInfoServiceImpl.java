@@ -3,6 +3,9 @@ package com.runjian.auth.server.service.system.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.constant.MenuSortConstant;
+import com.runjian.auth.server.constant.MenuTypeConstant;
+import com.runjian.auth.server.constant.StatusConstant;
 import com.runjian.auth.server.domain.dto.page.PageSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.AppInfo;
@@ -51,14 +54,15 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         menuInfoDTO.setAppId(appInfo.getId());
         menuInfoDTO.setAppName(appInfo.getAppName());
         menuInfoDTO.setMenuPid(1L);
-        menuInfoDTO.setMenuSort(1);
+        menuInfoDTO.setMenuSort(MenuSortConstant.DEFAULT);
+        menuInfoDTO.setMenuType(MenuTypeConstant.APP);
         menuInfoDTO.setPath(appInfo.getAppUrl());
         menuInfoDTO.setComponent(appInfo.getComponent());
         menuInfoDTO.setIcon(appInfo.getAppIcon());
         menuInfoDTO.setTitle(appInfo.getAppName());
         menuInfoDTO.setName(StrUtil.removePrefix("/", appInfo.getAppUrl()));
         menuInfoDTO.setRedirect(appInfo.getRedirect());
-        menuInfoDTO.setStatus(0);
+        menuInfoDTO.setStatus(StatusConstant.ENABLE);
         menuInfoDTO.setHidden(0);
         menuInfoService.save(menuInfoDTO);
 

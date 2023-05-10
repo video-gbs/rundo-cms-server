@@ -4,8 +4,10 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.constant.StatusConstant;
 import com.runjian.auth.server.domain.dto.common.BatchDTO;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.page.PageRoleRelationSysUserInfoDTO;
@@ -22,8 +24,10 @@ import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +72,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     private AppMenuApiMapper appMenuApiMapper;
 
 
+    @Transactional
     @Override
     public void save(SysRoleInfoDTO dto) {
         RoleInfo role = new RoleInfo();
@@ -75,15 +80,11 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         role.setId(roleId);
         role.setRoleName(dto.getRoleName());
         // 角色新建后默认是启用状态： 0启用，1禁用
-        role.setStatus(0);
+        role.setStatus(StatusConstant.ENABLE);
         // 角色是一个特殊的权限，ROLE_前缀 用来满足Spring Security规范
         role.setRoleCode("ROLE_" + roleId.toString());
         role.setRoleDesc(dto.getRoleDesc());
-        // role.setParentRoleId();
-        // role.setParentRoleIds();
-        // role.setTenantId();
         roleInfoMapper.insert(role);
-
 
         List<String> appIds = dto.getAppIds();
         List<String> configIds = dto.getConfigIds();
@@ -380,7 +381,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         RoleDetailVO roleDetailVO = new RoleDetailVO();
         // 查询角色基本信息
         RoleInfo roleInfo = roleInfoMapper.selectById(id);
-        if (null ==roleInfo){
+        if (null == roleInfo) {
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND);
         }
         roleDetailVO.setId(roleInfo.getId());
@@ -423,71 +424,53 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
 
     @Override
     public List<AppMenuApiTree> getAppMenuApiTree(Integer appType) {
-        List<AppMenuApi> appMenuApiList = appMenuApiMapper.selectByAppType(appType);
-
+        // 根据类型查出 涉及的应用并取出appIds
+        LambdaQueryWrapper<AppInfo> appInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        appInfoLambdaQueryWrapper.eq(AppInfo::getAppType, appType);
+        List<AppInfo> appInfoList = appInfoService.list(appInfoLambdaQueryWrapper);
+        List<Long> appIds = appInfoList.stream().map(AppInfo::getId).collect(Collectors.toList());
+        // 补充系统内置根节点
+        appIds.add(0L);
+        // 根据应用 appIds,查取菜单
+        LambdaQueryWrapper<MenuInfo> menuInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        menuInfoLambdaQueryWrapper.in(MenuInfo::getAppId, appIds);
+        List<MenuInfo> menuInfoList = menuInfoService.list(menuInfoLambdaQueryWrapper);
         List<AppMenuApiVO> vos = new ArrayList<>();
-        // 虚拟根
-        AppMenuApiVO root = new AppMenuApiVO();
-        root.setId(1L);
-        root.setIdStr("");
-        root.setPid(0L);
-        root.setName("虚拟根");
-        vos.add(root);
-        for (AppMenuApi appMenuApi : appMenuApiList) {
-            // appId !=null   menuId == null apiId ==null
-            if (null != appMenuApi.getAppId()) {
-                AppMenuApiVO vo_app = new AppMenuApiVO();
-                vo_app.setId(appMenuApi.getAppId());
-                vo_app.setIdStr("A_" + appMenuApi.getAppId());
-                vo_app.setName(appMenuApi.getAppName());
-                vo_app.setPid(1L);
-                vos.add(vo_app);
+        for (MenuInfo menuInfo : menuInfoList) {
+            AppMenuApiVO vo = new AppMenuApiVO();
+            vo.setId(menuInfo.getId());
+            switch (menuInfo.getMenuType()) {
+                case 1: {
+                    vo.setIdStr("A_" + menuInfo.getId());
+                    break;
+                }
+                case 2: {
+                    vo.setIdStr("M_" + menuInfo.getId());
+                    break;
+                }
+                case 3: {
+                    vo.setIdStr("U_" + menuInfo.getId());
+                    break;
+                }
+                default: {
+                    vo.setIdStr("");
+                    break;
+                }
             }
-
-            // appId !=null   menuId != null  apiId ==null
-            if (null != appMenuApi.getAppId() && null != appMenuApi.getMenuId()) {
-                AppMenuApiVO vo_menu = new AppMenuApiVO();
-                vo_menu.setId(appMenuApi.getMenuId());
-                vo_menu.setIdStr("M_" + appMenuApi.getMenuId());
-                vo_menu.setName(appMenuApi.getTitle());
-                vo_menu.setPid(appMenuApi.getAppId());
-                vos.add(vo_menu);
-            }
-
-            // appId !=null menuId ！= null apiId ！=null
-            if (null != appMenuApi.getAppId() && null != appMenuApi.getMenuId() && null != appMenuApi.getApiId()) {
-                AppMenuApiVO vo_api = new AppMenuApiVO();
-                vo_api.setId(appMenuApi.getApiId());
-                vo_api.setIdStr("U_" + appMenuApi.getApiId());
-                vo_api.setName(appMenuApi.getApiName());
-                vo_api.setPid(appMenuApi.getMenuId());
-                vos.add(vo_api);
-            }
-            // appId !=null menuId == null apiId ==null
-            if (null != appMenuApi.getAppId() && null == appMenuApi.getMenuId() && null != appMenuApi.getApiId()) {
-                AppMenuApiVO vo_api = new AppMenuApiVO();
-                vo_api.setId(appMenuApi.getApiId());
-                vo_api.setIdStr("U_" + appMenuApi.getApiId());
-                vo_api.setName(appMenuApi.getApiName());
-                vo_api.setPid(appMenuApi.getAppId());
-                vos.add(vo_api);
-            }
-
+            vo.setPid(menuInfo.getMenuPid());
+            vo.setName(menuInfo.getTitle());
+            vos.add(vo);
         }
         List<AppMenuApiVO> treeVos = vos.stream().distinct().collect(Collectors.toList());
         List<AppMenuApiTree> appMenuApiTreeList = treeVos.stream().map(
                 item -> {
                     AppMenuApiTree vo = new AppMenuApiTree();
-                    vo.setId(item.getId());
-                    vo.setIdStr(item.getIdStr());
-                    vo.setPid(item.getPid());
-                    vo.setName(item.getName());
+                    BeanUtils.copyProperties(item,vo);
                     return vo;
                 }
         ).collect(Collectors.toList());
         return DataTreeUtil.buildTree(appMenuApiTreeList, 1L);
     }
-
 
     @Override
     public void addRelationUser(RoleRelationUserDTO dto) {
