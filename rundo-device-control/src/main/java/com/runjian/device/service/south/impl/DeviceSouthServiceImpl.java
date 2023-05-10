@@ -33,19 +33,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DeviceSouthServiceImpl implements DeviceSouthService {
 
-    @Autowired
+
     private final DeviceMapper deviceMapper;
 
-    @Autowired
+
     private final ChannelMapper channelMapper;
 
-    @Autowired
+
     private final ChannelNorthService channelNorthService;
 
-    @Autowired
+
     private final RedisBaseService redisBaseService;
 
-    @Autowired
+
     private final DetailBaseService detailBaseService;
 
     /**

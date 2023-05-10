@@ -25,11 +25,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public abstract class AbstractNorthProtocol implements NorthProtocol {
 
-    private final GatewayTaskService gatewayTaskService;
+    protected final GatewayTaskService gatewayTaskService;
 
-    private final DataBaseService dataBaseService;
+    protected final DataBaseService dataBaseService;
 
-    private final DeviceMapper deviceMapper;
+    protected final DeviceMapper deviceMapper;
 
     @Override
     public void msgDistribute(MsgType msgType, Long mainId, IdType idType, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {

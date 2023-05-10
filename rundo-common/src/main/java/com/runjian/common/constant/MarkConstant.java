@@ -25,7 +25,11 @@ public class MarkConstant {
 
     public static final String MARK_SPLIT_RAIL = "-";
 
-    /*********************************未完成任务定时重试标志*******************************************/
+    /*********************************解析引擎redis字段占用*******************************************/
+
+    public static final String REDIS_DEVICE_BATCH_SIGN_IN_LOCK = "DEVICE_BATCH_SIGN_IN_LOCK:";
+
+    public static final String REDIS_CHANNEL_SYNC_LOCK = "CHANNEL_SYNC_LOCK:";
 
 
 
@@ -44,7 +48,6 @@ public class MarkConstant {
     public static final String MARK_FEIGN_RESP_START = "[{";
     public static final String MARK_FEIGN_RESP_END = "}]";
     public static final String MARK_FEIGN_RESP_CODE = "code";
-
 
 
 
