@@ -8,6 +8,7 @@ import com.runjian.common.constant.IdType;
 import com.runjian.common.constant.MsgType;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.DeviceInfo;
+import com.runjian.parsing.entity.GatewayTaskInfo;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.GatewayTaskService;
 import org.springframework.stereotype.Service;

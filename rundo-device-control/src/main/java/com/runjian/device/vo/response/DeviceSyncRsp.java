@@ -55,4 +55,16 @@ public class DeviceSyncRsp {
      */
     private Integer ptzType;
 
+    /**
+     * 用户名
+     */
+    private String username;
+
+    /**
+     * 密码
+     */
+    private String password;
+
+
+
 }

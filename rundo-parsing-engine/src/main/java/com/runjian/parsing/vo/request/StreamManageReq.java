@@ -32,6 +32,7 @@ public class StreamManageReq {
      * 消息类型
      */
     @NotBlank(message = "消息类型不能为空")
+    @NotNull(message = "消息类型不能为空")
     private String msgType;
 
     /**

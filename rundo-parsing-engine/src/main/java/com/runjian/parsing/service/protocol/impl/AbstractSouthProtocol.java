@@ -22,6 +22,7 @@ import com.runjian.parsing.vo.CommonMqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
     private final ChannelMapper channelMapper;
 
     private final DeviceControlApi deviceControlApi;
+
 
     /**
      * 消息统一处理分发
@@ -103,39 +105,23 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      * @param data      数据集合
      */
     public void deviceSignIn(Long gatewayId, Object data) {
-        JSONObject jsonObject = saveDevice(JSONObject.parseObject(data.toString()), gatewayId);
+        if (Objects.isNull(data)){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "data为空");
+        }
+        JSONObject jsonObject = saveDevice(deviceSignInConvert(JSONObject.parseObject(data.toString())), gatewayId);
         CommonResponse<?> commonResponse = deviceControlApi.deviceSignIn(jsonObject);
         if (commonResponse.getCode() != 0) {
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
         }
     }
 
-
-    protected JSONObject saveDevice(JSONObject data, Long gatewayId) {
-        JSONObject jsonObject = data;
-        String deviceOriginId = jsonObject.getString(StandardName.DEVICE_ID);
-        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
-        DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
-        if (deviceInfoOp.isEmpty()) {
-            LocalDateTime nowTime = LocalDateTime.now();
-            deviceInfo.setOriginId(deviceOriginId);
-            deviceInfo.setGatewayId(gatewayId);
-            deviceInfo.setUpdateTime(nowTime);
-            deviceInfo.setCreateTime(nowTime);
-            deviceMapper.save(deviceInfo);
-        }
-        jsonObject.put(StandardName.DEVICE_ID, deviceInfo.getId());
-        jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
-        jsonObject.put(StandardName.ORIGIN_ID, deviceInfo.getOriginId());
-        return jsonObject;
-    }
-
-
-
     public void deviceBatchSignIn(Long gatewayId, Object data) {
+        if (Objects.isNull(data)){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "data为空");
+        }
         JSONArray jsonArray = JSONArray.parseArray(data.toString());
         for (int i = 0; i < jsonArray.size(); i++) {
-            saveDevice(jsonArray.getJSONObject(i), gatewayId);
+            saveDevice(deviceBatchSignInConvert(jsonArray.getJSONObject(i)), gatewayId);
         }
         CommonResponse<?> commonResponse = deviceControlApi.deviceBatchSignIn(jsonArray);
         if (commonResponse.getCode() != 0) {
@@ -143,22 +129,24 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         }
     }
 
+
     /**
      * 设备同步
-     *
      * @param taskId 任务id
      * @param data   数据集合
      */
     public void deviceSync(Long taskId, Object data) {
-        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
         if (Objects.isNull(data)) {
             gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "设备id为空");
             return;
         }
-        JSONObject jsonObject = JSON.parseObject(data.toString());
+        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
+        JSONObject jsonObject = deviceSyncConvert(JSON.parseObject(data.toString()));
         jsonObject.put(StandardName.DEVICE_ID, gatewayTaskInfo.getDeviceId());
         customEvent(taskId, data);
     }
+
+
 
     /**
      * 设备添加，网关返回设备原始id
@@ -167,11 +155,11 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      * @param data   数据集合
      */
     public void deviceAdd(Long taskId, Object data) {
-        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
         if (Objects.isNull(data)) {
             gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "设备id为空");
             return;
         }
+        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
         String deviceOriginId = data.toString();
         LocalDateTime nowTime = LocalDateTime.now();
         DeviceInfo deviceInfo = new DeviceInfo();
@@ -191,11 +179,11 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      * @param data   数据集合
      */
     public void deviceDelete(Long taskId, Object data) {
-        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
         if (Objects.isNull(data)) {
             gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "设备id为空");
             return;
         }
+        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
         Boolean isSuccess = (Boolean) data;
         if (isSuccess) {
             channelMapper.deleteByDeviceId(gatewayTaskInfo.getDeviceId());
@@ -212,16 +200,19 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      */
     public void channelSync(Long taskId, Object data) {
         if (Objects.isNull(data)) {
-            gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "设备id为空");
+            gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "返回数据为空");
             return;
         }
         JSONObject jsonData = JSON.parseObject(data.toString());
         JSONArray objects = jsonData.getJSONArray(StandardName.CHANNEL_SYNC_LIST);
         GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
+        jsonData.put(StandardName.DEVICE_ID, gatewayTaskInfo.getDeviceId());
         List<ChannelInfo> channelInfoList = new ArrayList<>(objects.size());
+        // todo 加上设备id的锁
         for (int i = 0; i < objects.size(); i++) {
-            JSONObject jsonObject = objects.getJSONObject(i);
-            String channelOriginId = jsonObject.getString(StandardName.CHANNEL_ID);
+            // 转换数据
+            JSONObject jsonObject = channelSyncConvert(objects.getJSONObject(i));
+            String channelOriginId = jsonObject.getString(StandardName.ORIGIN_ID);
             // 校验数据是否已存在
             Optional<ChannelInfo> channelInfoOp = channelMapper.selectByDeviceIdAndOriginId(gatewayTaskInfo.getDeviceId(), channelOriginId);
             ChannelInfo channelInfo = channelInfoOp.orElseGet(ChannelInfo::new);
@@ -234,15 +225,64 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
                 channelInfo.setUpdateTime(nowTime);
                 channelInfoList.add(channelInfo);
             }
-            // 转换数据
-            jsonObject.put(StandardName.DEVICE_ID, gatewayTaskInfo.getDeviceId());
+            jsonObject.put(StandardName.DEVICE_ID, channelInfo.getDeviceId());
             jsonObject.put(StandardName.CHANNEL_ID, channelInfo.getId());
-            jsonObject.put(StandardName.ORIGIN_ID, channelInfo.getOriginId());
         }
         if (channelInfoList.size() > 0){
             channelMapper.batchSave(channelInfoList);
         }
         customEvent(taskId, objects);
     }
+
+    /**
+     * 保存设备
+     * @param jsonObject
+     * @param gatewayId
+     * @return
+     */
+    protected JSONObject saveDevice(JSONObject jsonObject, Long gatewayId) {
+        String deviceOriginId = jsonObject.getString(StandardName.ORIGIN_ID);
+        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
+        DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
+        if (deviceInfoOp.isEmpty()) {
+            LocalDateTime nowTime = LocalDateTime.now();
+            deviceInfo.setOriginId(deviceOriginId);
+            deviceInfo.setGatewayId(gatewayId);
+            deviceInfo.setUpdateTime(nowTime);
+            deviceInfo.setCreateTime(nowTime);
+            deviceMapper.save(deviceInfo);
+        }
+        jsonObject.put(StandardName.DEVICE_ID, deviceInfo.getId());
+        jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
+        return jsonObject;
+    }
+
+    /**
+     * 设备注册数据转换，必须转换原始id
+     * @param jsonObject
+     * @return
+     */
+    protected abstract JSONObject deviceSignInConvert(JSONObject jsonObject);
+
+    /**
+     * 设备批量注册数据转换，必须转换原始id
+     * @param jsonObject
+     * @return
+     */
+    protected abstract JSONObject deviceBatchSignInConvert(JSONObject jsonObject);
+
+    /**
+     * 设备同步数据转换，必须转换原始id
+     * @param jsonObject
+     * @return
+     */
+    protected abstract JSONObject deviceSyncConvert(JSONObject jsonObject);
+
+    /**
+     * 通道同步数据转换，必须转换原始id
+     * @param jsonObject
+     * @return
+     */
+    protected abstract JSONObject channelSyncConvert(JSONObject jsonObject);
 
 }

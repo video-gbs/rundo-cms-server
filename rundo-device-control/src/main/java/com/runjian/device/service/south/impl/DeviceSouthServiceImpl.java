@@ -112,7 +112,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceInfo.getId()));
             }
         }
-        detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model,firmware,ptzType,nowTime);
+        detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime, username, password);
     }
 
     @Override
