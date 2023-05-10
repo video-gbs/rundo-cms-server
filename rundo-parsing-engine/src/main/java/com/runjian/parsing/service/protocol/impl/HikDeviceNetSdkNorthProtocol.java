@@ -4,21 +4,26 @@ import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.GatewayTaskService;
 import com.runjian.parsing.service.protocol.AbstractNorthProtocol;
-import com.runjian.parsing.service.protocol.SouthProtocol;
 import org.springframework.stereotype.Service;
+
 
 /**
  * @author Miracle
- * @date 2023/4/14 15:05
+ * @date 2023/5/5 14:43
  */
 @Service
-public class DefaultNorthProtocol extends AbstractNorthProtocol {
-    public DefaultNorthProtocol(GatewayTaskService gatewayTaskService, DataBaseService dataBaseService, DeviceMapper deviceMapper) {
+public class HikDeviceNetSdkNorthProtocol extends AbstractNorthProtocol {
+
+
+    public HikDeviceNetSdkNorthProtocol(GatewayTaskService gatewayTaskService, DataBaseService dataBaseService, DeviceMapper deviceMapper) {
         super(gatewayTaskService, dataBaseService, deviceMapper);
     }
 
+
     @Override
     public String getProtocolName() {
-        return SouthProtocol.DEFAULT_PROTOCOL;
+        return " HIK_SDK-DEVICE_NET_V6";
     }
+
+
 }

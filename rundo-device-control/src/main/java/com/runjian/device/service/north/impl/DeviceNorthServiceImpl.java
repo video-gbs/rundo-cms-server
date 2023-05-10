@@ -24,10 +24,8 @@ import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
 import com.runjian.device.vo.response.PostDeviceAddRsp;
-import com.runjian.device.vo.response.VideoPlayRsp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -130,7 +128,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         deviceInfo.setSignState(SignState.TO_BE_SIGN_IN.getCode());
         deviceMapper.save(deviceInfo);
         // 保存详细信息
-        detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime);
+        detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime, username, password);
         return new PostDeviceAddRsp(id, deviceInfo.getOnlineState());
     }
 
@@ -180,7 +178,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         }
         DeviceSyncRsp data = JSONObject.parseObject(JSONObject.toJSONString(response.getData()), DeviceSyncRsp.class);
         LocalDateTime nowTime = LocalDateTime.now();
-        detailBaseService.saveOrUpdateDetail(deviceId, null,  DetailType.DEVICE.getCode(), data.getIp(), data.getPort(), data.getName(), data.getManufacturer(), data.getModel(), data.getFirmware(), data.getPtzType(), nowTime);
+        detailBaseService.saveOrUpdateDetail(deviceId, null,  DetailType.DEVICE.getCode(), data.getIp(), data.getPort(), data.getName(), data.getManufacturer(), data.getModel(), data.getFirmware(), data.getPtzType(), nowTime, data.getUsername(), data.getPassword());
         return data;
     }
 

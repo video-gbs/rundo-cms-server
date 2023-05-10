@@ -24,6 +24,12 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.19.3</version>
+        </dependency>
+
 <!--        <dependency>-->
 <!--            <groupId>com.baomidou</groupId>-->
 <!--            <artifactId>mybatis-plus-boot-starter</artifactId>-->
@@ -41,11 +47,7 @@
             <version>1.4.6</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-boot-starter</artifactId>
-            <version>3.19.3</version>
-        </dependency>
+
 
 
 

@@ -26,7 +26,7 @@ public interface DetailBaseService {
      * @param ptzType 云台类型
      * @param nowTime 更新时间
      */
-    void saveOrUpdateDetail(Long id, String originId, Integer type, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, LocalDateTime nowTime);
+    void saveOrUpdateDetail(Long id, String originId, Integer type, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, LocalDateTime nowTime, String username, String password);
 
     /**
      * 批量保存

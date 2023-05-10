@@ -33,19 +33,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DeviceSouthServiceImpl implements DeviceSouthService {
 
-    @Autowired
+
     private final DeviceMapper deviceMapper;
 
-    @Autowired
+
     private final ChannelMapper channelMapper;
 
-    @Autowired
+
     private final ChannelNorthService channelNorthService;
 
-    @Autowired
+
     private final RedisBaseService redisBaseService;
 
-    @Autowired
+
     private final DetailBaseService detailBaseService;
 
     /**
@@ -112,7 +112,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceInfo.getId()));
             }
         }
-        detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model,firmware,ptzType,nowTime);
+        detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime, username, password);
     }
 
     @Override

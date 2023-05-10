@@ -10,6 +10,7 @@ import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.GatewayTaskService;
+import com.runjian.parsing.service.protocol.AbstractNorthProtocol;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -26,14 +27,8 @@ import java.util.Optional;
 @Service
 public class Gb28181NorthProtocol extends AbstractNorthProtocol {
 
-    private final DataBaseService dataBaseService;
-
-    private final DeviceMapper deviceMapper;
-
     public Gb28181NorthProtocol(GatewayTaskService gatewayTaskService, DataBaseService dataBaseService, DeviceMapper deviceMapper) {
         super(gatewayTaskService, dataBaseService, deviceMapper);
-        this.dataBaseService = dataBaseService;
-        this.deviceMapper = deviceMapper;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.runjian.parsing.service.protocol.impl;
+package com.runjian.parsing.service.protocol;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.IdType;
@@ -21,15 +21,14 @@ import java.util.Optional;
  * @author Miracle
  * @date 2023/1/17 14:14
  */
-@Service
 @RequiredArgsConstructor
 public abstract class AbstractNorthProtocol implements NorthProtocol {
 
-    private final GatewayTaskService gatewayTaskService;
+    protected final GatewayTaskService gatewayTaskService;
 
-    private final DataBaseService dataBaseService;
+    protected final DataBaseService dataBaseService;
 
-    private final DeviceMapper deviceMapper;
+    protected final DeviceMapper deviceMapper;
 
     @Override
     public void msgDistribute(MsgType msgType, Long mainId, IdType idType, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
@@ -65,7 +64,7 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
         }
     }
 
-    public  void deviceDelete(Long deviceId, DeferredResult<CommonResponse<?>> response) {
+    public void deviceDelete(Long deviceId, DeferredResult<CommonResponse<?>> response) {
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(deviceId);
         if (deviceInfoOp.isEmpty()){
             response.setResult(CommonResponse.success(true));
