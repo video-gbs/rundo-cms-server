@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Miracle
@@ -141,7 +142,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         List<DeviceInfo> deviceInfoList = new ArrayList<>(jsonArray.size());
         RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_BATCH_SIGN_IN_LOCK + gatewayId);
         try{
-            lock.lock();
+            lock.lock(15, TimeUnit.SECONDS);
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = deviceBatchSignInConvert(jsonArray.getJSONObject(i));
                 DeviceInfo deviceInfo = getDeviceByNotExist(jsonObject, gatewayId);
@@ -256,7 +257,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         List<ChannelInfo> channelInfoList = new ArrayList<>(objects.size());
         RLock lock = redissonClient.getLock(MarkConstant.REDIS_CHANNEL_SYNC_LOCK + gatewayTaskInfo.getDeviceId());
         try{
-            lock.lock();
+            lock.lock(15, TimeUnit.SECONDS);
             for (int i = 0; i < objects.size(); i++) {
                 // 转换数据
                 JSONObject jsonObject = channelSyncConvert(objects.getJSONObject(i));
