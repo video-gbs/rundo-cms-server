@@ -1,6 +1,8 @@
 package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -121,15 +123,20 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
         // 根据id查取角色信息
         List<Long> oldRoleIds = roleInfoService.getRoleByUserId(dto.getId());
+        log.debug("原始角色信息{}", JSONUtil.toJsonStr(oldRoleIds));
         // 获取本次传输得角色ID
         List<Long> newRoleIds = dto.getRoleIds();
-
-        List<Long> roleIds = new ArrayList<>();
-        roleIds.addAll(oldRoleIds);
-        roleIds.addAll(newRoleIds);
-        // 去重
-        roleIds.stream().distinct();
-
+        log.debug("本次传输得角色信息{}", JSONUtil.toJsonStr(newRoleIds));
+        // 取出要回收的角色权限
+        List<Long> commonRoleIds = newRoleIds.stream().filter(oldRoleIds::contains).collect(Collectors.toList());
+        log.debug("新旧相同的角色信息{}", JSONUtil.toJsonStr(commonRoleIds));
+        // 取出要回收的角色信息
+        List<Long> removeRoleIds = oldRoleIds.stream().filter(item -> !commonRoleIds.contains(item)).collect(Collectors.toList());
+        log.debug("要回收的角色信息{}", JSONUtil.toJsonStr(removeRoleIds));
+        removeRoleUser(removeRoleIds, userInfo.getId());
+        // 取出要新的授权的角色权限
+        List<Long> roleIds = newRoleIds.stream().filter(item -> !commonRoleIds.contains(item)).collect(Collectors.toList());
+        log.debug("新授权的角色信息{}", JSONUtil.toJsonStr(roleIds));
         saveRoleUser(roleIds, userInfo.getId());
     }
 
@@ -239,12 +246,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     private void removeRoleUser(List<Long> roleIds, Long userId) {
-        if (CollUtil.isEmpty(roleIds)) {
-            roleInfoService.removeRoleUser(null, userId);
-        } else {
-            for (Long roleId : roleIds) {
-                roleInfoService.removeRoleUser(roleId, userId);
-            }
+        for (Long roleId : roleIds) {
+            roleInfoService.removeRoleUser(roleId, userId);
         }
     }
 }
