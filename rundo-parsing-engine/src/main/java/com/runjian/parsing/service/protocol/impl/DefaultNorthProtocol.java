@@ -3,6 +3,7 @@ package com.runjian.parsing.service.protocol.impl;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.GatewayTaskService;
+import com.runjian.parsing.service.protocol.AbstractNorthProtocol;
 import com.runjian.parsing.service.protocol.SouthProtocol;
 import org.springframework.stereotype.Service;
 

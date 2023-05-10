@@ -7,6 +7,7 @@ import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.feign.DeviceControlApi;
 import com.runjian.parsing.service.common.GatewayTaskService;
+import com.runjian.parsing.service.protocol.AbstractSouthProtocol;
 import org.redisson.api.RedissonClient;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;

@@ -3,6 +3,7 @@ package com.runjian.parsing.service.protocol.impl;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.GatewayTaskService;
+import com.runjian.parsing.service.protocol.AbstractNorthProtocol;
 import org.springframework.stereotype.Service;
 
 
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
  * @date 2023/5/5 14:43
  */
 @Service
-public class HikDeviceNetSdkNorthProtocol extends AbstractNorthProtocol{
+public class HikDeviceNetSdkNorthProtocol extends AbstractNorthProtocol {
 
 
     public HikDeviceNetSdkNorthProtocol(GatewayTaskService gatewayTaskService, DataBaseService dataBaseService, DeviceMapper deviceMapper) {

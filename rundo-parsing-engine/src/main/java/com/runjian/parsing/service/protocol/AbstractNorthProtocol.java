@@ -1,4 +1,4 @@
-package com.runjian.parsing.service.protocol.impl;
+package com.runjian.parsing.service.protocol;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.IdType;
@@ -21,7 +21,6 @@ import java.util.Optional;
  * @author Miracle
  * @date 2023/1/17 14:14
  */
-@Service
 @RequiredArgsConstructor
 public abstract class AbstractNorthProtocol implements NorthProtocol {
 

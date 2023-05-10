@@ -1,4 +1,4 @@
-package com.runjian.parsing.service.protocol.impl;
+package com.runjian.parsing.service.protocol;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
@@ -40,7 +40,6 @@ import java.util.Optional;
  * @date 2023/1/28 15:45
  */
 @Slf4j
-@Service
 @RequiredArgsConstructor
 public abstract class AbstractSouthProtocol implements SouthProtocol {
 
