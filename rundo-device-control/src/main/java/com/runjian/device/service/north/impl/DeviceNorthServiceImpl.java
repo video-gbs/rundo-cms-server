@@ -100,7 +100,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
         // 获取id
-        Long id = (Long) response.getData();
+        Long id = Long.valueOf(response.getData().toString());
         //判断数据是否存在，存在直接修改注册状态为已添加
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
         if (deviceInfoOp.isPresent()){
