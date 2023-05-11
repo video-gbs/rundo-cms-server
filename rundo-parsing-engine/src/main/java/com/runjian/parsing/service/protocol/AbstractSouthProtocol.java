@@ -246,7 +246,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "返回数据为空");
             return;
         }
-        JSONObject jsonData = JSON.parseObject(data.toString());
+        JSONObject jsonData = JSONObject.parseObject(JSONObject.toJSONString(data));
         JSONArray objects = jsonData.getJSONArray(StandardName.CHANNEL_SYNC_LIST);
         GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
         jsonData.put(StandardName.DEVICE_ID, gatewayTaskInfo.getDeviceId());
