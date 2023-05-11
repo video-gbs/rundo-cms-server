@@ -2,6 +2,8 @@ package com.runjian.parsing.service.protocol.impl;
 
 
 import com.alibaba.fastjson2.JSONObject;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.StandardName;
 import com.runjian.parsing.constant.GatewayType;
 import com.runjian.parsing.dao.ChannelMapper;
@@ -13,6 +15,8 @@ import org.redisson.api.RedissonClient;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
+
+import java.util.Objects;
 
 /**
  * @author Miracle
@@ -37,37 +41,31 @@ public class Gb28181SouthProtocol extends AbstractSouthProtocol {
         return "GB28181";
     }
 
-    @Override
-    public JSONObject channelSyncConvert(JSONObject jsonObject) {
-        int onlineState = jsonObject.getIntValue(CHANNEL_ONLINE_STATE);
-        String channelName = jsonObject.getString(CHANNEL_NAME);
-        String channelIp = jsonObject.getString(IP);
-        String channelOriginId = jsonObject.getString(CHANNEL_ID);
-        jsonObject.put(StandardName.CHANNEL_TYPE, GatewayType.OTHER.getCode());
-        jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
-        jsonObject.put(StandardName.COM_NAME, channelName);
-        jsonObject.put(StandardName.COM_IP, channelIp);
-        jsonObject.put(StandardName.ORIGIN_ID, channelOriginId);
-        return jsonObject;
-    }
+
 
     @Override
     protected JSONObject deviceSignInConvert(JSONObject jsonObject) {
-        String deviceOriginId = jsonObject.getString(DEVICE_ID);
-        jsonObject.put(StandardName.ORIGIN_ID, deviceOriginId);
-        return convertOnlineState(jsonObject);
+        return convertDeviceOnlineState(convertDeviceId(jsonObject));
     }
 
     @Override
     protected JSONObject deviceBatchSignInConvert(JSONObject jsonObject) {
-        String deviceOriginId = jsonObject.getString(DEVICE_ID);
-        jsonObject.put(StandardName.ORIGIN_ID, deviceOriginId);
-        return convertOnlineState(jsonObject);
+        return convertDeviceOnlineState(convertDeviceId(jsonObject));
     }
 
     @Override
     protected JSONObject deviceSyncConvert(JSONObject jsonObject) {
-        return convertOnlineState(jsonObject);
+        return convertDeviceOnlineState(jsonObject);
+    }
+
+    @Override
+    public JSONObject channelSyncConvert(JSONObject jsonObject) {
+        jsonObject = convertChannelId(jsonObject);
+        jsonObject.put(StandardName.CHANNEL_TYPE, GatewayType.OTHER.getCode());
+        jsonObject.put(StandardName.COM_ONLINE_STATE, Integer.parseInt(jsonObject.remove(CHANNEL_ONLINE_STATE).toString()));
+        jsonObject.put(StandardName.COM_NAME, jsonObject.remove(CHANNEL_NAME).toString());
+        jsonObject.put(StandardName.COM_IP, jsonObject.remove(IP).toString());
+        return jsonObject;
     }
 
     /**
@@ -75,9 +73,27 @@ public class Gb28181SouthProtocol extends AbstractSouthProtocol {
      * @param jsonObject
      * @return
      */
-    private JSONObject convertOnlineState(JSONObject jsonObject){
-        int onlineState = jsonObject.getIntValue(DEVICE_ONLINE_STATE);
+    private JSONObject convertDeviceOnlineState(JSONObject jsonObject){
+        int onlineState = Integer.parseInt(jsonObject.remove(DEVICE_ONLINE_STATE).toString());
         jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
+        return jsonObject;
+    }
+
+    private JSONObject convertDeviceId(JSONObject jsonObject){
+        String deviceOriginId = jsonObject.remove(DEVICE_ID).toString();
+        if (Objects.isNull(deviceOriginId)){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "设备原始id缺失");
+        }
+        jsonObject.put(StandardName.ORIGIN_ID, deviceOriginId);
+        return jsonObject;
+    }
+
+    private JSONObject convertChannelId(JSONObject jsonObject){
+        String channelOriginId = jsonObject.remove(CHANNEL_ID).toString();
+        if (Objects.isNull(channelOriginId)){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "设备原始id缺失");
+        }
+        jsonObject.put(StandardName.ORIGIN_ID, channelOriginId);
         return jsonObject;
     }
 }
