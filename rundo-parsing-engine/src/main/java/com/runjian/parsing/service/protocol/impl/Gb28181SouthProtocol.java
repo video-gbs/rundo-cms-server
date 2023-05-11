@@ -3,6 +3,7 @@ package com.runjian.parsing.service.protocol.impl;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.constant.StandardName;
+import com.runjian.parsing.constant.GatewayType;
 import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.feign.DeviceControlApi;
@@ -42,7 +43,7 @@ public class Gb28181SouthProtocol extends AbstractSouthProtocol {
         String channelName = jsonObject.getString(CHANNEL_NAME);
         String channelIp = jsonObject.getString(IP);
         String channelOriginId = jsonObject.getString(CHANNEL_ID);
-        jsonObject.put(StandardName.CHANNEL_TYPE, 5);
+        jsonObject.put(StandardName.CHANNEL_TYPE, GatewayType.OTHER.getCode());
         jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
         jsonObject.put(StandardName.COM_NAME, channelName);
         jsonObject.put(StandardName.COM_IP, channelIp);
