@@ -286,7 +286,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         }finally {
             lock.unlock();
         }
-        customEvent(taskId, objects);
+        customEvent(taskId, jsonData);
     }
 
     /**
@@ -308,28 +308,6 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             deviceMapper.save(deviceInfo);
         }
         return deviceInfo;
-    }
-
-    /**
-     * 构建新的deviceInfo
-     * @param jsonObject
-     * @param gatewayId
-     * @return
-     */
-    protected DeviceInfo getDeviceInfoByNotExist(JSONObject jsonObject, Long gatewayId){
-        String deviceOriginId = jsonObject.getString(StandardName.ORIGIN_ID);
-        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
-        DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
-        if (deviceInfoOp.isEmpty()) {
-            LocalDateTime nowTime = LocalDateTime.now();
-            deviceInfo.setOriginId(deviceOriginId);
-            deviceInfo.setGatewayId(gatewayId);
-            deviceInfo.setUpdateTime(nowTime);
-            deviceInfo.setCreateTime(nowTime);
-            return deviceInfo;
-        }else {
-            return null;
-        }
     }
 
     /**

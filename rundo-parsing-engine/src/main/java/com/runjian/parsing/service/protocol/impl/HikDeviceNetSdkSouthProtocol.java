@@ -46,48 +46,56 @@ public class HikDeviceNetSdkSouthProtocol extends AbstractSouthProtocol {
 
     @Override
     protected JSONObject deviceSignInConvert(JSONObject jsonObject) {
-        String deviceOriginId = jsonObject.getString(DEVICE_ID);
-        if (Objects.isNull(deviceOriginId)){
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "设备原始id缺失");
-        }
-        jsonObject.put(StandardName.ORIGIN_ID, deviceOriginId);
-        int onlineState = jsonObject.getIntValue(DEVICE_ONLINE_STATE);
-        jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
-        return jsonObject;
+        return convertDeviceOnline(convertDeviceId(jsonObject));
     }
 
     @Override
     protected JSONObject deviceBatchSignInConvert(JSONObject jsonObject) {
-        String deviceOriginId = jsonObject.getString(DEVICE_ID);
-        if (Objects.isNull(deviceOriginId)){
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "设备原始id缺失");
-        }
-        jsonObject.put(StandardName.ORIGIN_ID, deviceOriginId);
-        int onlineState = jsonObject.getIntValue(DEVICE_ONLINE_STATE);
-        jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
-        return jsonObject;
+        return convertDeviceOnline(convertDeviceId(jsonObject));
     }
 
     @Override
     protected JSONObject deviceSyncConvert(JSONObject jsonObject) {
-        String deviceOriginId = jsonObject.getString(DEVICE_ID);
-
-        jsonObject.put(StandardName.ORIGIN_ID, deviceOriginId);
-        int onlineState = jsonObject.getIntValue(DEVICE_ONLINE_STATE);
-        jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
-        return jsonObject;
+        return convertDeviceOnline(convertDeviceId(jsonObject));
     }
 
     @Override
     protected JSONObject channelSyncConvert(JSONObject jsonObject) {
-        String channelOriginId = jsonObject.getString(CHANNEL_ID);
+        return convertChannelName(convertChannelOnline(convertChannelId(jsonObject)));
+    }
+
+    private JSONObject convertChannelOnline(JSONObject jsonObject){
+        int onlineState = Integer.parseInt(jsonObject.remove(CHANNEL_ONLINE_STATE).toString());
+        jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
+        return jsonObject;
+    }
+
+    private JSONObject convertDeviceOnline(JSONObject jsonObject){
+        int onlineState = Integer.parseInt(jsonObject.remove(DEVICE_ONLINE_STATE).toString());
+        jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
+        return jsonObject;
+    }
+
+    private JSONObject convertChannelId(JSONObject jsonObject){
+        String channelOriginId = jsonObject.remove(CHANNEL_ID).toString();
         if (Objects.isNull(channelOriginId)){
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "通道原始id缺失");
         }
         jsonObject.put(StandardName.ORIGIN_ID, channelOriginId);
-        int onlineState = jsonObject.getIntValue(CHANNEL_ONLINE_STATE);
-        jsonObject.put(StandardName.COM_ONLINE_STATE, onlineState);
-        String channelName = jsonObject.getString(CHANNEL_NAME);
+        return jsonObject;
+    }
+
+    private JSONObject convertDeviceId(JSONObject jsonObject){
+        String deviceOriginId = jsonObject.remove(DEVICE_ID).toString();
+        if (Objects.isNull(deviceOriginId)){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "设备原始id缺失");
+        }
+        jsonObject.put(StandardName.ORIGIN_ID, deviceOriginId);
+        return jsonObject;
+    }
+
+    private JSONObject convertChannelName(JSONObject jsonObject){
+        String channelName = jsonObject.remove(CHANNEL_NAME).toString();
         jsonObject.put(StandardName.COM_NAME, channelName);
         return jsonObject;
     }
