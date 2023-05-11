@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.constant.AppTypeConstant;
 import com.runjian.auth.server.constant.StatusConstant;
 import com.runjian.auth.server.domain.dto.common.BatchDTO;
 import com.runjian.auth.server.domain.dto.page.PageEditUserSysRoleInfoDTO;
@@ -28,7 +29,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -383,15 +383,15 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<ApiInfo> apiInfoList = apiInfoService.getApiInfoByRoleCode(roleInfo.getRoleCode());
 
         // 应用类
-        List<String> appIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 1);
+        List<String> appIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, AppTypeConstant.FUNC);
         appIds = appIds.stream().distinct().collect(Collectors.toList());
         roleDetailVO.setAppIds(appIds);
         // 配置类
-        List<String> configIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 2);
+        List<String> configIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, AppTypeConstant.CONF);
         configIds = configIds.stream().distinct().collect(Collectors.toList());
         roleDetailVO.setConfigIds(configIds);
         // 运维类
-        List<String> devopsIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, 3);
+        List<String> devopsIds = getAppMenuApi(appInfoList, menuInfoList, apiInfoList, AppTypeConstant.DEV);
         devopsIds = devopsIds.stream().distinct().collect(Collectors.toList());
         roleDetailVO.setDevopsIds(devopsIds);
 
