@@ -126,6 +126,11 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         }
     }
 
+    /**
+     * 设备批量注册
+     * @param gatewayId
+     * @param data
+     */
     public void deviceBatchSignIn(Long gatewayId, Object data) {
         if (Objects.isNull(data)){
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "data为空");
@@ -134,27 +139,20 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         if (jsonArray.size() == 0){
             return;
         }
-        List<DeviceInfo> deviceInfoList = new ArrayList<>(jsonArray.size());
         RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_BATCH_SIGN_IN_LOCK + gatewayId);
+        TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
         try{
             lock.lock(15, TimeUnit.SECONDS);
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = deviceBatchSignInConvert(jsonArray.getJSONObject(i));
-                DeviceInfo deviceInfo = getDeviceInfoByNotExist(jsonObject, gatewayId);
-                if (Objects.nonNull(deviceInfo)){
-                    deviceInfoList.add(deviceInfo);
-                }
+                DeviceInfo deviceInfo = saveDeviceInfo(jsonObject, gatewayId);
                 jsonObject.put(StandardName.DEVICE_ID, deviceInfo.getId());
                 jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
             }
-            TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-            try{
-                deviceMapper.batchSave(deviceInfoList);
-                dataSourceTransactionManager.commit(transactionStatus);
-            }catch (Exception ex){
-                dataSourceTransactionManager.rollback(transactionStatus);
-                throw ex;
-            }
+            dataSourceTransactionManager.commit(transactionStatus);
+        } catch (Exception ex){
+            dataSourceTransactionManager.rollback(transactionStatus);
+            throw ex;
         }finally {
             lock.unlock();
         }
