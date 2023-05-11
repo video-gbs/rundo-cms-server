@@ -28,6 +28,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,42 +86,31 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         role.setRoleCode("ROLE_" + roleId.toString());
         role.setRoleDesc(dto.getRoleDesc());
         roleInfoMapper.insert(role);
-
-        List<String> appIds = dto.getAppIds();
-        List<String> configIds = dto.getConfigIds();
-        List<String> devopsIds = dto.getDevopsIds();
-        // 筛选出与A开头 应用
-        List<Long> appIdList = new ArrayList<>();
-        appIdList.addAll(getAppIds(appIds));
-        appIdList.addAll(getAppIds(configIds));
-        appIdList.addAll(getAppIds(devopsIds));
-        if (CollUtil.isNotEmpty(appIdList)) {
-            for (Long appId : appIdList) {
+        // 处理数据
+        List<String> idsStr = new ArrayList<>();
+        idsStr.addAll(dto.getAppIds());
+        idsStr.addAll(dto.getConfigIds());
+        idsStr.addAll(dto.getDevopsIds());
+        List<String> ids = idsStr.stream().filter(id -> !"".equals(id)).collect(Collectors.toList());
+        List<String> idStr = ids.stream().distinct().collect(Collectors.toList());
+        List<Long> idList = idStr.stream().map(
+                item -> Long.parseLong(StrUtil.removePreAndLowerFirst(item, 2))
+        ).collect(Collectors.toList());
+        List<MenuInfo> menuInfoList = menuInfoService.listByIds(idList);
+        List<Long> appIdList = menuInfoList.stream().map(MenuInfo::getAppId).collect(Collectors.toList());
+        List<Long> uniqueAppIdList = appIdList.stream().distinct().collect(Collectors.toList());
+        if (CollUtil.isNotEmpty(uniqueAppIdList)) {
+            for (Long appId : uniqueAppIdList) {
                 roleInfoMapper.insertRoleApp(roleId, appId);
             }
         }
-
-        // 筛选出与M开头 菜单
-        List<Long> menuIdList = new ArrayList<>();
-        menuIdList.addAll(getMenuIds(appIds));
-        menuIdList.addAll(getMenuIds(configIds));
-        menuIdList.addAll(getMenuIds(devopsIds));
-        if (CollUtil.isNotEmpty(menuIdList)) {
-            for (Long menuId : menuIdList) {
+        List<Long> menuIdList = menuInfoList.stream().map(MenuInfo::getId).collect(Collectors.toList());
+        List<Long> uniqueMenuIdList = menuIdList.stream().distinct().collect(Collectors.toList());
+        if (CollUtil.isNotEmpty(uniqueMenuIdList)) {
+            for (Long menuId : uniqueMenuIdList) {
                 roleInfoMapper.insertRoleMenu(roleId, menuId);
             }
         }
-        // 筛选出与U开头 接口
-        List<Long> apiIdList = new ArrayList<>();
-        apiIdList.addAll(getApiIds(appIds));
-        apiIdList.addAll(getApiIds(configIds));
-        apiIdList.addAll(getApiIds(devopsIds));
-        if (CollUtil.isNotEmpty(apiIdList)) {
-            for (Long apiId : apiIdList) {
-                roleInfoMapper.insertRoleApi(roleId, apiId);
-            }
-        }
-
         List<Long> orgIds = dto.getOrgIds();
         if (CollUtil.isNotEmpty(orgIds)) {
             for (Long orgId : orgIds) {
@@ -134,8 +124,6 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                 roleInfoMapper.insertRoleArea(roleId, areaId);
             }
         }
-
-
     }
 
     @Override
@@ -465,7 +453,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<AppMenuApiTree> appMenuApiTreeList = treeVos.stream().map(
                 item -> {
                     AppMenuApiTree vo = new AppMenuApiTree();
-                    BeanUtils.copyProperties(item,vo);
+                    BeanUtils.copyProperties(item, vo);
                     return vo;
                 }
         ).collect(Collectors.toList());
