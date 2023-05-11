@@ -92,22 +92,22 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         idsStr.addAll(dto.getConfigIds());
         idsStr.addAll(dto.getDevopsIds());
         List<String> ids = idsStr.stream().filter(id -> !"".equals(id)).collect(Collectors.toList());
-        List<String> idStr = ids.stream().distinct().collect(Collectors.toList());
-        List<Long> idList = idStr.stream().map(
+        ids = ids.stream().distinct().collect(Collectors.toList());
+        List<Long> idList = ids.stream().map(
                 item -> Long.parseLong(StrUtil.removePreAndLowerFirst(item, 2))
         ).collect(Collectors.toList());
         List<MenuInfo> menuInfoList = menuInfoService.listByIds(idList);
         List<Long> appIdList = menuInfoList.stream().map(MenuInfo::getAppId).collect(Collectors.toList());
-        List<Long> uniqueAppIdList = appIdList.stream().distinct().collect(Collectors.toList());
-        if (CollUtil.isNotEmpty(uniqueAppIdList)) {
-            for (Long appId : uniqueAppIdList) {
+        appIdList = appIdList.stream().distinct().collect(Collectors.toList());
+        if (CollUtil.isNotEmpty(appIdList)) {
+            for (Long appId : appIdList) {
                 roleInfoMapper.insertRoleApp(roleId, appId);
             }
         }
         List<Long> menuIdList = menuInfoList.stream().map(MenuInfo::getId).collect(Collectors.toList());
-        List<Long> uniqueMenuIdList = menuIdList.stream().distinct().collect(Collectors.toList());
-        if (CollUtil.isNotEmpty(uniqueMenuIdList)) {
-            for (Long menuId : uniqueMenuIdList) {
+        menuIdList = menuIdList.stream().distinct().collect(Collectors.toList());
+        if (CollUtil.isNotEmpty(menuIdList)) {
+            for (Long menuId : menuIdList) {
                 roleInfoMapper.insertRoleMenu(roleId, menuId);
             }
         }
@@ -117,7 +117,6 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                 roleInfoMapper.insertRoleOrg(roleId, orgId);
             }
         }
-
         List<Long> areaIds = dto.getAreaIds();
         if (CollUtil.isNotEmpty(areaIds)) {
             for (Long areaId : areaIds) {
