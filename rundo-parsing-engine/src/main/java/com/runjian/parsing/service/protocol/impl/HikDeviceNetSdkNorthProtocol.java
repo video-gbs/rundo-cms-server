@@ -22,7 +22,7 @@ public class HikDeviceNetSdkNorthProtocol extends AbstractNorthProtocol {
 
     @Override
     public String getProtocolName() {
-        return " HIK_SDK-DEVICE_NET_V6";
+        return "HIK-DEVICE_NET_SDK_V6";
     }
 
 
