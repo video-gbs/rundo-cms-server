@@ -195,12 +195,15 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
         String deviceOriginId = data.toString();
         LocalDateTime nowTime = LocalDateTime.now();
-        DeviceInfo deviceInfo = new DeviceInfo();
-        deviceInfo.setOriginId(deviceOriginId);
-        deviceInfo.setGatewayId(gatewayTaskInfo.getGatewayId());
-        deviceInfo.setCreateTime(nowTime);
-        deviceInfo.setUpdateTime(nowTime);
-        deviceMapper.save(deviceInfo);
+        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayTaskInfo.getGatewayId(), deviceOriginId);
+        DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
+        if (deviceInfoOp.isEmpty()){
+            deviceInfo.setOriginId(deviceOriginId);
+            deviceInfo.setGatewayId(gatewayTaskInfo.getGatewayId());
+            deviceInfo.setCreateTime(nowTime);
+            deviceInfo.setUpdateTime(nowTime);
+            deviceMapper.save(deviceInfo);
+        }
         customEvent(taskId, deviceInfo.getId());
     }
 
