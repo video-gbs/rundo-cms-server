@@ -18,14 +18,12 @@ import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.entity.GatewayTaskInfo;
 import com.runjian.parsing.feign.DeviceControlApi;
 import com.runjian.parsing.service.common.GatewayTaskService;
-import com.runjian.parsing.service.protocol.SouthProtocol;
 import com.runjian.parsing.vo.CommonMqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 
@@ -119,10 +117,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "data为空");
         }
         JSONObject jsonObject = deviceSignInConvert(JSONObject.parseObject(data.toString()));
-        DeviceInfo deviceInfo = getDeviceByNotExist(jsonObject, gatewayId);
-        if (Objects.nonNull(deviceInfo)){
-            deviceMapper.save(deviceInfo);
-        }
+        DeviceInfo deviceInfo = saveDeviceInfo(jsonObject, gatewayId);
         jsonObject.put(StandardName.DEVICE_ID, deviceInfo.getId());
         jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
         CommonResponse<?> commonResponse = deviceControlApi.deviceSignIn(jsonObject);
@@ -145,7 +140,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             lock.lock(15, TimeUnit.SECONDS);
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = deviceBatchSignInConvert(jsonArray.getJSONObject(i));
-                DeviceInfo deviceInfo = getDeviceByNotExist(jsonObject, gatewayId);
+                DeviceInfo deviceInfo = getDeviceInfoByNotExist(jsonObject, gatewayId);
                 if (Objects.nonNull(deviceInfo)){
                     deviceInfoList.add(deviceInfo);
                 }
@@ -299,7 +294,28 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      * @param gatewayId
      * @return
      */
-    protected DeviceInfo getDeviceByNotExist(JSONObject jsonObject, Long gatewayId) {
+    protected DeviceInfo saveDeviceInfo(JSONObject jsonObject, Long gatewayId) {
+        String deviceOriginId = jsonObject.getString(StandardName.ORIGIN_ID);
+        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
+        DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
+        if (deviceInfoOp.isEmpty()) {
+            LocalDateTime nowTime = LocalDateTime.now();
+            deviceInfo.setOriginId(deviceOriginId);
+            deviceInfo.setGatewayId(gatewayId);
+            deviceInfo.setUpdateTime(nowTime);
+            deviceInfo.setCreateTime(nowTime);
+            deviceMapper.save(deviceInfo);
+        }
+        return deviceInfo;
+    }
+
+    /**
+     * 构建新的deviceInfo
+     * @param jsonObject
+     * @param gatewayId
+     * @return
+     */
+    protected DeviceInfo getDeviceInfoByNotExist(JSONObject jsonObject, Long gatewayId){
         String deviceOriginId = jsonObject.getString(StandardName.ORIGIN_ID);
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
         DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
