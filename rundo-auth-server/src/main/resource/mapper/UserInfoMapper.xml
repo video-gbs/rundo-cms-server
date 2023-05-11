@@ -86,37 +86,37 @@
     <select id="selectRelationSysUserInfoById"
             resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
         WITH RECURSIVE org_info_str AS (
-        SELECT id, org_pid, org_name
-        FROM org_info
-        WHERE id = 1
-        UNION ALL
-        SELECT va.id, va.org_pid, CONCAT(ap.org_name,'/',va.org_name) as org_name
-        FROM org_info va
-        INNER JOIN org_info_str ap ON va.org_pid = ap.id
+            SELECT id, org_pid, org_name
+            FROM org_info
+            WHERE id = 1
+            UNION ALL
+            SELECT va.id, va.org_pid, CONCAT(ap.org_name,'/',va.org_name) as org_name
+            FROM org_info va
+                INNER JOIN org_info_str ap ON va.org_pid = ap.id
         )
         SELECT
-        user.id,
-        user.user_account,
-        user.user_name,
-        user.expiry_date_start,
-        user.expiry_date_end,
-        user.job_no,
-        user.address,
-        user.email,
-        user.phone,
-        org.org_name,
-        GROUP_CONCAT(role.role_name SEPARATOR '/') role_name,
-        user.description
+            user.id,
+            user.user_account,
+            user.user_name,
+            user.expiry_date_start,
+            user.expiry_date_end,
+            user.job_no,
+            user.address,
+            user.email,
+            user.phone,
+            org.org_name,
+            GROUP_CONCAT(role.role_name SEPARATOR '/') role_name,
+            user.description
         FROM user_info user
-        LEFT JOIN role_user ru ON ru.user_id = user.id
-        LEFT JOIN role_info role ON role.id = ru.role_id
-        LEFT JOIN org_info_str org ON org.id = user.org_id
+            LEFT JOIN role_user ru ON ru.user_id = user.id
+            LEFT JOIN role_info role ON role.id = ru.role_id
+            LEFT JOIN org_info_str org ON org.id = user.org_id
         <where>
             <if test="userId != null">
                 user.id = #{userId,jdbcType=BIGINT}
             </if>
         </where>
-        GROUP BY user.id
+        GROUP BY user.id,org.org_name
     </select>
 
     <select id="selectUserIdListByRoleId" resultType="java.lang.Long">
