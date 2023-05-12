@@ -195,12 +195,15 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
         String deviceOriginId = data.toString();
         LocalDateTime nowTime = LocalDateTime.now();
-        DeviceInfo deviceInfo = new DeviceInfo();
-        deviceInfo.setOriginId(deviceOriginId);
-        deviceInfo.setGatewayId(gatewayTaskInfo.getGatewayId());
-        deviceInfo.setCreateTime(nowTime);
-        deviceInfo.setUpdateTime(nowTime);
-        deviceMapper.save(deviceInfo);
+        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayTaskInfo.getGatewayId(), deviceOriginId);
+        DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
+        if (deviceInfoOp.isEmpty()){
+            deviceInfo.setOriginId(deviceOriginId);
+            deviceInfo.setGatewayId(gatewayTaskInfo.getGatewayId());
+            deviceInfo.setCreateTime(nowTime);
+            deviceInfo.setUpdateTime(nowTime);
+            deviceMapper.save(deviceInfo);
+        }
         customEvent(taskId, deviceInfo.getId());
     }
 
@@ -243,7 +246,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "返回数据为空");
             return;
         }
-        JSONObject jsonData = JSON.parseObject(data.toString());
+        JSONObject jsonData = JSONObject.parseObject(JSONObject.toJSONString(data));
         JSONArray objects = jsonData.getJSONArray(StandardName.CHANNEL_SYNC_LIST);
         GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
         jsonData.put(StandardName.DEVICE_ID, gatewayTaskInfo.getDeviceId());
@@ -283,7 +286,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         }finally {
             lock.unlock();
         }
-        customEvent(taskId, objects);
+        customEvent(taskId, jsonData);
     }
 
     /**
@@ -305,28 +308,6 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             deviceMapper.save(deviceInfo);
         }
         return deviceInfo;
-    }
-
-    /**
-     * 构建新的deviceInfo
-     * @param jsonObject
-     * @param gatewayId
-     * @return
-     */
-    protected DeviceInfo getDeviceInfoByNotExist(JSONObject jsonObject, Long gatewayId){
-        String deviceOriginId = jsonObject.getString(StandardName.ORIGIN_ID);
-        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
-        DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
-        if (deviceInfoOp.isEmpty()) {
-            LocalDateTime nowTime = LocalDateTime.now();
-            deviceInfo.setOriginId(deviceOriginId);
-            deviceInfo.setGatewayId(gatewayId);
-            deviceInfo.setUpdateTime(nowTime);
-            deviceInfo.setCreateTime(nowTime);
-            return deviceInfo;
-        }else {
-            return null;
-        }
     }
 
     /**

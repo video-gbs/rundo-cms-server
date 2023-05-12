@@ -152,8 +152,6 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         }
         deferredResult.setResult(CommonResponse.success(data));
         gatewayTaskMapper.updateState(taskId, TaskState.SUCCESS.getCode(), null, LocalDateTime.now());
-
-
     }
 
     @Override

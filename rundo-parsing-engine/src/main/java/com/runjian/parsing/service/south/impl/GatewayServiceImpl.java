@@ -63,7 +63,6 @@ public class GatewayServiceImpl implements GatewayService {
             signInRsp.setIsFirstSignIn(false);
         }
         signInRsp.setGatewayId(gatewayInfo.getId());
-        // todo 对请求失败做处理
         PostGatewaySignInReq req = new PostGatewaySignInReq(gatewayInfo, Instant.ofEpochMilli(Long.parseLong(outTime)).atZone(ZoneId.systemDefault()).toLocalDateTime());
         CommonResponse<?> response = deviceControlApi.gatewaySignIn(req);
         if (response.getCode() == 0){

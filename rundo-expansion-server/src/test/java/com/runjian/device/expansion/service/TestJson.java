@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.entity.ChannelPresetLists;
+import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.vo.response.ChannelPresetListsResp;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -56,4 +57,12 @@ public class TestJson {
 
     }
 
+    @Test
+    public void testDto(){
+        DeviceChannelExpansion deviceExpansion = new DeviceChannelExpansion();
+        deviceExpansion.setId(1L);;
+        deviceExpansion.setVideoAreaId(1L);;
+
+        System.out.println(deviceExpansion.toString());
+    }
 }

@@ -63,7 +63,7 @@ public class DeviceExpansion {
     private String transport;
 
     @ApiModelProperty("状态值")
-    private int onlineState;
+    private Integer onlineState;
 
     @ApiModelProperty("经度")
     private String longitude;

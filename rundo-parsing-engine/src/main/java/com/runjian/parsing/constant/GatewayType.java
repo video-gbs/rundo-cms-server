@@ -15,12 +15,12 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 public enum GatewayType {
-
-    DEVICE(1, "DEVICE"),
-    NVR(2, "NVR"),
-    DVR(3, "DVR"),
-    CVR(4, "CVR"),
-    OTHER(5, "OTHER")
+    CHANNEL(1, "DEVICE"),
+    DEVICE(2, "CHANNEL"),
+    NVR(3, "NVR"),
+    DVR(4, "DVR"),
+    CVR(5, "CVR"),
+    OTHER(6, "OTHER")
 
     ;
 
