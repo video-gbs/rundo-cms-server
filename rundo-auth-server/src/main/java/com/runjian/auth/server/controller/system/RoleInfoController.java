@@ -3,6 +3,7 @@ package com.runjian.auth.server.controller.system;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.constant.AddGroup;
+import com.runjian.auth.server.constant.UpdateGroup;
 import com.runjian.auth.server.domain.dto.system.QueryEditUserSysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysRoleInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysRoleInfoDTO;
@@ -58,7 +59,7 @@ public class RoleInfoController {
 
     @PostMapping("/update")
     @ApiOperation("编辑角色")
-    public CommonResponse<?> updateRole(@RequestBody SysRoleInfoDTO dto) {
+    public CommonResponse<?> updateRole(@RequestBody @Validated({UpdateGroup.class})  SysRoleInfoDTO dto) {
         log.info("编辑角色,前端传参{}",JSONUtil.toJsonStr(dto));
         roleInfoService.modifyById(dto);
         return CommonResponse.success();
