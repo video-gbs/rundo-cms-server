@@ -27,7 +27,7 @@ public class Gb28181SouthProtocol extends AbstractSouthProtocol {
 
     private final static String CHANNEL_ID = "channelId";
     private final static String DEVICE_ID = "deviceId";
-    private final static String IP = "ipAddress";
+    private final static String IP = "address";
     private final static String DEVICE_ONLINE_STATE = "online";
     private final static String CHANNEL_ONLINE_STATE = "status";
     private final static String CHANNEL_NAME = "channelName";
