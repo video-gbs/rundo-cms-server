@@ -77,10 +77,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                 item -> {
                     MenuInfoTree bean = new MenuInfoTree();
                     BeanUtils.copyProperties(item, bean);
-                    MyMetaClass metaClass = new MyMetaClass();
-                    metaClass.setTitle(item.getTitle());
-                    metaClass.setIcon(item.getIcon());
-                    bean.setMeta(metaClass);
+                    bean.setMeta(new MyMetaClass(item.getTitle(), item.getIcon()));
                     return bean;
                 }
         ).collect(Collectors.toList());
@@ -113,10 +110,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                             item -> {
                                 MenuInfoTree bean = new MenuInfoTree();
                                 BeanUtils.copyProperties(item, bean);
-                                MyMetaClass metaClass = new MyMetaClass();
-                                metaClass.setTitle(item.getTitle());
-                                metaClass.setIcon(item.getIcon());
-                                bean.setMeta(metaClass);
+                                bean.setMeta(new MyMetaClass(item.getTitle(), item.getIcon()));
                                 return bean;
                             }
                     ).collect(Collectors.toList()), rootId)
@@ -153,10 +147,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                     }
                     MenuInfoTree bean = new MenuInfoTree();
                     BeanUtils.copyProperties(item, bean);
-                    MyMetaClass metaClass = new MyMetaClass();
-                    metaClass.setTitle(item.getTitle());
-                    metaClass.setIcon(item.getIcon());
-                    bean.setMeta(metaClass);
+                    bean.setMeta(new MyMetaClass(item.getTitle(), item.getIcon()));
                     return bean;
                 }
         ).collect(Collectors.toList());
