@@ -19,6 +19,7 @@ import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.ChannelInfo;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
+import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.feign.StreamManageApi;
 import com.runjian.device.service.common.DataBaseService;
@@ -210,6 +211,11 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(channelId);
         if (channelInfoOp.isEmpty()){
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND);
+        }
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfoOp.get().getDeviceId());
+        GatewayInfo gatewayInfo = dataBaseService.getGatewayInfo(deviceInfo.getGatewayId());
+        if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
         }
         channelMapper.deleteById(channelId);
         CommonResponse<?> commonResponse = parsingEngineApi.customEvent(new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_DELETE, 1500L));

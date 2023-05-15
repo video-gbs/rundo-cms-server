@@ -14,6 +14,7 @@ import com.runjian.device.constant.SignState;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.DeviceInfo;
+import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.service.common.DataBaseService;
 import com.runjian.device.service.common.DetailBaseService;
@@ -196,7 +197,10 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备删除失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-
+        GatewayInfo gatewayInfo = dataBaseService.getGatewayInfo(deviceInfo.getGatewayId());
+        if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
+        }
         // 判断网关是否删除成功
         if ((Boolean) response.getData()){
             // 若删除成功，删除所有数据
