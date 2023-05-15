@@ -4,7 +4,6 @@ import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.pig4cloud.captcha.SpecCaptcha;
 import com.pig4cloud.captcha.base.Captcha;
 import com.runjian.auth.server.domain.dto.login.UserInfoDTO;
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -46,13 +45,13 @@ public class LoginServiceImpl implements LoginService {
         String userAccount = dto.getUsername();
         String password = dto.getPassword();
         // 从数据库中查取用户
-        LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(UserInfo::getUserAccount, userAccount);
-        UserInfo userInfo = userInfoService.getOne(queryWrapper);
+        Optional<UserInfo> optionalUserInfo = userInfoService.lambdaQuery()
+                .eq(UserInfo::getUserAccount, userAccount).oneOpt();
         // 校验用户是否存在
-        if (Objects.isNull(userInfo)) {
+        if (optionalUserInfo.isEmpty()) {
             return CommonResponse.failure(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "用户不存在");
         }
+        UserInfo userInfo = optionalUserInfo.get();
         // 校验密码是否正确
         if (!BCrypt.checkpw(password, userInfo.getPassword())) {
             return CommonResponse.failure(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "密码错误");

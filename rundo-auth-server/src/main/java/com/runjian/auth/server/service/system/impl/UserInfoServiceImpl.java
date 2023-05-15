@@ -1,6 +1,8 @@
 package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -109,39 +111,33 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     public void modifyById(SysUserInfoDTO dto) {
         // 根据id查取原始信息
         UserInfo userInfo = userInfoMapper.selectById(dto.getId());
-        // 根据id查取角色信息
-        List<Long> oldRoleIds = roleInfoService.getRoleByUserId(dto.getId());
         // 处理信息
-
         if (!"".equals(dto.getPassword())) {
             String password = passwordUtil.encode(dto.getPassword());
             dto.setPassword(password);
         } else {
             dto.setPassword(userInfo.getPassword());
         }
-
         BeanUtils.copyProperties(dto, userInfo);
         userInfoMapper.updateById(userInfo);
-        // 原始关联角色为空 则提交关联角色为新增
+
+        // 根据id查取角色信息
+        List<Long> oldRoleIds = roleInfoService.getRoleByUserId(dto.getId());
+        log.debug("原始角色信息{}", JSONUtil.toJsonStr(oldRoleIds));
+        // 获取本次传输得角色ID
         List<Long> newRoleIds = dto.getRoleIds();
-        if (CollUtil.isEmpty(oldRoleIds)) {
-            saveRoleUser(newRoleIds, userInfo.getId());
-            return;
-        }
-        // 如果提交的角色为空，则删除所有的角色关联
-        if (CollUtil.isEmpty(newRoleIds)) {
-            removeRoleUser(null, userInfo.getId());
-            return;
-        }
-        // 提交的角色与原始的角色均不为空
-        // 采取Lambda表达式取得相同的角色
-        List<Long> common = oldRoleIds.stream().filter(newRoleIds::contains).collect(Collectors.toList());
-        // 原始角色列表剔除相同部分后删除授权
-        oldRoleIds.removeAll(common);
-        removeRoleUser(oldRoleIds, userInfo.getId());
-        // 新提交的角色列表剔除相同部分后新增授权
-        newRoleIds.removeAll(common);
-        saveRoleUser(newRoleIds, userInfo.getId());
+        log.debug("本次传输得角色信息{}", JSONUtil.toJsonStr(newRoleIds));
+        // 取出要回收的角色权限
+        List<Long> commonRoleIds = newRoleIds.stream().filter(oldRoleIds::contains).collect(Collectors.toList());
+        log.debug("新旧相同的角色信息{}", JSONUtil.toJsonStr(commonRoleIds));
+        // 取出要回收的角色信息
+        List<Long> removeRoleIds = oldRoleIds.stream().filter(item -> !commonRoleIds.contains(item)).collect(Collectors.toList());
+        log.debug("要回收的角色信息{}", JSONUtil.toJsonStr(removeRoleIds));
+        removeRoleUser(removeRoleIds, userInfo.getId());
+        // 取出要新的授权的角色权限
+        List<Long> roleIds = newRoleIds.stream().filter(item -> !commonRoleIds.contains(item)).collect(Collectors.toList());
+        log.debug("新授权的角色信息{}", JSONUtil.toJsonStr(roleIds));
+        saveRoleUser(roleIds, userInfo.getId());
     }
 
     @Override
@@ -250,12 +246,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     }
 
     private void removeRoleUser(List<Long> roleIds, Long userId) {
-        if (CollUtil.isEmpty(roleIds)) {
-            roleInfoService.removeRoleUser(null, userId);
-        } else {
-            for (Long roleId : roleIds) {
-                roleInfoService.removeRoleUser(roleId, userId);
-            }
+        for (Long roleId : roleIds) {
+            roleInfoService.removeRoleUser(roleId, userId);
         }
     }
 }

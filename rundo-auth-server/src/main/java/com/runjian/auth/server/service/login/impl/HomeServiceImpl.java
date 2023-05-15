@@ -3,6 +3,7 @@ package com.runjian.auth.server.service.login.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
+import com.runjian.auth.server.constant.AppTypeConstant;
 import com.runjian.auth.server.domain.entity.AppInfo;
 import com.runjian.auth.server.domain.vo.system.HomeVO;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Jiang4Yu
@@ -51,34 +54,14 @@ public class HomeServiceImpl implements HomeSevice {
         List<AppInfo> appInfoList = CollUtil.distinct(roleAppInfoList);
         log.debug("用户应用列表:{}", JSONUtil.toJsonStr(roleAppInfoList));
         // 分拣应用种类
-        List<SysAppInfoVO> appList = new ArrayList<>();
-        List<SysAppInfoVO> configList = new ArrayList<>();
-        List<SysAppInfoVO> devOpsList = new ArrayList<>();
-        for (AppInfo appInfo : appInfoList) {
-            switch (appInfo.getAppType()) {
-                case 1: {
-                    // 功能应用类
-                    SysAppInfoVO sysAppInfoVO = new SysAppInfoVO();
-                    BeanUtils.copyProperties(appInfo, sysAppInfoVO);
-                    appList.add(sysAppInfoVO);
-                    break;
-                }
-                case 2: {
-                    // 配置类
-                    SysAppInfoVO sysAppInfoVO = new SysAppInfoVO();
-                    BeanUtils.copyProperties(appInfo, sysAppInfoVO);
-                    configList.add(sysAppInfoVO);
-                    break;
-                }
-                case 3: {
-                    // 运维类
-                    SysAppInfoVO sysAppInfoVO = new SysAppInfoVO();
-                    BeanUtils.copyProperties(appInfo, sysAppInfoVO);
-                    devOpsList.add(sysAppInfoVO);
-                    break;
-                }
-            }
-        }
+        Map<Integer, List<SysAppInfoVO>> appTypeMap = appInfoList.stream().map(appInfo -> {
+            SysAppInfoVO sysAppInfoVO = new SysAppInfoVO();
+            BeanUtils.copyProperties(appInfo, sysAppInfoVO);
+            return sysAppInfoVO;
+        }).collect(Collectors.groupingBy(SysAppInfoVO::getAppType));
+        List<SysAppInfoVO> appList = appTypeMap.getOrDefault(AppTypeConstant.FUNC, new ArrayList<>());
+        List<SysAppInfoVO> configList = appTypeMap.getOrDefault(AppTypeConstant.CONF, new ArrayList<>());
+        List<SysAppInfoVO> devOpsList = appTypeMap.getOrDefault(AppTypeConstant.DEV, new ArrayList<>());
         HomeVO homeVO = new HomeVO();
         homeVO.setAppList(appList);
         homeVO.setConfigList(configList);

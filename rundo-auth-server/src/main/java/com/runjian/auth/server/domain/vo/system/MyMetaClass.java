@@ -10,4 +10,9 @@ public class MyMetaClass {
 
     @ApiModelProperty("菜单名称")
     private String title;
+
+    public MyMetaClass(String title, String icon) {
+        this.icon = icon;
+        this.title = title;
+    }
 }
