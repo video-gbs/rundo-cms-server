@@ -83,10 +83,15 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             case CHANNEL_SYNC:
                 channelSync(taskId, data);
                 return;
+            case CHANNEL_DELETE:
+                channelDelete(taskId, data);
+                return;
             default:
                 customEvent(taskId, data);
         }
     }
+
+
 
     @Override
     public void customEvent(Long taskId, Object dataMap) {
@@ -287,6 +292,31 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             lock.unlock();
         }
         customEvent(taskId, jsonData);
+    }
+
+    /**
+     * 通道删除
+     * @param taskId
+     * @param data
+     */
+    private void channelDelete(Long taskId, Object data) {
+        if (Objects.isNull(data)) {
+            gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "通道id为空");
+            return;
+        }
+        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
+        Boolean isSuccess = (Boolean) data;
+        if (isSuccess) {
+            TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+            try{
+                channelMapper.deleteById(gatewayTaskInfo.getChannelId());
+                dataSourceTransactionManager.commit(transactionStatus);
+            }catch (Exception ex){
+                dataSourceTransactionManager.rollback(transactionStatus);
+                throw ex;
+            }
+        }
+        customEvent(taskId, isSuccess);
     }
 
     /**

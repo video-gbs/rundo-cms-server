@@ -54,8 +54,6 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     private final ParsingEngineApi parsingEngineApi;
 
-    private final StreamManageApi streamManageApi;
-
     private final DetailMapper detailMapper;
 
     private final DataBaseService dataBaseService;
@@ -192,7 +190,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
      * @param channelIds 通道id
      */
     @Override
-    public void channelDeleteByChannelId(List<Long> channelIds) {
+    public void channelDeleteByChannelIds(List<Long> channelIds) {
         List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIds);
         if (channelIds.size() > channelInfoList.size()){
             List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
@@ -204,6 +202,40 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             channelInfo.setUpdateTime(LocalDateTime.now());
         }
         channelMapper.batchUpdateSignState(channelInfoList);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void channelDeleteByChannelId(Long channelId) {
+        Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(channelId);
+        if (channelInfoOp.isEmpty()){
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND);
+        }
+        channelMapper.deleteById(channelId);
+        CommonResponse<?> commonResponse = parsingEngineApi.customEvent(new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_DELETE, 1500L));
+        if (commonResponse.isError()){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道删除失败", commonResponse.getData(), commonResponse.getMsg());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+    }
+
+
+    public void channelDeleteByForced(List<Long> channelIds) {
+        List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIds);
+        List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
+        if (channelIds.size() > channelInfoList.size()){
+            channelIds.removeAll(collect);
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("缺失的数据%s", channelIds));
+        }
+        DeviceControlReq deviceControlReq = new DeviceControlReq(null, null, MsgType.CHANNEL_FORCED_DELETE, 1500L);
+        deviceControlReq.putData(StandardName.CHANNEL_ID_LIST, collect);
+        channelMapper.batchDelete(collect);
+        CommonResponse<?> commonResponse = parsingEngineApi.customEvent(deviceControlReq);
+        if (commonResponse.isError()){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道批量删除失败", commonResponse.getData(), commonResponse.getMsg());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+
     }
 
     /**
@@ -236,30 +268,6 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     }
 
-    /**
-     * 获取流信息
-     * @param channelId
-     * @param gatewayId
-     * @param playType
-     * @param recordState
-     * @param autoCloseState
-     * @return
-     */
-    private Map<String, Object> getStreamData(Long channelId, Long gatewayId, PlayType playType, Integer recordState, Integer autoCloseState) {
-        StreamPlayReq streamReq = new StreamPlayReq();
-        streamReq.setChannelId(channelId);
-        streamReq.setGatewayId(gatewayId);
-        streamReq.setPlayType(playType.getCode());
-        streamReq.setRecordState(recordState);
-        streamReq.setAutoCloseState(autoCloseState);
-
-        CommonResponse<Map<String, Object>> response = streamManageApi.applyPlay(streamReq);
-        if (response.isError()){
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", response.getData(), response.getMsg());
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
-        }
-        return response.getData();
-    }
 
     @Override
     public VideoRecordRsp channelRecord(Long channelId, LocalDateTime startTime, LocalDateTime endTime) {

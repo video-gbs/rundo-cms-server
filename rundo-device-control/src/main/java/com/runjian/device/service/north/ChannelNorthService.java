@@ -35,7 +35,13 @@ public interface ChannelNorthService {
      * 通道删除
      * @param channelId 通道id
      */
-    void channelDeleteByChannelId(List<Long> channelId);
+    void channelDeleteByChannelId(Long channelId);
+
+    /**
+     * 通道强制删除
+     * @param channelId 通道id
+     */
+    void channelDeleteByChannelIds(List<Long> channelId);
 
     /**
      * 删除设备Id

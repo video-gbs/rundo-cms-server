@@ -59,9 +59,20 @@ public class ChannelNorthController {
      * @param channelIds 通道id
      * @return
      */
+//    @DeleteMapping("/delete")
+//    public CommonResponse<?> channelDelete(@RequestParam(value = "channelIds") List<Long> channelIds){
+//        channelNorthService.channelDeleteByChannelId(channelIds);
+//        return CommonResponse.success();
+//    }
+
+    /**
+     * 通道强制删除
+     * @param channelId 通道id
+     * @return
+     */
     @DeleteMapping("/delete")
-    public CommonResponse<?> channelDelete(@RequestParam(value = "channelIds") List<Long> channelIds){
-        channelNorthService.channelDeleteByChannelId(channelIds);
+    public CommonResponse<?> channelDelete(@RequestParam Long channelId){
+        channelNorthService.channelDeleteByChannelId(channelId);
         return CommonResponse.success();
     }
 

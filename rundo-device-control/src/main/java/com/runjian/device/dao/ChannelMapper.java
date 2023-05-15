@@ -113,4 +113,16 @@ public interface ChannelMapper {
             " </script> "})
     List<ChannelInfo> selectByDeviceIdAndSignState(Long deviceId, Integer signState);
 
+    @Delete(" <script> " +
+            " DELETE FROM " + CHANNEL_TABLE_NAME +
+            " WHERE id in " +
+            " <foreach collection='channelIdList' item='item' open='(' separator=',' close=')' >#{item}</foreach> " +
+            " </script>")
+    void batchDelete(List<Long> channelIdList);
+
+    @Delete(" <script> " +
+            " DELETE FROM " + CHANNEL_TABLE_NAME +
+            " WHERE id = #{channelId} " +
+            " </script>")
+    void deleteById(Long channelId);
 }

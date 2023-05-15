@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.Range;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 设备添加请求体
@@ -22,7 +23,9 @@ public class DeviceControlReq {
 
     public DeviceControlReq(Long mainId, IdType idType, MsgType msgType, Long outTime){
         this.mainId = mainId;
-        this.idType = idType.getCode();
+        if (Objects.nonNull(idType)){
+            this.idType = idType.getCode();
+        }
         this.msgType = msgType.getMsg();
         this.outTime = outTime;
     }

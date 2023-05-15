@@ -260,5 +260,5 @@ public class StandardName {
     public static final String COM_RESULT = "result";
 
 
-
+    public static final String CHANNEL_ID_LIST = "channelIdList";
 }
