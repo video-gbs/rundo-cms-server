@@ -6,6 +6,7 @@ import com.runjian.common.constant.PtzType;
 import com.runjian.common.constant.StandardName;
 import com.runjian.common.constant.IdType;
 import com.runjian.common.constant.MsgType;
+import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.service.common.DataBaseService;
@@ -27,8 +28,8 @@ import java.util.Optional;
 @Service
 public class Gb28181NorthProtocol extends AbstractNorthProtocol {
 
-    public Gb28181NorthProtocol(GatewayTaskService gatewayTaskService, DataBaseService dataBaseService, DeviceMapper deviceMapper) {
-        super(gatewayTaskService, dataBaseService, deviceMapper);
+    public Gb28181NorthProtocol(GatewayTaskService gatewayTaskService, DataBaseService dataBaseService, DeviceMapper deviceMapper, ChannelMapper channelMapper) {
+        super(gatewayTaskService, dataBaseService, deviceMapper, channelMapper);
     }
 
     @Override
