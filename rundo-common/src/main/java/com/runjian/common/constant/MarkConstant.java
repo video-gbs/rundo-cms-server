@@ -50,5 +50,6 @@ public class MarkConstant {
     public static final String MARK_FEIGN_RESP_CODE = "code";
 
 
-
+    public static final String REDIS_DEVICE_CONTROL_MSG = "DEVICE_CONTROL_MSG:";
+    public static final String REDIS_DEVICE_CONTROL_LOCK = "DEVICE_CONTROL_LOCK:";
 }

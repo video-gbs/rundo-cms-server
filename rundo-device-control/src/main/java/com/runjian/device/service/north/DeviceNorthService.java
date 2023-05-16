@@ -35,9 +35,17 @@ public interface DeviceNorthService {
     DeviceSyncRsp deviceSync(Long deviceId);
 
     /**
-     * 删除设备
+     * 软删除设备
+     * @param deviceId
      */
-    void deviceDelete(Long deviceId);
+    void deviceDeleteSoft(Long deviceId);
+
+    /**
+     * 硬删除设备
+     */
+    void deviceDeleteHard(Long deviceId);
+
+
 
 
 }
