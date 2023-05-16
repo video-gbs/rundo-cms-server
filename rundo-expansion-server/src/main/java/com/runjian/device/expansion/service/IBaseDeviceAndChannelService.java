@@ -7,4 +7,10 @@ public interface IBaseDeviceAndChannelService {
      * @param id
      */
     void removeDevice(Long id);
+
+    /**
+     * 删除设备
+     * @param id
+     */
+    void removeDeviceSoft(Long id);
 }

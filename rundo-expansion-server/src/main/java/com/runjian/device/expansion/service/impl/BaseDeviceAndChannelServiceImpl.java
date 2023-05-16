@@ -2,6 +2,7 @@ package com.runjian.device.expansion.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
+import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
 import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
 import com.runjian.device.expansion.service.IBaseDeviceAndChannelService;
@@ -37,6 +38,20 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     @Override
     public void removeDevice(Long id) {
         deviceExpansionMapper.deleteById(id);
+        //删除对应的通道
+        LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
+        deviceChannelExpansionMapper.delete(lambdaQueryWrapper);
+    }
+
+    @Override
+    public void removeDeviceSoft(Long id) {
+
+        DeviceExpansion deviceExpansion = new DeviceExpansion();
+        deviceExpansion.setId(id);
+        deviceExpansion.setDeleted(1);
+
+        deviceExpansionMapper.updateById(deviceExpansion);
         //删除对应的通道
         LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);

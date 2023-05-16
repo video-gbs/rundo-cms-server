@@ -112,27 +112,27 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
     @Override
     public CommonResponse remove(Long id) {
-        CommonResponse res = deviceControlApi.deleteDevice(id);
+        CommonResponse res = deviceControlApi.deleteDeviceSoft(id);
         if(res.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
             return res;
         }
 
-        baseDeviceAndChannelService.removeDevice(id);
+        baseDeviceAndChannelService.removeDeviceSoft(id);
         return CommonResponse.success();
     }
 
     @Override
     public CommonResponse<Boolean> removeBatch(List<Long> idList) {
         for(Long id : idList){
-            CommonResponse res = deviceControlApi.deleteDevice(id);
+            CommonResponse res = deviceControlApi.deleteDeviceSoft(id);
             if(res.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
                 //调用失败
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
                 throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR,res.getMsg());
             }else {
-                baseDeviceAndChannelService.removeDevice(id);
+                baseDeviceAndChannelService.removeDeviceSoft(id);
             }
         }
 
