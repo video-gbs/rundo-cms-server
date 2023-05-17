@@ -16,7 +16,7 @@ public interface MessageBaseService {
      * @param subMsgType
      * @param dataMap
      */
-    void msgDistribute(SubMsgType subMsgType, Map<Long, Integer> dataMap);
+    void msgDistribute(SubMsgType subMsgType, Map<Long, Object> dataMap);
 
     /**
      * 检查消息是否消费完成

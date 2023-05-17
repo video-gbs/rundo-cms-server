@@ -102,7 +102,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 channelMapper.updateOnlineStateByDeviceId(id, onlineState, nowTime);
                 if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
                     messageBaseService.msgDistribute(SubMsgType.DEVICE_ONLINE_STATE, Map.of(deviceInfo.getId(), CommonEnum.DISABLE.getCode()));
-                    Map<Long, Integer> channelInfoMap = channelMapper.selectByDeviceIdAndSignState(deviceInfo.getId(), SignState.SUCCESS.getCode()).stream().collect(Collectors.toMap(ChannelInfo::getId, channelInfo -> CommonEnum.DISABLE.getCode()));
+                    Map<Long, Object> channelInfoMap = channelMapper.selectByDeviceIdAndSignState(deviceInfo.getId(), SignState.SUCCESS.getCode()).stream().collect(Collectors.toMap(ChannelInfo::getId, channelInfo -> CommonEnum.DISABLE.getCode()));
                     messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelInfoMap);
                 }
             } else if (isAutoSignIn && onlineState.equals(CommonEnum.ENABLE.getCode())){
@@ -131,7 +131,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         List<DetailInfo> detailInfoList = new ArrayList<>(postDeviceSignInReqMap.size());
         List<Long> offLineDeviceIdList = new ArrayList<>(oldDeviceInfoList.size());
         List<Long> needChannelSyncDevice = new ArrayList<>(oldDeviceInfoList.size());
-        Map<Long, Integer> updateDeviceRedisMap = new HashMap<>(postDeviceSignInReqMap.size());
+        Map<Long, Object> updateDeviceRedisMap = new HashMap<>(postDeviceSignInReqMap.size());
 
         LocalDateTime nowTime = LocalDateTime.now();
         // 修改

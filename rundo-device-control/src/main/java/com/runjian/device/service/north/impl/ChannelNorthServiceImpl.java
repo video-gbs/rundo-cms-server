@@ -96,7 +96,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             List<ChannelInfo> channelUpdateList = new ArrayList<>(channelSyncRsp.getNum());
             List<DetailInfo> detailSaveList = new ArrayList<>(channelSyncRsp.getNum());
             List<DetailInfo> detailUpdateList = new ArrayList<>(channelSyncRsp.getNum());
-            Map<Long, Integer> channelOnlineMap = new HashMap<>(channelSyncRsp.getNum());
+            Map<Long, Object> channelOnlineMap = new HashMap<>(channelSyncRsp.getNum());
 
             LocalDateTime nowTime = LocalDateTime.now();
             // 循环通道进行添加
@@ -179,6 +179,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             channelInfo.setUpdateTime(LocalDateTime.now());
         }
         channelMapper.batchUpdateSignState(channelInfoList);
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, JSONObject::toJSONString)));
         messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
     }
 

@@ -36,7 +36,7 @@ public class MessageBaseServiceImpl implements MessageBaseService {
      * @param subMsgType
      * @param data
      */
-    public void msgDistribute(SubMsgType subMsgType, Map<Long, Integer> data){
+    public void msgDistribute(SubMsgType subMsgType, Map<Long, Object> data){
         List<MessageInfo> messageInfoList = messageMapper.selectAllByMsgType(SubMsgType.DEVICE_ONLINE_STATE.getCode());
         for (MessageInfo messageInfo : messageInfoList){
             RLock lock = redissonClient.getLock(messageInfo.getMsgLock());
@@ -56,8 +56,7 @@ public class MessageBaseServiceImpl implements MessageBaseService {
     public boolean checkMsgConsumeFinish(SubMsgType subMsgType, Set<Object> ids) {
         List<MessageInfo> messageInfoList = messageMapper.selectAllByMsgType(SubMsgType.DEVICE_ONLINE_STATE.getCode());
         for (MessageInfo messageInfo : messageInfoList){
-            Map<Object, Object> datas = redissonClient.getMap(messageInfo.getMsgHandle()).getAll(ids);
-            if (datas.size() > 0){
+            if (redissonClient.getMap(messageInfo.getMsgHandle()).getAll(ids).size() > 0){
                 return false;
             }
         }

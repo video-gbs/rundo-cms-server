@@ -115,6 +115,8 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             deviceInfo.setUpdateTime(nowTime);
             deviceMapper.updateSignState(deviceInfo);
             Constant.poolExecutor.execute(() -> channelNorthService.channelSync(id));
+            messageBaseService.msgDistribute(SubMsgType.DEVICE_ADD_STATE, Map.of(deviceInfo.getId(), JSONObject.toJSONString(deviceInfo)));
+            messageBaseService.msgDistribute(SubMsgType.DEVICE_ONLINE_STATE, Map.of(deviceInfo.getId(), deviceInfo.getOnlineState()));
             return new PostDeviceAddRsp(id, deviceInfo.getOnlineState());
         }
         DeviceInfo deviceInfo = new DeviceInfo();
@@ -147,6 +149,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         deviceInfo.setUpdateTime(LocalDateTime.now());
         // 修改设备注册状态
         deviceMapper.updateSignState(deviceInfo);
+        messageBaseService.msgDistribute(SubMsgType.DEVICE_ADD_STATE, Map.of(deviceInfo.getId(), JSONObject.toJSONString(deviceInfo)));
         messageBaseService.msgDistribute(SubMsgType.DEVICE_ONLINE_STATE, Map.of(deviceInfo.getId(), deviceInfo.getOnlineState()));
         // 异步触发通道同步
         Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceId));
