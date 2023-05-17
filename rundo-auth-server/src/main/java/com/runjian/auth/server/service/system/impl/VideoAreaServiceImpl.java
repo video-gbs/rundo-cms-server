@@ -1,11 +1,17 @@
 package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.lang.tree.parser.DefaultNodeParser;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.dto.system.VideoAreaDTO;
 import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
+import com.runjian.auth.server.domain.dto.system.VideoAreaDTO;
 import com.runjian.auth.server.domain.entity.VideoArea;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
@@ -21,9 +27,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -166,13 +170,11 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     @Override
     public List<VideoAreaVO> findByList(Long areaId) {
         List<VideoAreaVO> videoAreaList = findVideoAreaListById(Objects.requireNonNullElse(areaId, 1L));
-        return videoAreaList.stream().map(
-                item -> {
-                    VideoAreaVO videoAreaVO = new VideoAreaVO();
-                    BeanUtils.copyProperties(item, videoAreaVO);
-                    return videoAreaVO;
-                }
-        ).collect(Collectors.toList());
+        return videoAreaList.stream().map(item -> {
+            VideoAreaVO videoAreaVO = new VideoAreaVO();
+            BeanUtils.copyProperties(item, videoAreaVO);
+            return videoAreaVO;
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -186,7 +188,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     }
 
     @Override
-    public List<VideoAreaTree> findByTree() {
+    public List<Tree<Long>> findByTree() {
         List<VideoAreaVO> videoList = findVideoAreaListById(1L);
         List<VideoAreaTree> videoAreaTreeList = videoList.stream().map(
                 item -> {
@@ -195,7 +197,24 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
                     return bean;
                 }
         ).collect(Collectors.toList());
-        return DataTreeUtil.buildTree(videoAreaTreeList, 1L);
+
+        List<TreeNode<Long>> nodeList = new ArrayList<>();
+        videoAreaTreeList.forEach(e -> {
+            TreeNode<Long> treeNode = new TreeNode<>(e.getId(), e.getParentId(), e.getAreaName(), e.getAreaSort());
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("level", e.getLevel());
+            extraMap.put("description", e.getDescription());
+            treeNode.setExtra(extraMap);
+            nodeList.add(treeNode);
+        });
+        TreeNodeConfig treeNodeConfig = new TreeNodeConfig() {{
+            setIdKey("id");
+            setNameKey("areaName");
+            setParentIdKey("areaPid");
+            setChildrenKey("children");
+            setWeightKey("areaSort");
+        }};
+        return TreeUtil.build(nodeList, 0L, treeNodeConfig, new DefaultNodeParser<>());
     }
 
     @Override

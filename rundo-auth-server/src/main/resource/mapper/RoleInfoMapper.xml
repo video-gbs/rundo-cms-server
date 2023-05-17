@@ -27,8 +27,10 @@
                sri.role_name,
                sri.role_desc,
                sri.status,
-               sri.created_by
+               sri.created_by,
+               userInfo.user_account
         FROM role_info sri
+            LEFT JOIN user_info userInfo ON userInfo.id = sri.created_by
         WHERE sri.delete_flag = 0
     </select>
 

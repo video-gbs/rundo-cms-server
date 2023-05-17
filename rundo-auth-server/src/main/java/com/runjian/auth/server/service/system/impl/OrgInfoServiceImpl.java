@@ -1,6 +1,11 @@
 package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.lang.tree.parser.DefaultNodeParser;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -27,8 +32,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -190,7 +194,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     }
 
     @Override
-    public List<SysOrgTree> findByTree() {
+    public List<Tree<Long>> findByTree() {
         LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByAsc(true, OrgInfo::getOrgSort);
         queryWrapper.orderByAsc(true, OrgInfo::getUpdatedTime);
@@ -202,7 +206,28 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
                     return bean;
                 }
         ).collect(Collectors.toList());
-        return DataTreeUtil.buildTree(sysOrgTreeList, 1L);
+        List<TreeNode<Long>> nodeList = new ArrayList<>();
+        sysOrgTreeList.forEach(e -> {
+            TreeNode<Long> treeNode = new TreeNode<>(e.getId(), e.getParentId(), e.getOrgName(), e.getOrgSort());
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("level", e.getLevel());
+            extraMap.put("orgLeader", e.getOrgLeader());
+            extraMap.put("phone", e.getPhone());
+            extraMap.put("email", e.getEmail());
+            extraMap.put("adders", e.getAdders());
+            extraMap.put("description", e.getDescription());
+            treeNode.setExtra(extraMap);
+            nodeList.add(treeNode);
+        });
+        TreeNodeConfig treeNodeConfig = new TreeNodeConfig() {{
+            setIdKey("id");
+            setNameKey("orgName");
+            setParentIdKey("orgPid");
+            setChildrenKey("children");
+            setWeightKey("orgSort");
+        }};
+        return TreeUtil.build(nodeList, 0L, treeNodeConfig, new DefaultNodeParser<>());
+
     }
 
     @Override

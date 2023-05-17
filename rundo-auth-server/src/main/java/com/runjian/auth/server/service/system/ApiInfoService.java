@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.system.QuerySysApiInfoDTO;
@@ -66,7 +67,7 @@ public interface ApiInfoService extends IService<ApiInfo> {
      * @param dto
      * @return
      */
-    List<ApiInfoTree> findByTree(QuerySysApiInfoDTO dto);
+    List<Tree<Long>> findByTree(QuerySysApiInfoDTO dto);
 
     /**
      * 条件查询
@@ -76,7 +77,7 @@ public interface ApiInfoService extends IService<ApiInfo> {
      */
     List<SysApiInfoVO> findByList(QuerySysApiInfoDTO dto);
 
-    List<ApiInfoTree> getTreeByAppId(Long appId);
+    List<Tree<Long>> getTreeByAppId(Long appId);
 
     List<ApiInfo> getApiInfoByRoleCode(String roleCode);
 
