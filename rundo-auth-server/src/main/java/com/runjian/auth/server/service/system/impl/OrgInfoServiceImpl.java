@@ -16,6 +16,7 @@ import com.runjian.auth.server.constant.StatusConstant;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
 import com.runjian.auth.server.domain.entity.OrgInfo;
+import com.runjian.auth.server.domain.entity.RoleOrg;
 import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
@@ -23,6 +24,9 @@ import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.mapper.OrgInfoMapper;
 import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.system.OrgInfoService;
+import com.runjian.auth.server.service.system.RoleAreaService;
+import com.runjian.auth.server.service.system.RoleInfoService;
+import com.runjian.auth.server.service.system.RoleOrgService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
@@ -30,6 +34,7 @@ import com.runjian.common.config.response.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -53,6 +58,14 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     @Autowired
     private UserInfoMapper userInfoMapper;
 
+    @Lazy
+    @Autowired
+    private RoleOrgService roleOrgService;
+
+    @Lazy
+    @Autowired
+    private RoleInfoService roleInfoService;
+
     @Override
     public SysOrgVO save(SysOrgDTO dto) {
         OrgInfo parentInfo = orgInfoMapper.selectById(dto.getOrgPid());
@@ -75,6 +88,10 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         orgInfo.setStatus(StatusConstant.ENABLE);
         log.info("添加部门入库数据信息{}", JSONUtil.toJsonStr(orgInfo));
         orgInfoMapper.insert(orgInfo);
+        RoleOrg roleOrg = new RoleOrg();
+        roleOrg.setOrgId(orgInfo.getId());
+        roleOrg.setRoleId(1L);
+        roleOrgService.save(roleOrg);
         // 回显数据给前端
         SysOrgVO sysOrgVO = new SysOrgVO();
         BeanUtils.copyProperties(orgInfo, sysOrgVO);
@@ -125,6 +142,9 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
             return CommonResponse.failure(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION);
         }
         // 4.删除目标节点
+        LambdaQueryWrapper<RoleOrg> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoleOrg::getOrgId,id);
+        roleOrgService.remove(wrapper);
         return CommonResponse.success(orgInfoMapper.deleteById(id));
     }
 
