@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode
-@TableName("role_area")
+@TableName("role_org")
 @ApiModel(value = "角色组织关联表", description = "角色组织")
 public class RoleOrg {
     /**
