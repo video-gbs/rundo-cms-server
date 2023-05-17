@@ -70,4 +70,21 @@
             </if>
         </where>
     </select>
+
+    <select id="selectAreaList" resultType="com.runjian.auth.server.domain.vo.system.VideoAreaVO">
+        WITH RECURSIVE area_path AS (
+            SELECT a.id, a.area_pid, a.area_name
+            FROM video_area a
+            WHERE a.id IN
+            <foreach collection="areaIdList" item="id" index="index" open="(" close=")" separator=",">
+                #{id,jdbcType=BIGINT}
+            </foreach>
+            UNION ALL
+            SELECT va.id, va.area_pid, va.area_name
+            FROM video_area va
+                JOIN area_path ap ON va.id = ap.area_pid
+        )
+        SELECT *
+        FROM area_path ap
+    </select>
 </mapper>

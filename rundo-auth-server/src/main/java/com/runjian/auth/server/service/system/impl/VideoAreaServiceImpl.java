@@ -1,30 +1,34 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.lang.tree.parser.DefaultNodeParser;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
 import com.runjian.auth.server.domain.dto.system.VideoAreaDTO;
+import com.runjian.auth.server.domain.entity.RoleArea;
+import com.runjian.auth.server.domain.entity.RoleInfo;
 import com.runjian.auth.server.domain.entity.VideoArea;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.feign.ExpansionClient;
 import com.runjian.auth.server.mapper.VideoAraeMapper;
+import com.runjian.auth.server.service.system.RoleAreaService;
+import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.service.system.VideoAreaService;
-import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -48,6 +52,14 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     @Autowired
     private ExpansionClient expansionClient;
 
+    @Lazy
+    @Autowired
+    private RoleAreaService roleAreaService;
+
+    @Lazy
+    @Autowired
+    private RoleInfoService roleInfoService;
+
     @Override
     public VideoAreaVO save(VideoAreaDTO dto) {
         // 确认父级安全区域是否存在
@@ -64,6 +76,10 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         videoAraeMapper.insert(area);
         VideoAreaVO videoAreaVO = findById(area.getId());
         BeanUtils.copyProperties(area, videoAreaVO);
+        RoleArea roleArea = new RoleArea();
+        roleArea.setAreaId(area.getId());
+        roleArea.setRoleId(1L);
+        roleAreaService.save(roleArea);
         return videoAreaVO;
     }
 
@@ -103,6 +119,9 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         // 3.调用远端确认是否可以删除
         CommonResponse<Boolean> commonResponse = expansionClient.videoAreaBindCheck(id);
         if (!commonResponse.getData()) {
+            LambdaQueryWrapper<RoleArea> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(RoleArea::getAreaId, id);
+            roleAreaService.remove(wrapper);
             return CommonResponse.success(videoAraeMapper.deleteById(id));
         } else {
             return CommonResponse.failure(BusinessErrorEnums.VALID_ILLEGAL_AREA_OPERATION);
@@ -189,15 +208,30 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public List<Tree<Long>> findByTree() {
-        List<VideoAreaVO> videoList = findVideoAreaListById(1L);
-        List<VideoAreaTree> videoAreaTreeList = videoList.stream().map(
-                item -> {
-                    VideoAreaTree bean = new VideoAreaTree();
-                    BeanUtils.copyProperties(item, bean);
-                    return bean;
-                }
-        ).collect(Collectors.toList());
-
+        List<String> roleCodeList = StpUtil.getRoleList();
+        LambdaQueryWrapper<RoleInfo> roleInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roleInfoLambdaQueryWrapper.in(RoleInfo::getRoleCode, roleCodeList);
+        List<Long> roleIds = roleInfoService.list(roleInfoLambdaQueryWrapper).stream().map(RoleInfo::getId).collect(Collectors.toList());
+        log.info("{}",JSONUtil.toJsonStr(roleIds));
+        LambdaQueryWrapper<RoleArea> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(RoleArea::getRoleId, roleIds);
+        List<Long> roleAreaIds = roleAreaService.list(queryWrapper).stream().map(RoleArea::getAreaId).collect(Collectors.toList());
+        List<VideoAreaVO> videoList = videoAraeMapper.selectAreaList(roleAreaIds);
+        videoList.stream().distinct();
+        List<VideoAreaTree> videoAreaTreeList = videoList.stream().map(item -> {
+            VideoAreaTree bean = new VideoAreaTree();
+            BeanUtils.copyProperties(item, bean);
+            return bean;
+        }).collect(Collectors.toList());
+        LambdaQueryWrapper<VideoArea> videoAreaLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        videoAreaLambdaQueryWrapper.eq(VideoArea::getCreatedBy, StpUtil.getLoginIdAsLong());
+        List<VideoArea> videoAreaList = videoAraeMapper.selectList(videoAreaLambdaQueryWrapper);
+        videoAreaTreeList.addAll(videoAreaList.stream().map(item ->{
+            VideoAreaTree bean = new VideoAreaTree();
+            BeanUtils.copyProperties(item, bean);
+            return bean;
+        }).collect(Collectors.toList()));
+        videoAreaTreeList.stream().distinct();
         List<TreeNode<Long>> nodeList = new ArrayList<>();
         videoAreaTreeList.forEach(e -> {
             TreeNode<Long> treeNode = new TreeNode<>(e.getId(), e.getParentId(), e.getAreaName(), e.getAreaSort());
