@@ -1,11 +1,16 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.lang.tree.parser.DefaultNodeParser;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.dto.system.SysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
+import com.runjian.auth.server.domain.dto.system.SysApiInfoDTO;
 import com.runjian.auth.server.domain.entity.ApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.ApiInfoTree;
@@ -17,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -74,7 +81,7 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
     }
 
     @Override
-    public List<ApiInfoTree> findByTree(QuerySysApiInfoDTO dto) {
+    public List<Tree<Long>> findByTree(QuerySysApiInfoDTO dto) {
         List<ApiInfo> apiInfoList = getByList(dto);
         List<ApiInfoTree> apiInfoTreeList = apiInfoList.stream().map(
                 item -> {
@@ -83,26 +90,43 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
                     return bean;
                 }
         ).collect(Collectors.toList());
-        return DataTreeUtil.buildTree(apiInfoTreeList, 1L);
-
+        return getTree(apiInfoTreeList);
     }
 
     @Override
-    public List<ApiInfoTree> getTreeByAppId(Long appId) {
+    public List<Tree<Long>> getTreeByAppId(Long appId) {
         LambdaQueryWrapper<ApiInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ApiInfo::getAppId, appId);
         List<ApiInfo> apiInfoList = apiInfoMapper.selectList(queryWrapper);
-        long rootId = 0;
-        List<ApiInfoTree> apiInfoTreeList = new ArrayList<>();
-        for (ApiInfo apiInfo : apiInfoList) {
-            if (apiInfo.getAppId().longValue() == appId && apiInfo.getApiPid() == 1L) {
-                rootId = apiInfo.getId();
-            }
-            ApiInfoTree bean = new ApiInfoTree();
-            BeanUtils.copyProperties(apiInfo, bean);
-            apiInfoTreeList.add(bean);
-        }
-        return DataTreeUtil.buildTree(apiInfoTreeList, rootId);
+        List<ApiInfoTree> apiInfoTreeList = apiInfoList.stream().map(
+                item -> {
+                    ApiInfoTree bean = new ApiInfoTree();
+                    BeanUtils.copyProperties(item, bean);
+                    return bean;
+                }
+        ).collect(Collectors.toList());
+        return getTree(apiInfoTreeList);
+    }
+
+    private List<Tree<Long>> getTree(List<ApiInfoTree> apiInfoTreeList){
+        List<TreeNode<Long>> nodeList = new ArrayList<>();
+        apiInfoTreeList.forEach(e -> {
+            TreeNode<Long> treeNode = new TreeNode<>(e.getId(), e.getParentId(), e.getApiName(), e.getApiSort());
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("level", e.getLevel());
+            extraMap.put("appId", e.getAppId());
+            extraMap.put("url", e.getUrl());
+            treeNode.setExtra(extraMap);
+            nodeList.add(treeNode);
+        });
+        TreeNodeConfig treeNodeConfig = new TreeNodeConfig() {{
+            setIdKey("id");
+            setNameKey("apiName");
+            setParentIdKey("apiPid");
+            setChildrenKey("children");
+            setWeightKey("apiSort");
+        }};
+        return TreeUtil.build(nodeList, 0L, treeNodeConfig, new DefaultNodeParser<>());
     }
 
     @Override

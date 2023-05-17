@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
@@ -24,7 +25,7 @@ public interface OrgInfoService extends IService<OrgInfo> {
 
     SysOrgVO save(SysOrgDTO dto);
 
-    List<SysOrgTree> findByTree();
+    List<Tree<Long>> findByTree();
 
     IPage<OrgInfo> findByPage(Integer pageNum, Integer pageSize);
 

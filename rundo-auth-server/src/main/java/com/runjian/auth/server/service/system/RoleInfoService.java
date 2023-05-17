@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.system.*;
@@ -88,7 +89,7 @@ public interface RoleInfoService extends IService<RoleInfo> {
      * @param appType
      * @return
      */
-    List<AppMenuApiTree> getAppMenuApiTree(Integer appType);
+    List<Tree<Long>> getAppMenuApiTree(Integer appType);
 
     /**
      * 提交关联用户列表

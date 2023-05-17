@@ -1,5 +1,6 @@
 package com.runjian.auth.server.controller.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.constant.AddGroup;
 import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
@@ -65,7 +66,7 @@ public class OrgInfoController {
 
     @GetMapping("/tree")
     @ApiOperation("获取组织机构层级树")
-    public CommonResponse<List<SysOrgTree>> getSysOrgById() {
+    public CommonResponse<List<Tree<Long>>> getSysOrgById() {
         return CommonResponse.success(orgInfoService.findByTree());
     }
 

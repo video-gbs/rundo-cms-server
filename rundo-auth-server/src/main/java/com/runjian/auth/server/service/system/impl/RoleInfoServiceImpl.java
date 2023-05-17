@@ -3,6 +3,11 @@ package com.runjian.auth.server.service.system.impl;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.lang.tree.parser.DefaultNodeParser;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -32,7 +37,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -329,7 +336,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
 
 
     @Override
-    public List<AppMenuApiTree> getAppMenuApiTree(Integer appType) {
+    public List<Tree<Long>> getAppMenuApiTree(Integer appType) {
         // 根据类型查出 涉及的应用并取出appIds
         LambdaQueryWrapper<AppInfo> appInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
         appInfoLambdaQueryWrapper.eq(AppInfo::getAppType, appType);
@@ -375,7 +382,21 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                     return vo;
                 }
         ).collect(Collectors.toList());
-        return DataTreeUtil.buildTree(appMenuApiTreeList, 1L);
+        List<TreeNode<Long>> nodeList = new ArrayList<>();
+        appMenuApiTreeList.forEach(e -> {
+            TreeNode<Long> treeNode = new TreeNode<>(e.getId(), e.getParentId(), e.getName(),null);
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("idStr", e.getIdStr());
+            treeNode.setExtra(extraMap);
+            nodeList.add(treeNode);
+        });
+        TreeNodeConfig treeNodeConfig = new TreeNodeConfig() {{
+            setIdKey("id");
+            setNameKey("name");
+            setParentIdKey("pid");
+            setChildrenKey("children");
+        }};
+        return TreeUtil.build(nodeList, 0L, treeNodeConfig, new DefaultNodeParser<>());
     }
 
     @Override
