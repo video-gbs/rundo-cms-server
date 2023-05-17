@@ -3,6 +3,7 @@ package com.runjian.device.service.common;
 import com.runjian.device.constant.SubMsgType;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -22,6 +23,6 @@ public interface MessageBaseService {
      * @param subMsgType
      * @return
      */
-    boolean checkMsgConsumeFinish(SubMsgType subMsgType, Long id);
+    boolean checkMsgConsumeFinish(SubMsgType subMsgType, Set<Object> ids);
 
 }

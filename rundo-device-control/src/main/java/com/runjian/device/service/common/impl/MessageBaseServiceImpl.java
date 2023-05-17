@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -52,10 +53,11 @@ public class MessageBaseServiceImpl implements MessageBaseService {
     }
 
     @Override
-    public boolean checkMsgConsumeFinish(SubMsgType subMsgType, Long id) {
+    public boolean checkMsgConsumeFinish(SubMsgType subMsgType, Set<Object> ids) {
         List<MessageInfo> messageInfoList = messageMapper.selectAllByMsgType(SubMsgType.DEVICE_ONLINE_STATE.getCode());
         for (MessageInfo messageInfo : messageInfoList){
-            if (Objects.nonNull(redissonClient.getMap(messageInfo.getMsgHandle()).get(id))){
+            Map<Object, Object> datas = redissonClient.getMap(messageInfo.getMsgHandle()).getAll(ids);
+            if (datas.size() > 0){
                 return false;
             }
         }

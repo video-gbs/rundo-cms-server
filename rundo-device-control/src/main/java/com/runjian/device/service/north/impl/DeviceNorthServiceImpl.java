@@ -31,10 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 
 /**
@@ -223,7 +220,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
         }
-        if (messageBaseService.checkMsgConsumeFinish(SubMsgType.DEVICE_DELETE_STATE, deviceId)){
+        if (messageBaseService.checkMsgConsumeFinish(SubMsgType.DEVICE_DELETE_STATE, Set.of(deviceId))){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用使用该数据，请稍后重试");
         }
         // 删除所有数据

@@ -221,7 +221,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
         }
-        if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, channelId)){
+        if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, Set.of(channelId))){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用在使用该数据，请稍后再删除");
         }
         channelMapper.deleteById(channelId);
@@ -246,6 +246,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         }
         if (isDeleteData) {
             List<Long> channelInfoIdList = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
+            messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, new HashSet<>(channelInfoIdList));
             if (channelInfoIdList.size() > 0) {
                 detailMapper.deleteByDcIdsAndType(channelInfoIdList, DetailType.CHANNEL.getCode());
             }
