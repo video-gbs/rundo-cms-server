@@ -203,6 +203,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备软删除失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
+        messageBaseService.msgDistribute(SubMsgType.DEVICE_DELETE_STATE, Map.of(deviceId, CommonEnum.ENABLE.getCode()));
     }
 
     /**
