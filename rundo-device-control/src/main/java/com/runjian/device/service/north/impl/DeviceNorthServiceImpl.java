@@ -220,14 +220,14 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
         }
-        if (messageBaseService.checkMsgConsumeFinish(SubMsgType.DEVICE_DELETE_STATE, Set.of(deviceId))){
+        if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.DEVICE_DELETE_STATE, Set.of(deviceId))){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用使用该数据，请稍后重试");
         }
+        // 删除通道信息
+        channelNorthService.channelDeleteByDeviceId(deviceInfo.getId(), true);
         // 删除所有数据
         detailMapper.deleteByDcIdAndType(deviceInfo.getId(), DetailType.DEVICE.getCode());
         deviceMapper.deleteById(deviceInfo.getId());
-        // 删除通道信息
-        channelNorthService.channelDeleteByDeviceId(deviceInfo.getId(), true);
         // 触发删除流程，返回boolean
         CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE_HARD, 15000L));
         if (response.isError()){

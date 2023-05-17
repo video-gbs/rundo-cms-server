@@ -246,7 +246,9 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         }
         if (isDeleteData) {
             List<Long> channelInfoIdList = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
-            messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, new HashSet<>(channelInfoIdList));
+            if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, new HashSet<>(channelInfoIdList))){
+                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用使用该设备下的通道，请稍后重试");
+            }
             if (channelInfoIdList.size() > 0) {
                 detailMapper.deleteByDcIdsAndType(channelInfoIdList, DetailType.CHANNEL.getCode());
             }
