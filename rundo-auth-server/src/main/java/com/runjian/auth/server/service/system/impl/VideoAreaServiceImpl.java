@@ -4,8 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.dto.system.VideoAreaDTO;
 import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
+import com.runjian.auth.server.domain.dto.system.VideoAreaDTO;
 import com.runjian.auth.server.domain.entity.VideoArea;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
 import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
@@ -166,13 +166,11 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     @Override
     public List<VideoAreaVO> findByList(Long areaId) {
         List<VideoAreaVO> videoAreaList = findVideoAreaListById(Objects.requireNonNullElse(areaId, 1L));
-        return videoAreaList.stream().map(
-                item -> {
-                    VideoAreaVO videoAreaVO = new VideoAreaVO();
-                    BeanUtils.copyProperties(item, videoAreaVO);
-                    return videoAreaVO;
-                }
-        ).collect(Collectors.toList());
+        return videoAreaList.stream().map(item -> {
+            VideoAreaVO videoAreaVO = new VideoAreaVO();
+            BeanUtils.copyProperties(item, videoAreaVO);
+            return videoAreaVO;
+        }).collect(Collectors.toList());
     }
 
     @Override
