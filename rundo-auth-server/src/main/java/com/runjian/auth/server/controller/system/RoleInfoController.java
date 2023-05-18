@@ -12,7 +12,6 @@ import com.runjian.auth.server.domain.dto.system.SysRoleInfoDTO;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
-import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;

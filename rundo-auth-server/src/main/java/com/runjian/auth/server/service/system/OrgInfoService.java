@@ -8,7 +8,6 @@ import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
 import com.runjian.auth.server.domain.entity.OrgInfo;
 import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
-import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.common.config.response.CommonResponse;
 
 import java.util.List;

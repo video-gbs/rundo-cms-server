@@ -16,7 +16,6 @@ import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.ApiInfoTree;
 import com.runjian.auth.server.mapper.ApiInfoMapper;
 import com.runjian.auth.server.service.system.ApiInfoService;
-import com.runjian.auth.server.util.tree.DataTreeUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

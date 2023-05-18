@@ -1,10 +1,10 @@
 package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.runjian.auth.server.domain.entity.ConfigInfo;
-import com.runjian.auth.server.mapper.ConfigInfoMapper;
 import com.runjian.auth.server.domain.dto.system.SysConfigDTO;
+import com.runjian.auth.server.domain.entity.ConfigInfo;
 import com.runjian.auth.server.domain.vo.system.SysConfigVO;
+import com.runjian.auth.server.mapper.ConfigInfoMapper;
 import com.runjian.auth.server.service.system.ConfigInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -27,7 +27,6 @@ import com.runjian.auth.server.mapper.AppMenuApiMapper;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.system.*;
 import com.runjian.auth.server.util.RundoIdUtil;
-import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;

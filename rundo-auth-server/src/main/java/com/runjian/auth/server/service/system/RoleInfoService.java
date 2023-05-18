@@ -9,7 +9,6 @@ import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
-import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
 
 import java.util.List;
 
