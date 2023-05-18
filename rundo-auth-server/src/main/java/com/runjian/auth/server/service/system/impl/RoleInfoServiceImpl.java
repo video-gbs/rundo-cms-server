@@ -23,7 +23,6 @@ import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.*;
 import com.runjian.auth.server.domain.vo.system.*;
 import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
-import com.runjian.auth.server.mapper.AppMenuApiMapper;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.system.*;
 import com.runjian.auth.server.util.RundoIdUtil;
@@ -32,6 +31,7 @@ import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,8 +78,19 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     private RoleInfoMapper roleInfoMapper;
 
     @Autowired
-    private AppMenuApiMapper appMenuApiMapper;
+    private RoleAppService roleAppService;
 
+    @Lazy
+    @Autowired
+    private RoleMenuService roleMenuService;
+
+    @Lazy
+    @Autowired
+    private RoleOrgService roleOrgService;
+
+    @Lazy
+    @Autowired
+    private RoleAreaService roleAreaService;
 
     @Transactional
     @Override
@@ -95,39 +106,59 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         role.setRoleDesc(dto.getRoleDesc());
         roleInfoMapper.insert(role);
         // 处理数据
-        List<Long> idList = Stream.concat(Stream.concat(dto.getAppIds().stream(),dto.getConfigIds().stream()
+        List<Long> idList = Stream.concat(Stream.concat(dto.getAppIds().stream(), dto.getConfigIds().stream()
                 ), dto.getDevopsIds().stream()).filter(id -> !"".equals(id))
                 .distinct()
                 .map(item -> Long.parseLong(StrUtil.removePreAndLowerFirst(item, 2)))
                 .collect(Collectors.toList());
-        if (CollectionUtil.isNotEmpty(idList)){
+        if (CollectionUtil.isNotEmpty(idList)) {
             List<MenuInfo> menuInfoList = menuInfoService.listByIds(idList);
             List<Long> appIdList = menuInfoList.stream().map(MenuInfo::getAppId).collect(Collectors.toList());
             appIdList = appIdList.stream().distinct().collect(Collectors.toList());
             if (CollUtil.isNotEmpty(appIdList)) {
+                List<RoleApp> roleAppList = new ArrayList<>();
                 for (Long appId : appIdList) {
-                    roleInfoMapper.insertRoleApp(roleId, appId);
+                    RoleApp roleApp = new RoleApp();
+                    roleApp.setAppId(appId);
+                    roleApp.setRoleId(roleId);
+                    roleAppList.add(roleApp);
                 }
+                roleAppService.saveBatch(roleAppList);
             }
             List<Long> menuIdList = menuInfoList.stream().map(MenuInfo::getId).collect(Collectors.toList());
             menuIdList = menuIdList.stream().distinct().collect(Collectors.toList());
             if (CollUtil.isNotEmpty(menuIdList)) {
+                List<RoleMenu> roleMenuList = new ArrayList<>();
                 for (Long menuId : menuIdList) {
-                    roleInfoMapper.insertRoleMenu(roleId, menuId);
+                    RoleMenu roleMenu = new RoleMenu();
+                    roleMenu.setMenuId(menuId);
+                    roleMenu.setRoleId(roleId);
+                    roleMenuList.add(roleMenu);
                 }
+                roleMenuService.saveBatch(roleMenuList);
             }
         }
         List<Long> orgIds = dto.getOrgIds();
         if (CollUtil.isNotEmpty(orgIds)) {
+            List<RoleOrg> roleOrgList = new ArrayList<>();
             for (Long orgId : orgIds) {
-                roleInfoMapper.insertRoleOrg(roleId, orgId);
+                RoleOrg roleOrg = new RoleOrg();
+                roleOrg.setOrgId(orgId);
+                roleOrg.setRoleId(roleId);
+                roleOrgList.add(roleOrg);
             }
+            roleOrgService.saveBatch(roleOrgList);
         }
         List<Long> areaIds = dto.getAreaIds();
         if (CollUtil.isNotEmpty(areaIds)) {
+            List<RoleArea> roleAreas = new ArrayList<>();
             for (Long areaId : areaIds) {
-                roleInfoMapper.insertRoleArea(roleId, areaId);
+                RoleArea roleArea = new RoleArea();
+                roleArea.setAreaId(areaId);
+                roleArea.setRoleId(roleId);
+                roleAreas.add(roleArea);
             }
+            roleAreaService.saveBatch(roleAreas);
         }
     }
 
@@ -149,7 +180,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                 item -> Long.parseLong(StrUtil.removePreAndLowerFirst(item, 2))
         ).collect(Collectors.toList());
         // 通过处理后的id列表，查找本次勾选的菜单相关联的应用id
-        if(CollectionUtil.isNotEmpty(idList)){
+        if (CollectionUtil.isNotEmpty(idList)) {
             List<MenuInfo> menuInfoList = menuInfoService.listByIds(idList);
             // 本次新的APPID
             List<Long> newAppIdList = menuInfoList.stream().map(MenuInfo::getAppId).collect(Collectors.toList());
@@ -160,14 +191,22 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             List<Long> notInNewAppIdList = CollectionUtil.subtractToList(oldAppIdList, newAppIdList);
             log.info("原始中有，新提交没有的应用{}", JSONUtil.toJsonStr(notInNewAppIdList));
             log.info("回收的应用{}", JSONUtil.toJsonStr(notInNewAppIdList));
-            for (Long appId : notInNewAppIdList) {
-                roleInfoMapper.removeRoleApp(dto.getId(), appId);
+            if (CollectionUtil.isNotEmpty(notInNewAppIdList)){
+                LambdaQueryWrapper<RoleApp> rmRoleAppList = new LambdaQueryWrapper<>();
+                rmRoleAppList.in(RoleApp::getAppId, notInNewAppIdList).and(wq -> wq.eq(RoleApp::getRoleId, dto.getId()));
+                roleAppService.remove(rmRoleAppList);
             }
             List<Long> notInOldAppIdList = CollectionUtil.subtractToList(newAppIdList, oldAppIdList);
             log.info("授权的应用{}", JSONUtil.toJsonStr(notInOldAppIdList));
+            List<RoleApp> addRoleAppList = new ArrayList<>();
             for (Long appId : notInOldAppIdList) {
-                roleInfoMapper.insertRoleApp(dto.getId(), appId);
+                RoleApp roleApp = new RoleApp();
+                roleApp.setAppId(appId);
+                roleApp.setRoleId(dto.getId());
+                addRoleAppList.add(roleApp);
             }
+            roleAppService.saveBatch(addRoleAppList);
+
             List<Long> oldMenuIdList = menuInfoService.getMenuIdListByRoleId(dto.getId());
             log.info("原始的菜单{}", JSONUtil.toJsonStr(oldMenuIdList));
             List<Long> newMenuIdList = menuInfoList.stream().map(MenuInfo::getId).collect(Collectors.toList());
@@ -175,15 +214,22 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             List<Long> notInNewMenuIdList = CollectionUtil.subtractToList(oldMenuIdList, newMenuIdList);
             log.info("原始中有，新提交没有的菜单{}", JSONUtil.toJsonStr(notInNewMenuIdList));
             log.info("回收的菜单{}", JSONUtil.toJsonStr(notInNewMenuIdList));
-            for (Long menuId : notInNewMenuIdList) {
-                roleInfoMapper.removeRoleMenu(dto.getId(), menuId);
+            if (CollectionUtil.isNotEmpty(notInNewMenuIdList)){
+                LambdaQueryWrapper<RoleMenu> rmRoleMenu = new LambdaQueryWrapper<>();
+                rmRoleMenu.in(RoleMenu::getMenuId, notInNewMenuIdList).and(wq -> wq.eq(RoleMenu::getRoleId, dto.getId()));
+                roleMenuService.remove(rmRoleMenu);
             }
             List<Long> notInOldMenuIdList = CollectionUtil.subtractToList(newMenuIdList, oldMenuIdList);
             log.info("新提交有，原始中没有的菜单{}", JSONUtil.toJsonStr(notInOldMenuIdList));
             log.info("授权的菜单{}", JSONUtil.toJsonStr(notInOldMenuIdList));
-            for (Long orgId : notInOldMenuIdList) {
-                roleInfoMapper.insertRoleMenu(dto.getId(), orgId);
+            List<RoleMenu> addRoleMenu = new ArrayList<>();
+            for (Long menuId : notInOldMenuIdList) {
+                RoleMenu roleMenu = new RoleMenu();
+                roleMenu.setRoleId(dto.getId());
+                roleMenu.setMenuId(menuId);
+                addRoleMenu.add(roleMenu);
             }
+            roleMenuService.saveBatch(addRoleMenu);
         }
         List<Long> oldOrgIdList = orgInfoService.getOrgIdListByRoleId(dto.getId());
         log.info("原始的组织{}", JSONUtil.toJsonStr(oldOrgIdList));
@@ -192,15 +238,24 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<Long> notInNewOrgIdList = CollectionUtil.subtractToList(oldOrgIdList, newOrgIdList);
         log.info("原始中有，新提交没有的组织{}", JSONUtil.toJsonStr(notInNewOrgIdList));
         log.info("回收的组织{}", JSONUtil.toJsonStr(notInNewOrgIdList));
-        for (Long orgId : notInNewOrgIdList) {
-            roleInfoMapper.removeRoleOrg(dto.getId(), orgId);
+        if (CollectionUtil.isNotEmpty(notInNewOrgIdList)){
+            LambdaQueryWrapper<RoleOrg> rmRoleOrg = new LambdaQueryWrapper<>();
+            rmRoleOrg.in(RoleOrg::getOrgId, notInNewOrgIdList).and(wq -> wq.eq(RoleOrg::getRoleId, dto.getId()));
+            roleOrgService.remove(rmRoleOrg);
         }
         List<Long> notInOldOrgIdList = CollectionUtil.subtractToList(newOrgIdList, oldOrgIdList);
         log.info("新提交有，原始中没有的组织{}", JSONUtil.toJsonStr(notInOldOrgIdList));
         log.info("授权的组织{}", JSONUtil.toJsonStr(notInOldOrgIdList));
+
+        List<RoleOrg> addRoleOrg = new ArrayList<>();
         for (Long orgId : notInOldOrgIdList) {
-            roleInfoMapper.insertRoleOrg(dto.getId(), orgId);
+            RoleOrg roleOrg = new RoleOrg();
+            roleOrg.setRoleId(dto.getId());
+            roleOrg.setOrgId(orgId);
+            addRoleOrg.add(roleOrg);
         }
+        roleOrgService.saveBatch(addRoleOrg);
+
         List<Long> oldAreaIdList = videoAreaService.getAreaIdListByRoleId(dto.getId());
         log.info("原始的区域{}", JSONUtil.toJsonStr(oldAreaIdList));
         List<Long> newAreaIdList = dto.getAreaIds();
@@ -208,15 +263,22 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<Long> notInNewAreaIdList = CollectionUtil.subtractToList(oldAreaIdList, newAreaIdList);
         log.info("原始中有，新提交没有的区域{}", JSONUtil.toJsonStr(notInNewAreaIdList));
         log.info("回收的区域{}", JSONUtil.toJsonStr(notInNewAreaIdList));
-        for (Long areaId : notInNewAreaIdList) {
-            roleInfoMapper.removeRoleArea(dto.getId(), areaId);
+        if (CollectionUtil.isNotEmpty(notInNewAreaIdList)){
+            LambdaQueryWrapper<RoleArea> rmRoleArea = new LambdaQueryWrapper<>();
+            rmRoleArea.in(RoleArea::getAreaId, notInNewAreaIdList).and(wq -> wq.in(RoleArea::getRoleId, dto.getId()));
+            roleAreaService.remove(rmRoleArea);
         }
         List<Long> notInOldAreaIdList = CollectionUtil.subtractToList(newAreaIdList, oldAreaIdList);
         log.info("新提交有，原始中没有的区域{}", JSONUtil.toJsonStr(notInOldAreaIdList));
         log.info("授权的区域{}", JSONUtil.toJsonStr(notInOldAreaIdList));
+        List<RoleArea> addRoleArea = new ArrayList<>();
         for (Long areaId : notInOldAreaIdList) {
-            roleInfoMapper.insertRoleArea(dto.getId(), areaId);
+            RoleArea roleArea = new RoleArea();
+            roleArea.setRoleId(dto.getId());
+            roleArea.setAreaId(areaId);
+            addRoleArea.add(roleArea);
         }
+        roleAreaService.saveBatch(addRoleArea);
     }
 
     @Override
@@ -383,7 +445,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         ).collect(Collectors.toList());
         List<TreeNode<Long>> nodeList = new ArrayList<>();
         appMenuApiTreeList.forEach(e -> {
-            TreeNode<Long> treeNode = new TreeNode<>(e.getId(), e.getParentId(), e.getName(),null);
+            TreeNode<Long> treeNode = new TreeNode<>(e.getId(), e.getParentId(), e.getName(), null);
             Map<String, Object> extraMap = new HashMap<>();
             extraMap.put("idStr", e.getIdStr());
             treeNode.setExtra(extraMap);
@@ -501,63 +563,6 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         for (Long userId : dto.getUserIdList()) {
             roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
         }
-    }
-
-    /**
-     * 分拣后获取应用ID
-     *
-     * @param stringList
-     * @return
-     */
-    private List<Long> getAppIds(List<String> stringList) {
-        List<Long> appIds = new ArrayList<>();
-        if (CollUtil.isNotEmpty(stringList)) {
-            for (String str : stringList) {
-                if (str.startsWith("A_")) {
-                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "A_"));
-                    appIds.add(menuId);
-                }
-            }
-        }
-        return appIds;
-    }
-
-    /**
-     * 分拣后获取菜单ID
-     *
-     * @param stringList
-     * @return
-     */
-    private List<Long> getMenuIds(List<String> stringList) {
-        List<Long> menuIds = new ArrayList<>();
-        if (CollUtil.isNotEmpty(stringList)) {
-            for (String str : stringList) {
-                if (str.startsWith("M_")) {
-                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "M_"));
-                    menuIds.add(menuId);
-                }
-            }
-        }
-        return menuIds;
-    }
-
-    /**
-     * 分拣后获取功能接口ID
-     *
-     * @param stringList
-     * @return
-     */
-    private List<Long> getApiIds(List<String> stringList) {
-        List<Long> apiIds = new ArrayList<>();
-        if (CollUtil.isNotEmpty(stringList)) {
-            for (String str : stringList) {
-                if (str.startsWith("U_")) {
-                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "U_"));
-                    apiIds.add(menuId);
-                }
-            }
-        }
-        return apiIds;
     }
 
     private List<String> getAppMenuApi(List<AppInfo> appInfoList,
