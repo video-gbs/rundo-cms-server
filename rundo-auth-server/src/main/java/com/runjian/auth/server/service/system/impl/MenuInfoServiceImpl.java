@@ -195,11 +195,11 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         menuInfo.setMenuSort(dto.getMenuSort());
         menuInfo.setLeaf(0);
         menuInfo.setLevel(parentInfo.getLevel() + 1);
+        menuInfoMapper.insert(menuInfo);
         RoleMenu roleMenu = new RoleMenu();
         roleMenu.setMenuId(menuInfo.getId());
         roleMenu.setRoleId(1L);
         roleMenuService.save(roleMenu);
-        menuInfoMapper.insert(menuInfo);
     }
 
     @Override
