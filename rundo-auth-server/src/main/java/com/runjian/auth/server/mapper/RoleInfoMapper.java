@@ -34,25 +34,9 @@ public interface RoleInfoMapper extends BaseMapper<RoleInfo> {
      */
     List<String> selectRoleCodeByUserId(@Param("userId") Long userId);
 
-    /**
-     * 根据用户ID查询,用户角色id
-     *
-     * @param userId
-     * @return
-     */
-    List<Long> selectRoleByUserId(@Param("userId") Long userId);
-
     Page<SysRoleInfoVO> MySelectPage(PageSysRoleInfoDto page);
 
     Page<EditUserSysRoleInfoVO> selectEditUserSysRoleInfoPage(PageEditUserSysRoleInfoDTO page);
 
     Page<RelationSysUserInfoVO> relationSysUserInfoPage(PageRoleRelationSysUserInfoDTO page);
-
-    /**** 角色用户相关 ****/
-    void insertRoleUser(@Param("roleId") Long roleId, @Param("userId") Long userId);
-
-    void batchInsertRoleUser(@Param("userList") List<BatchDTO> userList);
-
-    void removeRoleUser(@Param("roleId") Long roleId, @Param("userId") Long userId);
-
 }
