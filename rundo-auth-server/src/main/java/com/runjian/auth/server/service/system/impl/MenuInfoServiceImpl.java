@@ -14,10 +14,7 @@ import com.runjian.auth.server.domain.dto.system.HiddenChangeDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusChangeDTO;
 import com.runjian.auth.server.domain.dto.system.SysMenuInfoDTO;
-import com.runjian.auth.server.domain.entity.AppInfo;
-import com.runjian.auth.server.domain.entity.MenuInfo;
-import com.runjian.auth.server.domain.entity.RoleInfo;
-import com.runjian.auth.server.domain.entity.RoleMenu;
+import com.runjian.auth.server.domain.entity.*;
 import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
 import com.runjian.auth.server.domain.vo.system.MyMetaClass;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
@@ -198,6 +195,10 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         menuInfo.setMenuSort(dto.getMenuSort());
         menuInfo.setLeaf(0);
         menuInfo.setLevel(parentInfo.getLevel() + 1);
+        RoleMenu roleMenu = new RoleMenu();
+        roleMenu.setMenuId(menuInfo.getId());
+        roleMenu.setRoleId(1L);
+        roleMenuService.save(roleMenu);
         menuInfoMapper.insert(menuInfo);
     }
 
@@ -212,6 +213,9 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
             throw new BusinessException("不能删除含有下级菜单的菜单");
         }
         // 1.2 无下级菜单才可以删除
+        LambdaQueryWrapper<RoleMenu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoleMenu::getMenuId, id);
+        roleMenuService.remove(wrapper);
         menuInfoMapper.deleteById(id);
     }
 

@@ -12,12 +12,15 @@ import com.runjian.auth.server.domain.dto.system.QuerySysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.SysApiInfoDTO;
 import com.runjian.auth.server.domain.entity.ApiInfo;
+import com.runjian.auth.server.domain.entity.RoleApi;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
 import com.runjian.auth.server.domain.vo.tree.ApiInfoTree;
 import com.runjian.auth.server.mapper.ApiInfoMapper;
 import com.runjian.auth.server.service.system.ApiInfoService;
+import com.runjian.auth.server.service.system.RoleApiService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -40,6 +43,10 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
     @Autowired
     private ApiInfoMapper apiInfoMapper;
 
+    @Lazy
+    @Autowired
+    private RoleApiService roleApiService;
+
     @Override
     public void save(SysApiInfoDTO dto) {
         ApiInfo apiInfo = new ApiInfo();
@@ -49,6 +56,10 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
         apiInfo.setLevel(parentApiInfo.getLevel() + 1);
         apiInfo.setLeaf(0);
         apiInfoMapper.insert(apiInfo);
+        RoleApi roleApi = new RoleApi();
+        roleApi.setRoleId(1L);
+        roleApi.setApiId(apiInfo.getId());
+        roleApiService.save(roleApi);
     }
 
     @Override
