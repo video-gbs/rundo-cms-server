@@ -36,6 +36,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -66,6 +67,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     @Autowired
     private RoleInfoService roleInfoService;
 
+    @Transactional
     @Override
     public SysOrgVO save(SysOrgDTO dto) {
         OrgInfo parentInfo = orgInfoMapper.selectById(dto.getOrgPid());
@@ -98,6 +100,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         return sysOrgVO;
     }
 
+    @Transactional
     @Override
     public void modifyById(SysOrgDTO dto) {
         OrgInfo orgInfo = new OrgInfo();
@@ -113,6 +116,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         return sysOrgVO;
     }
 
+    @Transactional
     @Override
     public CommonResponse erasureById(Long id) {
         // 1.判断是否为根节点

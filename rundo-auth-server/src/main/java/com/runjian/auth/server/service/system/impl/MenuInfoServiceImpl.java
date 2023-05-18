@@ -30,6 +30,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -137,6 +138,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         return menuInfoTreeByAppTypelist;
     }
 
+    @Transactional
     @Override
     public void modifyByStatus(StatusChangeDTO dto) {
         MenuInfo menuInfo = menuInfoMapper.selectById(dto.getId());
@@ -144,6 +146,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         menuInfoMapper.updateById(menuInfo);
     }
 
+    @Transactional
     @Override
     public void modifyByHidden(HiddenChangeDTO dto) {
         MenuInfo menuInfo = menuInfoMapper.selectById(dto.getId());
@@ -181,6 +184,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         return menuInfoMapper.findMenuIdListByRoleId(roleId);
     }
 
+    @Transactional
     @Override
     public void save(SysMenuInfoDTO dto) {
         MenuInfo menuInfo = new MenuInfo();
@@ -202,6 +206,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         roleMenuService.save(roleMenu);
     }
 
+    @Transactional
     @Override
     public void erasureById(Long id) {
         // 1.确认当前需要删除的菜单有无下级菜单
@@ -219,6 +224,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         menuInfoMapper.deleteById(id);
     }
 
+    @Transactional
     @Override
     public void modifyById(SysMenuInfoDTO dto) {
         MenuInfo menuInfo = new MenuInfo();

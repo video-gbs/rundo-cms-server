@@ -9,6 +9,7 @@ import com.runjian.auth.server.service.system.ConfigInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +28,7 @@ public class ConfigInfoServiceImpl extends ServiceImpl<ConfigInfoMapper, ConfigI
     @Autowired
     private ConfigInfoMapper configInfoMapper;
 
+    @Transactional
     @Override
     public void save(SysConfigDTO dto) {
         ConfigInfo configInfo = new ConfigInfo();
@@ -34,6 +36,7 @@ public class ConfigInfoServiceImpl extends ServiceImpl<ConfigInfoMapper, ConfigI
         configInfoMapper.insert(configInfo);
     }
 
+    @Transactional
     @Override
     public void modifyById(SysConfigDTO dto) {
         ConfigInfo configInfo = new ConfigInfo();

@@ -166,6 +166,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
     }
 
+    @Transactional
     @Override
     public void modifyById(SysRoleInfoDTO dto) {
         // 1 查取原始角色基础信息
@@ -319,16 +320,25 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         return roleInfoMapper.MySelectPage(page);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
+        LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(RoleUser::getRoleId, id);
+        roleUserService.remove(queryWrapper);
         roleInfoMapper.deleteById(id);
     }
 
+    @Transactional
     @Override
     public void erasureBatch(List<Long> ids) {
+        LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(RoleUser::getRoleId, ids);
+        roleUserService.remove(queryWrapper);
         roleInfoMapper.deleteBatchIds(ids);
     }
 
+    @Transactional
     @Override
     public void modifyByStatus(StatusSysRoleInfoDTO dto) {
         RoleInfo roleInfo = roleInfoMapper.selectById(dto.getId());
@@ -464,6 +474,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         return TreeUtil.build(nodeList, 0L, treeNodeConfig, new DefaultNodeParser<>());
     }
 
+    @Transactional
     @Override
     public void addRelationUser(RoleRelationUserDTO dto) {
         // 1.根据角色ID查取以往关联的用户列表
@@ -507,7 +518,6 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             roleUserList.add(roleUser);
         }
         roleUserService.saveBatch(roleUserList);
-
     }
 
     @Override
@@ -534,6 +544,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
 
     }
 
+    @Transactional
     @Override
     public void rightRelationUser(RoleRelationUserDTO dto) {
         if (CollUtil.isEmpty(dto.getUserIdList())) {
@@ -552,6 +563,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
     }
 
+    @Transactional
     @Override
     public void leftRelationUser(RoleRelationUserDTO dto) {
         if (CollUtil.isEmpty(dto.getUserIdList())) {
@@ -583,11 +595,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         roleUserService.saveBatch(roleUserList);
     }
 
-    private List<String> getAppMenuApi(List<AppInfo> appInfoList,
-                                       List<MenuInfo> menuInfoList,
-                                       List<ApiInfo> apiInfoList,
-                                       Integer appType
-    ) {
+    private List<String> getAppMenuApi(List<AppInfo> appInfoList, List<MenuInfo> menuInfoList, List<ApiInfo> apiInfoList, Integer appType) {
 
         // 1.根据 appType 筛选出符合要求的应用
         List<AppInfo> myAppInfoList = new ArrayList<>();
@@ -635,6 +643,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         return resultList;
     }
 
+    @Transactional
     @Override
     public void saveRoleUser(Long roleId, Long userId) {
         RoleUser roleUser = new RoleUser();

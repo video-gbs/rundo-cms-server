@@ -21,6 +21,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
     @Autowired
     private RoleAppService roleAppService;
 
+    @Transactional
     @Override
     public void save(SysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
@@ -91,6 +93,7 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
 
     }
 
+    @Transactional
     @Override
     public void modifyById(SysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
@@ -99,6 +102,7 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         // 修改菜单表中的虚拟根
     }
 
+    @Transactional
     @Override
     public void erasureById(Long id) {
         LambdaQueryWrapper<RoleApp> wrapper = new LambdaQueryWrapper<>();
@@ -125,6 +129,7 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         return appInfoMapper.MySelectPage(page);
     }
 
+    @Transactional
     @Override
     public void modifyByStatus(StatusSysAppInfoDTO dto) {
         AppInfo appInfo = appInfoMapper.selectById(dto.getId());

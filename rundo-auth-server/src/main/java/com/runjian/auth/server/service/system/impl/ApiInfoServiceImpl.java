@@ -22,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
     @Autowired
     private RoleApiService roleApiService;
 
+    @Transactional
     @Override
     public void save(SysApiInfoDTO dto) {
         ApiInfo apiInfo = new ApiInfo();
@@ -62,6 +64,7 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
         roleApiService.save(roleApi);
     }
 
+    @Transactional
     @Override
     public void modifyById(SysApiInfoDTO dto) {
         ApiInfo apiInfo = new ApiInfo();
@@ -83,6 +86,7 @@ public class ApiInfoServiceImpl extends ServiceImpl<ApiInfoMapper, ApiInfo> impl
         return apiInfoMapper.MySelectPage(page);
     }
 
+    @Transactional
     @Override
     public void modifyByStatus(StatusSysApiInfoDTO dto) {
         ApiInfo apiInfo = apiInfoMapper.selectById(dto.getId());

@@ -13,6 +13,7 @@ import com.runjian.auth.server.service.system.DictInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class DictInfoServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> i
     @Autowired
     private DictInfoMapper dictInfoMapper;
 
+    @Transactional
     @Override
     public void save(SysDictDTO dto) {
         DictInfo dictInfo = new DictInfo();
@@ -39,6 +41,7 @@ public class DictInfoServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> i
         dictInfoMapper.insert(dictInfo);
     }
 
+    @Transactional
     @Override
     public void modifyById(SysDictDTO dto) {
         DictInfo dictInfo = dictInfoMapper.selectById(dto.getId());
@@ -94,6 +97,7 @@ public class DictInfoServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> i
         return dictInfoMapper.MySelectPage(page);
     }
 
+    @Transactional
     @Override
     public void erasureById(Long id) {
         dictInfoMapper.deleteById(id);
