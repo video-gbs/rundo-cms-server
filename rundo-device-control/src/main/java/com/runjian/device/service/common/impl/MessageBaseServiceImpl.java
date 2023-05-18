@@ -39,16 +39,7 @@ public class MessageBaseServiceImpl implements MessageBaseService {
     public void msgDistribute(SubMsgType subMsgType, Map<Long, Object> data){
         List<MessageInfo> messageInfoList = messageMapper.selectAllByMsgType(subMsgType.getCode());
         for (MessageInfo messageInfo : messageInfoList){
-            RLock lock = redissonClient.getLock(messageInfo.getMsgLock());
-            try {
-                lock.lock(3, TimeUnit.SECONDS);
-                redissonClient.getMap(messageInfo.getMsgHandle()).putAll(data);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
-            } finally {
-                lock.unlock();
-            }
+            redissonClient.getMap(messageInfo.getMsgHandle()).putAll(data);
         }
     }
 
