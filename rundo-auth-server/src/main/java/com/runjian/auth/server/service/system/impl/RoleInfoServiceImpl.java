@@ -23,16 +23,15 @@ import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.*;
 import com.runjian.auth.server.domain.vo.system.*;
 import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
-import com.runjian.auth.server.mapper.AppMenuApiMapper;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.system.*;
 import com.runjian.auth.server.util.RundoIdUtil;
-import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,8 +78,23 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     private RoleInfoMapper roleInfoMapper;
 
     @Autowired
-    private AppMenuApiMapper appMenuApiMapper;
+    private RoleAppService roleAppService;
 
+    @Lazy
+    @Autowired
+    private RoleMenuService roleMenuService;
+
+    @Lazy
+    @Autowired
+    private RoleOrgService roleOrgService;
+
+    @Lazy
+    @Autowired
+    private RoleAreaService roleAreaService;
+
+    @Lazy
+    @Autowired
+    private RoleUserService roleUserService;
 
     @Transactional
     @Override
@@ -96,42 +110,63 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         role.setRoleDesc(dto.getRoleDesc());
         roleInfoMapper.insert(role);
         // 处理数据
-        List<Long> idList = Stream.concat(Stream.concat(dto.getAppIds().stream(),dto.getConfigIds().stream()
+        List<Long> idList = Stream.concat(Stream.concat(dto.getAppIds().stream(), dto.getConfigIds().stream()
                 ), dto.getDevopsIds().stream()).filter(id -> !"".equals(id))
                 .distinct()
                 .map(item -> Long.parseLong(StrUtil.removePreAndLowerFirst(item, 2)))
                 .collect(Collectors.toList());
-        if (CollectionUtil.isNotEmpty(idList)){
+        if (CollectionUtil.isNotEmpty(idList)) {
             List<MenuInfo> menuInfoList = menuInfoService.listByIds(idList);
             List<Long> appIdList = menuInfoList.stream().map(MenuInfo::getAppId).collect(Collectors.toList());
             appIdList = appIdList.stream().distinct().collect(Collectors.toList());
             if (CollUtil.isNotEmpty(appIdList)) {
+                List<RoleApp> roleAppList = new ArrayList<>();
                 for (Long appId : appIdList) {
-                    roleInfoMapper.insertRoleApp(roleId, appId);
+                    RoleApp roleApp = new RoleApp();
+                    roleApp.setAppId(appId);
+                    roleApp.setRoleId(roleId);
+                    roleAppList.add(roleApp);
                 }
+                roleAppService.saveBatch(roleAppList);
             }
             List<Long> menuIdList = menuInfoList.stream().map(MenuInfo::getId).collect(Collectors.toList());
             menuIdList = menuIdList.stream().distinct().collect(Collectors.toList());
             if (CollUtil.isNotEmpty(menuIdList)) {
+                List<RoleMenu> roleMenuList = new ArrayList<>();
                 for (Long menuId : menuIdList) {
-                    roleInfoMapper.insertRoleMenu(roleId, menuId);
+                    RoleMenu roleMenu = new RoleMenu();
+                    roleMenu.setMenuId(menuId);
+                    roleMenu.setRoleId(roleId);
+                    roleMenuList.add(roleMenu);
                 }
+                roleMenuService.saveBatch(roleMenuList);
             }
         }
         List<Long> orgIds = dto.getOrgIds();
         if (CollUtil.isNotEmpty(orgIds)) {
+            List<RoleOrg> roleOrgList = new ArrayList<>();
             for (Long orgId : orgIds) {
-                roleInfoMapper.insertRoleOrg(roleId, orgId);
+                RoleOrg roleOrg = new RoleOrg();
+                roleOrg.setOrgId(orgId);
+                roleOrg.setRoleId(roleId);
+                roleOrgList.add(roleOrg);
             }
+            roleOrgService.saveBatch(roleOrgList);
         }
         List<Long> areaIds = dto.getAreaIds();
         if (CollUtil.isNotEmpty(areaIds)) {
+            List<RoleArea> roleAreas = new ArrayList<>();
             for (Long areaId : areaIds) {
-                roleInfoMapper.insertRoleArea(roleId, areaId);
+                RoleArea roleArea = new RoleArea();
+                roleArea.setAreaId(areaId);
+                roleArea.setRoleId(roleId);
+                roleAreas.add(roleArea);
             }
+            roleAreaService.saveBatch(roleAreas);
         }
     }
 
+    @Transactional
     @Override
     public void modifyById(SysRoleInfoDTO dto) {
         // 1 查取原始角色基础信息
@@ -150,7 +185,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
                 item -> Long.parseLong(StrUtil.removePreAndLowerFirst(item, 2))
         ).collect(Collectors.toList());
         // 通过处理后的id列表，查找本次勾选的菜单相关联的应用id
-        if(CollectionUtil.isNotEmpty(idList)){
+        if (CollectionUtil.isNotEmpty(idList)) {
             List<MenuInfo> menuInfoList = menuInfoService.listByIds(idList);
             // 本次新的APPID
             List<Long> newAppIdList = menuInfoList.stream().map(MenuInfo::getAppId).collect(Collectors.toList());
@@ -161,14 +196,22 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             List<Long> notInNewAppIdList = CollectionUtil.subtractToList(oldAppIdList, newAppIdList);
             log.info("原始中有，新提交没有的应用{}", JSONUtil.toJsonStr(notInNewAppIdList));
             log.info("回收的应用{}", JSONUtil.toJsonStr(notInNewAppIdList));
-            for (Long appId : notInNewAppIdList) {
-                roleInfoMapper.removeRoleApp(dto.getId(), appId);
+            if (CollectionUtil.isNotEmpty(notInNewAppIdList)) {
+                LambdaQueryWrapper<RoleApp> rmRoleAppList = new LambdaQueryWrapper<>();
+                rmRoleAppList.in(RoleApp::getAppId, notInNewAppIdList).and(wq -> wq.eq(RoleApp::getRoleId, dto.getId()));
+                roleAppService.remove(rmRoleAppList);
             }
             List<Long> notInOldAppIdList = CollectionUtil.subtractToList(newAppIdList, oldAppIdList);
             log.info("授权的应用{}", JSONUtil.toJsonStr(notInOldAppIdList));
+            List<RoleApp> addRoleAppList = new ArrayList<>();
             for (Long appId : notInOldAppIdList) {
-                roleInfoMapper.insertRoleApp(dto.getId(), appId);
+                RoleApp roleApp = new RoleApp();
+                roleApp.setAppId(appId);
+                roleApp.setRoleId(dto.getId());
+                addRoleAppList.add(roleApp);
             }
+            roleAppService.saveBatch(addRoleAppList);
+
             List<Long> oldMenuIdList = menuInfoService.getMenuIdListByRoleId(dto.getId());
             log.info("原始的菜单{}", JSONUtil.toJsonStr(oldMenuIdList));
             List<Long> newMenuIdList = menuInfoList.stream().map(MenuInfo::getId).collect(Collectors.toList());
@@ -176,15 +219,22 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             List<Long> notInNewMenuIdList = CollectionUtil.subtractToList(oldMenuIdList, newMenuIdList);
             log.info("原始中有，新提交没有的菜单{}", JSONUtil.toJsonStr(notInNewMenuIdList));
             log.info("回收的菜单{}", JSONUtil.toJsonStr(notInNewMenuIdList));
-            for (Long menuId : notInNewMenuIdList) {
-                roleInfoMapper.removeRoleMenu(dto.getId(), menuId);
+            if (CollectionUtil.isNotEmpty(notInNewMenuIdList)) {
+                LambdaQueryWrapper<RoleMenu> rmRoleMenu = new LambdaQueryWrapper<>();
+                rmRoleMenu.in(RoleMenu::getMenuId, notInNewMenuIdList).and(wq -> wq.eq(RoleMenu::getRoleId, dto.getId()));
+                roleMenuService.remove(rmRoleMenu);
             }
             List<Long> notInOldMenuIdList = CollectionUtil.subtractToList(newMenuIdList, oldMenuIdList);
             log.info("新提交有，原始中没有的菜单{}", JSONUtil.toJsonStr(notInOldMenuIdList));
             log.info("授权的菜单{}", JSONUtil.toJsonStr(notInOldMenuIdList));
-            for (Long orgId : notInOldMenuIdList) {
-                roleInfoMapper.insertRoleMenu(dto.getId(), orgId);
+            List<RoleMenu> addRoleMenu = new ArrayList<>();
+            for (Long menuId : notInOldMenuIdList) {
+                RoleMenu roleMenu = new RoleMenu();
+                roleMenu.setRoleId(dto.getId());
+                roleMenu.setMenuId(menuId);
+                addRoleMenu.add(roleMenu);
             }
+            roleMenuService.saveBatch(addRoleMenu);
         }
         List<Long> oldOrgIdList = orgInfoService.getOrgIdListByRoleId(dto.getId());
         log.info("原始的组织{}", JSONUtil.toJsonStr(oldOrgIdList));
@@ -193,15 +243,24 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<Long> notInNewOrgIdList = CollectionUtil.subtractToList(oldOrgIdList, newOrgIdList);
         log.info("原始中有，新提交没有的组织{}", JSONUtil.toJsonStr(notInNewOrgIdList));
         log.info("回收的组织{}", JSONUtil.toJsonStr(notInNewOrgIdList));
-        for (Long orgId : notInNewOrgIdList) {
-            roleInfoMapper.removeRoleOrg(dto.getId(), orgId);
+        if (CollectionUtil.isNotEmpty(notInNewOrgIdList)) {
+            LambdaQueryWrapper<RoleOrg> rmRoleOrg = new LambdaQueryWrapper<>();
+            rmRoleOrg.in(RoleOrg::getOrgId, notInNewOrgIdList).and(wq -> wq.eq(RoleOrg::getRoleId, dto.getId()));
+            roleOrgService.remove(rmRoleOrg);
         }
         List<Long> notInOldOrgIdList = CollectionUtil.subtractToList(newOrgIdList, oldOrgIdList);
         log.info("新提交有，原始中没有的组织{}", JSONUtil.toJsonStr(notInOldOrgIdList));
         log.info("授权的组织{}", JSONUtil.toJsonStr(notInOldOrgIdList));
+
+        List<RoleOrg> addRoleOrg = new ArrayList<>();
         for (Long orgId : notInOldOrgIdList) {
-            roleInfoMapper.insertRoleOrg(dto.getId(), orgId);
+            RoleOrg roleOrg = new RoleOrg();
+            roleOrg.setRoleId(dto.getId());
+            roleOrg.setOrgId(orgId);
+            addRoleOrg.add(roleOrg);
         }
+        roleOrgService.saveBatch(addRoleOrg);
+
         List<Long> oldAreaIdList = videoAreaService.getAreaIdListByRoleId(dto.getId());
         log.info("原始的区域{}", JSONUtil.toJsonStr(oldAreaIdList));
         List<Long> newAreaIdList = dto.getAreaIds();
@@ -209,15 +268,22 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<Long> notInNewAreaIdList = CollectionUtil.subtractToList(oldAreaIdList, newAreaIdList);
         log.info("原始中有，新提交没有的区域{}", JSONUtil.toJsonStr(notInNewAreaIdList));
         log.info("回收的区域{}", JSONUtil.toJsonStr(notInNewAreaIdList));
-        for (Long areaId : notInNewAreaIdList) {
-            roleInfoMapper.removeRoleArea(dto.getId(), areaId);
+        if (CollectionUtil.isNotEmpty(notInNewAreaIdList)) {
+            LambdaQueryWrapper<RoleArea> rmRoleArea = new LambdaQueryWrapper<>();
+            rmRoleArea.in(RoleArea::getAreaId, notInNewAreaIdList).and(wq -> wq.in(RoleArea::getRoleId, dto.getId()));
+            roleAreaService.remove(rmRoleArea);
         }
         List<Long> notInOldAreaIdList = CollectionUtil.subtractToList(newAreaIdList, oldAreaIdList);
         log.info("新提交有，原始中没有的区域{}", JSONUtil.toJsonStr(notInOldAreaIdList));
         log.info("授权的区域{}", JSONUtil.toJsonStr(notInOldAreaIdList));
+        List<RoleArea> addRoleArea = new ArrayList<>();
         for (Long areaId : notInOldAreaIdList) {
-            roleInfoMapper.insertRoleArea(dto.getId(), areaId);
+            RoleArea roleArea = new RoleArea();
+            roleArea.setRoleId(dto.getId());
+            roleArea.setAreaId(areaId);
+            addRoleArea.add(roleArea);
         }
+        roleAreaService.saveBatch(addRoleArea);
     }
 
     @Override
@@ -254,16 +320,25 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         return roleInfoMapper.MySelectPage(page);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
+        LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(RoleUser::getRoleId, id);
+        roleUserService.remove(queryWrapper);
         roleInfoMapper.deleteById(id);
     }
 
+    @Transactional
     @Override
     public void erasureBatch(List<Long> ids) {
+        LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(RoleUser::getRoleId, ids);
+        roleUserService.remove(queryWrapper);
         roleInfoMapper.deleteBatchIds(ids);
     }
 
+    @Transactional
     @Override
     public void modifyByStatus(StatusSysRoleInfoDTO dto) {
         RoleInfo roleInfo = roleInfoMapper.selectById(dto.getId());
@@ -384,7 +459,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         ).collect(Collectors.toList());
         List<TreeNode<Long>> nodeList = new ArrayList<>();
         appMenuApiTreeList.forEach(e -> {
-            TreeNode<Long> treeNode = new TreeNode<>(e.getId(), e.getParentId(), e.getName(),null);
+            TreeNode<Long> treeNode = new TreeNode<>(e.getId(), e.getParentId(), e.getName(), null);
             Map<String, Object> extraMap = new HashMap<>();
             extraMap.put("idStr", e.getIdStr());
             treeNode.setExtra(extraMap);
@@ -399,48 +474,50 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         return TreeUtil.build(nodeList, 0L, treeNodeConfig, new DefaultNodeParser<>());
     }
 
+    @Transactional
     @Override
     public void addRelationUser(RoleRelationUserDTO dto) {
         // 1.根据角色ID查取以往关联的用户列表
         List<Long> oldUserIds = userInfoService.getUserIdListByRoleId(dto.getRoleId());
         // 如果旧关联为空，则本次为新关联
         if (CollUtil.isEmpty(oldUserIds)) {
-            List<BatchDTO> batchUserIdList = new ArrayList<>();
+            List<RoleUser> roleUserList = new ArrayList<>();
             for (Long userId : dto.getUserIdList()) {
-                // roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
-                BatchDTO batchDTO = new BatchDTO();
-                batchDTO.setRoleId(dto.getRoleId());
-                batchDTO.setObjId(userId);
-                batchUserIdList.add(batchDTO);
+                RoleUser roleUser = new RoleUser();
+                roleUser.setRoleId(dto.getRoleId());
+                roleUser.setUserId(userId);
+                roleUserList.add(roleUser);
             }
-            roleInfoMapper.batchInsertRoleUser(batchUserIdList);
+            roleUserService.saveBatch(roleUserList);
             return;
         }
         // 如果新关联为空，则是取消关联
         if (CollUtil.isEmpty(dto.getUserIdList())) {
             //
-            roleInfoMapper.removeRoleUser(dto.getRoleId(), null);
+            LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(RoleUser::getRoleId, dto.getRoleId());
+            roleUserService.remove(queryWrapper);
             return;
         }
         // 2.求取新旧的相同点
         List<Long> commonUserId = oldUserIds.stream().filter(dto.getUserIdList()::contains).collect(Collectors.toList());
         // 原始应用列表剔除相同部分后进行删除
         oldUserIds.retainAll(commonUserId);
-        for (Long userId : oldUserIds) {
-            roleInfoMapper.removeRoleUser(dto.getRoleId(), userId);
+        if (CollectionUtil.isNotEmpty(oldUserIds)){
+            LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.in(RoleUser::getUserId, oldUserIds).and(wq -> wq.eq(RoleUser::getRoleId, dto.getRoleId()));
+            roleUserService.remove(queryWrapper);
         }
         // 新提交的应用列表剔除相同部分后新增授权
-        List<BatchDTO> batchUserIdList = new ArrayList<>();
+        List<RoleUser> roleUserList = new ArrayList<>();
         dto.getUserIdList().removeAll(commonUserId);
         for (Long userId : dto.getUserIdList()) {
-            // roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
-            BatchDTO batchDTO = new BatchDTO();
-            batchDTO.setRoleId(dto.getRoleId());
-            batchDTO.setObjId(userId);
-            batchUserIdList.add(batchDTO);
+            RoleUser roleUser = new RoleUser();
+            roleUser.setRoleId(dto.getRoleId());
+            roleUser.setUserId(userId);
+            roleUserList.add(roleUser);
         }
-        roleInfoMapper.batchInsertRoleUser(batchUserIdList);
-
+        roleUserService.saveBatch(roleUserList);
     }
 
     @Override
@@ -467,6 +544,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
 
     }
 
+    @Transactional
     @Override
     public void rightRelationUser(RoleRelationUserDTO dto) {
         if (CollUtil.isEmpty(dto.getUserIdList())) {
@@ -478,11 +556,14 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
         List<Long> commonId = oldUserIds.stream().filter(dto.getUserIdList()::contains).collect(Collectors.toList());
         // 将相同部分后进行删除
-        for (Long userId : commonId) {
-            roleInfoMapper.removeRoleUser(dto.getRoleId(), userId);
+        if (CollectionUtil.isNotEmpty(commonId)){
+            LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.in(RoleUser::getUserId, commonId).and(qw -> qw.eq(RoleUser::getRoleId, dto.getRoleId()));
+            roleUserService.remove(queryWrapper);
         }
     }
 
+    @Transactional
     @Override
     public void leftRelationUser(RoleRelationUserDTO dto) {
         if (CollUtil.isEmpty(dto.getUserIdList())) {
@@ -490,82 +571,31 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
         List<Long> oldUserIds = userInfoService.getUserIdListByRoleId(dto.getRoleId());
         if (CollUtil.isEmpty(oldUserIds)) {
+            List<RoleUser> roleUserList = new ArrayList<>();
             for (Long userId : dto.getUserIdList()) {
-                roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
+                RoleUser roleUser = new RoleUser();
+                roleUser.setUserId(userId);
+                roleUser.setRoleId(dto.getRoleId());
+                roleUserList.add(roleUser);
             }
+            roleUserService.saveBatch(roleUserList);
             return;
         }
         // 求取新旧的相同点
         List<Long> commonId = oldUserIds.stream().filter(dto.getUserIdList()::contains).collect(Collectors.toList());
         // 新提交的应用列表剔除相同部分后新增授权
         dto.getUserIdList().removeAll(commonId);
+        List<RoleUser> roleUserList = new ArrayList<>();
         for (Long userId : dto.getUserIdList()) {
-            roleInfoMapper.insertRoleUser(dto.getRoleId(), userId);
+            RoleUser roleUser = new RoleUser();
+            roleUser.setRoleId(dto.getRoleId());
+            roleUser.setUserId(userId);
+            roleUserList.add(roleUser);
         }
+        roleUserService.saveBatch(roleUserList);
     }
 
-    /**
-     * 分拣后获取应用ID
-     *
-     * @param stringList
-     * @return
-     */
-    private List<Long> getAppIds(List<String> stringList) {
-        List<Long> appIds = new ArrayList<>();
-        if (CollUtil.isNotEmpty(stringList)) {
-            for (String str : stringList) {
-                if (str.startsWith("A_")) {
-                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "A_"));
-                    appIds.add(menuId);
-                }
-            }
-        }
-        return appIds;
-    }
-
-    /**
-     * 分拣后获取菜单ID
-     *
-     * @param stringList
-     * @return
-     */
-    private List<Long> getMenuIds(List<String> stringList) {
-        List<Long> menuIds = new ArrayList<>();
-        if (CollUtil.isNotEmpty(stringList)) {
-            for (String str : stringList) {
-                if (str.startsWith("M_")) {
-                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "M_"));
-                    menuIds.add(menuId);
-                }
-            }
-        }
-        return menuIds;
-    }
-
-    /**
-     * 分拣后获取功能接口ID
-     *
-     * @param stringList
-     * @return
-     */
-    private List<Long> getApiIds(List<String> stringList) {
-        List<Long> apiIds = new ArrayList<>();
-        if (CollUtil.isNotEmpty(stringList)) {
-            for (String str : stringList) {
-                if (str.startsWith("U_")) {
-                    Long menuId = Long.valueOf(StrUtil.removePrefix(str, "U_"));
-                    apiIds.add(menuId);
-                }
-            }
-        }
-        return apiIds;
-    }
-
-    private List<String> getAppMenuApi(List<AppInfo> appInfoList,
-                                       List<MenuInfo> menuInfoList,
-                                       List<ApiInfo> apiInfoList,
-                                       Integer appType
-    ) {
+    private List<String> getAppMenuApi(List<AppInfo> appInfoList, List<MenuInfo> menuInfoList, List<ApiInfo> apiInfoList, Integer appType) {
 
         // 1.根据 appType 筛选出符合要求的应用
         List<AppInfo> myAppInfoList = new ArrayList<>();
@@ -613,19 +643,28 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         return resultList;
     }
 
+    @Transactional
     @Override
     public void saveRoleUser(Long roleId, Long userId) {
-        roleInfoMapper.insertRoleUser(roleId, userId);
+        RoleUser roleUser = new RoleUser();
+        roleUser.setUserId(userId);
+        roleUser.setRoleId(roleId);
+        roleUserService.save(roleUser);
     }
 
     @Override
     public List<Long> getRoleByUserId(Long userId) {
-        return roleInfoMapper.selectRoleByUserId(userId);
+        LambdaQueryWrapper<RoleUser> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(RoleUser::getUserId, userId);
+        return roleUserService.list(lambdaQueryWrapper).stream().map(RoleUser::getRoleId).collect(Collectors.toList());
     }
 
     @Override
     public void removeRoleUser(Long roleId, Long userId) {
-        roleInfoMapper.removeRoleUser(roleId, userId);
+        LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(RoleUser::getRoleId, roleId);
+        queryWrapper.eq(RoleUser::getUserId, userId);
+        roleUserService.remove(queryWrapper);
     }
 
     @Override

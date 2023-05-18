@@ -8,7 +8,6 @@ import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.SysApiInfoDTO;
 import com.runjian.auth.server.domain.entity.ApiInfo;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
-import com.runjian.auth.server.domain.vo.tree.ApiInfoTree;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

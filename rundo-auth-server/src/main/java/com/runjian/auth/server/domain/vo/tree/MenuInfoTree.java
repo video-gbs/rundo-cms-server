@@ -2,6 +2,8 @@ package com.runjian.auth.server.domain.vo.tree;
 
 import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
 import com.runjian.auth.server.util.tree.DataTree;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -12,6 +14,8 @@ import java.util.List;
  * @Description 菜单树
  * @date 2023-01-31 周二 15:46
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class MenuInfoTree extends MenuInfoVO implements DataTree<MenuInfoTree> {
 
     List<MenuInfoTree> children;

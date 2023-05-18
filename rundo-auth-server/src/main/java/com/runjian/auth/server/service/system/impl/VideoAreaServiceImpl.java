@@ -30,6 +30,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,6 +61,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     @Autowired
     private RoleInfoService roleInfoService;
 
+    @Transactional
     @Override
     public VideoAreaVO save(VideoAreaDTO dto) {
         // 确认父级安全区域是否存在
@@ -83,6 +85,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         return videoAreaVO;
     }
 
+    @Transactional
     @Override
     public void modifyById(VideoAreaDTO dto) {
         VideoArea videoArea = new VideoArea();
@@ -95,6 +98,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         return videoAraeMapper.mySelectById(id);
     }
 
+    @Transactional
     @Override
     public CommonResponse erasureById(Long id) {
         // 1.判断是否为根节点

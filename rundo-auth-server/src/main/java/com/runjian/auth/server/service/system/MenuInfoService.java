@@ -33,7 +33,6 @@ public interface MenuInfoService extends IService<MenuInfo> {
 
     void erasureById(Long id);
 
-
     List<MenuInfoTree> findByTreeByAppType(Integer appType);
 
     void modifyByStatus(StatusChangeDTO dto);

@@ -16,17 +16,18 @@ import com.runjian.auth.server.constant.DefaultConstant;
 import com.runjian.auth.server.constant.StatusConstant;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
-import com.runjian.auth.server.domain.entity.*;
+import com.runjian.auth.server.domain.entity.OrgInfo;
+import com.runjian.auth.server.domain.entity.RoleInfo;
+import com.runjian.auth.server.domain.entity.RoleOrg;
+import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
 import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.mapper.OrgInfoMapper;
 import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.system.OrgInfoService;
-import com.runjian.auth.server.service.system.RoleAreaService;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.service.system.RoleOrgService;
-import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
@@ -35,6 +36,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -65,6 +67,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     @Autowired
     private RoleInfoService roleInfoService;
 
+    @Transactional
     @Override
     public SysOrgVO save(SysOrgDTO dto) {
         OrgInfo parentInfo = orgInfoMapper.selectById(dto.getOrgPid());
@@ -97,6 +100,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         return sysOrgVO;
     }
 
+    @Transactional
     @Override
     public void modifyById(SysOrgDTO dto) {
         OrgInfo orgInfo = new OrgInfo();
@@ -112,6 +116,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         return sysOrgVO;
     }
 
+    @Transactional
     @Override
     public CommonResponse erasureById(Long id) {
         // 1.判断是否为根节点

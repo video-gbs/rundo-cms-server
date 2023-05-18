@@ -1,7 +1,5 @@
 package com.runjian.auth.server.service.system.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,6 +11,7 @@ import com.runjian.auth.server.domain.dto.system.QueryRelationSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.SysUserInfoDTO;
+import com.runjian.auth.server.domain.entity.RoleUser;
 import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
@@ -20,10 +19,7 @@ import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.mapper.OrgInfoMapper;
 import com.runjian.auth.server.mapper.UserInfoMapper;
-import com.runjian.auth.server.service.system.OrgInfoService;
-import com.runjian.auth.server.service.system.RoleInfoService;
-import com.runjian.auth.server.service.system.UserInfoService;
-import com.runjian.auth.server.service.system.VideoAreaService;
+import com.runjian.auth.server.service.system.*;
 import com.runjian.auth.server.util.PasswordUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
@@ -32,6 +28,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,9 +62,15 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Autowired
     private RoleInfoService roleInfoService;
 
+    @Lazy
+    @Autowired
+    private RoleUserService roleUserService;
+
     @Autowired
     private VideoAreaService videoAreaService;
 
+
+    @Transactional
     @Override
     public void save(SysUserInfoDTO dto) {
         LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
@@ -107,6 +110,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         return vo;
     }
 
+    @Transactional
     @Override
     public void modifyById(SysUserInfoDTO dto) {
         // 根据id查取原始信息
@@ -196,13 +200,21 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
     }
 
+    @Transactional
     @Override
     public void erasureById(Long id) {
+        LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(RoleUser::getUserId, id);
+        roleUserService.remove(queryWrapper);
         userInfoMapper.deleteById(id);
     }
 
+    @Transactional
     @Override
     public void erasureBatch(List<Long> ids) {
+        LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(RoleUser::getUserId, ids);
+        roleUserService.remove(queryWrapper);
         userInfoMapper.deleteBatchIds(ids);
     }
 

@@ -7,7 +7,6 @@ import com.runjian.auth.server.constant.UpdateGroup;
 import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
 import com.runjian.auth.server.domain.dto.system.VideoAreaDTO;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
-import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.service.system.VideoAreaService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
