@@ -1,5 +1,6 @@
 package com.runjian.auth.server.controller.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.constant.AddGroup;
 import com.runjian.auth.server.domain.dto.system.HiddenChangeDTO;
@@ -85,13 +86,13 @@ public class MenuInfoController {
 
     @PostMapping("/tree")
     @ApiOperation("获取菜单层级树，列表页或者单个应用ID使用")
-    public CommonResponse<List<MenuInfoTree>> getSysMenuTree(@RequestBody QuerySysMenuInfoDTO dto) {
+    public CommonResponse<List<Tree<Long>>> getSysMenuTree(@RequestBody QuerySysMenuInfoDTO dto) {
         return CommonResponse.success(menuInfoService.findByTree(dto));
     }
 
     @PostMapping("/getTree/{appId}")
     @ApiOperation("根据应用ID获取菜单层级树")
-    public CommonResponse<List<MenuInfoTree>> getTreeByAppId(@PathVariable Long appId) {
+    public CommonResponse<List<Tree<Long>>> getTreeByAppId(@PathVariable Long appId) {
         return CommonResponse.success(menuInfoService.getTreeByAppId(appId));
     }
 

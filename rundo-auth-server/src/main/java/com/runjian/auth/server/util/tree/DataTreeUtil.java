@@ -16,7 +16,7 @@ public class DataTreeUtil {
         List<T> returnList = new ArrayList<>();
         for (T node : paramList) {
             // 查找根节点
-            if (node.getId().equals(rootNodeId)) {
+            if (node.getId().longValue() == rootNodeId.longValue()) {
                 returnList.add(node);
             }
         }

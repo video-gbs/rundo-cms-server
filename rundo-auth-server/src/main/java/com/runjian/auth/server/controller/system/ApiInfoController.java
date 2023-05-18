@@ -1,12 +1,12 @@
 package com.runjian.auth.server.controller.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.runjian.auth.server.domain.dto.system.SysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysApiInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysApiInfoDTO;
+import com.runjian.auth.server.domain.dto.system.SysApiInfoDTO;
 import com.runjian.auth.server.domain.vo.system.SysApiInfoVO;
-import com.runjian.auth.server.domain.vo.tree.ApiInfoTree;
 import com.runjian.auth.server.service.system.ApiInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
@@ -61,7 +61,7 @@ public class ApiInfoController {
 
     @GetMapping("/getTree/{appId}")
     @ApiOperation("根据应用ID获取接口信息下拉树状列表")
-    public CommonResponse<List<ApiInfoTree>> getTreeByAppId(@PathVariable Long appId){
+    public CommonResponse<List<Tree<Long>>> getTreeByAppId(@PathVariable Long appId){
         return CommonResponse.success(apiInfoService.getTreeByAppId(appId));
     }
 
@@ -74,7 +74,7 @@ public class ApiInfoController {
 
     @PostMapping("/tree")
     @ApiOperation("获取接口层级树")
-    public CommonResponse<List<ApiInfoTree>> getApiInfoTree(@RequestBody QuerySysApiInfoDTO dto) {
+    public CommonResponse<List<Tree<Long>>> getApiInfoTree(@RequestBody QuerySysApiInfoDTO dto) {
         log.info("获取接口层级树，前端查询条件:{}", JSONUtil.toJsonStr(dto));
         return CommonResponse.success(apiInfoService.findByTree(dto));
     }

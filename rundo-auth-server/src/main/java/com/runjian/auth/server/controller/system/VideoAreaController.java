@@ -1,12 +1,12 @@
 package com.runjian.auth.server.controller.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.json.JSONUtil;
 import com.runjian.auth.server.constant.AddGroup;
 import com.runjian.auth.server.constant.UpdateGroup;
 import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
 import com.runjian.auth.server.domain.dto.system.VideoAreaDTO;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
-import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.auth.server.service.system.VideoAreaService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
@@ -77,7 +77,7 @@ public class VideoAreaController {
 
     @GetMapping("/tree")
     @ApiOperation("获取安防区域层级树")
-    public CommonResponse<List<VideoAreaTree>> getTreeList() {
+    public CommonResponse<List<Tree<Long>>> getTreeList() {
         return CommonResponse.success(videoAreaService.findByTree());
     }
 

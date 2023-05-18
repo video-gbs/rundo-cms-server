@@ -1,5 +1,6 @@
 package com.runjian.auth.server.controller.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.runjian.auth.server.constant.AddGroup;
@@ -11,7 +12,6 @@ import com.runjian.auth.server.domain.dto.system.SysRoleInfoDTO;
 import com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO;
 import com.runjian.auth.server.domain.vo.system.RoleDetailVO;
 import com.runjian.auth.server.domain.vo.system.SysRoleInfoVO;
-import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
@@ -104,7 +104,7 @@ public class RoleInfoController {
     @PostMapping("/getAppMenuApiTree/{appType}")
     @ApiOperation("新建角色时获取应用类相关ID列表")
     @ApiImplicitParam(name = "appType", value = "应用分类 1 应用类，2 配置类，3 运维类", required = true)
-    public CommonResponse<List<AppMenuApiTree>> getAppIdTree(@PathVariable Integer appType) {
+    public CommonResponse<List<Tree<Long>>> getAppIdTree(@PathVariable Integer appType) {
         return CommonResponse.success(roleInfoService.getAppMenuApiTree(appType));
     }
 }

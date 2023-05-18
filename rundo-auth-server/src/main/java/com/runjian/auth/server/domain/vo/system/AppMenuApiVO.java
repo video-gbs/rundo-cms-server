@@ -13,6 +13,7 @@ import lombok.Data;
 public class AppMenuApiVO {
 
     private Long id;
+
     private String idStr;
 
     private Long pid;

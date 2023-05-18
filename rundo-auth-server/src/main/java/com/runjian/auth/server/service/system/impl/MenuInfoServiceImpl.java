@@ -2,29 +2,37 @@ package com.runjian.auth.server.service.system.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.lang.tree.parser.DefaultNodeParser;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.system.HiddenChangeDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusChangeDTO;
 import com.runjian.auth.server.domain.dto.system.SysMenuInfoDTO;
-import com.runjian.auth.server.domain.entity.AppInfo;
-import com.runjian.auth.server.domain.entity.MenuInfo;
+import com.runjian.auth.server.domain.entity.*;
 import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
 import com.runjian.auth.server.domain.vo.system.MyMetaClass;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
 import com.runjian.auth.server.mapper.MenuInfoMapper;
 import com.runjian.auth.server.service.system.AppInfoService;
 import com.runjian.auth.server.service.system.MenuInfoService;
+import com.runjian.auth.server.service.system.RoleInfoService;
+import com.runjian.auth.server.service.system.RoleMenuService;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -45,9 +53,18 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     @Autowired
     private MenuInfoMapper menuInfoMapper;
 
+    @Lazy
+    @Autowired
+    private RoleInfoService roleInfoService;
+
+    @Lazy
+    @Autowired
+    private RoleMenuService roleMenuService;
+
     @Override
-    public List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto) {
+    public List<Tree<Long>> findByTree(QuerySysMenuInfoDTO dto) {
         LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.ne(MenuInfo::getMenuType, 3);
         if (null != dto.getAppId()) {
             queryWrapper.eq(MenuInfo::getAppId, dto.getAppId());
         }
@@ -73,53 +90,56 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
             MenuInfo menuInfo = menuInfoMapper.selectById(1);
             menuInfoList.add(menuInfo);
         }
-        List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(
-                item -> {
-                    MenuInfoTree bean = new MenuInfoTree();
-                    BeanUtils.copyProperties(item, bean);
-                    bean.setMeta(new MyMetaClass(item.getTitle(), item.getIcon()));
-                    return bean;
-                }
-        ).collect(Collectors.toList());
-        return DataTreeUtil.buildTree(menuInfoTreeList, rootNodeId);
+        List<MenuInfoTree> menuInfoTreeList = menuInfoList.stream().map(item -> {
+            MenuInfoTree bean = new MenuInfoTree();
+            BeanUtils.copyProperties(item, bean);
+            bean.setMeta(new MyMetaClass(item.getTitle(), item.getIcon()));
+            return bean;
+        }).collect(Collectors.toList());
+        return getTree(menuInfoTreeList);
     }
 
     @Override
     public List<MenuInfoTree> findByTreeByAppType(Integer appType) {
         // 取出当前登录的用户的所有角色
         List<String> roleCodeList = StpUtil.getRoleList();
-        // 去重
+        LambdaQueryWrapper<RoleInfo> roleInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roleInfoLambdaQueryWrapper.in(RoleInfo::getRoleCode, roleCodeList);
+        List<Long> roleIds = roleInfoService.list(roleInfoLambdaQueryWrapper).stream().map(RoleInfo::getId).collect(Collectors.toList());
+        // 根据角色获取用户应该有的应用ID，剔除不是appType的应用
         List<AppInfo> appInfoList = CollUtil.distinct(appInfoService.getAppByRoleCodelist(roleCodeList));
-        // 过滤掉不满足条件的数据
         appInfoList.removeIf(appInfo -> !appInfo.getAppType().equals(appType));
         List<Long> appIds = appInfoList.stream().map(AppInfo::getId).collect(Collectors.toList());
-
+        // 根据角色获取用户已有的菜单ID
+        LambdaQueryWrapper<RoleMenu> roleMenuLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        roleMenuLambdaQueryWrapper.in(RoleMenu::getRoleId, roleIds);
+        List<Long> menuIds = roleMenuService.list(roleMenuLambdaQueryWrapper).stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
+        menuIds.stream().distinct();
         List<MenuInfoTree> menuInfoTreeByAppTypelist = new ArrayList<>();
         for (Long appId : appIds) {
-            LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(MenuInfo::getAppId, appId);
-            List<MenuInfo> menuInfoList = menuInfoMapper.selectList(queryWrapper);
+            List<MenuInfo> menuInfoList1 = menuInfoMapper.selectMenuList(appId, menuIds);
+            Set<MenuInfo> set = new HashSet<>(menuInfoList1);
+            List<MenuInfo> menuInfoList = new ArrayList<>(set);
+
+            log.info("{}",JSONUtil.toJsonPrettyStr(menuInfoList));
             long rootId = 0L;
             for (MenuInfo menuInfo : menuInfoList) {
                 if (menuInfo.getMenuPid().equals(1L) && menuInfo.getLevel().equals(2)) {
                     rootId = menuInfo.getId();
                 }
             }
-            menuInfoTreeByAppTypelist.addAll(
-                    DataTreeUtil.buildTree(menuInfoList.stream().map(
-                            item -> {
-                                MenuInfoTree bean = new MenuInfoTree();
-                                BeanUtils.copyProperties(item, bean);
-                                bean.setMeta(new MyMetaClass(item.getTitle(), item.getIcon()));
-                                return bean;
-                            }
-                    ).collect(Collectors.toList()), rootId)
-            );
-
+            menuInfoTreeByAppTypelist.addAll(DataTreeUtil.buildTree(menuInfoList.stream().map(item -> {
+                MenuInfoTree bean = new MenuInfoTree();
+                BeanUtils.copyProperties(item, bean);
+                bean.setMeta(new MyMetaClass(item.getTitle(), item.getIcon()));
+                return bean;
+            }).collect(Collectors.toList()), rootId));
         }
+        menuInfoTreeByAppTypelist.stream().distinct();
         return menuInfoTreeByAppTypelist;
     }
 
+    @Transactional
     @Override
     public void modifyByStatus(StatusChangeDTO dto) {
         MenuInfo menuInfo = menuInfoMapper.selectById(dto.getId());
@@ -127,6 +147,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         menuInfoMapper.updateById(menuInfo);
     }
 
+    @Transactional
     @Override
     public void modifyByHidden(HiddenChangeDTO dto) {
         MenuInfo menuInfo = menuInfoMapper.selectById(dto.getId());
@@ -135,7 +156,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     }
 
     @Override
-    public List<MenuInfoTree> getTreeByAppId(Long appId) {
+    public List<Tree<Long>> getTreeByAppId(Long appId) {
         LambdaQueryWrapper<MenuInfo> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(MenuInfo::getAppId, appId);
         AtomicLong root = new AtomicLong(0L);
@@ -151,7 +172,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
                     return bean;
                 }
         ).collect(Collectors.toList());
-        return DataTreeUtil.buildTree(menuInfoTreeList, root.get());
+        return getTree(menuInfoTreeList);
     }
 
     @Override
@@ -164,6 +185,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         return menuInfoMapper.findMenuIdListByRoleId(roleId);
     }
 
+    @Transactional
     @Override
     public void save(SysMenuInfoDTO dto) {
         MenuInfo menuInfo = new MenuInfo();
@@ -179,8 +201,13 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         menuInfo.setLeaf(0);
         menuInfo.setLevel(parentInfo.getLevel() + 1);
         menuInfoMapper.insert(menuInfo);
+        RoleMenu roleMenu = new RoleMenu();
+        roleMenu.setMenuId(menuInfo.getId());
+        roleMenu.setRoleId(1L);
+        roleMenuService.save(roleMenu);
     }
 
+    @Transactional
     @Override
     public void erasureById(Long id) {
         // 1.确认当前需要删除的菜单有无下级菜单
@@ -192,9 +219,13 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
             throw new BusinessException("不能删除含有下级菜单的菜单");
         }
         // 1.2 无下级菜单才可以删除
+        LambdaQueryWrapper<RoleMenu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoleMenu::getMenuId, id);
+        roleMenuService.remove(wrapper);
         menuInfoMapper.deleteById(id);
     }
 
+    @Transactional
     @Override
     public void modifyById(SysMenuInfoDTO dto) {
         MenuInfo menuInfo = new MenuInfo();
@@ -210,6 +241,36 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
         MenuInfo parentMenuInfo = menuInfoMapper.selectById(menuInfo.getMenuPid());
         menuInfoVO.setParentName(parentMenuInfo.getTitle());
         return menuInfoVO;
+    }
+
+    private List<Tree<Long>> getTree(List<MenuInfoTree> menuInfoTreeList) {
+        List<TreeNode<Long>> nodeList = new ArrayList<>();
+        menuInfoTreeList.forEach(e -> {
+            TreeNode<Long> treeNode = new TreeNode<>(e.getId(), e.getParentId(), e.getTitle(), e.getMenuSort());
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("appId", e.getAppId());
+            extraMap.put("appName", e.getAppName());
+            extraMap.put("icon", e.getIcon());
+            extraMap.put("path", e.getPath());
+            extraMap.put("name", e.getName());
+            extraMap.put("menuType", e.getMenuType());
+            extraMap.put("level", e.getLevel());
+            extraMap.put("component", e.getComponent());
+            extraMap.put("status", e.getStatus());
+            extraMap.put("hidden", e.getHidden());
+            extraMap.put("redirect", e.getRedirect());
+            extraMap.put("meta", e.getMeta());
+            treeNode.setExtra(extraMap);
+            nodeList.add(treeNode);
+        });
+        TreeNodeConfig treeNodeConfig = new TreeNodeConfig() {{
+            setIdKey("id");
+            setNameKey("title");
+            setParentIdKey("menuPid");
+            setChildrenKey("children");
+            setWeightKey("menuSort");
+        }};
+        return TreeUtil.build(nodeList, 0L, treeNodeConfig, new DefaultNodeParser<>());
     }
 
 }
