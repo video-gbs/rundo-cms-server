@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageSysDictDTO;
-import com.runjian.auth.server.domain.dto.system.SysDictDTO;
 import com.runjian.auth.server.domain.dto.system.QureySysDictDTO;
+import com.runjian.auth.server.domain.dto.system.SysDictDTO;
 import com.runjian.auth.server.domain.entity.DictInfo;
 import com.runjian.auth.server.domain.vo.system.SysDictVO;
 import com.runjian.auth.server.mapper.DictInfoMapper;
@@ -13,6 +13,7 @@ import com.runjian.auth.server.service.system.DictInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class DictInfoServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> i
     @Autowired
     private DictInfoMapper dictInfoMapper;
 
+    @Transactional
     @Override
     public void save(SysDictDTO dto) {
         DictInfo dictInfo = new DictInfo();
@@ -39,6 +41,7 @@ public class DictInfoServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> i
         dictInfoMapper.insert(dictInfo);
     }
 
+    @Transactional
     @Override
     public void modifyById(SysDictDTO dto) {
         DictInfo dictInfo = dictInfoMapper.selectById(dto.getId());
@@ -94,6 +97,7 @@ public class DictInfoServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> i
         return dictInfoMapper.MySelectPage(page);
     }
 
+    @Transactional
     @Override
     public void erasureById(Long id) {
         dictInfoMapper.deleteById(id);

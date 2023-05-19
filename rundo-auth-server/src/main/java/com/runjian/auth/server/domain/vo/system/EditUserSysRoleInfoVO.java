@@ -29,4 +29,7 @@ public class EditUserSysRoleInfoVO {
 
     @ApiModelProperty("创建人")
     private Long createdBy;
+
+    @ApiModelProperty("创建人账户")
+    private String userAccount;
 }

@@ -1,5 +1,6 @@
 package com.runjian.auth.server.service.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.system.HiddenChangeDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
@@ -22,7 +23,7 @@ import java.util.List;
  */
 public interface MenuInfoService extends IService<MenuInfo> {
 
-    List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto);
+    List<Tree<Long>> findByTree(QuerySysMenuInfoDTO dto);
 
     void save(SysMenuInfoDTO dto);
 
@@ -32,14 +33,13 @@ public interface MenuInfoService extends IService<MenuInfo> {
 
     void erasureById(Long id);
 
-
     List<MenuInfoTree> findByTreeByAppType(Integer appType);
 
     void modifyByStatus(StatusChangeDTO dto);
 
     void modifyByHidden(HiddenChangeDTO dto);
 
-    List<MenuInfoTree> getTreeByAppId(Long appId);
+    List<Tree<Long>> getTreeByAppId(Long appId);
 
     List<MenuInfo> getMenuByRoleCode(String roleCode);
 

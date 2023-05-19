@@ -58,4 +58,6 @@ public interface VideoAraeMapper extends BaseMapper<VideoArea> {
      * @return
      */
     List<String> selectAreaNameByUserId(@Param("userId") Long userId);
+
+    List<VideoAreaVO> selectAreaList(@Param("areaIdList") List<Long> areaIdList);
 }
