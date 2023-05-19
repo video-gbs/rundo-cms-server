@@ -416,6 +416,8 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         // 根据应用 appIds,查取菜单
         LambdaQueryWrapper<MenuInfo> menuInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
         menuInfoLambdaQueryWrapper.in(MenuInfo::getAppId, appIds);
+        // 角色管理，权限配置，系统权限暂时不显示按钮就别
+        menuInfoLambdaQueryWrapper.ne(MenuInfo::getMenuType, 3);
         List<MenuInfo> menuInfoList = menuInfoService.list(menuInfoLambdaQueryWrapper);
         List<AppMenuApiVO> vos = new ArrayList<>();
         for (MenuInfo menuInfo : menuInfoList) {
@@ -444,13 +446,11 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             vos.add(vo);
         }
         List<AppMenuApiVO> treeVos = vos.stream().distinct().collect(Collectors.toList());
-        List<AppMenuApiTree> appMenuApiTreeList = treeVos.stream().map(
-                item -> {
-                    AppMenuApiTree vo = new AppMenuApiTree();
-                    BeanUtils.copyProperties(item, vo);
-                    return vo;
-                }
-        ).collect(Collectors.toList());
+        List<AppMenuApiTree> appMenuApiTreeList = treeVos.stream().map(item -> {
+            AppMenuApiTree vo = new AppMenuApiTree();
+            BeanUtils.copyProperties(item, vo);
+            return vo;
+        }).collect(Collectors.toList());
         List<TreeNode<Long>> nodeList = new ArrayList<>();
         appMenuApiTreeList.forEach(e -> {
             TreeNode<Long> treeNode = new TreeNode<>(e.getId(), e.getParentId(), e.getName(), null);
@@ -497,7 +497,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         List<Long> commonUserId = oldUserIds.stream().filter(dto.getUserIdList()::contains).collect(Collectors.toList());
         // 原始应用列表剔除相同部分后进行删除
         oldUserIds.retainAll(commonUserId);
-        if (CollectionUtil.isNotEmpty(oldUserIds)){
+        if (CollectionUtil.isNotEmpty(oldUserIds)) {
             LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.in(RoleUser::getUserId, oldUserIds).and(wq -> wq.eq(RoleUser::getRoleId, dto.getRoleId()));
             roleUserService.remove(queryWrapper);
@@ -550,7 +550,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         }
         List<Long> commonId = oldUserIds.stream().filter(dto.getUserIdList()::contains).collect(Collectors.toList());
         // 将相同部分后进行删除
-        if (CollectionUtil.isNotEmpty(commonId)){
+        if (CollectionUtil.isNotEmpty(commonId)) {
             LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.in(RoleUser::getUserId, commonId).and(qw -> qw.eq(RoleUser::getRoleId, dto.getRoleId()));
             roleUserService.remove(queryWrapper);
