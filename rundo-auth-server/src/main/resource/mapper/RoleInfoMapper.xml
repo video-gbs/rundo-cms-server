@@ -51,9 +51,6 @@
             <if test="createdTimeEnd != null">
                 AND role.created_time &lt;= #{createdTimeEnd,jdbcType=TIMESTAMP}
             </if>
-            <if test="createdBy !=null">
-                AND role.created_by = #{createdBy,jdbcType=BIGINT}
-            </if>
         </where>
         ORDER BY role.created_time DESC
     </select>

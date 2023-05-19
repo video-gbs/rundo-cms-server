@@ -292,9 +292,6 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         if (dto.getRoleName() != null) {
             page.setRoleName(dto.getRoleName());
         }
-        if (dto.getCreatedBy() != null) {
-            page.setCreatedBy(dto.getCreatedBy());
-        }
         if (dto.getUserAccount() != null) {
             page.setUserAccount(dto.getUserAccount());
         }
@@ -314,9 +311,6 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         } else {
             page.setSize(20);
         }
-        long userId = StpUtil.getLoginIdAsLong();
-        page.setCreatedBy(userId);
-
         return roleInfoMapper.MySelectPage(page);
     }
 
