@@ -419,7 +419,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         // 角色管理，权限配置，系统权限暂时不显示按钮就别
         menuInfoLambdaQueryWrapper.ne(MenuInfo::getMenuType, 3);
         // 隐藏状态下的菜单不参与授权
-        menuInfoLambdaQueryWrapper.ne(MenuInfo::getHidden, 1);
+//        menuInfoLambdaQueryWrapper.ne(MenuInfo::getHidden, 1);
         List<MenuInfo> menuInfoList = menuInfoService.list(menuInfoLambdaQueryWrapper);
         List<AppMenuApiVO> vos = new ArrayList<>();
         for (MenuInfo menuInfo : menuInfoList) {
