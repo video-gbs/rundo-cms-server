@@ -37,6 +37,11 @@ public class DeviceInfo {
      */
     private Integer onlineState;
 
+    /**
+     * 删除状态
+     */
+    private Integer deleted;
+
     private LocalDateTime updateTime;
 
     private LocalDateTime createTime;

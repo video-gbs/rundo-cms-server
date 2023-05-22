@@ -35,7 +35,6 @@ public class ChannelInfo {
      */
     private Integer channelType;
 
-
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;

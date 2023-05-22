@@ -1,6 +1,5 @@
 package com.runjian.device.service.north.impl;
 
-import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -12,24 +11,22 @@ import com.runjian.common.constant.*;
 import com.runjian.common.utils.DateUtils;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
-import com.runjian.device.constant.StreamType;
+import com.runjian.device.constant.SubMsgType;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.ChannelInfo;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
+import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.feign.ParsingEngineApi;
-import com.runjian.device.feign.StreamManageApi;
 import com.runjian.device.service.common.DataBaseService;
-import com.runjian.device.service.common.RedisBaseService;
+import com.runjian.device.service.common.MessageBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
-import com.runjian.device.vo.feign.StreamPlayReq;
 import com.runjian.device.vo.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +55,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     private final DataBaseService dataBaseService;
 
-    private final RedisBaseService redisBaseService;
+    private final MessageBaseService messageBaseService;
 
     @Override
     public PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String name) {
@@ -99,7 +96,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             List<ChannelInfo> channelUpdateList = new ArrayList<>(channelSyncRsp.getNum());
             List<DetailInfo> detailSaveList = new ArrayList<>(channelSyncRsp.getNum());
             List<DetailInfo> detailUpdateList = new ArrayList<>(channelSyncRsp.getNum());
-            Map<Long, Integer> channelOnlineMap = new HashMap<>(channelSyncRsp.getNum());
+            Map<Long, Object> channelOnlineMap = new HashMap<>(channelSyncRsp.getNum());
 
             LocalDateTime nowTime = LocalDateTime.now();
             // 循环通道进行添加
@@ -149,7 +146,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                 }
             }
             // 更新通道的在线状态
-            redisBaseService.batchUpdateChannelOnlineState(channelOnlineMap);
+            messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelOnlineMap);
             // 对数据进行批量保存
             if (channelSaveList.size() > 0)
                 channelMapper.batchSave(channelSaveList);
@@ -182,60 +179,58 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             channelInfo.setUpdateTime(LocalDateTime.now());
         }
         channelMapper.batchUpdateSignState(channelInfoList);
-        redisBaseService.batchUpdateChannelOnlineState(channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, JSONObject::toJSONString)));
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
     }
 
     /**
      * 通道删除
-     * @param channelIds 通道id
+     * @param channelId 通道id
      */
     @Override
-    public void channelDeleteByChannelIds(List<Long> channelIds) {
-        List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIds);
-        if (channelIds.size() > channelInfoList.size()){
-            List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
-            channelIds.removeAll(collect);
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("缺失的数据%s", channelIds));
+    @Transactional(rollbackFor = Exception.class)
+    public void channelDeleteSoft(Long channelId) {
+        ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
+        if (channelInfo.getSignState().equals(SignState.DELETED.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道已进行软删除，请勿重复操作");
         }
-        for (ChannelInfo channelInfo : channelInfoList){
-            channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
-            channelInfo.setUpdateTime(LocalDateTime.now());
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
+        GatewayInfo gatewayInfo = dataBaseService.getGatewayInfo(deviceInfo.getGatewayId());
+        if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
         }
-        channelMapper.batchUpdateSignState(channelInfoList);
+        channelInfo.setSignState(SignState.DELETED.getCode());
+        channelInfo.setUpdateTime(LocalDateTime.now());
+        channelMapper.updateSignState(channelInfo);
+        CommonResponse<?> commonResponse = parsingEngineApi.customEvent(new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_DELETE_SOFT, 1500L));
+        if (commonResponse.isError()){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道软删除失败", commonResponse.getData(), commonResponse.getMsg());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_DELETE_STATE, Map.of(channelId, CommonEnum.ENABLE.getCode()));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void channelDeleteByChannelId(Long channelId) {
-        Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(channelId);
-        if (channelInfoOp.isEmpty()){
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND);
+    public void channelDeleteHard(Long channelId) {
+        ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
+        if (!channelInfo.getSignState().equals(SignState.DELETED.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道未进行软删除，无法进行强制删除");
+        }
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
+        GatewayInfo gatewayInfo = dataBaseService.getGatewayInfo(deviceInfo.getGatewayId());
+        if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
+        }
+        if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, Set.of(channelId))){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用在使用该数据，请稍后再删除");
         }
         channelMapper.deleteById(channelId);
-        CommonResponse<?> commonResponse = parsingEngineApi.customEvent(new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_DELETE, 1500L));
+        CommonResponse<?> commonResponse = parsingEngineApi.customEvent(new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_DELETE_HARD, 1500L));
         if (commonResponse.isError()){
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道删除失败", commonResponse.getData(), commonResponse.getMsg());
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道硬删除失败", commonResponse.getData(), commonResponse.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
         }
-    }
-
-
-    public void channelDeleteByForced(List<Long> channelIds) {
-        List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIds);
-        List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
-        if (channelIds.size() > channelInfoList.size()){
-            channelIds.removeAll(collect);
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("缺失的数据%s", channelIds));
-        }
-        DeviceControlReq deviceControlReq = new DeviceControlReq(null, null, MsgType.CHANNEL_FORCED_DELETE, 1500L);
-        deviceControlReq.putData(StandardName.CHANNEL_ID_LIST, collect);
-        channelMapper.batchDelete(collect);
-        CommonResponse<?> commonResponse = parsingEngineApi.customEvent(deviceControlReq);
-        if (commonResponse.isError()){
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道批量删除失败", commonResponse.getData(), commonResponse.getMsg());
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
-        }
-
     }
 
     /**
@@ -252,6 +247,9 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         }
         if (isDeleteData) {
             List<Long> channelInfoIdList = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
+            if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, new HashSet<>(channelInfoIdList))){
+                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用使用该设备下的通道，请稍后重试");
+            }
             if (channelInfoIdList.size() > 0) {
                 detailMapper.deleteByDcIdsAndType(channelInfoIdList, DetailType.CHANNEL.getCode());
             }
@@ -259,10 +257,11 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         } else {
             LocalDateTime nowTime = LocalDateTime.now();
             channelInfoList.forEach(channelInfo -> {
-                channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
+                channelInfo.setSignState(SignState.DELETED.getCode());
                 channelInfo.setUpdateTime(nowTime);
             });
             channelMapper.batchUpdateSignState(channelInfoList);
+            messageBaseService.msgDistribute(SubMsgType.CHANNEL_DELETE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, deleted -> CommonEnum.ENABLE.getCode())));
         }
 
 

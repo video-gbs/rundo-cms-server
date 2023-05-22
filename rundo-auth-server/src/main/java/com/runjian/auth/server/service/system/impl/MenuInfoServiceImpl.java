@@ -10,6 +10,7 @@ import cn.hutool.core.lang.tree.parser.DefaultNodeParser;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.constant.DefaultConstant;
 import com.runjian.auth.server.domain.dto.system.HiddenChangeDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusChangeDTO;
@@ -120,11 +121,9 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
             List<MenuInfo> menuInfoList1 = menuInfoMapper.selectMenuList(appId, menuIds);
             Set<MenuInfo> set = new HashSet<>(menuInfoList1);
             List<MenuInfo> menuInfoList = new ArrayList<>(set);
-
-            log.info("{}",JSONUtil.toJsonPrettyStr(menuInfoList));
             long rootId = 0L;
             for (MenuInfo menuInfo : menuInfoList) {
-                if (menuInfo.getMenuPid().equals(1L) && menuInfo.getLevel().equals(2)) {
+                if (menuInfo.getMenuPid().equals(DefaultConstant.ID) && menuInfo.getLevel().equals(2)) {
                     rootId = menuInfo.getId();
                 }
             }
