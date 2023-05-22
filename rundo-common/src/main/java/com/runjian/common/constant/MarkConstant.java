@@ -8,14 +8,20 @@ public class MarkConstant {
 
     /*********************************设备类型标志*******************************************/
 
+    @Deprecated
     public static final String REDIS_DEVICE_ONLINE_STATE = "DEVICE_ONLINE_STATE";
 
+    @Deprecated
     public static final String REDIS_DEVICE_ONLINE_STATE_LOCK = "DEVICE_ONLINE_STATE_LOCK";
 
-
+    @Deprecated
     public static final String REDIS_CHANNEL_ONLINE_STATE = "CHANNEL_ONLINE_STATE";
 
+    @Deprecated
     public static final String REDIS_CHANNEL_ONLINE_STATE_LOCK = "REDIS_CHANNEL_ONLINE_STATE_LOCK";
+
+    public static final String REDIS_DEVICE_CONTROL_MSG = "DEVICE_CONTROL_MSG:";
+    public static final String REDIS_DEVICE_CONTROL_LOCK = "DEVICE_CONTROL_LOCK:";
 
     /*********************************标志位分割符号*******************************************/
 

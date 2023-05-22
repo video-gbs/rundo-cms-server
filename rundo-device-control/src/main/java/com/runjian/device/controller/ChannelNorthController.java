@@ -9,7 +9,6 @@ import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.request.*;
 import com.runjian.device.vo.response.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,13 +54,24 @@ public class ChannelNorthController {
     }
 
     /**
-     * 通道删除
-     * @param channelIds 通道id
+     * 通道软删除
+     * @param channelId 通道id
      * @return
      */
-    @DeleteMapping("/delete")
-    public CommonResponse<?> channelDelete(@RequestParam(value = "channelIds") List<Long> channelIds){
-        channelNorthService.channelDeleteByChannelId(channelIds);
+    @DeleteMapping("/delete/soft")
+    public CommonResponse<?> channelDeleteSoft(@RequestParam Long channelId){
+        channelNorthService.channelDeleteSoft(channelId);
+        return CommonResponse.success();
+    }
+
+    /**
+     * 通道强制删除
+     * @param channelId 通道id
+     * @return
+     */
+    @DeleteMapping("/delete/hard")
+    public CommonResponse<?> channelDeleteHard(@RequestParam Long channelId){
+        channelNorthService.channelDeleteHard(channelId);
         return CommonResponse.success();
     }
 

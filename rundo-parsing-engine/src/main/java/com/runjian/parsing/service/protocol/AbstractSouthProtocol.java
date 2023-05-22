@@ -77,16 +77,21 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             case DEVICE_ADD:
                 deviceAdd(taskId, data);
                 return;
-            case DEVICE_DELETE:
-                deviceDelete(taskId, data);
+            case DEVICE_DELETE_HARD:
+                deviceDeleteHard(taskId, data);
                 return;
             case CHANNEL_SYNC:
                 channelSync(taskId, data);
+                return;
+            case CHANNEL_DELETE_HARD:
+                channelDeleteSoft(taskId, data);
                 return;
             default:
                 customEvent(taskId, data);
         }
     }
+
+
 
     @Override
     public void customEvent(Long taskId, Object dataMap) {
@@ -214,7 +219,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      * @param taskId 任务id
      * @param data   数据集合
      */
-    public void deviceDelete(Long taskId, Object data) {
+    public void deviceDeleteHard(Long taskId, Object data) {
         if (Objects.isNull(data)) {
             gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "设备id为空");
             return;
@@ -287,6 +292,31 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             lock.unlock();
         }
         customEvent(taskId, jsonData);
+    }
+
+    /**
+     * 通道删除
+     * @param taskId
+     * @param data
+     */
+    private void channelDeleteSoft(Long taskId, Object data) {
+        if (Objects.isNull(data)) {
+            gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "通道id为空");
+            return;
+        }
+        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
+        Boolean isSuccess = (Boolean) data;
+        if (isSuccess) {
+            TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+            try{
+                channelMapper.deleteById(gatewayTaskInfo.getChannelId());
+                dataSourceTransactionManager.commit(transactionStatus);
+            }catch (Exception ex){
+                dataSourceTransactionManager.rollback(transactionStatus);
+                throw ex;
+            }
+        }
+        customEvent(taskId, isSuccess);
     }
 
     /**

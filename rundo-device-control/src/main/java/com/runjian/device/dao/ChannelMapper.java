@@ -32,12 +32,6 @@ public interface ChannelMapper {
 
     @Update(" UPDATE "  + CHANNEL_TABLE_NAME +
             " SET update_time = #{updateTime}, " +
-            " sign_state = #{signState} " +
-            " WHERE id = #{id} ")
-    void updateSignState(ChannelInfo channelInfo);
-
-    @Update(" UPDATE "  + CHANNEL_TABLE_NAME +
-            " SET update_time = #{updateTime}, " +
             " online_state = #{onlineState} " +
             " WHERE device_id = #{deviceId} ")
     void updateOnlineStateByDeviceId(Long deviceId, Integer onlineState, LocalDateTime updateTime);
@@ -74,7 +68,8 @@ public interface ChannelMapper {
             " SELECT ch.id AS channelId, ch.device_id, dt.name AS channelName, ch.sign_state, ch.online_state, ch.create_time, " +
             " dt.origin_id, dt.ip, dt.port, dt.manufacturer, dt.model, dt.firmware, dt.ptz_type, dt.username, dt.password  FROM " + CHANNEL_TABLE_NAME + " ch " +
             " LEFT JOIN " + DetailMapper.DETAIL_TABLE_NAME + " dt ON ch.id = dt.dc_id AND type = 2 " +
-            " WHERE ch.sign_state = 1 AND ch.device_id IN "  +
+            " WHERE ch.sign_state = 1 " +
+            " AND ch.device_id IN "  +
             " <foreach collection='deviceIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " <if test=\"nameOrOriginId != null\" >  AND (dt.name LIKE CONCAT('%', #{nameOrOriginId}, '%')  OR dt.origin_id LIKE CONCAT('%', #{nameOrOriginId}, '%')) </if> " +
             " ORDER BY ch.create_time desc " +
@@ -113,4 +108,20 @@ public interface ChannelMapper {
             " </script> "})
     List<ChannelInfo> selectByDeviceIdAndSignState(Long deviceId, Integer signState);
 
+
+    @Delete(" <script> " +
+            " DELETE FROM " + CHANNEL_TABLE_NAME +
+            " WHERE id = #{channelId} " +
+            " </script>")
+    void deleteById(Long channelId);
+
+    @Update(" <script> " +
+            " <foreach collection='channelInfoList' item='item' separator=';'> " +
+            " UPDATE " + CHANNEL_TABLE_NAME +
+            " SET update_time = #{item.updateTime}  " +
+            " , sign_state = #{item.signState} " +
+            " WHERE id = #{item.id} "+
+            " </foreach> " +
+            " </script> ")
+    void updateSignState(ChannelInfo channelInfo);
 }

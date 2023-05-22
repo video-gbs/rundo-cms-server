@@ -3,24 +3,26 @@ package com.runjian.parsing.service.protocol;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.IdType;
 import com.runjian.common.constant.MsgType;
+import com.runjian.common.constant.StandardName;
+import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.ChannelInfo;
 import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.service.common.GatewayTaskService;
 import com.runjian.parsing.service.common.DataBaseService;
-import com.runjian.parsing.service.protocol.NorthProtocol;
 import com.runjian.parsing.vo.dto.GatewayConvertDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.context.request.async.DeferredResult;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
 
 /**
  * 默认协议
  * @author Miracle
  * @date 2023/1/17 14:14
  */
+@Slf4j
 @RequiredArgsConstructor
 public abstract class AbstractNorthProtocol implements NorthProtocol {
 
@@ -30,11 +32,18 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
 
     protected final DeviceMapper deviceMapper;
 
+    protected final ChannelMapper channelMapper;
+
     @Override
     public void msgDistribute(MsgType msgType, Long mainId, IdType idType, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
         switch (msgType){
-            case DEVICE_DELETE:
-                deviceDelete(mainId, response);
+            case DEVICE_DELETE_SOFT:
+            case DEVICE_DELETE_HARD:
+                deviceDelete(mainId, response, msgType);
+                return;
+            case CHANNEL_DELETE_SOFT:
+            case CHANNEL_DELETE_HARD:
+                channelDelete(mainId, response, msgType);
                 return;
             default:
                 customEvent(mainId, idType, msgType.getMsg(), dataMap, response);
@@ -64,12 +73,23 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
         }
     }
 
-    public void deviceDelete(Long deviceId, DeferredResult<CommonResponse<?>> response) {
+    public void deviceDelete(Long deviceId, DeferredResult<CommonResponse<?>> response, MsgType msgType) {
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(deviceId);
         if (deviceInfoOp.isEmpty()){
             response.setResult(CommonResponse.success(true));
         } else {
-            customEvent(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE.getMsg(), null, response);
+            customEvent(deviceId, IdType.DEVICE, msgType.getMsg(), Map.of(StandardName.DEVICE_ID, deviceInfoOp.get().getOriginId()), response);
+        }
+    }
+
+    public void channelDelete(Long channelId, DeferredResult<CommonResponse<?>> response, MsgType msgType){
+        Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(channelId);
+        if (channelInfoOp.isEmpty()){
+            response.setResult(CommonResponse.success(true));
+        }else {
+            ChannelInfo channelInfo = channelInfoOp.get();
+            DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelId);
+            customEvent(channelId, IdType.CHANNEL, msgType.getMsg(), Map.of(StandardName.DEVICE_ID, deviceInfo.getOriginId(), StandardName.CHANNEL_ID, channelInfo.getOriginId()), response);
         }
     }
 

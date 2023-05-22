@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 协议服务
@@ -51,6 +52,10 @@ public class ProtocolServiceImpl implements ProtocolService {
      * @return 协议
      */
     public NorthProtocol getNorthProtocol(Long id, IdType idType){
+        if (Objects.isNull(id)){
+            return NORTH_PROTOCOL_MAP.get(NorthProtocol.DEFAULT_PROTOCOL);
+        }
+
         switch (idType){
             case CHANNEL:
                 id = dataBaseService.getChannelInfo(id).getDeviceId();

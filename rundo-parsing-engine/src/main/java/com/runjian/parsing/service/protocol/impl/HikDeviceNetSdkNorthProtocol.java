@@ -1,5 +1,6 @@
 package com.runjian.parsing.service.protocol.impl;
 
+import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.GatewayTaskService;
@@ -14,11 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class HikDeviceNetSdkNorthProtocol extends AbstractNorthProtocol {
 
-
-    public HikDeviceNetSdkNorthProtocol(GatewayTaskService gatewayTaskService, DataBaseService dataBaseService, DeviceMapper deviceMapper) {
-        super(gatewayTaskService, dataBaseService, deviceMapper);
+    public HikDeviceNetSdkNorthProtocol(GatewayTaskService gatewayTaskService, DataBaseService dataBaseService, DeviceMapper deviceMapper, ChannelMapper channelMapper) {
+        super(gatewayTaskService, dataBaseService, deviceMapper, channelMapper);
     }
-
 
     @Override
     public String getProtocolName() {
