@@ -174,7 +174,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         // 2、判断选中的节点是否在已授权中
         boolean flag = CollectionUtil.contains(orgIdStr, String.valueOf(dto.getOrgId()));
         boolean flag2 = dto.getContain() != 1;
-
         if (!flag && flag2) {
             // 不在授权内，没勾选下级
             return null;
