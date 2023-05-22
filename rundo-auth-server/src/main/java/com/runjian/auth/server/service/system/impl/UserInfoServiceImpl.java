@@ -35,9 +35,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -162,7 +160,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Override
     public Page<ListSysUserInfoVO> findByPage(QuerySysUserInfoDTO dto) {
-        PageSysUserInfoDTO page = new PageSysUserInfoDTO();
         // 1、查询该用户已有的部门权限
         // 取出当前登录的用户的所有角色
         List<String> roleCodeList = StpUtil.getRoleList();
@@ -172,33 +169,29 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         // 根据角色获取 用户已有的部门ids
         LambdaQueryWrapper<RoleOrg> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(RoleOrg::getRoleId, roleIds);
-        List<Long> orgIds = roleOrgService.list().stream().map(RoleOrg::getOrgId).collect(Collectors.toList());
+        List<Long> orgIds = roleOrgService.list(queryWrapper).stream().map(RoleOrg::getOrgId).collect(Collectors.toList());
+        List<String> orgIdStr = orgIds.stream().map(String::valueOf).collect(Collectors.toList());
         // 2、判断选中的节点是否在已授权中
-        boolean flag = CollectionUtil.contains(orgIds, dto.getOrgId());
+        boolean flag = CollectionUtil.contains(orgIdStr, String.valueOf(dto.getOrgId()));
         boolean flag2 = dto.getContain() != 1;
-        if (flag) {
-            if (flag2) {
-                // 在授权内，没勾选下级
-                orgIds = Collections.singletonList(dto.getOrgId());
-                return getResult(dto, orgIds);
-            }
-            // 在授权内，勾选下级，查询当前组织的下级组织，并获取ID
-            List<Long> children = orgInfoMapper.mySelectOrg(dto.getOrgId());
-            children.retainAll(orgIds);
-            return getResult(dto, children);
-        } else {
-            if (flag2) {
-                // 不在授权内，没勾选下级
-                return null;
-            }
-            // 不在授权内，但勾选下级，查询当前组织的下级组织，并获取ID
-            List<Long> children = orgInfoMapper.mySelectOrg(dto.getOrgId());
-            children.retainAll(orgIds);
-            return getResult(dto, children);
+
+        if (!flag && flag2) {
+            // 不在授权内，没勾选下级
+            return null;
         }
+        if (flag && flag2) {
+            // 在授权内，没勾选下级
+            return getResult(dto, Collections.singletonList(dto.getOrgId()));
+        }
+        // 勾选下级，
+        List<Long> children = orgInfoMapper.mySelectOrg(dto.getOrgId());
+        List<String> childrenStr = children.stream().map(String::valueOf).collect(Collectors.toList());
+        childrenStr.removeIf(elem -> !orgIdStr.contains(elem));
+        List<Long> childrenLong = childrenStr.stream().map(Long::valueOf).collect(Collectors.toList());
+        return getResult(dto, childrenLong);
     }
 
-    private Page<ListSysUserInfoVO> getResult(QuerySysUserInfoDTO dto, List<Long> orgIds){
+    private Page<ListSysUserInfoVO> getResult(QuerySysUserInfoDTO dto, List<Long> orgIds) {
         PageSysUserInfoDTO page = new PageSysUserInfoDTO();
         if (null != dto.getUserAccount() && !"".equals(dto.getUserAccount())) {
             page.setUserAccount(dto.getUserAccount());
