@@ -133,15 +133,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         } else {
             dto.setPassword(userInfo.getPassword());
         }
-        userInfo.setUserName(dto.getUserName());
-        userInfo.setEmail(dto.getEmail());
-        userInfo.setPhone(dto.getPhone());
-        userInfo.setJobNo(dto.getJobNo());
-        userInfo.setOrgId(dto.getOrgId());
-        userInfo.setAddress(dto.getAddress());
-        userInfo.setExpiryDateStart(dto.getExpiryDateStart());
-        userInfo.setExpiryDateEnd(dto.getExpiryDateEnd());
-        userInfo.setDescription(dto.getDescription());
         BeanUtils.copyProperties(dto, userInfo);
         userInfoMapper.updateById(userInfo);
 
