@@ -65,7 +65,7 @@ public class UserInfo implements Serializable {
     private LocalDateTime expiryDateStart;
 
     @ApiModelProperty("有效期终")
-    @TableField("expiry_date_end")
+    @TableField(value = "expiry_date_end", updateStrategy = FieldStrategy.IGNORED, insertStrategy = FieldStrategy.IGNORED)
     private LocalDateTime expiryDateEnd;
 
     @ApiModelProperty("描述信息")
