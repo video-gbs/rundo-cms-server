@@ -1,6 +1,5 @@
 package com.runjian.auth.server.service.system.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
@@ -17,7 +16,6 @@ import com.runjian.auth.server.constant.StatusConstant;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
 import com.runjian.auth.server.domain.entity.OrgInfo;
-import com.runjian.auth.server.domain.entity.RoleInfo;
 import com.runjian.auth.server.domain.entity.RoleOrg;
 import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
@@ -28,6 +26,7 @@ import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.system.OrgInfoService;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.service.system.RoleOrgService;
+import com.runjian.auth.server.util.RoleIdUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
@@ -63,9 +62,8 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     @Autowired
     private RoleOrgService roleOrgService;
 
-    @Lazy
     @Autowired
-    private RoleInfoService roleInfoService;
+    private RoleIdUtil roleIdUtil;
 
     @Transactional
     @Override
@@ -219,14 +217,9 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
 
     @Override
     public List<Tree<Long>> findByTree() {
-        List<String> roleCodeList = StpUtil.getRoleList();
-        LambdaQueryWrapper<RoleInfo> roleInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roleInfoLambdaQueryWrapper.in(RoleInfo::getRoleCode, roleCodeList);
-        List<Long> roleIds = roleInfoService.list(roleInfoLambdaQueryWrapper).stream().map(RoleInfo::getId).collect(Collectors.toList());
-        // 根据角色查出已有的部门Id
-        LambdaQueryWrapper<RoleOrg> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(RoleOrg::getRoleId, roleIds);
-        List<Long> roleOrgIds = roleOrgService.list(queryWrapper).stream().map(RoleOrg::getOrgId).collect(Collectors.toList());
+        // 获取已有角色
+        List<Long> roleIds = roleIdUtil.getRoleIdList();
+        List<Long> roleOrgIds = roleIdUtil.getRoleOrgIdList(roleIds);
         // 递归获取部门树
         List<OrgInfo> orgInfoList = orgInfoMapper.selectOrgList(roleOrgIds);
         orgInfoList.stream().distinct();
