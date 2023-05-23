@@ -25,6 +25,7 @@ import com.runjian.auth.server.domain.vo.system.*;
 import com.runjian.auth.server.domain.vo.tree.AppMenuApiTree;
 import com.runjian.auth.server.mapper.RoleInfoMapper;
 import com.runjian.auth.server.service.system.*;
+import com.runjian.auth.server.util.CUtil;
 import com.runjian.auth.server.util.RundoIdUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
@@ -95,6 +96,9 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
     @Lazy
     @Autowired
     private RoleUserService roleUserService;
+
+    @Autowired
+    private CUtil cUtil;
 
     @Transactional
     @Override
@@ -180,7 +184,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
         idStrList.addAll(dto.getDevopsIds());
         // 去空 去重 去除开头
         idStrList = idStrList.stream().filter(id -> !"".equals(id)).collect(Collectors.toList());
-        idStrList = idStrList.stream().distinct().collect(Collectors.toList());
+        idStrList = cUtil.removeRepString(idStrList);
         List<Long> idList = idStrList.stream().map(
                 item -> Long.parseLong(StrUtil.removePreAndLowerFirst(item, 2))
         ).collect(Collectors.toList());
@@ -189,9 +193,9 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             List<MenuInfo> menuInfoList = menuInfoService.listByIds(idList);
             // 本次新的APPID
             List<Long> newAppIdList = menuInfoList.stream().map(MenuInfo::getAppId).collect(Collectors.toList());
+            newAppIdList = cUtil.removeRepLong(newAppIdList);
             List<Long> oldAppIdList = appInfoService.getAppIdListByRoleId(dto.getId());
             log.info("原始的应用{}", JSONUtil.toJsonStr(oldAppIdList));
-            newAppIdList = newAppIdList.stream().distinct().collect(Collectors.toList());
             log.info("新提交的应用{}", JSONUtil.toJsonStr(newAppIdList));
             List<Long> notInNewAppIdList = CollectionUtil.subtractToList(oldAppIdList, newAppIdList);
             log.info("原始中有，新提交没有的应用{}", JSONUtil.toJsonStr(notInNewAppIdList));
@@ -215,6 +219,7 @@ public class RoleInfoServiceImpl extends ServiceImpl<RoleInfoMapper, RoleInfo> i
             List<Long> oldMenuIdList = menuInfoService.getMenuIdListByRoleId(dto.getId());
             log.info("原始的菜单{}", JSONUtil.toJsonStr(oldMenuIdList));
             List<Long> newMenuIdList = menuInfoList.stream().map(MenuInfo::getId).collect(Collectors.toList());
+            newMenuIdList = cUtil.removeRepLong(newMenuIdList);
             log.info("新提交的菜单{}", JSONUtil.toJsonStr(newMenuIdList));
             List<Long> notInNewMenuIdList = CollectionUtil.subtractToList(oldMenuIdList, newMenuIdList);
             log.info("原始中有，新提交没有的菜单{}", JSONUtil.toJsonStr(notInNewMenuIdList));

@@ -7,7 +7,6 @@ import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.lang.tree.parser.DefaultNodeParser;
-import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.constant.DefaultConstant;
@@ -15,15 +14,17 @@ import com.runjian.auth.server.domain.dto.system.HiddenChangeDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusChangeDTO;
 import com.runjian.auth.server.domain.dto.system.SysMenuInfoDTO;
-import com.runjian.auth.server.domain.entity.*;
+import com.runjian.auth.server.domain.entity.AppInfo;
+import com.runjian.auth.server.domain.entity.MenuInfo;
+import com.runjian.auth.server.domain.entity.RoleMenu;
 import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
 import com.runjian.auth.server.domain.vo.system.MyMetaClass;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
 import com.runjian.auth.server.mapper.MenuInfoMapper;
 import com.runjian.auth.server.service.system.AppInfoService;
 import com.runjian.auth.server.service.system.MenuInfoService;
-import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.service.system.RoleMenuService;
+import com.runjian.auth.server.util.RoleIdUtil;
 import com.runjian.auth.server.util.tree.DataTreeUtil;
 import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
@@ -56,11 +57,10 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
 
     @Lazy
     @Autowired
-    private RoleInfoService roleInfoService;
-
-    @Lazy
-    @Autowired
     private RoleMenuService roleMenuService;
+
+    @Autowired
+    private RoleIdUtil roleIdUtil;
 
     @Override
     public List<Tree<Long>> findByTree(QuerySysMenuInfoDTO dto) {
@@ -104,9 +104,7 @@ public class MenuInfoServiceImpl extends ServiceImpl<MenuInfoMapper, MenuInfo> i
     public List<MenuInfoTree> findByTreeByAppType(Integer appType) {
         // 取出当前登录的用户的所有角色
         List<String> roleCodeList = StpUtil.getRoleList();
-        LambdaQueryWrapper<RoleInfo> roleInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roleInfoLambdaQueryWrapper.in(RoleInfo::getRoleCode, roleCodeList);
-        List<Long> roleIds = roleInfoService.list(roleInfoLambdaQueryWrapper).stream().map(RoleInfo::getId).collect(Collectors.toList());
+        List<Long> roleIds = roleIdUtil.getRoleIdList();
         // 根据角色获取用户应该有的应用ID，剔除不是appType的应用
         List<AppInfo> appInfoList = CollUtil.distinct(appInfoService.getAppByRoleCodelist(roleCodeList));
         appInfoList.removeIf(appInfo -> !appInfo.getAppType().equals(appType));

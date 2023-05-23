@@ -25,6 +25,7 @@ import com.runjian.auth.server.mapper.OrgInfoMapper;
 import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.system.*;
 import com.runjian.auth.server.util.PasswordUtil;
+import com.runjian.auth.server.util.RoleIdUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
@@ -75,6 +76,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Lazy
     @Autowired
     private RoleOrgService roleOrgService;
+
+    @Autowired
+    private RoleIdUtil roleIdUtil;
 
 
     @Transactional
@@ -129,6 +133,15 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         } else {
             dto.setPassword(userInfo.getPassword());
         }
+        userInfo.setUserName(dto.getUserName());
+        userInfo.setEmail(dto.getEmail());
+        userInfo.setPhone(dto.getPhone());
+        userInfo.setJobNo(dto.getJobNo());
+        userInfo.setOrgId(dto.getOrgId());
+        userInfo.setAddress(dto.getAddress());
+        userInfo.setExpiryDateStart(dto.getExpiryDateStart());
+        userInfo.setExpiryDateEnd(dto.getExpiryDateEnd());
+        userInfo.setDescription(dto.getDescription());
         BeanUtils.copyProperties(dto, userInfo);
         userInfoMapper.updateById(userInfo);
 
@@ -162,14 +175,8 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     public Page<ListSysUserInfoVO> findByPage(QuerySysUserInfoDTO dto) {
         // 1、查询该用户已有的部门权限
         // 取出当前登录的用户的所有角色
-        List<String> roleCodeList = StpUtil.getRoleList();
-        LambdaQueryWrapper<RoleInfo> roleInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roleInfoLambdaQueryWrapper.in(RoleInfo::getRoleCode, roleCodeList);
-        List<Long> roleIds = roleInfoService.list(roleInfoLambdaQueryWrapper).stream().map(RoleInfo::getId).collect(Collectors.toList());
-        // 根据角色获取 用户已有的部门ids
-        LambdaQueryWrapper<RoleOrg> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(RoleOrg::getRoleId, roleIds);
-        List<Long> orgIds = roleOrgService.list(queryWrapper).stream().map(RoleOrg::getOrgId).collect(Collectors.toList());
+        List<Long> roleIds = roleIdUtil.getRoleIdList();
+        List<Long> orgIds = roleIdUtil.getRoleOrgIdList(roleIds);
         List<String> orgIdStr = orgIds.stream().map(String::valueOf).collect(Collectors.toList());
         // 2、判断选中的节点是否在已授权中
         boolean flag = CollectionUtil.contains(orgIdStr, String.valueOf(dto.getOrgId()));
