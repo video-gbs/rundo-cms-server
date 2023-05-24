@@ -123,7 +123,7 @@ public class CircleArray<T> {
 
     /**
      * 添加或修改数据
-     * @param data 数据
+     * @param dataSet 数据
      * @param offset 保存偏移值
      */
     public void addOrUpdateTime(Set<T> dataSet, Long offset){
@@ -132,6 +132,9 @@ public class CircleArray<T> {
         }
         if (dataSet.isEmpty()){
             return;
+        }
+        if(offset >= this.circleSize){
+            throw new RuntimeException("偏移量不能大于等于结构体的最大长度");
         }
         try{
             // 上锁
