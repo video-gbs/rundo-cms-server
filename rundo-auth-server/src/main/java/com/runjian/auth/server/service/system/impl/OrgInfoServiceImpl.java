@@ -224,6 +224,9 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
             return null;
         }
         List<Long> roleOrgIds = roleIdUtil.getRoleOrgIdList(roleIds);
+        if(CollectionUtil.isEmpty(roleOrgIds)){
+            return null;
+        }
         // 递归获取部门树
         List<OrgInfo> orgInfoList = orgInfoMapper.selectOrgList(roleOrgIds);
         orgInfoList.stream().distinct();

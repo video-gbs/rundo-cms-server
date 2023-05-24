@@ -171,6 +171,10 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             return null;
         }
         List<Long> orgIds = roleIdUtil.getRoleOrgIdList(roleIds);
+        if(CollectionUtil.isEmpty(orgIds)){
+            // 已授权部门为空，不论是否勾选下级都直接返回
+            return null;
+        }
         List<String> orgIdStr = orgIds.stream().map(String::valueOf).collect(Collectors.toList());
         // 2、判断选中的节点是否在已授权中
         boolean flag = CollectionUtil.contains(orgIdStr, String.valueOf(dto.getOrgId()));
