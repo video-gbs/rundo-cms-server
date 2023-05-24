@@ -167,6 +167,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         // 1、查询该用户已有的部门权限
         // 取出当前登录的用户的所有角色
         List<Long> roleIds = roleIdUtil.getRoleIdList();
+        if(CollectionUtil.isEmpty(roleIds)){
+            return null;
+        }
         List<Long> orgIds = roleIdUtil.getRoleOrgIdList(roleIds);
         List<String> orgIdStr = orgIds.stream().map(String::valueOf).collect(Collectors.toList());
         // 2、判断选中的节点是否在已授权中
