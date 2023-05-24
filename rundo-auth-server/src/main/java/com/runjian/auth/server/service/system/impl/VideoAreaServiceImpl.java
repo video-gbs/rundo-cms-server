@@ -2,6 +2,7 @@ package com.runjian.auth.server.service.system.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
@@ -220,6 +221,10 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         LambdaQueryWrapper<RoleArea> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(RoleArea::getRoleId, roleIds);
         List<Long> roleAreaIds = roleAreaService.list(queryWrapper).stream().map(RoleArea::getAreaId).collect(Collectors.toList());
+        if(CollectionUtil.isEmpty(roleAreaIds)){
+            // 授权的安防区域为空，直接返回，不进行后续操作
+            return null;
+        }
         List<VideoAreaVO> videoList = videoAraeMapper.selectAreaList(roleAreaIds);
         videoList.stream().distinct();
         List<VideoAreaTree> videoAreaTreeList = videoList.stream().map(item -> {
