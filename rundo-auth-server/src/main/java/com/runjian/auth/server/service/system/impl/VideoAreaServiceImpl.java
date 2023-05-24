@@ -217,6 +217,9 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
         LambdaQueryWrapper<RoleInfo> roleInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
         roleInfoLambdaQueryWrapper.in(RoleInfo::getRoleCode, roleCodeList);
         List<Long> roleIds = roleInfoService.list(roleInfoLambdaQueryWrapper).stream().map(RoleInfo::getId).collect(Collectors.toList());
+        if(CollectionUtil.isEmpty(roleIds)){
+            return null;
+        }
         log.info("{}",JSONUtil.toJsonStr(roleIds));
         LambdaQueryWrapper<RoleArea> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(RoleArea::getRoleId, roleIds);
