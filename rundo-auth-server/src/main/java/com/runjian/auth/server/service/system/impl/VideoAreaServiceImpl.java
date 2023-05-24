@@ -23,6 +23,7 @@ import com.runjian.auth.server.mapper.VideoAraeMapper;
 import com.runjian.auth.server.service.system.RoleAreaService;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.service.system.VideoAreaService;
+import com.runjian.auth.server.util.RoleIdUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
@@ -58,9 +59,8 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     @Autowired
     private RoleAreaService roleAreaService;
 
-    @Lazy
     @Autowired
-    private RoleInfoService roleInfoService;
+    private RoleIdUtil roleIdUtil;
 
     @Transactional
     @Override
@@ -213,10 +213,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public List<Tree<Long>> findByTree() {
-        List<String> roleCodeList = StpUtil.getRoleList();
-        LambdaQueryWrapper<RoleInfo> roleInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roleInfoLambdaQueryWrapper.in(RoleInfo::getRoleCode, roleCodeList);
-        List<Long> roleIds = roleInfoService.list(roleInfoLambdaQueryWrapper).stream().map(RoleInfo::getId).collect(Collectors.toList());
+        List<Long> roleIds = roleIdUtil.getRoleIdList();
         if(CollectionUtil.isEmpty(roleIds)){
             return null;
         }
