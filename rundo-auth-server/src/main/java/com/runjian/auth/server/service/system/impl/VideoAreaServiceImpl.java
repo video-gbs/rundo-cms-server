@@ -2,6 +2,7 @@ package com.runjian.auth.server.service.system.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
@@ -22,6 +23,7 @@ import com.runjian.auth.server.mapper.VideoAraeMapper;
 import com.runjian.auth.server.service.system.RoleAreaService;
 import com.runjian.auth.server.service.system.RoleInfoService;
 import com.runjian.auth.server.service.system.VideoAreaService;
+import com.runjian.auth.server.util.RoleIdUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
@@ -57,9 +59,8 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
     @Autowired
     private RoleAreaService roleAreaService;
 
-    @Lazy
     @Autowired
-    private RoleInfoService roleInfoService;
+    private RoleIdUtil roleIdUtil;
 
     @Transactional
     @Override
@@ -212,14 +213,18 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
 
     @Override
     public List<Tree<Long>> findByTree() {
-        List<String> roleCodeList = StpUtil.getRoleList();
-        LambdaQueryWrapper<RoleInfo> roleInfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        roleInfoLambdaQueryWrapper.in(RoleInfo::getRoleCode, roleCodeList);
-        List<Long> roleIds = roleInfoService.list(roleInfoLambdaQueryWrapper).stream().map(RoleInfo::getId).collect(Collectors.toList());
+        List<Long> roleIds = roleIdUtil.getRoleIdList();
+        if(CollectionUtil.isEmpty(roleIds)){
+            return null;
+        }
         log.info("{}",JSONUtil.toJsonStr(roleIds));
         LambdaQueryWrapper<RoleArea> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(RoleArea::getRoleId, roleIds);
         List<Long> roleAreaIds = roleAreaService.list(queryWrapper).stream().map(RoleArea::getAreaId).collect(Collectors.toList());
+        if(CollectionUtil.isEmpty(roleAreaIds)){
+            // 授权的安防区域为空，直接返回，不进行后续操作
+            return null;
+        }
         List<VideoAreaVO> videoList = videoAraeMapper.selectAreaList(roleAreaIds);
         videoList.stream().distinct();
         List<VideoAreaTree> videoAreaTreeList = videoList.stream().map(item -> {

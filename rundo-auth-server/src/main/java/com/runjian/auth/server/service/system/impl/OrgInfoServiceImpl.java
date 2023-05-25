@@ -1,6 +1,7 @@
 package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
@@ -219,7 +220,13 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     public List<Tree<Long>> findByTree() {
         // 获取已有角色
         List<Long> roleIds = roleIdUtil.getRoleIdList();
+        if(CollectionUtil.isEmpty(roleIds)){
+            return null;
+        }
         List<Long> roleOrgIds = roleIdUtil.getRoleOrgIdList(roleIds);
+        if(CollectionUtil.isEmpty(roleOrgIds)){
+            return null;
+        }
         // 递归获取部门树
         List<OrgInfo> orgInfoList = orgInfoMapper.selectOrgList(roleOrgIds);
         orgInfoList.stream().distinct();

@@ -29,7 +29,7 @@ public class UserInfo implements Serializable {
     private Long id;
 
     @ApiModelProperty("用户账户")
-    @TableField("user_account")
+    @TableField(value = "user_account", updateStrategy = FieldStrategy.NEVER)
     private String userAccount;
 
     @ApiModelProperty("用户姓名")
