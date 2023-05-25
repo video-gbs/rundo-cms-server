@@ -233,6 +233,7 @@ public class VideoAreaServiceImpl extends ServiceImpl<VideoAraeMapper, VideoArea
             return bean;
         }).collect(Collectors.toList());
         LambdaQueryWrapper<VideoArea> videoAreaLambdaQueryWrapper = new LambdaQueryWrapper<>();
+
         videoAreaLambdaQueryWrapper.eq(VideoArea::getCreatedBy, StpUtil.getLoginIdAsLong());
         List<VideoArea> videoAreaList = videoAraeMapper.selectList(videoAreaLambdaQueryWrapper);
         videoAreaTreeList.addAll(videoAreaList.stream().map(item ->{
