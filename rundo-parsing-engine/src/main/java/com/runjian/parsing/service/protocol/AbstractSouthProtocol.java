@@ -126,7 +126,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         jsonObject.put(StandardName.DEVICE_ID, deviceInfo.getId());
         jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
         CommonResponse<?> commonResponse = deviceControlApi.deviceSignIn(jsonObject);
-        if (commonResponse.getCode() != 0) {
+        if (commonResponse.isError()) {
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
         }
     }
