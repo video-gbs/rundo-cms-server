@@ -99,7 +99,7 @@ public class PublicMsgListener implements ChannelAwareMessageListener {
                     }
                     return;
                 case GATEWAY_SIGN_IN:
-                    log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "公共信息监听器", "接收到调度服务注册信息，执行注册流程", msgBody);
+                    log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "公共信息监听器", "接收到网关服务注册信息，执行注册流程", msgBody);
                     // 提取请求体信息
                     GatewaySignInReq gatewaySignInReq = JSONObject.parseObject(mqRequest.getData().toString(), GatewaySignInReq.class);
                     // 校验请求体
