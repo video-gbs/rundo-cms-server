@@ -25,12 +25,23 @@ public class StreamManageReq {
     /**
      * 流id
      */
-    @NotBlank(message = "流id不能为空")
     @Size(max = 50, message = "非法流id")
     private String streamId;
 
     /**
+     * 消息类型
+     */
+    @NotBlank(message = "消息类型不能为空")
+    @NotNull(message = "消息类型不能为空")
+    private String msgType;
+
+    /**
+     * 请求超时时间
+     */
+    private Long outTime = 10L;
+
+    /**
      * 数据体
      */
-    private Map<String, Object> mapData;
+    private Map<String, Object> dataMap;
 }

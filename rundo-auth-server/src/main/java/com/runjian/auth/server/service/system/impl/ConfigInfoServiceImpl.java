@@ -1,17 +1,18 @@
 package com.runjian.auth.server.service.system.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.domain.dto.system.SysConfigDTO;
 import com.runjian.auth.server.domain.entity.ConfigInfo;
-import com.runjian.auth.server.mapper.ConfigInfoMapper;
-import com.runjian.auth.server.domain.dto.system.AddSysConfigDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysConfigDTO;
 import com.runjian.auth.server.domain.vo.system.SysConfigVO;
+import com.runjian.auth.server.mapper.ConfigInfoMapper;
 import com.runjian.auth.server.service.system.ConfigInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -27,27 +28,39 @@ public class ConfigInfoServiceImpl extends ServiceImpl<ConfigInfoMapper, ConfigI
     @Autowired
     private ConfigInfoMapper configInfoMapper;
 
+    @Transactional
     @Override
-    public void save(AddSysConfigDTO dto) {
+    public void save(SysConfigDTO dto) {
         ConfigInfo configInfo = new ConfigInfo();
         BeanUtils.copyProperties(dto, configInfo);
         configInfoMapper.insert(configInfo);
     }
 
+    @Transactional
     @Override
-    public void modifyById(UpdateSysConfigDTO dto) {
-        ConfigInfo configInfo = configInfoMapper.selectById(dto.getId());
-
-
+    public void modifyById(SysConfigDTO dto) {
+        ConfigInfo configInfo = new ConfigInfo();
+        BeanUtils.copyProperties(dto, configInfo);
+        configInfoMapper.updateById(configInfo);
     }
 
     @Override
     public SysConfigVO findById(Long id) {
-        return null;
+        SysConfigVO sysConfigVO = new SysConfigVO();
+        ConfigInfo configInfo = configInfoMapper.selectById(id);
+        BeanUtils.copyProperties(configInfo, sysConfigVO);
+        return sysConfigVO;
     }
 
     @Override
     public List<SysConfigVO> findByList() {
-        return null;
+
+        return configInfoMapper.selectList(null).stream().map(
+                item -> {
+                    SysConfigVO sysConfigVO = new SysConfigVO();
+                    BeanUtils.copyProperties(item, sysConfigVO);
+                    return sysConfigVO;
+                }
+        ).collect(Collectors.toList());
     }
 }

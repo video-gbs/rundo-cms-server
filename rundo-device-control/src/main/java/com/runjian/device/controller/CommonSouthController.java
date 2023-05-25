@@ -3,6 +3,7 @@ package com.runjian.device.controller;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.vo.feign.DeviceControlReq;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,13 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/common/south")
 public class CommonSouthController {
 
-    @Autowired
-    private ValidatorService validatorService;
+    private final ValidatorService validatorService;
 
-    @PostMapping("/event")
+    @PostMapping("/error")
     public CommonResponse<?> event(@RequestBody DeviceControlReq req){
         validatorService.validateRequest(req);
         log.info(req.toString());

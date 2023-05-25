@@ -2,7 +2,10 @@ package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.domain.dto.system.*;
+import com.runjian.auth.server.domain.dto.system.QueryRelationSysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
+import com.runjian.auth.server.domain.dto.system.SysUserInfoDTO;
 import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
@@ -20,21 +23,79 @@ import java.util.List;
  */
 public interface UserInfoService extends IService<UserInfo> {
 
-    void save(AddSysUserInfoDTO dto);
-
-    void modifyById(UpdateSysUserInfoDTO dto);
-
-    void modifyByStatus(StatusSysUserInfoDTO dto);
-
+    /**
+     * 自定义分页条件查询
+     *
+     * @param dto
+     * @return
+     */
     Page<ListSysUserInfoVO> findByPage(QuerySysUserInfoDTO dto);
 
+    /**
+     * 新增用户
+     *
+     * @param dto
+     */
+    void save(SysUserInfoDTO dto);
+
+    /**
+     * 修改用户
+     *
+     * @param dto
+     */
+    void modifyById(SysUserInfoDTO dto);
+
+    /**
+     * 用户启用停用
+     *
+     * @param dto
+     */
+    void modifyByStatus(StatusSysUserInfoDTO dto);
+
+    /**
+     * 删除用户
+     *
+     * @param id
+     */
     void erasureById(Long id);
 
+    /**
+     * 批量删除用户
+     *
+     * @param ids
+     */
     void erasureBatch(List<Long> ids);
 
+    /**
+     * 根据ID获取编辑前用户信息
+     *
+     * @param id
+     * @return
+     */
     EditSysUserInfoVO findById(Long id);
 
+    /**
+     * 关联用户中查看单个用户信息
+     *
+     * @param id
+     * @return
+     */
     RelationSysUserInfoVO findRelationById(Long id);
 
+
+    /**
+     * 关联用户列表
+     *
+     * @param dto
+     * @return
+     */
     Page<RelationSysUserInfoVO> findRelationList(QueryRelationSysUserInfoDTO dto);
+
+    /**
+     * 通过角色ID，查询该角色已关联的用户ID
+     *
+     * @param roleId
+     * @return
+     */
+    List<Long> getUserIdListByRoleId(Long roleId);
 }

@@ -1,6 +1,5 @@
 package com.runjian.stream.service.north.impl;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Sets;
 import com.runjian.common.config.exception.BusinessErrorEnums;
@@ -15,6 +14,7 @@ import com.runjian.stream.service.common.DataBaseService;
 import com.runjian.stream.service.north.GatewayDispatchNorthService;
 import com.runjian.stream.vo.request.PostGetGatewayByDispatchReq;
 import com.runjian.stream.vo.response.GetGatewayByIdsRsp;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,22 +28,18 @@ import java.util.stream.Collectors;
  * @date 2023/2/3 15:13
  */
 @Service
+@RequiredArgsConstructor
 public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthService {
 
-    @Autowired
-    private GatewayDispatchMapper gatewayDispatchMapper;
+    private final GatewayDispatchMapper gatewayDispatchMapper;
 
-    @Autowired
-    private DataBaseService dataBaseService;
+    private final DataBaseService dataBaseService;
 
-    @Autowired
-    private DeviceControlApi deviceControlApi;
+    private final DeviceControlApi deviceControlApi;
 
-    @Autowired
-    private ParsingEngineApi parsingEngineApi;
+    private final ParsingEngineApi parsingEngineApi;
 
-    @Autowired
-    private StreamMapper streamMapper;
+    private final StreamMapper streamMapper;
 
     @Override
     public Long getDispatchIdByGatewayId(Long gatewayId) {
@@ -105,7 +101,7 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
             gatewayDispatchMapper.update(gatewayDispatchInfo);
         }
         streamMapper.deleteByDispatchId(dispatchId);
-        parsingEngineApi.stopAllStream(Sets.newHashSet(dispatchId));
+        parsingEngineApi.streamStopAll(Sets.newHashSet(dispatchId));
 
     }
 
@@ -124,7 +120,7 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
             gatewayDispatchMapper.updateAll(gatewayDispatchInfoList);
             Set<Long> dispatchIds = gatewayDispatchInfoList.stream().map(GatewayDispatchInfo::getDispatchId).collect(Collectors.toSet());
             streamMapper.deleteByDispatchIds(dispatchIds);
-            parsingEngineApi.stopAllStream(dispatchIds);
+            parsingEngineApi.streamStopAll(dispatchIds);
         }
 
         // 判断数据是否不存在

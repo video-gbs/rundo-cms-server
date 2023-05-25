@@ -1,9 +1,8 @@
 package com.runjian.auth.server.service.system;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.runjian.auth.server.domain.dto.system.SysConfigDTO;
 import com.runjian.auth.server.domain.entity.ConfigInfo;
-import com.runjian.auth.server.domain.dto.system.AddSysConfigDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysConfigDTO;
 import com.runjian.auth.server.domain.vo.system.SysConfigVO;
 
 import java.util.List;
@@ -17,9 +16,9 @@ import java.util.List;
  * @since 2023-01-03 11:45:53
  */
 public interface ConfigInfoService extends IService<ConfigInfo> {
-    void save(AddSysConfigDTO dto);
+    void save(SysConfigDTO dto);
 
-    void modifyById(UpdateSysConfigDTO dto);
+    void modifyById(SysConfigDTO dto);
 
     SysConfigVO findById(Long id);
 

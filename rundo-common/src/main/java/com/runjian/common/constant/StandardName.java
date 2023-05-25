@@ -15,9 +15,19 @@ public class StandardName {
     public static final String GATEWAY_ID = "gatewayId";
 
     /**
+     * 网关mq
+     */
+    public static final String GATEWAY_MQ = "gatewayMq";
+
+    /**
      * 标准消息类型名称
      */
     public static final String MSG_TYPE = "msgType";
+
+    /**
+     * 交换机名字
+     */
+    public static final String GATEWAY_EXCHANGE_NAME = "exchangeName";
 
     /***************************设备类标准名称****************************/
 
@@ -71,6 +81,11 @@ public class StandardName {
     public static final String STREAM_MODE = "streamMode";
 
     /**
+     * 录像状态
+     */
+    public static final String STREAM_RECORD_STATE = "recordState";
+
+    /**
      * 流id
      */
     public static final String STREAM_ID = "streamId";
@@ -85,12 +100,71 @@ public class StandardName {
      */
     public static final String STREAM_DISPATCH_ID = "dispatchId";
 
+    /**
+     * 检测时间
+     */
+    public static final String STREAM_CHECK_TIME = "checkTime";
+
+    /**
+     * 流媒体访问地址
+     */
+    public static final String STREAM_MEDIA_URL = "mediaUrl";
+
+    /**
+     * 自定义流的识别编码
+     */
+    public static final String STREAM_CUSTOM_CODE = "code";
+
+    /**
+     * 自定义流的协议
+     */
+    public static final String STREAM_CUSTOM_PROTOCOL = "protocol";
+
+    /**
+     * 自定义流的推拉模式
+     */
+    public static final String STREAM_CUSTOM_TRANSFER_MODE = "transferMode";
+
+    /**
+     * 自定义流的端口
+     */
+    public static final String STREAM_CUSTOM_PORT = "port";
+
+    /**
+     * 自定义流的ip
+     */
+    public static final String STREAM_CUSTOM_IP = "ip";
+
+    /***************************录像播放标准名称****************************/
+
+    /**
+     * 录像播放速度
+     */
+    public static final String RECORD_SPEED = "speed";
+
+    /**
+     * 录像播放当前播放时间
+     */
+    public static final String RECORD_CURRENT_TIME = "currentTime";
+
+    /**
+     * 录像播放目标播放时间
+     */
+    public static final String RECORD_TARGET_TIME = "targetTime";
+
+
+
     /***************************云台控制类标准名称****************************/
 
     /**
      * 云柜控制指令类型
      */
     public static final String PTZ_CMD_CODE = "cmdCode";
+
+    /**
+     * 云柜控制横向速度
+     */
+    public static final String PTZ_CMD_VALUE = "cmdValue";
 
     /**
      * 云柜控制横向速度
@@ -103,14 +177,39 @@ public class StandardName {
     public static final String PTZ_VERTICAL_SPEED = "verticalSpeed";
 
     /**
-     * 云柜控制焦距速度
+     * 放大-1 缩小-2
      */
-    public static final String PTZ_ZOOM_SPEED = "zoomSpeed";
+    public static final String PTZ_3D_DRAG_TYPE = "dragType";
 
     /**
-     * 云柜控制总体速度
+     * 拉宽长度
      */
-    public static final String PTZ_TOTAL_SPEED = "totalSpeed";
+    public static final String PTZ_3D_LENGTH = "length";
+
+    /**
+     * 拉宽宽度
+     */
+    public static final String PTZ_3D_WIDTH = "width";
+
+    /**
+     * 拉框中心的横轴坐标像素值
+     */
+    public static final String PTZ_3D_POINT_X = "midPointX";
+
+    /**
+     * 拉框中心的纵轴坐标像素值
+     */
+    public static final String PTZ_3D_POINT_Y = "midPointY";
+
+    /**
+     * 拉框长度像素值
+     */
+    public static final String PTZ_3D_LENGTH_X = "lengthX";
+
+    /**
+     * 拉框宽度像素值
+     */
+    public static final String PTZ_3D_LENGTH_Y = "lengthY";
 
     /***************************公共类标准名称****************************/
 
@@ -161,4 +260,5 @@ public class StandardName {
     public static final String COM_RESULT = "result";
 
 
+    public static final String CHANNEL_ID_LIST = "channelIdList";
 }

@@ -1,69 +1,40 @@
 package com.runjian.parsing.service.north.impl;
 
-import com.google.common.collect.Maps;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.constant.MsgType;
 import com.runjian.common.constant.StandardName;
-import com.runjian.parsing.constant.MsgType;
-import com.runjian.parsing.dao.DispatchMapper;
+import com.runjian.parsing.constant.MqConstant;
+import com.runjian.parsing.entity.ChannelInfo;
+import com.runjian.parsing.entity.DeviceInfo;
+import com.runjian.parsing.entity.GatewayInfo;
+import com.runjian.parsing.mq.config.RabbitMqProperties;
+import com.runjian.parsing.mq.listener.MqDefaultProperties;
+import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.StreamTaskService;
 import com.runjian.parsing.service.north.StreamNorthService;
 import com.runjian.parsing.vo.dto.StreamConvertDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Miracle
  * @date 2023/2/10 10:26
  */
 @Service
+@RequiredArgsConstructor
 public class StreamNorthServiceImpl implements StreamNorthService {
 
-    @Autowired
-    private StreamTaskService streamTaskService;
+    private final StreamTaskService streamTaskService;
 
-    @Override
-    public void streamNorthStopPlay(Long dispatchId, String streamId, DeferredResult<CommonResponse<?>> response) {
-        customEvent(dispatchId, streamId, null, MsgType.STREAM_PLAY_STOP, response);
-    }
+    private final DataBaseService dataBaseService;
 
-    @Override
-    public void streamNorthStartRecord(Long dispatchId, String streamId, DeferredResult<CommonResponse<?>> response) {
-        customEvent(dispatchId, streamId, null, MsgType.STREAM_RECORD_START, response);
-    }
+    private final MqDefaultProperties mqDefaultProperties;
 
-    @Override
-    public void streamNorthStopRecord(Long dispatchId, String streamId, DeferredResult<CommonResponse<?>> response) {
-        customEvent(dispatchId, streamId, null, MsgType.STREAM_RECORD_STOP, response);
-    }
-
-    @Override
-    public void checkStreamRecordStatus(Long dispatchId, List<String> streamIds, DeferredResult<CommonResponse<?>> response) {
-        Map<String, Object> mapData = new HashMap<>(1);
-        mapData.put(StandardName.STREAM_ID_LIST, streamIds);
-        customEvent(dispatchId, null, mapData, MsgType.STREAM_CHECK_RECORD, response);
-    }
-
-    @Override
-    public void checkStreamStatus(Long dispatchId, List<String> streamIds, DeferredResult<CommonResponse<?>> response) {
-        Map<String, Object> mapData = new HashMap<>(1);
-        mapData.put(StandardName.STREAM_ID_LIST, streamIds);
-        customEvent(dispatchId, null, mapData, MsgType.STREAM_CHECK_STREAM, response);
-    }
-
-    @Override
-    public void stopAllStream(Set<Long> dispatchIds) {
-        for (Long dispatchId : dispatchIds){
-            Map<String, Object> mapData = new HashMap<>(1);
-            mapData.put(StandardName.STREAM_DISPATCH_ID, dispatchId);
-            customEvent(dispatchId, null, mapData, MsgType.STREAM_STOP_ALL, null);
-        }
-    }
+    private final RabbitMqProperties rabbitMqProperties;
 
     /**
      * 通用消息处理
@@ -73,10 +44,21 @@ public class StreamNorthServiceImpl implements StreamNorthService {
      * @param msgType 消息类型
      * @param response 消息返回体
      */
-    private void customEvent(Long dispatchId, String streamId, Map<String, Object> mapData, MsgType msgType, DeferredResult<CommonResponse<?>> response) {
+    @Override
+    public void customEvent(Long dispatchId, String streamId, Map<String, Object> mapData, MsgType msgType, DeferredResult<CommonResponse<?>> response) {
         StreamConvertDto streamConvertDto = new StreamConvertDto();
         streamConvertDto.setStreamId(streamId);
+        Object channelIdOb = mapData.get(StandardName.CHANNEL_ID);
+        if (Objects.nonNull(channelIdOb)){
+            Long channelId = Long.parseLong(channelIdOb.toString());
+            ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
+            DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
+            mapData.put(StandardName.CHANNEL_ID, channelInfo.getOriginId());
+            mapData.put(StandardName.DEVICE_ID, deviceInfo.getOriginId());
+            mapData.put(StandardName.GATEWAY_MQ, MqConstant.GATEWAY_PREFIX + MqConstant.GET_SET_PREFIX + deviceInfo.getGatewayId());
+            mapData.put(StandardName.GATEWAY_EXCHANGE_NAME, rabbitMqProperties.getExchangeData(mqDefaultProperties.getGatewayExchangeId()).getExchange().getName());
+        }
         streamConvertDto.setDataMap(mapData);
-        streamTaskService.sendMsgToGateway(dispatchId, null, streamId, msgType.getMsg(), streamConvertDto, response);
+        streamTaskService.sendMsgToGateway(dispatchId,  streamId, msgType.getMsg(), streamConvertDto, response);
     }
 }

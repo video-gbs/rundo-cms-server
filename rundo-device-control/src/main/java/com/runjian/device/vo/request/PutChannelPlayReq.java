@@ -21,17 +21,7 @@ public class PutChannelPlayReq {
     @Range(min = 1, message = "非法通道id")
     private Long channelId;
 
-    /**
-     * 是否播放音频
-     */
-    @NotNull(message = "播放音频选项不能为空")
-    private Boolean enableAudio;
 
-    /**
-     * 是否使用ssrc
-     */
-    @NotNull(message = "ssrc选项不能为空")
-    private Boolean ssrcCheck;
 
     /**
      * 流模式 默认不传的情况下为udp {@link  com.runjian.device.constant.StreamType}

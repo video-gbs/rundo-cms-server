@@ -43,4 +43,8 @@ public interface ChannelMapper {
             " <foreach collection='channelInfoList' item='item' separator=','>(#{item.id}, #{item.deviceId}, #{item.originId}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>"})
     void batchSave(List<ChannelInfo> channelInfoList);
+
+    @Delete(" DELETE FROM " + CHANNEL_TABLE_NAME +
+            " WHERE id = #{channelId} ")
+    void deleteById(Long channelId);
 }

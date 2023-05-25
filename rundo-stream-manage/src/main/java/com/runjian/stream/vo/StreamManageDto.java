@@ -1,5 +1,6 @@
 package com.runjian.stream.vo;
 
+import com.runjian.common.constant.MsgType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,9 +15,11 @@ import java.util.Map;
 @NoArgsConstructor
 public class StreamManageDto {
 
-    public StreamManageDto(Long dispatchId, String streamId){
+    public StreamManageDto(Long dispatchId, String streamId, MsgType msgType, Long outTime){
         this.dispatchId = dispatchId;
         this.streamId = streamId;
+        this.msgType = msgType.getMsg();
+        this.outTime = outTime;
     }
 
     /**
@@ -28,6 +31,16 @@ public class StreamManageDto {
      * 流id
      */
     private String streamId;
+
+    /**
+     * 消息类型
+     */
+    private String msgType;
+
+    /**
+     * 过期时间
+     */
+    private Long outTime = 15000L;
 
     /**
      * 其他数据

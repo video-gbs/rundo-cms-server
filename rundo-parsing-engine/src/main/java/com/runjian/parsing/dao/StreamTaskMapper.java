@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -36,4 +37,22 @@ public interface StreamTaskMapper {
             " WHERE id = #{taskId} " +
             " </script> ")
     void updateState(Long taskId, Integer taskState, String detail, LocalDateTime updateTime);
+
+    @Select(" <script>" +
+            " SELECT * FROM " + STREAM_TASK_TABLE_NAME +
+            " WHERE state = #{state} " +
+            " AND update_time &lt;= #{outTime} " +
+            " </script>")
+    List<StreamTaskInfo> selectByOutTimeTask(Integer state, LocalDateTime outTime);
+
+    @Update(" <script> " +
+            " <foreach collection='streamTaskInfoList' item='item' separator=';'> " +
+            " UPDATE " + STREAM_TASK_TABLE_NAME +
+            " SET update_time = #{item.updateTime}  " +
+            " , state = #{item.state} " +
+            " , detail = #{item.detail}" +
+            " WHERE id = #{item.id} "+
+            " </foreach> " +
+            " </script> ")
+    void updateAll(List<StreamTaskInfo> streamTaskInfoList);
 }

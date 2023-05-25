@@ -1,10 +1,15 @@
 package com.runjian.auth.server.service.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.domain.dto.system.*;
+import com.runjian.auth.server.domain.dto.system.HiddenChangeDTO;
+import com.runjian.auth.server.domain.dto.system.QuerySysMenuInfoDTO;
+import com.runjian.auth.server.domain.dto.system.StatusChangeDTO;
+import com.runjian.auth.server.domain.dto.system.SysMenuInfoDTO;
 import com.runjian.auth.server.domain.entity.MenuInfo;
 import com.runjian.auth.server.domain.vo.system.MenuInfoVO;
 import com.runjian.auth.server.domain.vo.tree.MenuInfoTree;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,20 +23,25 @@ import java.util.List;
  */
 public interface MenuInfoService extends IService<MenuInfo> {
 
-    List<MenuInfoTree> findByTree(QuerySysMenuInfoDTO dto);
+    List<Tree<Long>> findByTree(QuerySysMenuInfoDTO dto);
 
-    void save(AddSysMenuInfoDTO dto);
+    void save(SysMenuInfoDTO dto);
 
-    void modifyById(UpdateSysMenuInfoDTO dto);
+    void modifyById(SysMenuInfoDTO dto);
 
     MenuInfoVO findById(Long id);
 
     void erasureById(Long id);
-
 
     List<MenuInfoTree> findByTreeByAppType(Integer appType);
 
     void modifyByStatus(StatusChangeDTO dto);
 
     void modifyByHidden(HiddenChangeDTO dto);
+
+    List<Tree<Long>> getTreeByAppId(Long appId);
+
+    List<MenuInfo> getMenuByRoleCode(String roleCode);
+
+    List<Long> getMenuIdListByRoleId(@Param("roleId") Long roleId);
 }

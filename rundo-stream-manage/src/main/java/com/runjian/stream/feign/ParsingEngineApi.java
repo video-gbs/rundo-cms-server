@@ -1,6 +1,8 @@
 package com.runjian.stream.feign;
 
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.stream.feign.fallback.DeviceControlFallback;
+import com.runjian.stream.feign.fallback.ParsingEngineFallback;
 import com.runjian.stream.vo.StreamManageDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -12,55 +14,23 @@ import java.util.Set;
  * @author Miracle
  * @date 2023/2/6 15:27
  */
-@FeignClient(value = "parsing-engine")
+@FeignClient(value = "parsing-engine", fallbackFactory = ParsingEngineFallback.class, decode404 = true)
 public interface ParsingEngineApi {
 
-    /**
-     * 停止播放
-     * @param req 统一请求体
-     * @return
-     */
-    @PutMapping("/stream-manage/play/stop")
-    CommonResponse<Boolean> channelStopPlay(@RequestBody StreamManageDto req);
 
     /**
-     * 开启录播
-     * @param req 统一请求体
+     * 通用消息处理
+     * @param req
      * @return
      */
-    @PutMapping("/stream-manage/record/start")
-    CommonResponse<Boolean> channelStartRecord(@RequestBody StreamManageDto req);
-
-    /**
-     * 关闭录像
-     * @param req 统一请求体
-     * @return
-     */
-    @PutMapping("/stream-manage/record/stop")
-    CommonResponse<Boolean> channelStopRecord(@RequestBody StreamManageDto req);
-
-    /**
-     * 检测录像状态
-     * @param dispatchId 调度服务id
-     * @param streamIds 流id数组
-     * @return
-     */
-    @GetMapping("/stream-manage/check/record")
-    CommonResponse<List<String>> checkStreamRecordStatus(@RequestParam Long dispatchId, @RequestParam List<String> streamIds);
-
-    /**
-     * 检测流状态
-     * @param dispatchId 调度服务id
-     * @param streamIds 流id数组
-     * @return
-     */
-    @GetMapping("/stream-manage/check/stream")
-    CommonResponse<List<String>> checkStreamStreamStatus(@RequestParam Long dispatchId, @RequestParam List<String> streamIds);
+    @PostMapping("/stream-manage/custom/event")
+    CommonResponse<?> streamCustomEvent(@RequestBody StreamManageDto req);
 
     /**
      * 删除所有的流
      * @param dispatchIds 调度服务id数组
      */
     @DeleteMapping("/stream-manage/stream/stop/all")
-    CommonResponse<?> stopAllStream(@RequestParam Set<Long> dispatchIds);
+    CommonResponse<?> streamStopAll(@RequestParam Set<Long> dispatchIds);
+
 }

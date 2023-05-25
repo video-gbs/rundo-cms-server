@@ -1,13 +1,11 @@
 package com.runjian.device.service.north;
 
 import com.github.pagehelper.PageInfo;
-import com.runjian.device.vo.response.GetChannelByPageRsp;
-import com.runjian.device.vo.response.VideoRecordRsp;
-import com.runjian.device.vo.response.ChannelSyncRsp;
-import com.runjian.device.vo.response.VideoPlayRsp;
+import com.runjian.device.vo.response.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Miracle
@@ -37,19 +35,19 @@ public interface ChannelNorthService {
      * 通道删除
      * @param channelId 通道id
      */
-    void channelDeleteByChannelId(List<Long> channelId);
+    void channelDeleteHard(Long channelId);
+
+    /**
+     * 通道删除
+     * @param channelId 通道id
+     */
+    void channelDeleteSoft(Long channelId);
 
     /**
      * 删除设备Id
      * @param deviceId 设备id
      */
     void channelDeleteByDeviceId(Long deviceId, Boolean isDeleteData);
-
-    /**
-     * 点播
-     * @param chId 通道id
-     */
-    VideoPlayRsp channelPlay(Long chId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType, Integer recordState, Integer autoCloseState);
 
     /**
      * 获取录像数据
@@ -60,25 +58,31 @@ public interface ChannelNorthService {
      */
     VideoRecordRsp channelRecord(Long chId, LocalDateTime startTime, LocalDateTime endTime);
 
-
-
-    /**
-     * 回放
-     * @param chId 通道id
-     * @param startTime 开始时间
-     * @param endTime 结束时间
-     */
-    VideoPlayRsp channelPlayback(Long chId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType, LocalDateTime startTime, LocalDateTime endTime, Integer recordState, Integer autoCloseState);
-
     /**
      * 云台控制
-     * @param chId 通道id
-     * @param commandCode 控制指令,允许值: left, right, up, down, upleft, upright, downleft, downright, zoomin, zoomout, stop
-     * @param horizonSpeed 水平速度
-     * @param verticalSpeed 垂直速度
-     * @param zoomSpeed 缩放速度
+     * @param channelId 通道id
+     * @param cmdCode 控制指令
+     * @param cmdValue 通用值
+     * @param valueMap 参数
      */
-    void channelPtzControl(Long chId, Integer commandCode, Integer horizonSpeed, Integer verticalSpeed, Integer zoomSpeed, Integer totalSpeed);
+    void channelPtzControl(Long channelId, Integer cmdCode, Integer cmdValue, Map<String, Object> valueMap);
 
+    /**
+     * 预置位查询
+     * @param channelId 通道id
+     */
+    List<PtzPresetRsp> channelPtzPresetGet(Long channelId);
 
+    /**
+     * 3d缩放扩大
+     * @param channelId 通道id
+     * @param dragType 放大-1 缩小-2
+     * @param length 拉宽长度
+     * @param width 拉宽宽度
+     * @param midPointX 拉框中心的横轴坐标像素值
+     * @param midPointY 拉框中心的纵轴坐标像素值
+     * @param lengthX 拉框长度像素值
+     * @param lengthY 拉框宽度像素值
+     */
+    void channelPtz3d(Long channelId, Integer dragType, Integer length, Integer width, Integer midPointX, Integer midPointY, Integer lengthX, Integer lengthY);
 }

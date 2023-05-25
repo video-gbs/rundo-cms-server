@@ -5,17 +5,18 @@ import com.runjian.common.constant.CommonEnum;
 import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
+import com.runjian.device.constant.SubMsgType;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.ChannelInfo;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.service.common.DetailBaseService;
-import com.runjian.device.service.common.RedisBaseService;
+import com.runjian.device.service.common.MessageBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.south.DeviceSouthService;
 import com.runjian.device.vo.request.PostDeviceSignInReq;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,22 +30,23 @@ import java.util.stream.Collectors;
  * @date 2023/01/06 16:56
  */
 @Service
+@RequiredArgsConstructor
 public class DeviceSouthServiceImpl implements DeviceSouthService {
 
-    @Autowired
-    private DeviceMapper deviceMapper;
 
-    @Autowired
-    private ChannelMapper channelMapper;
+    private final DeviceMapper deviceMapper;
 
-    @Autowired
-    private ChannelNorthService channelNorthService;
 
-    @Autowired
-    private RedisBaseService redisBaseService;
+    private final ChannelMapper channelMapper;
 
-    @Autowired
-    private DetailBaseService detailBaseService;
+
+    private final ChannelNorthService channelNorthService;
+
+
+    private final MessageBaseService messageBaseService;
+
+
+    private final DetailBaseService detailBaseService;
 
     /**
      * 设备添加注册
@@ -71,7 +73,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             deviceInfo.setSignState(SignState.TO_BE_ADD.getCode());
             deviceMapper.save(deviceInfo);
             if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
+                messageBaseService.msgDistribute(SubMsgType.DEVICE_ONLINE_STATE, Map.of(deviceInfo.getId(), deviceInfo.getOnlineState()));
             }
         }else {
             DeviceInfo deviceInfo = deviceInfoOp.get();
@@ -90,7 +92,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
                 if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                    redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
+                    messageBaseService.msgDistribute(SubMsgType.DEVICE_ONLINE_STATE, Map.of(deviceInfo.getId(), deviceInfo.getOnlineState()));
                     Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceInfo.getId()));
                 }
             } else if (onlineState.equals(CommonEnum.DISABLE.getCode()) && deviceInfo.getOnlineState().equals(CommonEnum.ENABLE.getCode())) {
@@ -99,18 +101,18 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 deviceMapper.update(deviceInfo);
                 channelMapper.updateOnlineStateByDeviceId(id, onlineState, nowTime);
                 if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
-                    redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), CommonEnum.DISABLE.getCode());
-                    Map<Long, Integer> channelInfoMap = channelMapper.selectByDeviceIdAndSignState(deviceInfo.getId(), SignState.SUCCESS.getCode()).stream().collect(Collectors.toMap(ChannelInfo::getId, channelInfo -> CommonEnum.DISABLE.getCode()));
-                    redisBaseService.batchUpdateChannelOnlineState(channelInfoMap);
+                    messageBaseService.msgDistribute(SubMsgType.DEVICE_ONLINE_STATE, Map.of(deviceInfo.getId(), CommonEnum.DISABLE.getCode()));
+                    Map<Long, Object> channelInfoMap = channelMapper.selectByDeviceIdAndSignState(deviceInfo.getId(), SignState.SUCCESS.getCode()).stream().collect(Collectors.toMap(ChannelInfo::getId, channelInfo -> CommonEnum.DISABLE.getCode()));
+                    messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelInfoMap);
                 }
             } else if (isAutoSignIn && onlineState.equals(CommonEnum.ENABLE.getCode())){
                 deviceInfo.setOnlineState(onlineState);
                 deviceMapper.update(deviceInfo);
-                redisBaseService.updateDeviceOnlineState(deviceInfo.getId(), deviceInfo.getOnlineState());
+                messageBaseService.msgDistribute(SubMsgType.DEVICE_ONLINE_STATE, Map.of(deviceInfo.getId(), deviceInfo.getOnlineState()));
                 Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceInfo.getId()));
             }
         }
-        detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model,firmware,ptzType,nowTime);
+        detailBaseService.saveOrUpdateDetail(id, originId, DetailType.DEVICE.getCode(), ip, port, name, manufacturer, model, firmware, ptzType, nowTime, username, password);
     }
 
     @Override
@@ -129,7 +131,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         List<DetailInfo> detailInfoList = new ArrayList<>(postDeviceSignInReqMap.size());
         List<Long> offLineDeviceIdList = new ArrayList<>(oldDeviceInfoList.size());
         List<Long> needChannelSyncDevice = new ArrayList<>(oldDeviceInfoList.size());
-        Map<Long, Integer> updateDeviceRedisMap = new HashMap<>(postDeviceSignInReqMap.size());
+        Map<Long, Object> updateDeviceRedisMap = new HashMap<>(postDeviceSignInReqMap.size());
 
         LocalDateTime nowTime = LocalDateTime.now();
         // 修改
@@ -194,7 +196,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         if (detailInfoList.size() > 0)
             detailBaseService.batchSaveOrUpdate(detailInfoList, DetailType.DEVICE);
         if (updateDeviceRedisMap.size() > 0)
-            redisBaseService.batchUpdateDeviceOnlineState(updateDeviceRedisMap);
+            messageBaseService.msgDistribute(SubMsgType.DEVICE_ONLINE_STATE, updateDeviceRedisMap);
         if (offLineDeviceIdList.size() > 0)
             channelMapper.batchUpdateOnlineStateByDeviceIds(offLineDeviceIdList, CommonEnum.DISABLE.getCode(), nowTime);
         for (Long deviceId : needChannelSyncDevice){

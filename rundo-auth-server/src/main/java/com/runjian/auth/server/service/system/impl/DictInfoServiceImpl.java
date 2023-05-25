@@ -4,9 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.domain.dto.page.PageSysDictDTO;
-import com.runjian.auth.server.domain.dto.system.AddSysDictDTO;
 import com.runjian.auth.server.domain.dto.system.QureySysDictDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysDictDTO;
+import com.runjian.auth.server.domain.dto.system.SysDictDTO;
 import com.runjian.auth.server.domain.entity.DictInfo;
 import com.runjian.auth.server.domain.vo.system.SysDictVO;
 import com.runjian.auth.server.mapper.DictInfoMapper;
@@ -14,6 +13,7 @@ import com.runjian.auth.server.service.system.DictInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,15 +33,17 @@ public class DictInfoServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> i
     @Autowired
     private DictInfoMapper dictInfoMapper;
 
+    @Transactional
     @Override
-    public void save(AddSysDictDTO dto) {
+    public void save(SysDictDTO dto) {
         DictInfo dictInfo = new DictInfo();
         BeanUtils.copyProperties(dto, dictInfo);
         dictInfoMapper.insert(dictInfo);
     }
 
+    @Transactional
     @Override
-    public void modifyById(UpdateSysDictDTO dto) {
+    public void modifyById(SysDictDTO dto) {
         DictInfo dictInfo = dictInfoMapper.selectById(dto.getId());
         BeanUtils.copyProperties(dto, dictInfo);
         dictInfoMapper.updateById(dictInfo);
@@ -70,12 +72,17 @@ public class DictInfoServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> i
     @Override
     public Page<SysDictVO> findByPage(QureySysDictDTO dto) {
         PageSysDictDTO page = new PageSysDictDTO();
-        if (null != dto.getItemName() && !"".equals(dto.getItemName())){
+        if (null != dto.getItemName() && !"".equals(dto.getItemName())) {
             page.setItemName(dto.getItemName());
         }
-
-        if (null != dto.getItemValue() && !"".equals(dto.getItemValue())){
+        if (null != dto.getItemValue() && !"".equals(dto.getItemValue())) {
             page.setItemValue(dto.getItemValue());
+        }
+        if (null != dto.getGroupName() && !"".equals(dto.getGroupName())) {
+            page.setGroupName(dto.getGroupName());
+        }
+        if (null != dto.getGroupCode() && !"".equals(dto.getGroupCode())) {
+            page.setGroupCode(dto.getGroupCode());
         }
         if (null != dto.getCurrent() && dto.getCurrent() > 0) {
             page.setCurrent(dto.getCurrent());
@@ -90,6 +97,7 @@ public class DictInfoServiceImpl extends ServiceImpl<DictInfoMapper, DictInfo> i
         return dictInfoMapper.MySelectPage(page);
     }
 
+    @Transactional
     @Override
     public void erasureById(Long id) {
         dictInfoMapper.deleteById(id);

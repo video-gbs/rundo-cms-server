@@ -2,10 +2,10 @@ package com.runjian.auth.server.controller.system;
 
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.runjian.auth.server.domain.dto.system.AddSysAppInfoDTO;
+import com.runjian.auth.server.constant.AddGroup;
 import com.runjian.auth.server.domain.dto.system.QuerySysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysAppInfoDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysAppInfoDTO;
+import com.runjian.auth.server.domain.dto.system.SysAppInfoDTO;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.service.system.AppInfoService;
 import com.runjian.common.config.response.CommonResponse;
@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class AppInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加应用")
-    public CommonResponse<?> save(@RequestBody AddSysAppInfoDTO dto) {
+    public CommonResponse<?> save(@RequestBody @Validated({AddGroup.class}) SysAppInfoDTO dto) {
         log.info("添加应用信息前端传参{}", JSONUtil.toJsonStr(dto));
         appInfoService.save(dto);
         return CommonResponse.success();
@@ -43,7 +44,7 @@ public class AppInfoController {
 
     @PostMapping("/update")
     @ApiOperation("编辑应用")
-    public CommonResponse<?> modify(@RequestBody UpdateSysAppInfoDTO dto) {
+    public CommonResponse<?> modify(@RequestBody SysAppInfoDTO dto) {
         log.info("编辑应用信息前端传参{}", JSONUtil.toJsonStr(dto));
         appInfoService.modifyById(dto);
         return CommonResponse.success();

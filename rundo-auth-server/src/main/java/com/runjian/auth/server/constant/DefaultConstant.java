@@ -17,7 +17,7 @@ public class DefaultConstant {
     /**
      * 系统内置的数据ID
      */
-    public static final Long ID = 0L;
+    public static final Long ID = 1L;
 
     /**
      * 默认分隔符

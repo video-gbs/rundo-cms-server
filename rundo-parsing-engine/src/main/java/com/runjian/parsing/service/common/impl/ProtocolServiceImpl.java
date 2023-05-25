@@ -1,18 +1,19 @@
 package com.runjian.parsing.service.common.impl;
 
 
-import com.runjian.parsing.constant.IdType;
-import com.runjian.parsing.service.protocol.AbstractSouthProtocol;
+import com.runjian.common.constant.IdType;
 import com.runjian.parsing.service.protocol.SouthProtocol;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.ProtocolService;
 import com.runjian.parsing.service.protocol.NorthProtocol;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 协议服务
@@ -20,13 +21,12 @@ import java.util.Map;
  * @date 2023/1/17 14:45
  */
 @Service
+@RequiredArgsConstructor
 public class ProtocolServiceImpl implements ProtocolService {
 
-    @Autowired
-    private DataBaseService dataBaseService;
+    private final DataBaseService dataBaseService;
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
 
     /**
@@ -39,8 +39,8 @@ public class ProtocolServiceImpl implements ProtocolService {
             NORTH_PROTOCOL_MAP.put(northProtocol.getProtocolName(), northProtocol);
         }
 
-        Map<String, AbstractSouthProtocol> southProtocolRealizeMap = applicationContext.getBeansOfType(AbstractSouthProtocol.class);
-        for (AbstractSouthProtocol southProtocol : southProtocolRealizeMap.values()){
+        Map<String, SouthProtocol> southProtocolRealizeMap = applicationContext.getBeansOfType(SouthProtocol.class);
+        for (SouthProtocol southProtocol : southProtocolRealizeMap.values()){
             SOUTH_PROTOCOL_MAP.put(southProtocol.getProtocolName(), southProtocol);
         }
     }
@@ -52,6 +52,10 @@ public class ProtocolServiceImpl implements ProtocolService {
      * @return 协议
      */
     public NorthProtocol getNorthProtocol(Long id, IdType idType){
+        if (Objects.isNull(id)){
+            return NORTH_PROTOCOL_MAP.get(NorthProtocol.DEFAULT_PROTOCOL);
+        }
+
         switch (idType){
             case CHANNEL:
                 id = dataBaseService.getChannelInfo(id).getDeviceId();

@@ -1,17 +1,18 @@
 package com.runjian.auth.server.controller.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.json.JSONUtil;
-import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
+import com.runjian.auth.server.constant.AddGroup;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
+import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
-import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.service.system.OrgInfoService;
 import com.runjian.common.config.response.CommonResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,7 +37,7 @@ public class OrgInfoController {
 
     @PostMapping("/add")
     @ApiOperation("添加部门")
-    public CommonResponse<SysOrgVO> save(@RequestBody @Valid AddSysOrgDTO dto) {
+    public CommonResponse<SysOrgVO> save(@RequestBody @Validated({AddGroup.class}) SysOrgDTO dto) {
         log.info("添加部门前端传参信息{}", JSONUtil.toJsonStr(dto));
         return CommonResponse.success(orgInfoService.save(dto));
     }
@@ -49,7 +50,7 @@ public class OrgInfoController {
 
     @PostMapping("/update")
     @ApiOperation("编辑部门信息")
-    public CommonResponse<?> update(@RequestBody UpdateSysOrgDTO dto) {
+    public CommonResponse<?> update(@RequestBody SysOrgDTO dto) {
         log.info("编辑部门信息前端传参信息{}", JSONUtil.toJsonStr(dto));
         orgInfoService.modifyById(dto);
         return CommonResponse.success();
@@ -64,7 +65,7 @@ public class OrgInfoController {
 
     @GetMapping("/tree")
     @ApiOperation("获取组织机构层级树")
-    public CommonResponse<List<SysOrgTree>> getSysOrgById() {
+    public CommonResponse<List<Tree<Long>>> getSysOrgById() {
         return CommonResponse.success(orgInfoService.findByTree());
     }
 

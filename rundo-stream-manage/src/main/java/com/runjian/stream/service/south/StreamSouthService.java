@@ -12,13 +12,4 @@ public interface StreamSouthService {
      */
     Boolean streamCloseHandle(String streamId, Boolean isError);
 
-    /**
-     * 接收流播放结果
-     */
-    void receiveResult(String streamId, Boolean isSuccess);
-
-    /**
-     * 接收录像文件结果
-     */
-    //void receiveRecordResult(String streamId, LocalDateTime startTime, LocalDateTime endTime, );
 }

@@ -4,6 +4,7 @@ import com.runjian.device.constant.DetailType;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.service.common.DetailBaseService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,10 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DetailBaseServiceImpl implements DetailBaseService {
 
-    @Autowired
-    private DetailMapper detailMapper;
+    private final DetailMapper detailMapper;
 
     /**
      * 保存设备或者通道的详细信息
@@ -41,7 +42,7 @@ public class DetailBaseServiceImpl implements DetailBaseService {
      * @param nowTime 更新时间
      */
     @Override
-    public void saveOrUpdateDetail(Long id, String originId, Integer type, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, LocalDateTime nowTime) {
+    public void saveOrUpdateDetail(Long id, String originId, Integer type, String ip, String port, String name, String manufacturer, String model, String firmware, Integer ptzType, LocalDateTime nowTime, String username, String password) {
         Optional<DetailInfo> detailInfoOp = detailMapper.selectByDcIdAndType(id, type);
         DetailInfo detailInfo = new DetailInfo();
         detailInfo.setIp(ip);
@@ -52,6 +53,8 @@ public class DetailBaseServiceImpl implements DetailBaseService {
         detailInfo.setFirmware(firmware);
         detailInfo.setPtzType(ptzType);
         detailInfo.setUpdateTime(nowTime);
+        detailInfo.setUsername(username);
+        detailInfo.setPassword(password);
         // 判断数据是否为空，根据情况保存或者更新
         if (detailInfoOp.isEmpty()){
             detailInfo.setDcId(id);

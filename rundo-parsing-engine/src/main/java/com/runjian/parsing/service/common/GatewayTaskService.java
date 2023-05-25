@@ -2,7 +2,6 @@ package com.runjian.parsing.service.common;
 
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.entity.GatewayTaskInfo;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -21,6 +20,11 @@ public interface GatewayTaskService {
      * 异步返回体Map
      */
     Map<Long, DeferredResult<?>> asynReqMap = new ConcurrentHashMap<>();
+
+    /**
+     * 定时清理超时任务
+     */
+    void clearOutTimeTask();
 
     /**
      * 发送消息

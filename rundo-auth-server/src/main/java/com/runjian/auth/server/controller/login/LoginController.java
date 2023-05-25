@@ -31,13 +31,13 @@ public class LoginController {
     @ApiOperation(value = "登录接口")
     @PostMapping("/login")
     public CommonResponse<?> login(@RequestBody @Valid UserInfoDTO userInfoDTO) {
-        return CommonResponse.success(loginService.login(userInfoDTO));
+        return loginService.login(userInfoDTO);
     }
 
     @ApiOperation(value = "验证码")
     @GetMapping("/code")
     public CommonResponse<?> getCode() {
-        return CommonResponse.success(loginService.getCode());
+        return loginService.getCode();
     }
 
     @ApiOperation(value = "登出接口")

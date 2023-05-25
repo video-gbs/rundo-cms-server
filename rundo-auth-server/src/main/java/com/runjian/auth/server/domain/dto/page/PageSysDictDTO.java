@@ -16,6 +16,13 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PageSysDictDTO extends Page {
+
+    @ApiModelProperty("字典分组名称")
+    private String groupName;
+
+    @ApiModelProperty("字典分组编码")
+    private String groupCode;
+
     @ApiModelProperty("字典项名称")
     private String itemName;
 

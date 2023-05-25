@@ -4,6 +4,7 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.parsing.mq.listener.MqListenerConfig;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -26,19 +27,16 @@ import java.util.Objects;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 @EnableConfigurationProperties(RabbitMqProperties.class)
 @ConditionalOnProperty(prefix = "mq", value = "enabled", havingValue = "true")
 public class RabbitMqConfig {
 
+    private final RabbitAdmin rabbitAdmin;
 
-    @Autowired
-    private RabbitAdmin rabbitAdmin;
+    private final RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
-
-    @Autowired
-    private RabbitMqProperties rabbitMqProperties;
+    private final RabbitMqProperties rabbitMqProperties;
 
 
     @PostConstruct

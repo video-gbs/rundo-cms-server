@@ -3,6 +3,7 @@ package com.runjian.parsing.mq.listener;
 import com.runjian.parsing.mq.config.RabbitMqConfig;
 import com.runjian.parsing.mq.config.RabbitMqProperties;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -15,13 +16,12 @@ import javax.annotation.PostConstruct;
  */
 @Data
 @Configuration
+@RequiredArgsConstructor
 public class MqDefaultProperties {
 
-    @Autowired
-    private RabbitMqProperties rabbitMqProperties;
+    private final RabbitMqProperties rabbitMqProperties;
 
-    @Autowired
-    private RabbitMqConfig rabbitMqConfig;
+    private final RabbitMqConfig rabbitMqConfig;
 
     @Value("${mq-default.public.queue-id-get}")
     private String publicGetQueue;

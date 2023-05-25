@@ -62,9 +62,9 @@ public interface StreamMapper {
             " WHERE stream_state = #{streamState} ")
     List<StreamInfo> selectByStreamState(Integer streamState);
 
-    @Select(" SELECT * FROM " + STREAM_TABLE_NAME +
+    @Select(" SELECT stream_id FROM " + STREAM_TABLE_NAME +
             " WHERE stream_state = #{streamState} ")
-    List<Long> selectIdByStreamState(Integer streamState);
+    Set<String> selectIdByStreamState(Integer streamState);
 
     @Delete(" <script> " +
             " DELETE FROM " + STREAM_TABLE_NAME +
@@ -91,6 +91,7 @@ public interface StreamMapper {
             " SET update_time = #{updateTime}  " +
             " , record_state = #{recordState} " +
             " WHERE id = #{item} "+
+            " AND create_time &lt;= #{updateTime}" +
             " </foreach> " +
             " </script> ")
     void batchUpdateRecordState(List<Long> noRecordIds, Integer recordState, LocalDateTime updateTime);
@@ -115,4 +116,24 @@ public interface StreamMapper {
             " <foreach collection='dispatchIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
     void deleteByDispatchIds(Set<Long> dispatchIds);
+
+    @Delete(" <script> " +
+            " DELETE FROM " + STREAM_TABLE_NAME +
+            " WHERE id IN " +
+            " <foreach collection='idList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " AND create_time &lt;= #{nowTime}" +
+            " </script> ")
+    void deleteByIdsAndCreateTime(List<Long> idList, LocalDateTime nowTime);
+
+    @Delete(" <script> " +
+            " DELETE FROM " + STREAM_TABLE_NAME +
+            " WHERE stream_state = #{streamState} " +
+            " </script> ")
+    void deleteByStreamState(Integer streamState);
+
+    @Update(" UPDATE " + STREAM_TABLE_NAME +
+            " SET update_time = #{nowTime}  " +
+            " , stream_state = #{streamState} " +
+            " WHERE stream_id = #{streamId} ")
+    void updateStreamStateByStreamId(String streamId, Integer streamState, LocalDateTime nowTime);
 }

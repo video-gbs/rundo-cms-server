@@ -4,24 +4,24 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.constant.MqConstant;
-import com.runjian.parsing.constant.MsgType;
 import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.dao.GatewayTaskMapper;
 import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.entity.GatewayTaskInfo;
 import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.mq.listener.MqDefaultProperties;
-import com.runjian.parsing.mq.listener.MqListenerConfig;
 import com.runjian.parsing.service.common.DataBaseService;
 import com.runjian.parsing.service.common.GatewayTaskService;
 import com.runjian.parsing.vo.CommonMqDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,23 +33,36 @@ import java.util.UUID;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GatewayTaskServiceImpl implements GatewayTaskService {
 
-    @Autowired
-    private GatewayTaskMapper gatewayTaskMapper;
+    private final GatewayTaskMapper gatewayTaskMapper;
 
-    @Autowired
-    private RabbitMqSender rabbitMqSender;
+    private final RabbitMqSender rabbitMqSender;
 
-    @Autowired
-    private DataBaseService dataBaseService;
+    private final DataBaseService dataBaseService;
 
-    @Autowired
-    private MqDefaultProperties mqDefaultProperties;
+    private final MqDefaultProperties mqDefaultProperties;
 
 
     private static final String OUT_TIME = "OUT_TIME";
 
+
+    @Override
+    @Scheduled(fixedDelay = 60000)
+    public void clearOutTimeTask() {
+        LocalDateTime outTime = LocalDateTime.now().plusSeconds(-60);
+        List<GatewayTaskInfo> gatewayTaskInfoList = gatewayTaskMapper.selectByOutTimeTask(TaskState.RUNNING.getCode(), outTime);
+        for (GatewayTaskInfo gatewayTaskInfo : gatewayTaskInfoList){
+            asynReqMap.remove(gatewayTaskInfo.getId());
+            gatewayTaskInfo.setState(TaskState.ERROR.getCode());
+            gatewayTaskInfo.setUpdateTime(LocalDateTime.now());
+            gatewayTaskInfo.setDetail(OUT_TIME);
+        }
+        if (gatewayTaskInfoList.size() > 0){
+            gatewayTaskMapper.updateAll(gatewayTaskInfoList);
+        }
+    }
 
     /**
      * 发送消息
@@ -132,16 +145,24 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
 
     @Override
     public void taskSuccess(Long taskId, Object data) {
-        gatewayTaskMapper.updateState(taskId, TaskState.SUCCESS.getCode(), null, LocalDateTime.now());
         DeferredResult deferredResult = asynReqMap.remove(taskId);
+        if (Objects.isNull(deferredResult)){
+            gatewayTaskMapper.updateState(taskId, TaskState.ERROR.getCode(), String.format("任务%s的返回请求丢失，消息内容：%s", taskId, data), LocalDateTime.now());
+            return;
+        }
         deferredResult.setResult(CommonResponse.success(data));
+        gatewayTaskMapper.updateState(taskId, TaskState.SUCCESS.getCode(), null, LocalDateTime.now());
     }
 
     @Override
     public void taskError(Long taskId, BusinessErrorEnums errorEnums, String detail) {
-        gatewayTaskMapper.updateState(taskId, TaskState.SUCCESS.getCode(), detail, LocalDateTime.now());
         DeferredResult deferredResult = asynReqMap.remove(taskId);
+        if (Objects.isNull(deferredResult)){
+            gatewayTaskMapper.updateState(taskId, TaskState.ERROR.getCode(), String.format("任务失败返回，任务%s的返回请求丢失，异常信息%s, 消息内容：%s", taskId, errorEnums.getErrMsg(), detail), LocalDateTime.now());
+            return;
+        }
         deferredResult.setResult(CommonResponse.failure(errorEnums, detail));
+        gatewayTaskMapper.updateState(taskId, TaskState.ERROR.getCode(), detail, LocalDateTime.now());
     }
 
 

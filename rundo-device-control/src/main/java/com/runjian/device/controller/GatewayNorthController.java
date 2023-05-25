@@ -10,11 +10,10 @@ import com.runjian.device.vo.request.PutGatewayReq;
 import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Miracle
@@ -22,13 +21,12 @@ import java.util.Objects;
  */
 @RestController
 @RequestMapping(("/gateway/north"))
+@RequiredArgsConstructor
 public class GatewayNorthController {
 
-    @Autowired
-    private GatewayNorthService gatewayNorthService;
+    private final GatewayNorthService gatewayNorthService;
 
-    @Autowired
-    private ValidatorService validatorService;
+    private final ValidatorService validatorService;
 
     /**
      * 根据网关id获取数据
@@ -64,6 +62,16 @@ public class GatewayNorthController {
     @GetMapping("/name")
     public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(Long gatewayId){
         return CommonResponse.success(gatewayNorthService.getGatewayNameList(gatewayId));
+    }
+
+    /**
+     * 获取gatewayId
+     * @param channelId 通道id
+     * @return
+     */
+    @GetMapping("/id/channel")
+    public CommonResponse<Long> getGatewayId(@RequestParam Long channelId){
+        return CommonResponse.success(gatewayNorthService.getGatewayInfoByChannelId(channelId));
     }
 
 

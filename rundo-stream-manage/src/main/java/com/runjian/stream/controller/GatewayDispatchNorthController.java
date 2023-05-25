@@ -7,6 +7,7 @@ import com.runjian.stream.service.north.GatewayDispatchNorthService;
 import com.runjian.stream.vo.request.PostDispatchBindingGatewayReq;
 import com.runjian.stream.vo.request.PostGatewayBindingDispatchReq;
 import com.runjian.stream.vo.response.GetGatewayByIdsRsp;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,14 +16,13 @@ import org.springframework.web.bind.annotation.*;
  * @date 2023/2/9 10:49
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/gateway-dispatch/north")
 public class GatewayDispatchNorthController {
 
-    @Autowired
-    private GatewayDispatchNorthService gatewayDispatchNorthService;
+    private final GatewayDispatchNorthService gatewayDispatchNorthService;
 
-    @Autowired
-    private ValidatorService validatorService;
+    private final ValidatorService validatorService;
 
     /**
      * 获取网关绑定的流媒体服务id

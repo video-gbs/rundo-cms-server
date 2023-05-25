@@ -4,6 +4,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.constant.SignState;
+import com.runjian.device.constant.SubMsgType;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.dao.GatewayMapper;
@@ -11,9 +12,9 @@ import com.runjian.device.entity.ChannelInfo;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.service.common.GatewayBaseService;
-import com.runjian.device.service.common.RedisBaseService;
+import com.runjian.device.service.common.MessageBaseService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -30,22 +31,18 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GatewayBaseServiceImpl implements GatewayBaseService {
 
-    @Autowired
-    private GatewayMapper gatewayMapper;
+    private final GatewayMapper gatewayMapper;
 
-    @Autowired
-    private DeviceMapper deviceMapper;
+    private final DeviceMapper deviceMapper;
 
-    @Autowired
-    private ChannelMapper channelMapper;
+    private final ChannelMapper channelMapper;
 
-    @Autowired
-    private RedisBaseService redisBaseService;
+    private final MessageBaseService messageBaseService;
 
-    @Autowired
-    private ParsingEngineApi parsingEngineApi;
+    private final ParsingEngineApi parsingEngineApi;
 
 
     @Override
@@ -54,7 +51,7 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
         // 将所有的网关设置为离线状态
         Set<Long> gatewayIds = gatewayMapper.selectIdByOnlineState(CommonEnum.ENABLE.getCode());
         if (gatewayIds.size() > 0) {
-            heartbeatArray.addOrUpdateTime(gatewayIds, 60L);
+            heartbeatArray.addOrUpdateTime(gatewayIds, 90L);
         }
     }
 
@@ -87,7 +84,7 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
         // 修改设备的在线状态
         deviceMapper.batchUpdateOnlineState(deviceInfoList);
         // redis同步设备和通道的在线状态
-        redisBaseService.batchUpdateDeviceOnlineState(deviceInfoList
+        messageBaseService.msgDistribute(SubMsgType.DEVICE_ONLINE_STATE, deviceInfoList
                 .stream()
                 .filter(deviceInfo -> deviceInfo.getSignState().equals(SignState.SUCCESS.getCode()))
                 .collect(Collectors.toMap(DeviceInfo::getId, DeviceInfo::getOnlineState)));
@@ -103,7 +100,7 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
 
         // 修改通道的在线状态
         channelMapper.batchUpdateOnlineState(channelInfoList);
-        redisBaseService.batchUpdateChannelOnlineState(channelInfoList.stream()
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_DELETE_STATE, channelInfoList.stream()
                 .filter(channelInfo -> channelInfo.getSignState().equals(SignState.SUCCESS.getCode()))
                 .collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
 

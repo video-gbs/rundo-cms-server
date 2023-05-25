@@ -27,6 +27,7 @@
         <module>rundo-auth-server</module>
         <module>rundo-generator</module>
         <module>rundo-expansion-server</module>
+        <module>rundo-foreign-server</module>
     </modules>
     <properties>
         <!--项目基础信息-->

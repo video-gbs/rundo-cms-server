@@ -8,7 +8,7 @@ spring:
         namespace: ${NACOS_NAMESPACE:dev}
         group: ${NACOS_GROUP:DEFAULT_GROUP}
       config:
-        namespace: ${NACOS_NAMESPACE:public}
+        namespace: ${NACOS_NAMESPACE:dev}
         group: ${NACOS_GROUP:DEFAULT_GROUP}
   config:
     import:

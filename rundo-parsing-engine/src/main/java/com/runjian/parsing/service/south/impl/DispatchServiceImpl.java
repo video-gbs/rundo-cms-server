@@ -13,6 +13,7 @@ import com.runjian.parsing.service.south.DispatchService;
 import com.runjian.parsing.vo.request.PostDispatchSignInReq;
 import com.runjian.parsing.vo.request.PutDispatchHeartbeatReq;
 import com.runjian.parsing.vo.response.SignInRsp;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,13 +29,12 @@ import java.util.Optional;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class DispatchServiceImpl implements DispatchService {
 
-    @Autowired
-    private DispatchMapper dispatchMapper;
+    private final DispatchMapper dispatchMapper;
 
-    @Autowired
-    private StreamManageApi streamManageApi;
+    private final StreamManageApi streamManageApi;
 
     @Override
     public SignInRsp signIn(String serialNum, Integer signType, String ip, String port, String outTime) {

@@ -7,38 +7,35 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
-import com.runjian.parsing.constant.IdType;
-import com.runjian.parsing.constant.MsgType;
+import com.runjian.common.constant.IdType;
+import com.runjian.common.constant.MsgType;
 import com.runjian.parsing.dao.GatewayMapper;
 import com.runjian.parsing.entity.GatewayInfo;
 import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.service.common.ProtocolService;
 import com.runjian.parsing.vo.CommonMqDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GatewayMsgListener implements ChannelAwareMessageListener {
 
-    @Autowired
-    private ProtocolService protocolService;
+    private final ProtocolService protocolService;
 
-    @Autowired
-    private GatewayMapper gatewayMapper;
+    private final GatewayMapper gatewayMapper;
 
-    @Autowired
-    private RabbitMqSender rabbitMqSender;
+    private final RabbitMqSender rabbitMqSender;
 
-    @Autowired
-    private MqDefaultProperties mqDefaultProperties;
+    private final MqDefaultProperties mqDefaultProperties;
 
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
@@ -56,42 +53,14 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
                 return;
             }
             GatewayInfo gatewayInfo = gatewayInfoOp.get();
-
-            if (!StringUtils.isNumber(mqRequest.getMsgId())){
-                // 网关主动推送消息
-                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "流媒体异常消息记录", mqRequest.getMsgType(), mqRequest.getMsg());
-                }else if (mqRequest.getMsgType().equals(MsgType.DEVICE_SIGN_IN.getMsg())) {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceSignIn(gatewayInfo.getId(), mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_TOTAL_SYNC.getMsg())){
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceBatchSignIn(gatewayInfo.getId(), mqRequest.getData());
-                } else {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).commonEvent(gatewayInfo.getId(), mqRequest.getMsgId(), mqRequest.getMsgType(), mqRequest.getData());
-                }
-            } else{
-                // 上层消息返回
-                if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ流媒体消息处理服务", "流媒体异常消息记录", mqRequest.getMsgType(), mqRequest.getMsg());
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).errorEvent(Long.parseLong(mqRequest.getMsgId()), mqRequest);
-                } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_SYNC.getMsg())) {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceSync(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_ADD.getMsg())) {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceAdd(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.DEVICE_DELETE.getMsg())) {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).deviceDelete(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_SYNC.getMsg())) {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelSync(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_PTZ_CONTROL.getMsg())) {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelPtzControl(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_PLAY.getMsg())) {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelPlay(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_RECORD_INFO.getMsg())) {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelRecord(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                } else if (mqRequest.getMsgType().equals(MsgType.CHANNEL_PLAYBACK.getMsg())) {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).channelPlayback(Long.parseLong(mqRequest.getMsgId()), mqRequest.getData());
-                } else {
-                    protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).commonEvent(gatewayInfo.getId(), mqRequest.getMsgId(), mqRequest.getMsgType(), mqRequest.getData());
-                }
+            Long taskId = null;
+            if (StringUtils.isNumber(mqRequest.getMsgId())){
+                taskId = Long.parseLong(mqRequest.getMsgId());
+            }
+            if (mqRequest.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).errorEvent(taskId, mqRequest);
+            }else {
+                protocolService.getSouthProtocol(gatewayInfo.getId(), IdType.GATEWAY).msgDistribute(mqRequest.getMsgType(), gatewayInfo.getId(), taskId, mqRequest.getData());
             }
         } catch (Exception ex) {
             if (ex instanceof BusinessException){
@@ -99,6 +68,7 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
             }else {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "MQ网关消息处理服务", "处理失败", new String(message.getBody()), ex);
             }
+            throw ex;
         } finally {
             channel.basicAck(deliveryTag, true);
         }

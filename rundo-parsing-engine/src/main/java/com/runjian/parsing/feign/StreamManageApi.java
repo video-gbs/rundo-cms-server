@@ -3,6 +3,7 @@ package com.runjian.parsing.feign;
 import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.parsing.feign.fallback.StreamManageFallback;
+import com.runjian.parsing.vo.CommonMqDto;
 import com.runjian.parsing.vo.request.PostDispatchSignInReq;
 import com.runjian.parsing.vo.request.PutDispatchHeartbeatReq;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -29,4 +30,7 @@ public interface StreamManageApi {
 
     @PutMapping("/stream/south/play/close")
     CommonResponse<Boolean> streamCloseHandle(@RequestBody JSONObject req);
+
+    @PostMapping("/common/south/error")
+    void commonError(@RequestBody CommonMqDto<?> response);
 }

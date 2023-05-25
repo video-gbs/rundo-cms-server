@@ -1,5 +1,7 @@
 package com.runjian.device.service.north.impl;
 
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
@@ -9,23 +11,22 @@ import com.runjian.common.constant.*;
 import com.runjian.common.utils.DateUtils;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
-import com.runjian.device.constant.StreamType;
+import com.runjian.device.constant.SubMsgType;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
 import com.runjian.device.entity.ChannelInfo;
 import com.runjian.device.entity.DetailInfo;
 import com.runjian.device.entity.DeviceInfo;
+import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.feign.ParsingEngineApi;
-import com.runjian.device.feign.StreamManageApi;
 import com.runjian.device.service.common.DataBaseService;
-import com.runjian.device.service.common.RedisBaseService;
+import com.runjian.device.service.common.MessageBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
-import com.runjian.device.vo.feign.StreamPlayReq;
 import com.runjian.device.vo.response.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,28 +42,20 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ChannelNorthServiceImpl implements ChannelNorthService {
 
-    @Autowired
-    private ChannelMapper channelMapper;
+    private final ChannelMapper channelMapper;
 
-    @Autowired
-    private DeviceMapper deviceMapper;
+    private final DeviceMapper deviceMapper;
 
-    @Autowired
-    private ParsingEngineApi parsingEngineApi;
+    private final ParsingEngineApi parsingEngineApi;
 
-    @Autowired
-    private StreamManageApi streamManageApi;
+    private final DetailMapper detailMapper;
 
-    @Autowired
-    private DetailMapper detailMapper;
+    private final DataBaseService dataBaseService;
 
-    @Autowired
-    private DataBaseService dataBaseService;
-
-    @Autowired
-    private RedisBaseService redisBaseService;
+    private final MessageBaseService messageBaseService;
 
     @Override
     public PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String name) {
@@ -90,12 +83,12 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         if (!deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, String.format("设备%s是未注册成功的设备，不允许操作", deviceId));
         }
-        CommonResponse<ChannelSyncRsp> response = parsingEngineApi.channelSync(deviceId);
-        if (response.getCode() != 0) {
+        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.CHANNEL_SYNC, 15000L));
+        if (response.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        ChannelSyncRsp channelSyncRsp = response.getData();
+        ChannelSyncRsp channelSyncRsp = JSONObject.parseObject(JSONObject.toJSONString(response.getData()), ChannelSyncRsp.class);
         channelSyncRsp.setNum(channelSyncRsp.getChannelDetailList().size());
         // 判断是否有通道
         if (channelSyncRsp.getNum() > 0) {
@@ -103,7 +96,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             List<ChannelInfo> channelUpdateList = new ArrayList<>(channelSyncRsp.getNum());
             List<DetailInfo> detailSaveList = new ArrayList<>(channelSyncRsp.getNum());
             List<DetailInfo> detailUpdateList = new ArrayList<>(channelSyncRsp.getNum());
-            Map<Long, Integer> channelOnlineMap = new HashMap<>(channelSyncRsp.getNum());
+            Map<Long, Object> channelOnlineMap = new HashMap<>(channelSyncRsp.getNum());
 
             LocalDateTime nowTime = LocalDateTime.now();
             // 循环通道进行添加
@@ -153,7 +146,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                 }
             }
             // 更新通道的在线状态
-            redisBaseService.batchUpdateChannelOnlineState(channelOnlineMap);
+            messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelOnlineMap);
             // 对数据进行批量保存
             if (channelSaveList.size() > 0)
                 channelMapper.batchSave(channelSaveList);
@@ -186,26 +179,58 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             channelInfo.setUpdateTime(LocalDateTime.now());
         }
         channelMapper.batchUpdateSignState(channelInfoList);
-        redisBaseService.batchUpdateChannelOnlineState(channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, JSONObject::toJSONString)));
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
     }
 
     /**
      * 通道删除
-     * @param channelIds 通道id
+     * @param channelId 通道id
      */
     @Override
-    public void channelDeleteByChannelId(List<Long> channelIds) {
-        List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIds);
-        if (channelIds.size() > channelInfoList.size()){
-            List<Long> collect = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
-            channelIds.removeAll(collect);
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("缺失的数据%s", channelIds));
+    @Transactional(rollbackFor = Exception.class)
+    public void channelDeleteSoft(Long channelId) {
+        ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
+        if (channelInfo.getSignState().equals(SignState.DELETED.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道已进行软删除，请勿重复操作");
         }
-        for (ChannelInfo channelInfo : channelInfoList){
-            channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
-            channelInfo.setUpdateTime(LocalDateTime.now());
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
+        GatewayInfo gatewayInfo = dataBaseService.getGatewayInfo(deviceInfo.getGatewayId());
+        if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
         }
-        channelMapper.batchUpdateSignState(channelInfoList);
+        channelInfo.setSignState(SignState.DELETED.getCode());
+        channelInfo.setUpdateTime(LocalDateTime.now());
+        channelMapper.updateSignState(channelInfo);
+        CommonResponse<?> commonResponse = parsingEngineApi.customEvent(new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_DELETE_SOFT, 1500L));
+        if (commonResponse.isError()){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道软删除失败", commonResponse.getData(), commonResponse.getMsg());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_DELETE_STATE, Map.of(channelId, CommonEnum.ENABLE.getCode()));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void channelDeleteHard(Long channelId) {
+        ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
+        if (!channelInfo.getSignState().equals(SignState.DELETED.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "通道未进行软删除，无法进行强制删除");
+        }
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
+        GatewayInfo gatewayInfo = dataBaseService.getGatewayInfo(deviceInfo.getGatewayId());
+        if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
+        }
+        if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, Set.of(channelId))){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用在使用该数据，请稍后再删除");
+        }
+        channelMapper.deleteById(channelId);
+        CommonResponse<?> commonResponse = parsingEngineApi.customEvent(new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_DELETE_HARD, 1500L));
+        if (commonResponse.isError()){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道硬删除失败", commonResponse.getData(), commonResponse.getMsg());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
     }
 
     /**
@@ -222,6 +247,9 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         }
         if (isDeleteData) {
             List<Long> channelInfoIdList = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
+            if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, new HashSet<>(channelInfoIdList))){
+                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用使用该设备下的通道，请稍后重试");
+            }
             if (channelInfoIdList.size() > 0) {
                 detailMapper.deleteByDcIdsAndType(channelInfoIdList, DetailType.CHANNEL.getCode());
             }
@@ -229,113 +257,29 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         } else {
             LocalDateTime nowTime = LocalDateTime.now();
             channelInfoList.forEach(channelInfo -> {
-                channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
+                channelInfo.setSignState(SignState.DELETED.getCode());
                 channelInfo.setUpdateTime(nowTime);
             });
             channelMapper.batchUpdateSignState(channelInfoList);
+            messageBaseService.msgDistribute(SubMsgType.CHANNEL_DELETE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, deleted -> CommonEnum.ENABLE.getCode())));
         }
 
 
     }
 
-    /**
-     * 设备点播
-     * @param channelId   通道id
-     * @param enableAudio 是否播放音频
-     * @param ssrcCheck   是否使用ssrc
-     * @return
-     */
-    @Override
-    public VideoPlayRsp channelPlay(Long channelId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType, Integer recordState, Integer autoCloseState) {
-        ChannelInfo channelInfo = getChannelInfoAndValid(channelId);
-        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
-        Map<String, Object> responseMapData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.LIVE, recordState, autoCloseState);
-
-        DeviceControlReq deviceReq = new DeviceControlReq();
-        deviceReq.setChannelId(channelId);
-        deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
-        deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
-        deviceReq.putData(StandardName.STREAM_MODE, StreamType.getMsgByCode(streamType));
-
-        deviceReq.putAllData(responseMapData);
-
-        CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlay(deviceReq);
-        if (videoPlayRspCommonResponse.getCode() != 0) {
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, videoPlayRspCommonResponse.getMsg());
-        }
-        return videoPlayRspCommonResponse.getData();
-    }
-
-    /**
-     * 获取流信息
-     * @param channelId
-     * @param gatewayId
-     * @param playType
-     * @param recordState
-     * @param autoCloseState
-     * @return
-     */
-    private Map<String, Object> getStreamData(Long channelId, Long gatewayId, PlayType playType, Integer recordState, Integer autoCloseState) {
-        StreamPlayReq streamReq = new StreamPlayReq();
-        streamReq.setChannelId(channelId);
-        streamReq.setGatewayId(gatewayId);
-        streamReq.setPlayType(playType.getCode());
-        streamReq.setRecordState(recordState);
-        streamReq.setAutoCloseState(autoCloseState);
-
-        CommonResponse<Map<String, Object>> response = streamManageApi.applyPlay(streamReq);
-        if (response.isError()){
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频点播失败", response.getData(), response.getMsg());
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
-        }
-        return response.getData();
-    }
 
     @Override
-    public VideoRecordRsp channelRecord(Long chId, LocalDateTime startTime, LocalDateTime endTime) {
-        getChannelInfoAndValid(chId);
-        DeviceControlReq deviceReq = new DeviceControlReq();
-        deviceReq.setChannelId(chId);
+    public VideoRecordRsp channelRecord(Long channelId, LocalDateTime startTime, LocalDateTime endTime) {
+        getChannelInfoAndValid(channelId);
+        DeviceControlReq deviceReq = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_RECORD_INFO, 15000L);
         deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
-        CommonResponse<VideoRecordRsp> response = parsingEngineApi.channelRecord(deviceReq);
-        if (response.getCode() != 0) {
+        CommonResponse<?> response = parsingEngineApi.customEvent(deviceReq);
+        if (response.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频录像数据获取失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        return response.getData();
-    }
-
-    /**
-     * 视频回放
-     *
-     * @param channelId        通道id
-     * @param enableAudio 是否播放音频
-     * @param ssrcCheck   是否使用ssrc
-     * @param startTime   开始时间
-     * @param endTime     结束时间
-     * @return
-     */
-    @Override
-    public VideoPlayRsp channelPlayback(Long channelId, Boolean enableAudio, Boolean ssrcCheck, Integer streamType, LocalDateTime startTime, LocalDateTime endTime, Integer recordState, Integer autoCloseState) {
-        ChannelInfo channelInfo = getChannelInfoAndValid(channelId);
-        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
-        Map<String, Object> streamData = getStreamData(channelId, deviceInfo.getGatewayId(), PlayType.RECORD, recordState, autoCloseState);
-        DeviceControlReq deviceReq = new DeviceControlReq();
-        deviceReq.setChannelId(channelId);
-        deviceReq.putData(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
-        deviceReq.putData(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
-        deviceReq.putData(StandardName.STREAM_MODE, StreamType.getMsgByCode(streamType));
-        deviceReq.putData(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
-        deviceReq.putData(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
-        deviceReq.putAllData(streamData);
-        CommonResponse<VideoPlayRsp> videoPlayRspCommonResponse = parsingEngineApi.channelPlayback(deviceReq);
-        if (videoPlayRspCommonResponse.getCode() != 0) {
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备播放北向服务", "视频回放失败", videoPlayRspCommonResponse.getData(), videoPlayRspCommonResponse.getMsg());
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, videoPlayRspCommonResponse.getMsg());
-        }
-        return videoPlayRspCommonResponse.getData();
+        return JSONObject.parseObject(JSONObject.toJSONString(response.getData()), VideoRecordRsp.class);
     }
 
 
@@ -354,27 +298,71 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 云台控制状态
-     *
      * @param channelId     通道ID
-     * @param cmdCode       指令code
-     * @param horizonSpeed  水平速度
-     * @param verticalSpeed 垂直速度
-     * @param zoomSpeed     缩放速度
-     * @param totalSpeed    总速度
+     * @param cmdCode  指令code
+     * @param valueMap  值map
      */
     @Override
-    public void channelPtzControl(Long channelId, Integer cmdCode, Integer horizonSpeed, Integer verticalSpeed, Integer zoomSpeed, Integer totalSpeed) {
+    public void channelPtzControl(Long channelId, Integer cmdCode, Integer cmdValue, Map<String, Object> valueMap) {
         getChannelInfoAndValid(channelId);
-        DeviceControlReq req = new DeviceControlReq();
-        req.setChannelId(channelId);
+        DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_CONTROL, 15000L);
         req.putData(StandardName.PTZ_CMD_CODE, cmdCode);
-        req.putData(StandardName.PTZ_HORIZON_SPEED, horizonSpeed);
-        req.putData(StandardName.PTZ_VERTICAL_SPEED, verticalSpeed);
-        req.putData(StandardName.PTZ_ZOOM_SPEED, zoomSpeed);
-        req.putData(StandardName.PTZ_TOTAL_SPEED, totalSpeed);
-        CommonResponse<?> response = parsingEngineApi.channelPtzControl(req);
-        if (response.getCode() != 0) {
+        req.putData(StandardName.PTZ_CMD_VALUE, cmdValue);
+        if (Objects.nonNull(valueMap) && valueMap.size() > 0){
+            req.putAllData(valueMap);
+        }
+        CommonResponse<?> response = parsingEngineApi.customEvent(req);
+        if (response.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "云台控制失败", response.getData(), response.getMsg());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
+        }
+    }
+
+    /**
+     * 预置位查询
+     * @param channelId 通道id
+     * @return
+     */
+    @Override
+    public List<PtzPresetRsp> channelPtzPresetGet(Long channelId) {
+        getChannelInfoAndValid(channelId);
+        DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_PRESET, 15000L);
+        CommonResponse<?> response = parsingEngineApi.customEvent(req);
+        if (response.isError()) {
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "预置位查询失败", response.getData(), response.getMsg());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
+        }
+        if (Objects.isNull(response.getData())){
+            return Collections.EMPTY_LIST;
+        }
+        return JSONArray.parseArray(JSONArray.toJSONString(response.getData())).toList(PtzPresetRsp.class);
+    }
+
+    /**
+     * 3D控制
+     * @param channelId 通道id
+     * @param dragType 放大-1 缩小-2
+     * @param length 拉宽长度
+     * @param width 拉宽宽度
+     * @param midPointX 拉框中心的横轴坐标像素值
+     * @param midPointY 拉框中心的纵轴坐标像素值
+     * @param lengthX 拉框长度像素值
+     * @param lengthY 拉框宽度像素值
+     */
+    @Override
+    public void channelPtz3d(Long channelId, Integer dragType, Integer length, Integer width, Integer midPointX, Integer midPointY, Integer lengthX, Integer lengthY) {
+        getChannelInfoAndValid(channelId);
+        DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_3D, 15000L);
+        req.putData(StandardName.PTZ_3D_DRAG_TYPE, dragType);
+        req.putData(StandardName.PTZ_3D_LENGTH, length);
+        req.putData(StandardName.PTZ_3D_WIDTH, width);
+        req.putData(StandardName.PTZ_3D_POINT_X, midPointX);
+        req.putData(StandardName.PTZ_3D_POINT_Y, midPointY);
+        req.putData(StandardName.PTZ_3D_LENGTH_X, lengthX);
+        req.putData(StandardName.PTZ_3D_LENGTH_Y, lengthY);
+        CommonResponse<?> response = parsingEngineApi.customEvent(req);
+        if (response.isError()) {
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "3D控制", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
     }

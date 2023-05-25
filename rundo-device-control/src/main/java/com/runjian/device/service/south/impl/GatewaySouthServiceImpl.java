@@ -6,6 +6,7 @@ import com.runjian.common.constant.CommonEnum;
 import com.runjian.device.dao.GatewayMapper;
 import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.service.south.GatewaySouthService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,10 @@ import static com.runjian.device.service.common.GatewayBaseService.heartbeatArra
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class GatewaySouthServiceImpl implements GatewaySouthService {
 
-    @Autowired
-    private GatewayMapper gatewayMapper;
+    private final GatewayMapper gatewayMapper;
 
     /**
      * 网关注册

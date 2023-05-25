@@ -1,17 +1,27 @@
 package com.runjian.auth.server.service.system.impl;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.runjian.auth.server.constant.MenuSortConstant;
+import com.runjian.auth.server.constant.MenuTypeConstant;
+import com.runjian.auth.server.constant.StatusConstant;
 import com.runjian.auth.server.domain.dto.page.PageSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.AppInfo;
+import com.runjian.auth.server.domain.entity.RoleApp;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.mapper.AppInfoMapper;
+import com.runjian.auth.server.service.system.ApiInfoService;
 import com.runjian.auth.server.service.system.AppInfoService;
 import com.runjian.auth.server.service.system.MenuInfoService;
+import com.runjian.auth.server.service.system.RoleAppService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,38 +40,74 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
     @Autowired
     private AppInfoMapper appInfoMapper;
 
+    @Lazy
     @Autowired
     private MenuInfoService menuInfoService;
 
+    @Lazy
+    @Autowired
+    private ApiInfoService apiInfoService;
+
+    @Lazy
+    @Autowired
+    private RoleAppService roleAppService;
+
+    @Transactional
     @Override
-    public void save(AddSysAppInfoDTO dto) {
+    public void save(SysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
         BeanUtils.copyProperties(dto, appInfo);
         appInfoMapper.insert(appInfo);
-        // 向菜单表中插入一条虚拟根菜单
-        // AddSysMenuInfoDTO menuInfoDTO = new AddSysMenuInfoDTO();
-        // Long menuPid = 1L;
-        // menuInfoDTO.setAppId(appInfo.getId());
-        // menuInfoDTO.setMenuPid(menuPid);
-        // menuInfoDTO.setTitle(appInfo.getAppName());
-        // menuInfoDTO.setIcon(null);
-        // menuInfoDTO.setMenuSort(1);
-        // menuInfoDTO.setPath(appInfo.getAppUrl());
-        // menuInfoDTO.setComponent(null);
-        // menuInfoDTO.setStatus(0);
-        // menuInfoDTO.setHidden(0);
-        // menuInfoService.save(menuInfoDTO);
+
+        RoleApp roleApp = new RoleApp();
+        roleApp.setRoleId(1L);
+        roleApp.setAppId(appInfo.getId());
+        roleAppService.save(roleApp);
+        // 向菜单表中插入一条虚拟根菜单，并将虚拟根挂在到菜单的默认根节点下
+        SysMenuInfoDTO menuInfoDTO = new SysMenuInfoDTO();
+        menuInfoDTO.setAppId(appInfo.getId());
+        menuInfoDTO.setAppName(appInfo.getAppName());
+        menuInfoDTO.setMenuPid(1L);
+        menuInfoDTO.setMenuSort(MenuSortConstant.DEFAULT);
+        menuInfoDTO.setMenuType(MenuTypeConstant.APP);
+        menuInfoDTO.setPath(appInfo.getAppUrl());
+        menuInfoDTO.setComponent(appInfo.getComponent());
+        menuInfoDTO.setIcon(appInfo.getAppIcon());
+        menuInfoDTO.setTitle(appInfo.getAppName());
+        menuInfoDTO.setName(StrUtil.removePrefix("/", appInfo.getAppUrl()));
+        menuInfoDTO.setRedirect(appInfo.getRedirect());
+        menuInfoDTO.setStatus(StatusConstant.ENABLE);
+        menuInfoDTO.setHidden(0);
+        menuInfoService.save(menuInfoDTO);
+
+        // 向接口表中插入一条虚拟应用的根接口并将虚拟根挂在到接口的默认根节点下
+        SysApiInfoDTO apiInfoDTO = new SysApiInfoDTO();
+        apiInfoDTO.setAppId(appInfo.getId());
+        apiInfoDTO.setAppName(appInfo.getAppName());
+        apiInfoDTO.setApiPid(1L);
+        apiInfoDTO.setApiName(appInfo.getAppName());
+        apiInfoDTO.setUrl(appInfo.getAppUrl());
+        apiInfoDTO.setApiSort(1);
+        apiInfoDTO.setStatus(0);
+        apiInfoService.save(apiInfoDTO);
+
     }
 
+    @Transactional
     @Override
-    public void modifyById(UpdateSysAppInfoDTO dto) {
+    public void modifyById(SysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
         BeanUtils.copyProperties(dto, appInfo);
         appInfoMapper.updateById(appInfo);
+        // 修改菜单表中的虚拟根
     }
 
+    @Transactional
     @Override
     public void erasureById(Long id) {
+        LambdaQueryWrapper<RoleApp> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoleApp::getAppId, id);
+        roleAppService.remove(wrapper);
         appInfoMapper.deleteById(id);
     }
 
@@ -75,19 +121,35 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         } else {
             page.setCurrent(1);
         }
-        if (null != dto.getPageSize() && dto.getPageSize() > 0){
+        if (null != dto.getPageSize() && dto.getPageSize() > 0) {
             page.setSize(dto.getPageSize());
-        }else {
+        } else {
             page.setSize(20);
         }
         return appInfoMapper.MySelectPage(page);
     }
 
+    @Transactional
     @Override
     public void modifyByStatus(StatusSysAppInfoDTO dto) {
         AppInfo appInfo = appInfoMapper.selectById(dto.getId());
         appInfo.setStatus(dto.getStatus());
         appInfoMapper.updateById(appInfo);
+    }
+
+    @Override
+    public List<AppInfo> getAppByRoleCode(String roleCode) {
+        return appInfoMapper.selectAppByRoleCode(roleCode);
+    }
+
+    @Override
+    public List<AppInfo> getAppByRoleCodelist(List<String> roleCodeList) {
+        return appInfoMapper.selectAppByRoleCodeList(roleCodeList);
+    }
+
+    @Override
+    public List<Long> getAppIdListByRoleId(Long roleId) {
+        return appInfoMapper.findAppIdListByRoleId(roleId);
     }
 
     @Override

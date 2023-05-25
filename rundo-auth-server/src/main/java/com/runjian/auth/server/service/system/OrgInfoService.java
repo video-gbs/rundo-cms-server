@@ -1,13 +1,13 @@
 package com.runjian.auth.server.service.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.domain.dto.system.AddSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
-import com.runjian.auth.server.domain.dto.system.UpdateSysOrgDTO;
+import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
 import com.runjian.auth.server.domain.entity.OrgInfo;
+import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
-import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.common.config.response.CommonResponse;
 
 import java.util.List;
@@ -22,15 +22,15 @@ import java.util.List;
  */
 public interface OrgInfoService extends IService<OrgInfo> {
 
-    SysOrgVO save(AddSysOrgDTO dto);
+    SysOrgVO save(SysOrgDTO dto);
 
-    List<SysOrgTree> findByTree();
+    List<Tree<Long>> findByTree();
 
     IPage<OrgInfo> findByPage(Integer pageNum, Integer pageSize);
 
     CommonResponse erasureById(Long id);
 
-    void modifyById(UpdateSysOrgDTO dto);
+    void modifyById(SysOrgDTO dto);
 
     SysOrgVO findById(Long id);
 
@@ -38,4 +38,9 @@ public interface OrgInfoService extends IService<OrgInfo> {
 
     void moveSysOrg(MoveSysOrgDTO dto);
 
+    List<OrgInfo> getOrgInfoByRoleCode(String roleCode);
+
+    List<Long> getOrgIdListByRoleId(Long roleId);
+
+    OrgInfoVO getOrgInfoByUserId(Long id);
 }

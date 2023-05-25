@@ -44,4 +44,10 @@ public interface GatewayNorthService {
      */
     PageInfo<GetGatewayByIdsRsp> getGatewayByIds(int page, int num, List<Long> gatewayIds, Boolean isIn, String name);
 
+    /**
+     * 通道Id
+     * @param channelId 通道id
+     * @return 通道id
+     */
+    Long getGatewayInfoByChannelId(Long channelId);
 }
