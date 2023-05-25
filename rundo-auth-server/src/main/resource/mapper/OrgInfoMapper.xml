@@ -10,7 +10,7 @@
             UNION ALL
             SELECT va.id, va.org_pid, CONCAT( ap.org_name, '/', va.org_name ) AS org_name
             FROM org_info va
-                     INNER JOIN org_info_str ap ON va.org_pid = ap.id
+                INNER JOIN org_info_str ap ON va.org_pid = ap.id
         )
         SELECT ap.id
         FROM org_info_str ap
@@ -58,5 +58,22 @@
                 userInfo.id = #{userId,jdbcType=BIGINT}
             </if>
         </where>
+    </select>
+
+    <select id="selectOrgList" resultType="com.runjian.auth.server.domain.entity.OrgInfo">
+        WITH RECURSIVE org_path AS (
+            SELECT org.id, org.org_pid, org.org_name
+            FROM org_info org
+            WHERE org.delete_flag = 0 AND org.id IN
+            <foreach collection="orgIdList" item="id" index="index" open="(" close=")" separator=",">
+                #{id,jdbcType=BIGINT}
+            </foreach>
+            UNION ALL
+            SELECT va.id, va.org_pid,va.org_name
+            FROM org_info va
+                JOIN org_path ap ON va.id = ap.org_pid
+            WHERE va.delete_flag = 0
+        )
+        SELECT * FROM org_path ap
     </select>
 </mapper>

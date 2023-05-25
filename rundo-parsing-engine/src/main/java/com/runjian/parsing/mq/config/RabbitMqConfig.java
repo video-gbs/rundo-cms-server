@@ -126,7 +126,7 @@ public class RabbitMqConfig {
                 if (Objects.isNull(queueData.getTtl())){
 
                 }
-                Queue queue = new Queue(queueData.getQueueName(), true, false, false);
+                Queue queue = new Queue(queueData.getQueueName(), true, false, false, Map.of("x-message-ttl", queueData.getTtl()));
                 AbstractExchange exchange = rabbitMqProperties.getExchangeDataMap().get(queueData.getExchangeId()).getExchange();
                 Binding binding = BindingBuilder.bind(queue).to(exchange).with(queueData.getRoutingKey()).noargs();
                 rabbitAdmin.declareQueue(queue);

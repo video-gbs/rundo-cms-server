@@ -1,6 +1,12 @@
 package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.lang.tree.parser.DefaultNodeParser;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -11,6 +17,7 @@ import com.runjian.auth.server.constant.StatusConstant;
 import com.runjian.auth.server.domain.dto.system.MoveSysOrgDTO;
 import com.runjian.auth.server.domain.dto.system.SysOrgDTO;
 import com.runjian.auth.server.domain.entity.OrgInfo;
+import com.runjian.auth.server.domain.entity.RoleOrg;
 import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.SysOrgVO;
@@ -18,17 +25,20 @@ import com.runjian.auth.server.domain.vo.tree.SysOrgTree;
 import com.runjian.auth.server.mapper.OrgInfoMapper;
 import com.runjian.auth.server.mapper.UserInfoMapper;
 import com.runjian.auth.server.service.system.OrgInfoService;
-import com.runjian.auth.server.util.tree.DataTreeUtil;
+import com.runjian.auth.server.service.system.RoleInfoService;
+import com.runjian.auth.server.service.system.RoleOrgService;
+import com.runjian.auth.server.util.RoleIdUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,6 +59,14 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     @Autowired
     private UserInfoMapper userInfoMapper;
 
+    @Lazy
+    @Autowired
+    private RoleOrgService roleOrgService;
+
+    @Autowired
+    private RoleIdUtil roleIdUtil;
+
+    @Transactional
     @Override
     public SysOrgVO save(SysOrgDTO dto) {
         OrgInfo parentInfo = orgInfoMapper.selectById(dto.getOrgPid());
@@ -71,12 +89,17 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         orgInfo.setStatus(StatusConstant.ENABLE);
         log.info("添加部门入库数据信息{}", JSONUtil.toJsonStr(orgInfo));
         orgInfoMapper.insert(orgInfo);
+        RoleOrg roleOrg = new RoleOrg();
+        roleOrg.setOrgId(orgInfo.getId());
+        roleOrg.setRoleId(1L);
+        roleOrgService.save(roleOrg);
         // 回显数据给前端
         SysOrgVO sysOrgVO = new SysOrgVO();
         BeanUtils.copyProperties(orgInfo, sysOrgVO);
         return sysOrgVO;
     }
 
+    @Transactional
     @Override
     public void modifyById(SysOrgDTO dto) {
         OrgInfo orgInfo = new OrgInfo();
@@ -92,6 +115,7 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
         return sysOrgVO;
     }
 
+    @Transactional
     @Override
     public CommonResponse erasureById(Long id) {
         // 1.判断是否为根节点
@@ -121,6 +145,9 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
             return CommonResponse.failure(BusinessErrorEnums.VALID_ILLEGAL_ORG_OPERATION);
         }
         // 4.删除目标节点
+        LambdaQueryWrapper<RoleOrg> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoleOrg::getOrgId,id);
+        roleOrgService.remove(wrapper);
         return CommonResponse.success(orgInfoMapper.deleteById(id));
     }
 
@@ -190,19 +217,45 @@ public class OrgInfoServiceImpl extends ServiceImpl<OrgInfoMapper, OrgInfo> impl
     }
 
     @Override
-    public List<SysOrgTree> findByTree() {
-        LambdaQueryWrapper<OrgInfo> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.orderByAsc(true, OrgInfo::getOrgSort);
-        queryWrapper.orderByAsc(true, OrgInfo::getUpdatedTime);
-        List<OrgInfo> orgInfoList = orgInfoMapper.selectList(null);
-        List<SysOrgTree> sysOrgTreeList = orgInfoList.stream().map(
-                item -> {
-                    SysOrgTree bean = new SysOrgTree();
-                    BeanUtils.copyProperties(item, bean);
-                    return bean;
-                }
-        ).collect(Collectors.toList());
-        return DataTreeUtil.buildTree(sysOrgTreeList, 1L);
+    public List<Tree<Long>> findByTree() {
+        // 获取已有角色
+        List<Long> roleIds = roleIdUtil.getRoleIdList();
+        if(CollectionUtil.isEmpty(roleIds)){
+            return null;
+        }
+        List<Long> roleOrgIds = roleIdUtil.getRoleOrgIdList(roleIds);
+        if(CollectionUtil.isEmpty(roleOrgIds)){
+            return null;
+        }
+        // 递归获取部门树
+        List<OrgInfo> orgInfoList = orgInfoMapper.selectOrgList(roleOrgIds);
+        orgInfoList.stream().distinct();
+        List<SysOrgTree> sysOrgTreeList = orgInfoList.stream().map(item -> {
+            SysOrgTree bean = new SysOrgTree();
+            BeanUtils.copyProperties(item, bean);
+            return bean;
+        }).collect(Collectors.toList());
+        List<TreeNode<Long>> nodeList = new ArrayList<>();
+        sysOrgTreeList.forEach(e -> {
+            TreeNode<Long> treeNode = new TreeNode<>(e.getId(), e.getParentId(), e.getOrgName(), e.getOrgSort());
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("level", e.getLevel());
+            extraMap.put("orgLeader", e.getOrgLeader());
+            extraMap.put("phone", e.getPhone());
+            extraMap.put("email", e.getEmail());
+            extraMap.put("adders", e.getAdders());
+            extraMap.put("description", e.getDescription());
+            treeNode.setExtra(extraMap);
+            nodeList.add(treeNode);
+        });
+        TreeNodeConfig treeNodeConfig = new TreeNodeConfig() {{
+            setIdKey("id");
+            setNameKey("orgName");
+            setParentIdKey("orgPid");
+            setChildrenKey("children");
+            setWeightKey("orgSort");
+        }};
+        return TreeUtil.build(nodeList, 0L, treeNodeConfig, new DefaultNodeParser<>());
     }
 
     @Override

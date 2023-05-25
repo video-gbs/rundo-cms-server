@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,8 +36,8 @@ public class MessageBaseServiceImpl implements MessageBaseService {
      * @param subMsgType
      * @param data
      */
-    public void msgDistribute(SubMsgType subMsgType, Map<Long, Integer> data){
-        List<MessageInfo> messageInfoList = messageMapper.selectAllByMsgType(SubMsgType.DEVICE_ONLINE_STATE.getCode());
+    public void msgDistribute(SubMsgType subMsgType, Map<Long, Object> data){
+        List<MessageInfo> messageInfoList = messageMapper.selectAllByMsgType(subMsgType.getCode());
         for (MessageInfo messageInfo : messageInfoList){
             RLock lock = redissonClient.getLock(messageInfo.getMsgLock());
             try {
@@ -52,10 +53,10 @@ public class MessageBaseServiceImpl implements MessageBaseService {
     }
 
     @Override
-    public boolean checkMsgConsumeFinish(SubMsgType subMsgType, Long id) {
-        List<MessageInfo> messageInfoList = messageMapper.selectAllByMsgType(SubMsgType.DEVICE_ONLINE_STATE.getCode());
+    public boolean checkMsgConsumeFinish(SubMsgType subMsgType, Set<Object> ids) {
+        List<MessageInfo> messageInfoList = messageMapper.selectAllByMsgType(subMsgType.getCode());
         for (MessageInfo messageInfo : messageInfoList){
-            if (Objects.nonNull(redissonClient.getMap(messageInfo.getMsgHandle()).get(id))){
+            if (redissonClient.getMap(messageInfo.getMsgHandle()).getAll(ids).size() > 0){
                 return false;
             }
         }

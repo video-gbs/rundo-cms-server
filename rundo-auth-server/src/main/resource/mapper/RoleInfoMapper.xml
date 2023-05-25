@@ -11,24 +11,16 @@
           AND sui.id = #{userId,jdbcType=BIGINT}
     </select>
 
-    <select id="selectRoleByUserId" resultType="java.lang.Long">
-        SELECT sru.role_id
-        FROM role_user sru
-        <where>
-            <if test="userId != null">
-                sru.user_id = #{userId,jdbcType=BIGINT}
-            </if>
-        </where>
-    </select>
-
     <select id="selectEditUserSysRoleInfoPage"
             resultType="com.runjian.auth.server.domain.vo.system.EditUserSysRoleInfoVO">
         SELECT sri.id,
                sri.role_name,
                sri.role_desc,
                sri.status,
-               sri.created_by
+               sri.created_by,
+               userInfo.user_account
         FROM role_info sri
+            LEFT JOIN user_info userInfo ON userInfo.id = sri.created_by
         WHERE sri.delete_flag = 0
     </select>
 
@@ -59,22 +51,19 @@
             <if test="createdTimeEnd != null">
                 AND role.created_time &lt;= #{createdTimeEnd,jdbcType=TIMESTAMP}
             </if>
-            <if test="createdBy !=null">
-                AND role.created_by = #{createdBy,jdbcType=BIGINT}
-            </if>
         </where>
         ORDER BY role.created_time DESC
     </select>
 
     <select id="relationSysUserInfoPage" resultType="com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO">
         WITH RECURSIVE org_info_str AS (
-        SELECT id, org_pid, org_name
-        FROM org_info
-        WHERE id = 1
-        UNION ALL
-        SELECT va.id, va.org_pid, CONCAT( ap.org_name, '/', va.org_name ) AS org_name
-        FROM org_info va
-        INNER JOIN org_info_str ap ON va.org_pid = ap.id
+            SELECT id, org_pid, org_name
+            FROM org_info
+            WHERE id = 1
+            UNION ALL
+            SELECT va.id, va.org_pid, CONCAT( ap.org_name, '/', va.org_name ) AS org_name
+            FROM org_info va
+                INNER JOIN org_info_str ap ON va.org_pid = ap.id
         )
         SELECT userInfo.id,
         userInfo.user_account,
@@ -103,130 +92,4 @@
         GROUP BY userInfo.id, org.org_name
         ORDER BY userInfo.id
     </select>
-
-    <insert id="insertRoleApp">
-        INSERT INTO role_app (role_id, app_id)
-        VALUES (#{roleId,jdbcType=BIGINT}, #{appId,jdbcType=BIGINT});
-    </insert>
-    <insert id="batchInsertRoleApp">
-        INSERT INTO role_app (role_id, app_id)
-        VALUES
-        <foreach collection="appList" item="item" separator=",">
-            (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
-        </foreach>
-    </insert>
-    <delete id="removeRoleApp">
-        DELETE
-        FROM role_app t
-        WHERE t.role_id = #{roleId,jdbcType=BIGINT}
-        <if test="appId != null">
-            AND t.app_id = #{appId,jdbcType=BIGINT}
-        </if>
-    </delete>
-
-    <insert id="insertRoleMenu">
-        INSERT INTO role_menu (role_id, menu_id)
-        VALUES (#{roleId,jdbcType=BIGINT}, #{menuId,jdbcType=BIGINT});
-    </insert>
-    <insert id="batchInsertRoleMenu">
-        INSERT INTO role_menu (role_id, menu_id)
-        VALUES
-        <foreach collection="menuList" item="item" separator=",">
-            (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
-        </foreach>
-    </insert>
-    <delete id="removeRoleMenu">
-        DELETE
-        FROM role_menu t
-        WHERE t.role_id = #{roleId,jdbcType=BIGINT}
-        <if test="menuId != null">
-            AND t.menu_id = #{menuId,jdbcType=BIGINT}
-        </if>
-    </delete>
-
-    <insert id="insertRoleApi">
-        INSERT INTO role_api (role_id, api_id)
-        VALUES (#{roleId,jdbcType=BIGINT}, #{apiId,jdbcType=BIGINT});
-    </insert>
-    <insert id="batchInsertRoleApi">
-        INSERT INTO role_api (role_id, api_id)
-        VALUES
-        <foreach collection="apiList" item="item" separator=",">
-            (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
-        </foreach>
-    </insert>
-    <delete id="removeRoleApi">
-        DELETE
-        FROM role_api t
-        WHERE t.role_id = #{roleId,jdbcType=BIGINT}
-        <if test="apiId != null">
-            AND t.api_id = #{apiId,jdbcType=BIGINT}
-        </if>
-    </delete>
-
-    <insert id="insertRoleOrg">
-        INSERT INTO role_org (role_id, org_id)
-        VALUES (#{roleId,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT});
-    </insert>
-    <insert id="batchInsertRoleOrg">
-        INSERT INTO role_org (role_id, org_id)
-        VALUES
-        <foreach collection="orgList" item="item" separator=",">
-            (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
-        </foreach>
-    </insert>
-    <delete id="removeRoleOrg">
-        DELETE
-        FROM role_org t
-        WHERE t.role_id = #{roleId,jdbcType=BIGINT}
-        <if test="roleId != null">
-            AND t.org_id = #{orgId,jdbcType=BIGINT}
-        </if>
-    </delete>
-
-    <insert id="insertRoleArea">
-        INSERT INTO role_area (role_id, area_id)
-        VALUES (#{roleId,jdbcType=BIGINT}, #{areaId,jdbcType=BIGINT});
-    </insert>
-    <insert id="batchInsertRoleArea">
-        INSERT INTO role_area (role_id, area_id)
-        VALUES
-        <foreach collection="areaList" item="item" separator=",">
-            (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
-        </foreach>
-    </insert>
-    <delete id="removeRoleArea">
-        DELETE
-        FROM role_area t
-        WHERE t.role_id = #{roleId,jdbcType=BIGINT}
-        <if test="areaId != null">
-            AND t.area_id = #{areaId,jdbcType=BIGINT}
-        </if>
-    </delete>
-
-    <insert id="insertRoleUser">
-        INSERT INTO role_user (role_id, user_id)
-        VALUES (#{roleId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT});
-    </insert>
-    <insert id="batchInsertRoleUser">
-        INSERT INTO role_user (role_id, user_id)
-        VALUES
-        <foreach collection="userList" item="item" separator=",">
-            (#{item.roleId,jdbcType=BIGINT}, #{item.objId,jdbcType=BIGINT})
-        </foreach>
-    </insert>
-    <delete id="removeRoleUser">
-        DELETE
-        FROM role_user sru
-        <where>
-            <if test="userId != null">
-                sru.user_id = #{userId,jdbcType=BIGINT}
-            </if>
-            <if test="roleId != null">
-                AND sru.role_id = #{roleId,jdbcType=BIGINT}
-            </if>
-        </where>
-    </delete>
-
-
 </mapper>

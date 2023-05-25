@@ -15,11 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class HikDeviceNetSdkNorthProtocol extends AbstractNorthProtocol {
 
-
     public HikDeviceNetSdkNorthProtocol(GatewayTaskService gatewayTaskService, DataBaseService dataBaseService, DeviceMapper deviceMapper, ChannelMapper channelMapper) {
         super(gatewayTaskService, dataBaseService, deviceMapper, channelMapper);
     }
-
 
     @Override
     public String getProtocolName() {

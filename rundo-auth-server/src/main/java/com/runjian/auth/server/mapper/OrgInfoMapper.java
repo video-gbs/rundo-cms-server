@@ -60,4 +60,6 @@ public interface OrgInfoMapper extends BaseMapper<OrgInfo> {
      * @return
      */
     OrgInfoVO selectOrgInfoByUserId(@Param("userId") Long userId);
+
+    List<OrgInfo> selectOrgList(@Param("orgIdList") List<Long> orgIdList);
 }

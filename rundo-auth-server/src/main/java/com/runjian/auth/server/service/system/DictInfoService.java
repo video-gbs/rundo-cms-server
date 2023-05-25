@@ -3,8 +3,8 @@ package com.runjian.auth.server.service.system;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.auth.server.domain.dto.system.QureySysDictDTO;
-import com.runjian.auth.server.domain.entity.DictInfo;
 import com.runjian.auth.server.domain.dto.system.SysDictDTO;
+import com.runjian.auth.server.domain.entity.DictInfo;
 import com.runjian.auth.server.domain.vo.system.SysDictVO;
 
 import java.util.List;

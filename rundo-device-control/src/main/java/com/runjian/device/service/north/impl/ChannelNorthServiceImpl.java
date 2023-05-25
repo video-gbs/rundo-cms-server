@@ -96,7 +96,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             List<ChannelInfo> channelUpdateList = new ArrayList<>(channelSyncRsp.getNum());
             List<DetailInfo> detailSaveList = new ArrayList<>(channelSyncRsp.getNum());
             List<DetailInfo> detailUpdateList = new ArrayList<>(channelSyncRsp.getNum());
-            Map<Long, Integer> channelOnlineMap = new HashMap<>(channelSyncRsp.getNum());
+            Map<Long, Object> channelOnlineMap = new HashMap<>(channelSyncRsp.getNum());
 
             LocalDateTime nowTime = LocalDateTime.now();
             // 循环通道进行添加
@@ -179,6 +179,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             channelInfo.setUpdateTime(LocalDateTime.now());
         }
         channelMapper.batchUpdateSignState(channelInfoList);
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, JSONObject::toJSONString)));
         messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
     }
 
@@ -221,7 +222,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
         }
-        if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, channelId)){
+        if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, Set.of(channelId))){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用在使用该数据，请稍后再删除");
         }
         channelMapper.deleteById(channelId);
@@ -246,6 +247,9 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         }
         if (isDeleteData) {
             List<Long> channelInfoIdList = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
+            if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, new HashSet<>(channelInfoIdList))){
+                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用使用该设备下的通道，请稍后重试");
+            }
             if (channelInfoIdList.size() > 0) {
                 detailMapper.deleteByDcIdsAndType(channelInfoIdList, DetailType.CHANNEL.getCode());
             }

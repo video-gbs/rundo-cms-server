@@ -48,7 +48,7 @@ public class PostGatewaySignInReq {
      * 网关类型
      */
     @NotNull(message = "网关类型不能为空")
-    @Range(min = 1, max = 5, message = "非法网关类型")
+    @Range(min = 1, max = 6, message = "非法网关类型")
     private Integer gatewayType;
 
     /**

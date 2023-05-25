@@ -1,11 +1,11 @@
 package com.runjian.auth.server.service.system;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.runjian.auth.server.domain.dto.system.VideoAreaDTO;
 import com.runjian.auth.server.domain.dto.system.MoveVideoAreaDTO;
+import com.runjian.auth.server.domain.dto.system.VideoAreaDTO;
 import com.runjian.auth.server.domain.entity.VideoArea;
 import com.runjian.auth.server.domain.vo.system.VideoAreaVO;
-import com.runjian.auth.server.domain.vo.tree.VideoAreaTree;
 import com.runjian.common.config.response.CommonResponse;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public interface VideoAreaService extends IService<VideoArea> {
      *
      * @return List
      */
-    List<VideoAreaTree> findByTree();
+    List<Tree<Long>> findByTree();
 
     /**
      * 新建安防区域，并返回新增后的信息

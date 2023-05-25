@@ -29,7 +29,7 @@ public class UserInfo implements Serializable {
     private Long id;
 
     @ApiModelProperty("用户账户")
-    @TableField("user_account")
+    @TableField(value = "user_account", updateStrategy = FieldStrategy.NEVER)
     private String userAccount;
 
     @ApiModelProperty("用户姓名")
@@ -65,7 +65,7 @@ public class UserInfo implements Serializable {
     private LocalDateTime expiryDateStart;
 
     @ApiModelProperty("有效期终")
-    @TableField("expiry_date_end")
+    @TableField(value = "expiry_date_end", updateStrategy = FieldStrategy.IGNORED, insertStrategy = FieldStrategy.IGNORED)
     private LocalDateTime expiryDateEnd;
 
     @ApiModelProperty("描述信息")
