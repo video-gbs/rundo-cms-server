@@ -1,6 +1,7 @@
 package com.runjian.auth.server.service.system.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.auth.server.constant.MenuSortConstant;
@@ -9,15 +10,18 @@ import com.runjian.auth.server.constant.StatusConstant;
 import com.runjian.auth.server.domain.dto.page.PageSysAppInfoDTO;
 import com.runjian.auth.server.domain.dto.system.*;
 import com.runjian.auth.server.domain.entity.AppInfo;
+import com.runjian.auth.server.domain.entity.RoleApp;
 import com.runjian.auth.server.domain.vo.system.SysAppInfoVO;
 import com.runjian.auth.server.mapper.AppInfoMapper;
 import com.runjian.auth.server.service.system.ApiInfoService;
 import com.runjian.auth.server.service.system.AppInfoService;
 import com.runjian.auth.server.service.system.MenuInfoService;
+import com.runjian.auth.server.service.system.RoleAppService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +48,21 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
     @Autowired
     private ApiInfoService apiInfoService;
 
+    @Lazy
+    @Autowired
+    private RoleAppService roleAppService;
+
+    @Transactional
     @Override
     public void save(SysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
         BeanUtils.copyProperties(dto, appInfo);
         appInfoMapper.insert(appInfo);
+
+        RoleApp roleApp = new RoleApp();
+        roleApp.setRoleId(1L);
+        roleApp.setAppId(appInfo.getId());
+        roleAppService.save(roleApp);
         // 向菜单表中插入一条虚拟根菜单，并将虚拟根挂在到菜单的默认根节点下
         SysMenuInfoDTO menuInfoDTO = new SysMenuInfoDTO();
         menuInfoDTO.setAppId(appInfo.getId());
@@ -79,6 +93,7 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
 
     }
 
+    @Transactional
     @Override
     public void modifyById(SysAppInfoDTO dto) {
         AppInfo appInfo = new AppInfo();
@@ -87,8 +102,12 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         // 修改菜单表中的虚拟根
     }
 
+    @Transactional
     @Override
     public void erasureById(Long id) {
+        LambdaQueryWrapper<RoleApp> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoleApp::getAppId, id);
+        roleAppService.remove(wrapper);
         appInfoMapper.deleteById(id);
     }
 
@@ -110,6 +129,7 @@ public class AppInfoServiceImpl extends ServiceImpl<AppInfoMapper, AppInfo> impl
         return appInfoMapper.MySelectPage(page);
     }
 
+    @Transactional
     @Override
     public void modifyByStatus(StatusSysAppInfoDTO dto) {
         AppInfo appInfo = appInfoMapper.selectById(dto.getId());

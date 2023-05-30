@@ -1,6 +1,5 @@
 package com.runjian.device.constant;
 
-import com.runjian.common.constant.MsgType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -19,7 +18,11 @@ public enum SubMsgType {
     // 设备删除状态
     DEVICE_DELETE_STATE(3, "deviceDelete"),
     // 通道删除
-    CHANNEL_DELETE_STATE(4, "channelDelete")
+    CHANNEL_DELETE_STATE(4, "channelDelete"),
+    // 设备添加
+    DEVICE_ADD_STATE(5, "deviceAdd"),
+    // 通道添加
+    CHANNEL_ADD_STATE(6, "channelAdd")
     ;
 
 

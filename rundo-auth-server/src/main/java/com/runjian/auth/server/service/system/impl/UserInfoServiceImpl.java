@@ -1,6 +1,6 @@
 package com.runjian.auth.server.service.system.impl;
 
-import cn.hutool.core.collection.CollUtil;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -13,6 +13,9 @@ import com.runjian.auth.server.domain.dto.system.QueryRelationSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.QuerySysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.StatusSysUserInfoDTO;
 import com.runjian.auth.server.domain.dto.system.SysUserInfoDTO;
+import com.runjian.auth.server.domain.entity.RoleInfo;
+import com.runjian.auth.server.domain.entity.RoleOrg;
+import com.runjian.auth.server.domain.entity.RoleUser;
 import com.runjian.auth.server.domain.entity.UserInfo;
 import com.runjian.auth.server.domain.vo.system.EditSysUserInfoVO;
 import com.runjian.auth.server.domain.vo.system.ListSysUserInfoVO;
@@ -20,22 +23,20 @@ import com.runjian.auth.server.domain.vo.system.OrgInfoVO;
 import com.runjian.auth.server.domain.vo.system.RelationSysUserInfoVO;
 import com.runjian.auth.server.mapper.OrgInfoMapper;
 import com.runjian.auth.server.mapper.UserInfoMapper;
-import com.runjian.auth.server.service.system.OrgInfoService;
-import com.runjian.auth.server.service.system.RoleInfoService;
-import com.runjian.auth.server.service.system.UserInfoService;
-import com.runjian.auth.server.service.system.VideoAreaService;
+import com.runjian.auth.server.service.system.*;
 import com.runjian.auth.server.util.PasswordUtil;
+import com.runjian.auth.server.util.RoleIdUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -65,9 +66,22 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Autowired
     private RoleInfoService roleInfoService;
 
+    @Lazy
+    @Autowired
+    private RoleUserService roleUserService;
+
     @Autowired
     private VideoAreaService videoAreaService;
 
+    @Lazy
+    @Autowired
+    private RoleOrgService roleOrgService;
+
+    @Autowired
+    private RoleIdUtil roleIdUtil;
+
+
+    @Transactional
     @Override
     public void save(SysUserInfoDTO dto) {
         LambdaQueryWrapper<UserInfo> queryWrapper = new LambdaQueryWrapper<>();
@@ -107,6 +121,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         return vo;
     }
 
+    @Transactional
     @Override
     public void modifyById(SysUserInfoDTO dto) {
         // 根据id查取原始信息
@@ -149,60 +164,70 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
 
     @Override
     public Page<ListSysUserInfoVO> findByPage(QuerySysUserInfoDTO dto) {
-        PageSysUserInfoDTO page = new PageSysUserInfoDTO();
-        List<Long> orgIds = new ArrayList<>();
-        switch (dto.getContain()) {
-            case 0: { // 没有勾选 查询包含下级子节点
-                if (null != dto.getUserName() && !"".equals(dto.getUserName())) {
-                    page.setUserName(dto.getUserName());
-                }
-                if (null != dto.getUserAccount() && !"".equals(dto.getUserAccount())) {
-                    page.setUserAccount(dto.getUserAccount());
-                }
-                if (null != dto.getCurrent() && dto.getCurrent() > 0) {
-                    page.setCurrent(dto.getCurrent());
-                } else {
-                    page.setCurrent(1);
-                }
-                if (null != dto.getPageSize() && dto.getPageSize() > 0) {
-                    page.setSize(dto.getPageSize());
-                } else {
-                    page.setSize(20);
-                }
-                orgIds = Collections.singletonList(dto.getOrgId());
-                return userInfoMapper.MySelectPageByContain(page, orgIds);
-            }
-            case 1: { // 已经勾选 查询包含下级子节点
-                // 查询当前组织的下级组织，并获取ID
-                orgIds = orgInfoMapper.mySelectOrg(dto.getOrgId());
-                if (null != dto.getUserAccount() && !"".equals(dto.getUserAccount())) {
-                    page.setUserAccount(dto.getUserAccount());
-                }
-                if (null != dto.getCurrent() && dto.getCurrent() > 0) {
-                    page.setCurrent(dto.getCurrent());
-                } else {
-                    page.setCurrent(1);
-                }
-                if (null != dto.getPageSize() && dto.getPageSize() > 0) {
-                    page.setSize(dto.getPageSize());
-                } else {
-                    page.setSize(20);
-                }
-                return userInfoMapper.MySelectPageByContain(page, orgIds);
-            }
-            default: {
-                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
-            }
+        // 1、查询该用户已有的部门权限
+        // 取出当前登录的用户的所有角色
+        List<Long> roleIds = roleIdUtil.getRoleIdList();
+        if(CollectionUtil.isEmpty(roleIds)){
+            return null;
         }
+        List<Long> orgIds = roleIdUtil.getRoleOrgIdList(roleIds);
+        if(CollectionUtil.isEmpty(orgIds)){
+            // 已授权部门为空，不论是否勾选下级都直接返回
+            return null;
+        }
+        List<String> orgIdStr = orgIds.stream().map(String::valueOf).collect(Collectors.toList());
+        // 2、判断选中的节点是否在已授权中
+        boolean flag = CollectionUtil.contains(orgIdStr, String.valueOf(dto.getOrgId()));
+        boolean flag2 = dto.getContain() != 1;
+        if (!flag && flag2) {
+            // 不在授权内，没勾选下级
+            return null;
+        }
+        if (flag && flag2) {
+            // 在授权内，没勾选下级
+            return getResult(dto, Collections.singletonList(dto.getOrgId()));
+        }
+        // 勾选下级，
+        List<Long> children = orgInfoMapper.mySelectOrg(dto.getOrgId());
+        List<String> childrenStr = children.stream().map(String::valueOf).collect(Collectors.toList());
+        childrenStr.removeIf(elem -> !orgIdStr.contains(elem));
+        List<Long> childrenLong = childrenStr.stream().map(Long::valueOf).collect(Collectors.toList());
+        return getResult(dto, childrenLong);
     }
 
+    private Page<ListSysUserInfoVO> getResult(QuerySysUserInfoDTO dto, List<Long> orgIds) {
+        PageSysUserInfoDTO page = new PageSysUserInfoDTO();
+        if (null != dto.getUserAccount() && !"".equals(dto.getUserAccount())) {
+            page.setUserAccount(dto.getUserAccount());
+        }
+        if (null != dto.getCurrent() && dto.getCurrent() > 0) {
+            page.setCurrent(dto.getCurrent());
+        } else {
+            page.setCurrent(1);
+        }
+        if (null != dto.getPageSize() && dto.getPageSize() > 0) {
+            page.setSize(dto.getPageSize());
+        } else {
+            page.setSize(20);
+        }
+        return userInfoMapper.MySelectPageByContain(page, orgIds);
+    }
+
+    @Transactional
     @Override
     public void erasureById(Long id) {
+        LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(RoleUser::getUserId, id);
+        roleUserService.remove(queryWrapper);
         userInfoMapper.deleteById(id);
     }
 
+    @Transactional
     @Override
     public void erasureBatch(List<Long> ids) {
+        LambdaQueryWrapper<RoleUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(RoleUser::getUserId, ids);
+        roleUserService.remove(queryWrapper);
         userInfoMapper.deleteBatchIds(ids);
     }
 

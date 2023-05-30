@@ -55,6 +55,8 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
         //删除对应的通道
         LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
-        deviceChannelExpansionMapper.delete(lambdaQueryWrapper);
+        DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
+        channelExpansion.setDeleted(1);
+        deviceChannelExpansionMapper.update(channelExpansion,lambdaQueryWrapper);
     }
 }
