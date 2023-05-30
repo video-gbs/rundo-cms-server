@@ -83,7 +83,7 @@ public interface IDeviceChannelExpansionService extends IService<DeviceChannelEx
     /**
      * 通道状态同步
      */
-    void syncChannelStatus();
+    void syncChannelStatus(String msgHandle,String msgLock);
 
     /**
      * 分页获取编码器

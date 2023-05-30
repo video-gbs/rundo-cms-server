@@ -245,11 +245,11 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     }
 
     @Override
-    public void syncDeviceStatus() {
-        RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_ONLINE_STATE_LOCK);
+    public void syncDeviceStatus(String msgHandle,String msgLock) {
+        RLock lock = redissonClient.getLock(msgLock);
         try{
             lock.lock(3, TimeUnit.SECONDS);
-            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_DEVICE_ONLINE_STATE);
+            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, msgHandle);
             if(!CollectionUtils.isEmpty(deviceMap)){
                 log.info(LogTemplate.PROCESS_LOG_TEMPLATE,"设备缓存状态同步",deviceMap);
                 Set<Map.Entry<Long, Integer>> entries = deviceMap.entrySet();
@@ -263,7 +263,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
                     deviceExpansion.setOnlineState(onlineState);
                     deviceExpansionMapper.updateById(deviceExpansion);
                 }
-                RedisCommonUtil.del(redisTemplate,MarkConstant.REDIS_DEVICE_ONLINE_STATE);
+                RedisCommonUtil.del(redisTemplate,msgHandle);
             }
 
         } catch (Exception ex){

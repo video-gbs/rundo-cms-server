@@ -11,14 +11,19 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum SubMsgType {
 
+
     // 设备上下线状态
     DEVICE_ONLINE_STATE(1, "deviceOnline"),
     // 通道上下线状态
     CHANNEL_ONLINE_STATE(2, "channelOnline"),
-    // 设备删除状态
-    DEVICE_DELETE_STATE(3, "deviceDelete"),
-    // 通道删除
-    CHANNEL_DELETE_STATE(4, "channelDelete")
+//    // 设备删除状态
+//    DEVICE_DELETE_STATE(3, "deviceDelete"),
+//    // 通道删除
+//    CHANNEL_DELETE_STATE(4, "channelDelete"),
+//    // 设备添加
+//    DEVICE_ADD_STATE(5, "deviceAdd"),
+//    // 通道添加
+//    CHANNEL_ADD_STATE(6, "channelAdd")
     ;
 
 
