@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 流媒体管理中心远程调用
@@ -146,4 +147,22 @@ public interface DeviceControlApi {
      */
     @PutMapping("/channel/north/ptz/3d")
     CommonResponse<?> ptz3d(@RequestBody FeignPtz3dReq req);
+
+
+
+    /**
+     * 订阅消息
+     * @param req
+     * @return
+     */
+    @PostMapping("/message/sub")
+    public CommonResponse<List<MessageSubRsp>> subMsg(MessageSubReq req);
+    /**
+     * 取消订阅
+     * @param msgHandles 消息句柄
+     * @return
+     */
+    @DeleteMapping("/message/cancel")
+    public CommonResponse<?> cancelMsg(@RequestParam Set<String> msgHandles);
+
 }
