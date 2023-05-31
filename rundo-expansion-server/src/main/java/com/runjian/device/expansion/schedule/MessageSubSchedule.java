@@ -31,7 +31,7 @@ public class MessageSubSchedule {
     @Autowired
     IMessageSubService messageSubService;
     //每1分钟执行一次
-    @Scheduled(fixedRate=600000)
+    @Scheduled(fixedRate=60000)
     public void subCheck(){
         if(ObjectUtils.isEmpty(messageSubMapConf.getMessageSubRspMap())){
             //进行缓存信息的初始化

@@ -31,7 +31,7 @@ public class MessageNorthController {
      * @return
      */
     @PostMapping("/sub")
-    public CommonResponse<List<PostMessageSubRsp>> subMsg(PostMessageSubReq req){
+    public CommonResponse<List<PostMessageSubRsp>> subMsg(@RequestBody PostMessageSubReq req){
         validatorService.validateRequest(req);
         return CommonResponse.success(messageNorthService.SubMsg(req.getServiceName(), req.getMsgTypes()));
     }

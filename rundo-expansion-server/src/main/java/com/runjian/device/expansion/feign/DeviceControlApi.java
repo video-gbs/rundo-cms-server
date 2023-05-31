@@ -156,7 +156,7 @@ public interface DeviceControlApi {
      * @return
      */
     @PostMapping("/message/sub")
-    public CommonResponse<List<MessageSubRsp>> subMsg(MessageSubReq req);
+    public CommonResponse<List<MessageSubRsp>> subMsg(@RequestBody MessageSubReq req);
     /**
      * 取消订阅
      * @param msgHandles 消息句柄
