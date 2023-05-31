@@ -147,8 +147,12 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Override
     public CommonResponse<Boolean> removeBatch(List<Long> idList) {
-        TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
         for (Long id : idList){
+            TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+            DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
+            channelExpansion.setDeleted(1);
+            channelExpansion.setId(id);
+            deviceChannelExpansionMapper.updateById(channelExpansion);
             CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
             if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
                 dataSourceTransactionManager.rollback(transactionStatus);
@@ -156,21 +160,10 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",idList, booleanCommonResponse);
                 return booleanCommonResponse;
             }
+            dataSourceTransactionManager.commit(transactionStatus);
 
         }
 
-        deviceChannelExpansionMapper.deleteBatchIds(idList);
-        //通知控制服务修改添加状态 删除接口待定义
-        deviceChannelExpansionMapper.deleteBatchIds(idList);
-        //通知控制服务修改添加状态 删除接口待定义
-        CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDelete(idList);
-        if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-            dataSourceTransactionManager.rollback(transactionStatus);
-            //调用失败
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",idList, booleanCommonResponse);
-            return booleanCommonResponse;
-        }
-        dataSourceTransactionManager.commit(transactionStatus);
         return null;
     }
 
