@@ -88,7 +88,7 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
             response.setResult(CommonResponse.success(true));
         }else {
             ChannelInfo channelInfo = channelInfoOp.get();
-            DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelId);
+            DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
             customEvent(channelId, IdType.CHANNEL, msgType.getMsg(), Map.of(StandardName.DEVICE_ID, deviceInfo.getOriginId(), StandardName.CHANNEL_ID, channelInfo.getOriginId()), response);
         }
     }
