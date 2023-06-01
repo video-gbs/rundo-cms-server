@@ -34,7 +34,7 @@ public interface DeviceControlApi {
      * @param deviceId
      * @return
      */
-    @DeleteMapping("/device/north/soft")
+    @DeleteMapping("/device/north/delete/soft")
     CommonResponse deleteDeviceSoft(@RequestParam Long deviceId);
 
 
@@ -43,7 +43,7 @@ public interface DeviceControlApi {
      * @param deviceId
      * @return
      */
-    @DeleteMapping("/device/north/delete")
+    @DeleteMapping("/device/north/delete/hard")
     CommonResponse deleteDeviceHard(@RequestParam Long deviceId);
     /**
      * 设备注册状态修改
@@ -92,11 +92,11 @@ public interface DeviceControlApi {
 
     /**
      * 控制服务 通道删除
-     * @param channelIds
+     * @param channelId
      * @return
      */
     @DeleteMapping(value = "/channel/north/delete/soft")
-    CommonResponse<Boolean> channelDeleteSoft(@RequestParam Long channelIds);
+    CommonResponse<Boolean> channelDeleteSoft(@RequestParam Long channelId);
 
     /**
      * 控制服务 通道删除
