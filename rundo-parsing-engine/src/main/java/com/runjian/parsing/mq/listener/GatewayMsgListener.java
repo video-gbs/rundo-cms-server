@@ -42,7 +42,7 @@ public class GatewayMsgListener implements ChannelAwareMessageListener {
         long deliveryTag = message.getMessageProperties().getDeliveryTag();
         try {
             CommonMqDto<?> mqRequest = JSON.parseObject(new String(message.getBody()), CommonMqDto.class);
-            log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关业务消息接收", "收到消息", mqRequest);
+            log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关业务消息接收", "收到消息", new String(message.getBody()));
             Optional<GatewayInfo> gatewayInfoOp = gatewayMapper.selectBySerialNum(mqRequest.getSerialNum());
             if (gatewayInfoOp.isEmpty()) {
                 CommonMqDto<?> mqResponse = CommonMqDto.createByCommonResponse(CommonResponse.success());
