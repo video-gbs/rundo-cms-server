@@ -2,6 +2,7 @@ package com.runjian.device.service.south.impl;
 
 
 import com.runjian.common.constant.CommonEnum;
+import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
 import com.runjian.device.constant.SignState;
@@ -17,6 +18,7 @@ import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.south.DeviceSouthService;
 import com.runjian.device.vo.request.PostDeviceSignInReq;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
  * @author Miracle
  * @date 2023/01/06 16:56
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DeviceSouthServiceImpl implements DeviceSouthService {
@@ -121,6 +124,7 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
         if (req.isEmpty()){
             return;
         }
+        log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "设备南向服务", "接收到全量同步信息", req);
         Map<Long, PostDeviceSignInReq> postDeviceSignInReqMap = req.stream().collect(Collectors.toMap(PostDeviceSignInReq::getDeviceId, postDeviceSignInReq -> postDeviceSignInReq));
         // 查询已存在的设备信息
         List<DeviceInfo> oldDeviceInfoList = deviceMapper.selectByIds(postDeviceSignInReqMap.keySet());
