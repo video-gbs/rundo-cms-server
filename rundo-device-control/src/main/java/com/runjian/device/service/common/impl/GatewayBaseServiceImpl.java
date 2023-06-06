@@ -100,7 +100,7 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
 
         // 修改通道的在线状态
         channelMapper.batchUpdateOnlineState(channelInfoList);
-        messageBaseService.msgDistribute(SubMsgType.CHANNEL_DELETE_STATE, channelInfoList.stream()
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelInfoList.stream()
                 .filter(channelInfo -> channelInfo.getSignState().equals(SignState.SUCCESS.getCode()))
                 .collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
 
