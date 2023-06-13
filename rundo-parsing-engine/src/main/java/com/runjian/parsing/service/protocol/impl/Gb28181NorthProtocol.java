@@ -42,6 +42,7 @@ public class Gb28181NorthProtocol extends AbstractNorthProtocol {
         switch (msgType){
             case DEVICE_ADD:
                 deviceAdd(mainId, dataMap, response);
+                return;
             case CHANNEL_PTZ_CONTROL:
                 channelPtzControl(mainId, dataMap, response);
                 return;

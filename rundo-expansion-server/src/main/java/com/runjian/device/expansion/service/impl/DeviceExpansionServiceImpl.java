@@ -112,27 +112,27 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
     @Override
     public CommonResponse remove(Long id) {
-        CommonResponse res = deviceControlApi.deleteDevice(id);
+        CommonResponse res = deviceControlApi.deleteDeviceSoft(id);
         if(res.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
             return res;
         }
 
-        baseDeviceAndChannelService.removeDevice(id);
+        baseDeviceAndChannelService.removeDeviceSoft(id);
         return CommonResponse.success();
     }
 
     @Override
     public CommonResponse<Boolean> removeBatch(List<Long> idList) {
         for(Long id : idList){
-            CommonResponse res = deviceControlApi.deleteDevice(id);
+            CommonResponse res = deviceControlApi.deleteDeviceSoft(id);
             if(res.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
                 //调用失败
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
                 throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR,res.getMsg());
             }else {
-                baseDeviceAndChannelService.removeDevice(id);
+                baseDeviceAndChannelService.removeDeviceSoft(id);
             }
         }
 
@@ -245,11 +245,11 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     }
 
     @Override
-    public void syncDeviceStatus() {
-        RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_ONLINE_STATE_LOCK);
+    public void syncDeviceStatus(String msgHandle,String msgLock) {
+        RLock lock = redissonClient.getLock(msgLock);
         try{
             lock.lock(3, TimeUnit.SECONDS);
-            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_DEVICE_ONLINE_STATE);
+            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, msgHandle);
             if(!CollectionUtils.isEmpty(deviceMap)){
                 log.info(LogTemplate.PROCESS_LOG_TEMPLATE,"设备缓存状态同步",deviceMap);
                 Set<Map.Entry<Long, Integer>> entries = deviceMap.entrySet();
@@ -263,7 +263,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
                     deviceExpansion.setOnlineState(onlineState);
                     deviceExpansionMapper.updateById(deviceExpansion);
                 }
-                RedisCommonUtil.del(redisTemplate,MarkConstant.REDIS_DEVICE_ONLINE_STATE);
+                RedisCommonUtil.del(redisTemplate,msgHandle);
             }
 
         } catch (Exception ex){

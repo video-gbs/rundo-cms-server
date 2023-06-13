@@ -70,5 +70,5 @@ public interface IDeviceExpansionService extends IService<DeviceExpansion> {
     /**
      *
      */
-    void syncDeviceStatus();
+    void syncDeviceStatus(String msgHandle,String msgLock);
 }

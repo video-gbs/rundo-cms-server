@@ -48,7 +48,9 @@ public class MessageNorthServiceImpl implements MessageNorthService {
             }
             postMessageSubRspList.add(new PostMessageSubRsp(msgType, msgHandle, messageInfo.getMsgLock()));
         }
-        messageMapper.batchSave(messageInfoList);
+        if (messageInfoList.size() > 0){
+            messageMapper.batchSave(messageInfoList);
+        }
         return postMessageSubRspList;
     }
 

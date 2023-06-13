@@ -127,12 +127,14 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     @Override
     public CommonResponse<Boolean> remove(Long id) {
         TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-        deviceChannelExpansionMapper.deleteById(id);
+        DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
+        channelExpansion.setDeleted(1);
+        channelExpansion.setId(id);
+        deviceChannelExpansionMapper.updateById(channelExpansion);
         //通知控制服务修改添加状态 删除接口待定义
-        List<Long> longs = new ArrayList<>();
-        longs.add(id);
 
-        CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDelete(longs);
+
+        CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
         if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             dataSourceTransactionManager.rollback(transactionStatus);
             //调用失败
@@ -145,19 +147,23 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Override
     public CommonResponse<Boolean> removeBatch(List<Long> idList) {
-        deviceChannelExpansionMapper.deleteBatchIds(idList);
-        //通知控制服务修改添加状态 删除接口待定义
-        TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-        deviceChannelExpansionMapper.deleteBatchIds(idList);
-        //通知控制服务修改添加状态 删除接口待定义
-        CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDelete(idList);
-        if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-            dataSourceTransactionManager.rollback(transactionStatus);
-            //调用失败
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",idList, booleanCommonResponse);
-            return booleanCommonResponse;
+        for (Long id : idList){
+            TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+            DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
+            channelExpansion.setDeleted(1);
+            channelExpansion.setId(id);
+            deviceChannelExpansionMapper.updateById(channelExpansion);
+            CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
+            if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                dataSourceTransactionManager.rollback(transactionStatus);
+                //调用失败
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",idList, booleanCommonResponse);
+                return booleanCommonResponse;
+            }
+            dataSourceTransactionManager.commit(transactionStatus);
+
         }
-        dataSourceTransactionManager.commit(transactionStatus);
+
         return null;
     }
 
@@ -288,11 +294,11 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     }
 
     @Override
-    public void syncChannelStatus() {
-        RLock lock = redissonClient.getLock(MarkConstant.REDIS_CHANNEL_ONLINE_STATE_LOCK);
+    public void syncChannelStatus(String msgHandle,String msgLock) {
+        RLock lock = redissonClient.getLock(msgLock);
         try{
             lock.lock(3, TimeUnit.SECONDS);
-            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, MarkConstant.REDIS_CHANNEL_ONLINE_STATE);
+            Map<Long, Integer> deviceMap = RedisCommonUtil.hmgetInteger(redisTemplate, msgHandle);
             if(!CollectionUtils.isEmpty(deviceMap)){
                 log.info(LogTemplate.PROCESS_LOG_TEMPLATE,"通道缓存状态同步",deviceMap);
                 Set<Map.Entry<Long, Integer>> entries = deviceMap.entrySet();
@@ -306,7 +312,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                     channelExpansion.setOnlineState(onlineState);
                     deviceChannelExpansionMapper.updateById(channelExpansion);
                 }
-                RedisCommonUtil.del(redisTemplate,MarkConstant.REDIS_CHANNEL_ONLINE_STATE);
+                RedisCommonUtil.del(redisTemplate,msgHandle);
             }
 
         } catch (Exception ex){

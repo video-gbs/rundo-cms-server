@@ -14,6 +14,7 @@ import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -60,11 +61,6 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
                 return finalFailure;
             }
 
-            @Override
-            public CommonResponse deleteDevice(Long id) {
-                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加删除",id, throwable);
-                return finalFailure;
-            }
 
             @Override
             public CommonResponse<Boolean> channelSignSuccess(PutChannelSignSuccessReq putChannelSignSuccessReq) {
@@ -118,6 +114,42 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
             public CommonResponse<?> ptz3d(FeignPtz3dReq req) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--3d操作败",req, throwable);
                 return  finalFailure;
+            }
+
+            @Override
+            public CommonResponse deleteDeviceSoft(Long deviceId) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--设备删除失败",deviceId, throwable);
+                return (CommonResponse<Boolean>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse deleteDeviceHard(Long deviceId) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--设备删除失败",deviceId, throwable);
+                return (CommonResponse<Boolean>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<Boolean> channelDeleteSoft(Long channelIds) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--通道删除失败",channelIds, throwable);
+                return (CommonResponse<Boolean>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<Boolean> channelDeleteHard(Long channelIds) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--通道删除失败",channelIds, throwable);
+                return (CommonResponse<Boolean>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<List<MessageSubRsp>> subMsg(MessageSubReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--消息订阅失败",req, throwable);
+                return (CommonResponse<List<MessageSubRsp>>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<?> cancelMsg(Set<String> msgHandles) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--消息订阅取消失败",msgHandles, throwable);
+                return finalFailure;
             }
         };
     }

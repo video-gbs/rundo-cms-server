@@ -116,12 +116,10 @@ public interface ChannelMapper {
     void deleteById(Long channelId);
 
     @Update(" <script> " +
-            " <foreach collection='channelInfoList' item='item' separator=';'> " +
             " UPDATE " + CHANNEL_TABLE_NAME +
-            " SET update_time = #{item.updateTime}  " +
-            " , sign_state = #{item.signState} " +
-            " WHERE id = #{item.id} "+
-            " </foreach> " +
+            " SET update_time = #{updateTime}  " +
+            " , sign_state = #{signState} " +
+            " WHERE id = #{id} "+
             " </script> ")
     void updateSignState(ChannelInfo channelInfo);
 }

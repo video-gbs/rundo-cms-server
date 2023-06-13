@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 流媒体管理中心远程调用
@@ -33,9 +34,17 @@ public interface DeviceControlApi {
      * @param deviceId
      * @return
      */
-    @DeleteMapping("/device/north/delete")
-    CommonResponse deleteDevice(@RequestParam Long deviceId);
+    @DeleteMapping("/device/north/delete/soft")
+    CommonResponse deleteDeviceSoft(@RequestParam Long deviceId);
 
+
+    /**
+     * 控制服务 设备删除
+     * @param deviceId
+     * @return
+     */
+    @DeleteMapping("/device/north/delete/hard")
+    CommonResponse deleteDeviceHard(@RequestParam Long deviceId);
     /**
      * 设备注册状态修改
      * @param putDeviceSignSuccessReq
@@ -80,6 +89,22 @@ public interface DeviceControlApi {
     @DeleteMapping(value = "/channel/north/delete")
     CommonResponse<Boolean> channelDelete(@RequestParam List<Long> channelIds);
 
+
+    /**
+     * 控制服务 通道删除
+     * @param channelId
+     * @return
+     */
+    @DeleteMapping(value = "/channel/north/delete/soft")
+    CommonResponse<Boolean> channelDeleteSoft(@RequestParam Long channelId);
+
+    /**
+     * 控制服务 通道删除
+     * @param channelIds
+     * @return
+     */
+    @DeleteMapping(value = "/channel/north/delete/hard")
+    CommonResponse<Boolean> channelDeleteHard(@RequestParam Long channelIds);
     /**
      * 点播接口
      * @param playFeignReq
@@ -122,4 +147,22 @@ public interface DeviceControlApi {
      */
     @PutMapping("/channel/north/ptz/3d")
     CommonResponse<?> ptz3d(@RequestBody FeignPtz3dReq req);
+
+
+
+    /**
+     * 订阅消息
+     * @param req
+     * @return
+     */
+    @PostMapping("/message/sub")
+    public CommonResponse<List<MessageSubRsp>> subMsg(@RequestBody MessageSubReq req);
+    /**
+     * 取消订阅
+     * @param msgHandles 消息句柄
+     * @return
+     */
+    @DeleteMapping("/message/cancel")
+    public CommonResponse<?> cancelMsg(@RequestParam Set<String> msgHandles);
+
 }
