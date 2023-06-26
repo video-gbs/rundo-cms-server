@@ -51,4 +51,11 @@ public class PostStreamLivePlayReq {
     @NotNull(message = "自动关闭状态不能为空")
     @Range(min = 0, max = 1, message = "非法自动关闭状态")
     private Integer autoCloseState;
+
+    /**
+     * 码流id(主子码流)
+     */
+    @NotNull(message = "主子码流选择不能为空")
+    @Range(min = 0, message = "非法主子码流")
+    private Integer bitStreamId;
 }

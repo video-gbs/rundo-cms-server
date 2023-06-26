@@ -17,6 +17,7 @@ import com.runjian.stream.service.common.DataBaseService;
 import com.runjian.stream.service.common.StreamBaseService;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.StreamManageDto;
+import com.runjian.stream.vo.response.GetGatewayRsp;
 import com.runjian.stream.vo.response.PostApplyStreamRsp;
 import com.runjian.stream.vo.response.PostVideoPlayRsp;
 import lombok.RequiredArgsConstructor;
@@ -50,12 +51,6 @@ public class StreamNorthServiceImpl implements StreamNorthService {
 
     private final DeviceControlApi deviceControlApi;
 
-    /**
-     * 通道最大播放数
-     */
-//    private static final int CHANNEL_MAX_PLAY_NUM = 3;
-
-
     @Override
     public PostVideoPlayRsp customLive(Long dispatchId, Long code, String protocol, Integer transferMode, String port, String ip, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState) {
         String streamId = PlayType.CUSTOM_LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + code;
@@ -82,29 +77,11 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()), PostVideoPlayRsp.class);
     }
 
-    /**
-     * 直播播放
-     * @param channelId 通道id
-     * @param enableAudio 是否播放音频
-     * @param ssrcCheck 是否使用ssrc
-     * @param recordState 是否开启录播
-     * @param autoCloseState 是否无人观看
-     * @return
-     */
-    @Override
-    public PostVideoPlayRsp streamLivePlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState) {
-        GatewayDispatchInfo gatewayDispatchInfo = getGatewayDispatchInfoByChannelId(channelId);
-        DispatchInfo dispatchInfo = dataBaseService.getOnlineDispatchInfo(gatewayDispatchInfo.getDispatchId());
-        String streamId = PlayType.LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + channelId;
-        saveLiveStream(channelId, recordState, autoCloseState, gatewayDispatchInfo.getGatewayId(), dispatchInfo.getId(), streamId);
 
-        StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamId, MsgType.STREAM_LIVE_PLAY_START, 15000L);
-        streamManageDto.put(StandardName.CHANNEL_ID, channelId);
-        streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
-        streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
-        streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
-        streamManageDto.put(StandardName.STREAM_MODE, streamMode);
-        streamManageDto.put(StandardName.STREAM_MEDIA_URL, dispatchInfo.getUrl());
+    @Override
+    public PostVideoPlayRsp streamLivePlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState, Integer bitStreamId) {
+        String streamId = PlayType.LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + channelId;
+        StreamManageDto streamManageDto = getStreamManageDto(channelId, MsgType.STREAM_LIVE_PLAY_START, streamId, PlayType.LIVE.getCode(), streamMode, enableAudio, ssrcCheck, recordState, autoCloseState, bitStreamId);
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
         if (commonResponse.isError()){
             streamMapper.deleteByStreamId(streamId);
@@ -141,50 +118,43 @@ public class StreamNorthServiceImpl implements StreamNorthService {
      * @param channelId
      * @return
      */
-    private GatewayDispatchInfo getGatewayDispatchInfoByChannelId(Long channelId){
-        CommonResponse<Long> commonResponse = deviceControlApi.getGatewayIdByChannelId(channelId);
+    private StreamManageDto getStreamManageDto(Long channelId, MsgType msgType, String streamId, Integer playType, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState, Integer bitStreamId){
+        CommonResponse<GetGatewayRsp> commonResponse = deviceControlApi.getGatewayIdByChannelId(channelId);
         commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
-        Long gatewayId = commonResponse.getData();
-        if (Objects.isNull(gatewayId)){
+        GetGatewayRsp gatewayInfo = commonResponse.getData();
+        if (Objects.isNull(gatewayInfo)){
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("设备%s未绑定网关", channelId));
         }
-        Optional<GatewayDispatchInfo> dispatchIdOp = gatewayDispatchMapper.selectByGatewayId(gatewayId);
+        Optional<GatewayDispatchInfo> dispatchIdOp = gatewayDispatchMapper.selectByGatewayId(gatewayInfo.getId());
         if (dispatchIdOp.isEmpty()) {
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("该网关模块%s未绑定流媒体模块，无法播放", gatewayId));
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("该网关模块%s未绑定流媒体模块，无法播放", gatewayInfo.getName()));
         }
-        return dispatchIdOp.get();
-    }
+        DispatchInfo dispatchInfo = dataBaseService.getOnlineDispatchInfo(dispatchIdOp.get().getDispatchId());
 
-    /**
-     * 录播播放
-     * @param channelId
-     * @param enableAudio
-     * @param ssrcCheck
-     * @param playType
-     * @param recordState
-     * @param autoCloseState
-     * @param startTime
-     * @param endTime
-     * @return
-     */
-    @Override
-    public PostVideoPlayRsp streamRecordPlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer playType, Integer recordState, Integer autoCloseState, LocalDateTime startTime, LocalDateTime endTime){
-        //            List<StreamInfo> streamInfoList = streamMapper.selectByChannelId(channelId);
-//            if (streamInfoList.size() >= CHANNEL_MAX_PLAY_NUM) {
-//                throw new BusinessException(BusinessErrorEnums.VALID_REPETITIVE_OPERATION_ERROR, String.format("设备%s已达到并发播放数上限,请稍后重试", channelId));
-//            }
-        GatewayDispatchInfo gatewayDispatchInfo = getGatewayDispatchInfoByChannelId(channelId);
-        DispatchInfo dispatchInfo = dataBaseService.getOnlineDispatchInfo(gatewayDispatchInfo.getDispatchId());
-        String streamId = PlayType.getMsgByCode(playType) + MarkConstant.MARK_SPLIT_SYMBOL + channelId + MarkConstant.MARK_SPLIT_SYMBOL + System.currentTimeMillis() + new Random().nextInt(100);
-        StreamInfo streamInfo = saveStream(gatewayDispatchInfo.getGatewayId(), channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
+        if (msgType.equals(MsgType.STREAM_RECORD_PLAY_START)) {
 
-        StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamInfo.getStreamId(), MsgType.STREAM_RECORD_PLAY_START, 15000L);
+            saveStream(gatewayInfo.getId(), channelId, dispatchInfo.getId(), playType, recordState, autoCloseState, streamId);
+        } else {
+
+            saveLiveStream(channelId, recordState, autoCloseState, gatewayInfo.getId(), dispatchInfo.getId(), streamId);
+        }
+
+        StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamId, msgType, 15000L);
         streamManageDto.put(StandardName.CHANNEL_ID, channelId);
         streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
         streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
         streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
         streamManageDto.put(StandardName.STREAM_MEDIA_URL, dispatchInfo.getUrl());
         streamManageDto.put(StandardName.STREAM_MODE, streamMode);
+        streamManageDto.put(StandardName.GATEWAY_PROTOCOL, gatewayInfo.getProtocol());
+        streamManageDto.put(StandardName.STREAM_BIT_STREAM_ID, bitStreamId);
+        return streamManageDto;
+    }
+
+    @Override
+    public PostVideoPlayRsp streamRecordPlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer playType, Integer recordState, Integer autoCloseState, LocalDateTime startTime, LocalDateTime endTime, Integer bitStreamId){
+        String streamId = PlayType.getMsgByCode(playType) + MarkConstant.MARK_SPLIT_SYMBOL + channelId + MarkConstant.MARK_SPLIT_SYMBOL + System.currentTimeMillis() + new Random().nextInt(100);
+        StreamManageDto streamManageDto = getStreamManageDto(channelId, MsgType.STREAM_RECORD_PLAY_START, streamId, playType, streamMode, enableAudio, ssrcCheck, recordState, autoCloseState, bitStreamId);
         streamManageDto.put(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
         streamManageDto.put(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
