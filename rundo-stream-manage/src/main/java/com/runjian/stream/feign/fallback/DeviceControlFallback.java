@@ -6,6 +6,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.stream.feign.DeviceControlApi;
 import com.runjian.stream.vo.request.PostGetGatewayByDispatchReq;
 import com.runjian.stream.vo.response.GetGatewayByIdsRsp;
+import com.runjian.stream.vo.response.GetGatewayRsp;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +30,7 @@ public class DeviceControlFallback implements FallbackFactory<DeviceControlApi> 
             }
 
             @Override
-            public CommonResponse<Long> getGatewayIdByChannelId(Long channelId) {
+            public CommonResponse<GetGatewayRsp> getGatewayIdByChannelId(Long channelId) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
         };

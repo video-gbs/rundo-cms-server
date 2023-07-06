@@ -13,6 +13,7 @@ import com.runjian.device.service.north.GatewayNorthService;
 import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
+import com.runjian.device.vo.response.GetGatewayRsp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,6 @@ public class GatewayNorthServiceImpl implements GatewayNorthService {
 
     private final GatewayMapper gatewayMapper;
 
-    private final DataBaseService dataBaseService;
 
     @Override
     public List<GetGatewayNameRsp> getGatewayNameList(Long gatewayId) {
@@ -91,10 +91,8 @@ public class GatewayNorthServiceImpl implements GatewayNorthService {
      * @return
      */
     @Override
-    public Long getGatewayInfoByChannelId(Long channelId) {
-        ChannelInfo channelInfo = dataBaseService.getChannelInfo(channelId);
-        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(channelInfo.getDeviceId());
-        return deviceInfo.getGatewayId();
+    public GetGatewayRsp getGatewayInfoByChannelId(Long channelId) {
+        return gatewayMapper.selectByChannelId(channelId);
     }
 
 }

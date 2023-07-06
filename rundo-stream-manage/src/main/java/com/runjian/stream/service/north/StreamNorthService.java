@@ -41,7 +41,7 @@ public interface StreamNorthService {
      * @param autoCloseState 是否无人观看
      * @return  PostVideoPlayRsp
      */
-    PostVideoPlayRsp streamLivePlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState);
+    PostVideoPlayRsp streamLivePlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState, Integer bitStreamId);
 
     /**
      * 录播播放
@@ -55,7 +55,7 @@ public interface StreamNorthService {
      * @param endTime 结束时间
      * @return PostVideoPlayRsp
      */
-    PostVideoPlayRsp streamRecordPlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer playType, Integer recordState, Integer autoCloseState, LocalDateTime startTime, LocalDateTime endTime);
+    PostVideoPlayRsp streamRecordPlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer playType, Integer recordState, Integer autoCloseState, LocalDateTime startTime, LocalDateTime endTime, Integer bitStreamId);
 
 
     /**

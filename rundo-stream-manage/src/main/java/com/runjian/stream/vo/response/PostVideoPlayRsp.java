@@ -12,6 +12,11 @@ import lombok.Data;
 public class PostVideoPlayRsp {
 
     /**
+     * 0：ws-flv,1:http-flv;
+     */
+    private Integer playProtocalType = 0;
+
+    /**
      * 流id
      */
     private String streamId;

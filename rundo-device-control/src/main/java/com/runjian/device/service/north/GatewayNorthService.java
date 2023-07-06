@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
+import com.runjian.device.vo.response.GetGatewayRsp;
 
 import java.util.List;
 
@@ -49,5 +50,5 @@ public interface GatewayNorthService {
      * @param channelId 通道id
      * @return 通道id
      */
-    Long getGatewayInfoByChannelId(Long channelId);
+    GetGatewayRsp getGatewayInfoByChannelId(Long channelId);
 }

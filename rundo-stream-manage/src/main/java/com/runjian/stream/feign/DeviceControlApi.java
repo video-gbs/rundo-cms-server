@@ -5,6 +5,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.stream.feign.fallback.DeviceControlFallback;
 import com.runjian.stream.vo.request.PostGetGatewayByDispatchReq;
 import com.runjian.stream.vo.response.GetGatewayByIdsRsp;
+import com.runjian.stream.vo.response.GetGatewayRsp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,5 +27,5 @@ public interface DeviceControlApi {
     CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByName(@RequestParam int page, @RequestParam int num, @RequestParam(required = false) String name);
 
     @GetMapping("/gateway/north/id/channel")
-    CommonResponse<Long> getGatewayIdByChannelId(@RequestParam Long channelId);
+    CommonResponse<GetGatewayRsp> getGatewayIdByChannelId(@RequestParam Long channelId);
 }
