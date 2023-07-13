@@ -93,4 +93,14 @@ public class ChannelPlayController {
         feignStreamOperationReq.setStreamId(streamId);
         return streamManageApi.getStreamMediaInfo(feignStreamOperationReq);
     }
+
+
+    @GetMapping("/back/streamId/info")
+    @ApiOperation("回放通道流信息")
+    public CommonResponse<?> backStreamIdInfo(@RequestParam Long channelExpansionId,@RequestParam String streamId){
+        FeignStreamOperationReq feignStreamOperationReq = new FeignStreamOperationReq();
+        feignStreamOperationReq.setChannelId(channelExpansionId);
+        feignStreamOperationReq.setStreamId(streamId);
+        return streamManageApi.getStreamMediaInfo(feignStreamOperationReq);
+    }
 }
