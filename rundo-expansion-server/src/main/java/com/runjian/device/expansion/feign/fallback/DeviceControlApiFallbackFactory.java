@@ -160,6 +160,24 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--待注册设备列表获取失败",deviceName, throwable);
                 return (CommonResponse<PageInfo<DeviceUnRegisterPageRsp>>) finalFailure;
             }
+
+            @Override
+            public CommonResponse<PageInfo<GetGatewayPageRsp>> getGatewayByPage(int page, int num, String name) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--获取网关信息失败",name, throwable);
+                return (CommonResponse<PageInfo<GetGatewayPageRsp>>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(Long gatewayId) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--获取网关信息byname失败",gatewayId, throwable);
+                return (CommonResponse<List<GetGatewayNameRsp>>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<?> updateGateway(PutGatewayReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--更新网关信息失败",req, throwable);
+                return finalFailure;
+            }
         };
     }
 }

@@ -27,6 +27,7 @@ import java.util.Set;
 public interface DeviceControlApi {
 
 
+    /************************************************设备-start**********************************************************/
     /**
      * 控制服务 设备添加
      * @param deviceReq
@@ -59,6 +60,21 @@ public interface DeviceControlApi {
     @PutMapping("/device/north/sign/success")
     CommonResponse deviceSignSuccess(@RequestBody PutDeviceSignSuccessReq putDeviceSignSuccessReq);
 
+    /**
+     * 设备分页获取
+     * @param page 页码
+     * @param num 每页数据量
+     * @param signState 注册状态
+     * @param deviceName 设备名称
+     * @param ip ip地址
+     * @return
+     */
+    @GetMapping("/device/north/page")
+    CommonResponse<PageInfo<DeviceUnRegisterPageRsp>> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Integer signState, String deviceName, String ip);
+
+
+
+    /************************************************通道-start**********************************************************/
     /**
      * 控制服务 通道添加状态修改
      * @param putChannelSignSuccessReq
@@ -173,16 +189,33 @@ public interface DeviceControlApi {
 
 
 
+    /************************************************网关服务-start**********************************************************/
     /**
-     * 设备分页获取
+     * 分页获取网关信息
      * @param page 页码
      * @param num 每页数据量
-     * @param signState 注册状态
-     * @param deviceName 设备名称
-     * @param ip ip地址
+     * @param name 网关名称
      * @return
      */
-    @GetMapping("/page")
-    CommonResponse<PageInfo<DeviceUnRegisterPageRsp>> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Integer signState, String deviceName, String ip);
+    @GetMapping("/gateway/north/page")
+    @BlankStringValid
+    @IllegalStringValid
+    public CommonResponse<PageInfo<GetGatewayPageRsp>> getGatewayByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, String name);
 
+
+    /**
+     * 获取网关所有名称
+     * @return
+     */
+    @GetMapping("/gateway/north/name")
+    public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(Long gatewayId);
+
+
+    /**
+     * 修改网关信息
+     * @param req 修改网关信息请求体
+     * @return
+     */
+    @PutMapping("/gateway/north/update")
+    public CommonResponse<?> updateGateway(@RequestBody PutGatewayReq req);
 }
