@@ -72,7 +72,7 @@ public interface DeviceControlApi {
      * @return
      */
     @GetMapping("/device/north/page")
-    CommonResponse<PageInfo<DeviceUnRegisterPageRsp>> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Integer signState, String deviceName, String ip);
+    CommonResponse<PageInfo<DeviceUnRegisterPageRsp>> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, @RequestParam(required = false) Integer signState, @RequestParam(required = false) String deviceName, @RequestParam(required = false) String ip);
 
 
 
@@ -211,7 +211,7 @@ public interface DeviceControlApi {
     @GetMapping("/gateway/north/page")
     @BlankStringValid
     @IllegalStringValid
-    public CommonResponse<PageInfo<GetGatewayPageRsp>> getGatewayByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, String name);
+    public CommonResponse<PageInfo<GetGatewayPageRsp>> getGatewayByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, @RequestParam(required = false) String name);
 
 
     /**
