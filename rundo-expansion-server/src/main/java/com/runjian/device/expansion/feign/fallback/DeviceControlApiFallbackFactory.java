@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
@@ -117,6 +118,12 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
             public CommonResponse<?> ptz3d(FeignPtz3dReq req) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--3d操作败",req, throwable);
                 return  finalFailure;
+            }
+
+            @Override
+            public CommonResponse<VideoRecordRsp> videoRecordInfo(Long channelId, LocalDateTime startTime, LocalDateTime endTime) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--获取设备录像信息失败",channelId, throwable);
+                return (CommonResponse<VideoRecordRsp>) finalFailure;
             }
 
             @Override

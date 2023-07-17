@@ -19,10 +19,7 @@ import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.utils.RedisCommonUtil;
 import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
-import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
-import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
-import com.runjian.device.expansion.vo.feign.response.PageListResp;
-import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
+import com.runjian.device.expansion.vo.feign.response.*;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
@@ -40,6 +37,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -331,5 +329,10 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         queryWrapper.orderByDesc(DeviceChannelExpansion::getCreatedAt);
         queryWrapper.orderByDesc(DeviceChannelExpansion::getOnlineState);
         return deviceChannelExpansionMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public CommonResponse<VideoRecordRsp> channelRecord(Long channelId, LocalDateTime startTime, LocalDateTime endTime) {
+        return channelControlApi.videoRecordInfo(channelId, startTime, endTime);
     }
 }

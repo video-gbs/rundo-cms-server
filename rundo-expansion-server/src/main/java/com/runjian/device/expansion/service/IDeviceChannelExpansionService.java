@@ -5,12 +5,16 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
+import com.runjian.device.expansion.vo.feign.response.VideoRecordRsp;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -91,4 +95,13 @@ public interface IDeviceChannelExpansionService extends IService<DeviceChannelEx
      * @return
      */
     List<DeviceChannelExpansion> playList(Long videoAreaId);
+
+    /**
+     * 获取录像列表
+     * @param channelId
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    CommonResponse<VideoRecordRsp> channelRecord(Long channelId, LocalDateTime startTime, LocalDateTime endTime);
 }

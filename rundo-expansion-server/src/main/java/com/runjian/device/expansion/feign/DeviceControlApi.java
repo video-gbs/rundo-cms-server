@@ -12,9 +12,11 @@ import com.runjian.device.expansion.vo.response.DeviceUnRegisterPageRsp;
 import com.runjian.device.expansion.vo.response.PageInfo;
 import com.runjian.device.expansion.vo.response.PageResp;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -170,6 +172,15 @@ public interface DeviceControlApi {
     @PutMapping("/channel/north/ptz/3d")
     CommonResponse<?> ptz3d(@RequestBody FeignPtz3dReq req);
 
+    /**
+     * 视频回放
+     * @param channelId 回放请求体
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 视频播放返回体
+     */
+    @GetMapping("/channel/north/record")
+    CommonResponse<VideoRecordRsp> videoRecordInfo(@RequestParam Long channelId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime);
 
 
     /**
