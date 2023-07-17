@@ -1,23 +1,25 @@
 package com.runjian.device.expansion.feign;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.runjian.common.aspect.annotation.BlankStringValid;
+import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.StreamManageApiFallbackFactory;
-import com.runjian.device.expansion.vo.feign.request.FeignStreamOperationReq;
-import com.runjian.device.expansion.vo.feign.request.PlayBackFeignReq;
-import com.runjian.device.expansion.vo.feign.request.PlayFeignReq;
-import com.runjian.device.expansion.vo.feign.request.PutStreamOperationReq;
+import com.runjian.device.expansion.vo.feign.request.*;
+import com.runjian.device.expansion.vo.feign.response.GetDispatchNameRsp;
+import com.runjian.device.expansion.vo.feign.response.GetDispatchRsp;
+import com.runjian.device.expansion.vo.feign.response.GetGatewayByIdsRsp;
 import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.RecordStreamOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSeekOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSpeedOperationReq;
+import com.runjian.device.expansion.vo.response.PageInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @FeignClient(value = "stream-manage",fallbackFactory= StreamManageApiFallbackFactory.class)
 public interface StreamManageApi {
@@ -86,5 +88,90 @@ public interface StreamManageApi {
      */
     @PutMapping("/stream/north/play/stop")
     CommonResponse<?> stopPlay(@RequestBody PutStreamOperationReq req);
+
+    /**
+     * 获取所有调度服务的名称
+     * @return
+     */
+    @GetMapping("/dispatch/north/name")
+    public CommonResponse<List<GetDispatchNameRsp>> getDispatchName();
+
+    /**
+     * 获取调度服务信息
+     * @param page 页码
+     * @param num 每页数量
+     * @param name 名称
+     * @return 分页数据
+     */
+    @GetMapping("/dispatch/north/page")
+    public CommonResponse<PageInfo<GetDispatchRsp>> getDispatchByPage(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer num, String name);
+
+    /**
+     * 修改额外的名字与可访问URL
+     * @param req 请求体
+     */
+    @PutMapping("/dispatch/north/update")
+    public CommonResponse<?> updateExtraData(@RequestBody PutDispatchExtraDataReq req);
+
+
+    /*******************************网关与调度--绑定相关*******************************************************************/
+
+    /**
+     * 获取网关绑定的流媒体服务id
+     * @param gatewayId 网关id
+     * @return
+     */
+    @GetMapping("/gateway-dispatch/north/gateway/data")
+    public CommonResponse<Long> getDispatchIdByGatewayId(@RequestParam Long gatewayId);
+
+    /**
+     * 获取流媒体服务绑定的网关
+     * @param page
+     * @param num
+     * @param dispatchId
+     * @param name
+     * @return
+     */
+    @GetMapping("/gateway-dispatch/north/dispatch/data/in")
+    public CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByDispatchIdIn(@RequestParam(defaultValue = "1") int page,
+                                                                                 @RequestParam(defaultValue = "10") int num,
+                                                                                 @RequestParam Long dispatchId, String name);
+
+    /**
+     * 获取流媒体服务未绑定的网关
+     * @param page
+     * @param num
+     * @param dispatchId
+     * @param name
+     * @return
+     */
+    @GetMapping("/gateway-dispatch/north/dispatch/data/not-in")
+    public CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByDispatchIdNotIn(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
+                                                                                    @RequestParam Long dispatchId, String name);
+
+
+    /**
+     * 网关绑定调度服务
+     * @param req 网关绑定流媒体服务请求体
+     * @return
+     */
+    @PostMapping("/gateway-dispatch/north/gateway/binding")
+    public CommonResponse<?> gatewayBindingDispatch(@RequestBody PostGatewayBindingDispatchReq req);
+
+    /**
+     * 调度服务绑定网关
+     * @param req 流媒体服务绑定网关请求体
+     * @return
+     */
+    @PostMapping("/gateway-dispatch/north/dispatch/binding")
+    public CommonResponse<?> dispatchBindingGateway(@RequestBody PostDispatchBindingGatewayReq req);
+
+    /**
+     * 调度服务取消绑定网关
+     * @param req 流媒体服务绑定网关请求体
+     * @return
+     */
+    @PostMapping("/gateway-dispatch/north/dispatch/unbinding")
+    public CommonResponse<?> dispatchUnBindingGateway(@RequestBody PostDispatchBindingGatewayReq req);
 
 }
