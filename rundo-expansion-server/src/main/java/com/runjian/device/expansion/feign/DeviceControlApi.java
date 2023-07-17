@@ -1,10 +1,16 @@
 package com.runjian.device.expansion.feign;
 
+import cn.hutool.json.JSONObject;
+import com.runjian.common.aspect.annotation.BlankStringValid;
+import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.DeviceControlApiFallbackFactory;
 import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.*;
 import com.runjian.device.expansion.vo.response.ChannelPresetListsResp;
+import com.runjian.device.expansion.vo.response.DeviceUnRegisterPageRsp;
+import com.runjian.device.expansion.vo.response.PageInfo;
+import com.runjian.device.expansion.vo.response.PageResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -164,5 +170,19 @@ public interface DeviceControlApi {
      */
     @DeleteMapping("/message/cancel")
     public CommonResponse<?> cancelMsg(@RequestParam Set<String> msgHandles);
+
+
+
+    /**
+     * 设备分页获取
+     * @param page 页码
+     * @param num 每页数据量
+     * @param signState 注册状态
+     * @param deviceName 设备名称
+     * @param ip ip地址
+     * @return
+     */
+    @GetMapping("/page")
+    CommonResponse<PageInfo<DeviceUnRegisterPageRsp>> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Integer signState, String deviceName, String ip);
 
 }

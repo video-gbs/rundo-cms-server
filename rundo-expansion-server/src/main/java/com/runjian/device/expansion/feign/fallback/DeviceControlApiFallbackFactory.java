@@ -1,5 +1,6 @@
 package com.runjian.device.expansion.feign.fallback;
 
+import cn.hutool.json.JSONObject;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
@@ -8,6 +9,8 @@ import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.*;
 import com.runjian.device.expansion.vo.response.ChannelPresetListsResp;
+import com.runjian.device.expansion.vo.response.DeviceUnRegisterPageRsp;
+import com.runjian.device.expansion.vo.response.PageInfo;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -150,6 +153,12 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
             public CommonResponse<?> cancelMsg(Set<String> msgHandles) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--消息订阅取消失败",msgHandles, throwable);
                 return finalFailure;
+            }
+
+            @Override
+            public CommonResponse<PageInfo<DeviceUnRegisterPageRsp>> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--待注册设备列表获取失败",deviceName, throwable);
+                return (CommonResponse<PageInfo<DeviceUnRegisterPageRsp>>) finalFailure;
             }
         };
     }

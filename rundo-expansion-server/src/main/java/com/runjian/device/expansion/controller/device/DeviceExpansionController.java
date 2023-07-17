@@ -1,5 +1,7 @@
 package com.runjian.device.expansion.controller.device;
 
+import com.runjian.common.aspect.annotation.BlankStringValid;
+import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.expansion.aspect.annotation.DeviceStatusPoint;
@@ -7,6 +9,8 @@ import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
+import com.runjian.device.expansion.vo.response.DeviceUnRegisterPageRsp;
+import com.runjian.device.expansion.vo.response.PageInfo;
 import com.runjian.device.expansion.vo.response.PageResp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -75,6 +79,27 @@ public class DeviceExpansionController {
     public CommonResponse<Boolean> move(@RequestBody MoveReq deviceExpansionMoveReq) {
 
         return CommonResponse.success(deviceExpansionService.move(deviceExpansionMoveReq));
+    }
+
+
+    /**
+     * 设备分页获取
+     * @param page 页码
+     * @param num 每页数据量
+     * @param signState 注册状态
+     * @param deviceName 设备名称
+     * @param ip ip地址
+     * @return
+     */
+    @ApiOperation("待注册列表")
+    @GetMapping("/unregister/list")
+    @BlankStringValid
+    @IllegalStringValid
+    public CommonResponse<PageInfo<DeviceUnRegisterPageRsp>> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Integer signState, String deviceName, String ip){
+
+        return CommonResponse.success(deviceExpansionService.getDeviceByPage(page, num, signState, deviceName, ip));
+
+
     }
 
 

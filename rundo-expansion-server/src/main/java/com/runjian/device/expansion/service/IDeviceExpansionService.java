@@ -10,6 +10,8 @@ import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionReq;
 import com.runjian.device.expansion.vo.request.MoveReq;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
+import com.runjian.device.expansion.vo.response.DeviceUnRegisterPageRsp;
+import com.runjian.device.expansion.vo.response.PageInfo;
 import com.runjian.device.expansion.vo.response.PageResp;
 
 import java.util.List;
@@ -71,4 +73,16 @@ public interface IDeviceExpansionService extends IService<DeviceExpansion> {
      *
      */
     void syncDeviceStatus(String msgHandle,String msgLock);
+
+
+    /**
+     * 获取设备待注册列表
+     * @param page
+     * @param num
+     * @param signState
+     * @param deviceName
+     * @param ip
+     * @return
+     */
+    PageInfo<DeviceUnRegisterPageRsp> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip);
 }
