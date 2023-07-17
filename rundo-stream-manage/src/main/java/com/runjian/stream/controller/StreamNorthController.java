@@ -125,7 +125,7 @@ public class StreamNorthController {
     }
 
     /**
-     * 调整录播的播放速度
+     * 恢复录播
      * @param req
      * @return
      */

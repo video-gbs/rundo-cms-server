@@ -46,6 +46,5 @@ public class PutStreamOperationReq implements ValidatorFunction {
         if (!streamInfo.getChannelId().equals(channelId)){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "channelId与streamId不对应");
         }
-
     }
 }
