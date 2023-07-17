@@ -1,7 +1,6 @@
 package com.runjian.device.expansion.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,8 +8,6 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
-import com.runjian.common.constant.MarkConstant;
-import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.feign.AuthServerApi;
 import com.runjian.device.expansion.feign.DeviceControlApi;
@@ -27,8 +24,6 @@ import com.runjian.device.expansion.vo.request.DeviceExpansionReq;
 import com.runjian.device.expansion.vo.feign.request.DeviceReq;
 import com.runjian.device.expansion.vo.request.MoveReq;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
-import com.runjian.device.expansion.vo.response.DeviceUnRegisterPageRsp;
-import com.runjian.device.expansion.vo.response.PageInfo;
 import com.runjian.device.expansion.vo.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -280,8 +275,8 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     }
 
     @Override
-    public PageInfo<DeviceUnRegisterPageRsp> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
-        CommonResponse<PageInfo<DeviceUnRegisterPageRsp>> deviceByPage = deviceControlApi.getDeviceByPage(page, num, signState, deviceName, ip);
+    public Object getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
+        CommonResponse<Object> deviceByPage = deviceControlApi.getDeviceByPage(page, num, signState, deviceName, ip);
         if(deviceByPage.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
             throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, deviceByPage.getMsg());

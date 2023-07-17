@@ -12,6 +12,7 @@ import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.entity.DeviceExpansion;
+import com.runjian.device.expansion.feign.AutRbacServerApi;
 import com.runjian.device.expansion.feign.AuthServerApi;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
@@ -70,6 +71,9 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     AuthServerApi authServerApi;
 
     @Autowired
+    AutRbacServerApi autRbacServerApi;
+
+    @Autowired
     RedissonClient redissonClient;
 
     @Autowired
@@ -104,6 +108,10 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",findChannelListReq, longCommonResponse);
                 return longCommonResponse;
             }
+
+//            autRbacServerApi.batchAddResource();
+
+
             dataSourceTransactionManager.commit(transactionStatus);
         }catch(Exception e){
             dataSourceTransactionManager.rollback(transactionStatus);

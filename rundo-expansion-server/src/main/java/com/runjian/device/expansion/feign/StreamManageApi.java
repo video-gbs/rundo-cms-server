@@ -1,19 +1,14 @@
 package com.runjian.device.expansion.feign;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.runjian.common.aspect.annotation.BlankStringValid;
-import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.StreamManageApiFallbackFactory;
 import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.GetDispatchNameRsp;
-import com.runjian.device.expansion.vo.feign.response.GetDispatchRsp;
-import com.runjian.device.expansion.vo.feign.response.GetGatewayByIdsRsp;
 import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.RecordStreamOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSeekOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSpeedOperationReq;
-import com.runjian.device.expansion.vo.response.PageInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.MediaType;
@@ -104,7 +99,7 @@ public interface StreamManageApi {
      * @return 分页数据
      */
     @GetMapping("/dispatch/north/page")
-    public CommonResponse<PageInfo<GetDispatchRsp>> getDispatchByPage(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer num, String name);
+    public CommonResponse<Object> getDispatchByPage(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer num,  @RequestParam(required = false) String name);
 
     /**
      * 修改额外的名字与可访问URL
@@ -133,9 +128,9 @@ public interface StreamManageApi {
      * @return
      */
     @GetMapping("/gateway-dispatch/north/dispatch/data/in")
-    public CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByDispatchIdIn(@RequestParam(defaultValue = "1") int page,
+    public CommonResponse<Object> getGatewayByDispatchIdIn(@RequestParam(defaultValue = "1") int page,
                                                                                  @RequestParam(defaultValue = "10") int num,
-                                                                                 @RequestParam Long dispatchId, String name);
+                                                                                 @RequestParam Long dispatchId, @RequestParam(required = false) String name);
 
     /**
      * 获取流媒体服务未绑定的网关
@@ -146,8 +141,8 @@ public interface StreamManageApi {
      * @return
      */
     @GetMapping("/gateway-dispatch/north/dispatch/data/not-in")
-    public CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByDispatchIdNotIn(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
-                                                                                    @RequestParam Long dispatchId, String name);
+    public CommonResponse<Object> getGatewayByDispatchIdNotIn(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
+                                                                                    @RequestParam Long dispatchId,@RequestParam(required = false) String name);
 
 
     /**

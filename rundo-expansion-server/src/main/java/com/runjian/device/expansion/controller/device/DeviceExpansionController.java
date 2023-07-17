@@ -9,8 +9,6 @@ import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
-import com.runjian.device.expansion.vo.response.DeviceUnRegisterPageRsp;
-import com.runjian.device.expansion.vo.response.PageInfo;
 import com.runjian.device.expansion.vo.response.PageResp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -95,7 +93,7 @@ public class DeviceExpansionController {
     @GetMapping("/unregister/list")
     @BlankStringValid
     @IllegalStringValid
-    public CommonResponse<PageInfo<DeviceUnRegisterPageRsp>> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Integer signState, String deviceName, String ip){
+    public CommonResponse<Object> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Integer signState, String deviceName, String ip){
 
         return CommonResponse.success(deviceExpansionService.getDeviceByPage(page, num, signState, deviceName, ip));
 

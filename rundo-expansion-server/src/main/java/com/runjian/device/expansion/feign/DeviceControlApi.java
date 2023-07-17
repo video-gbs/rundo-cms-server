@@ -1,6 +1,5 @@
 package com.runjian.device.expansion.feign;
 
-import cn.hutool.json.JSONObject;
 import com.runjian.common.aspect.annotation.BlankStringValid;
 import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
@@ -8,9 +7,6 @@ import com.runjian.device.expansion.feign.fallback.DeviceControlApiFallbackFacto
 import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.*;
 import com.runjian.device.expansion.vo.response.ChannelPresetListsResp;
-import com.runjian.device.expansion.vo.response.DeviceUnRegisterPageRsp;
-import com.runjian.device.expansion.vo.response.PageInfo;
-import com.runjian.device.expansion.vo.response.PageResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -72,7 +68,7 @@ public interface DeviceControlApi {
      * @return
      */
     @GetMapping("/device/north/page")
-    CommonResponse<PageInfo<DeviceUnRegisterPageRsp>> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, @RequestParam(required = false) Integer signState, @RequestParam(required = false) String deviceName, @RequestParam(required = false) String ip);
+    CommonResponse<Object> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, @RequestParam(required = false) Integer signState, @RequestParam(required = false) String deviceName, @RequestParam(required = false) String ip);
 
 
 
@@ -211,7 +207,7 @@ public interface DeviceControlApi {
     @GetMapping("/gateway/north/page")
     @BlankStringValid
     @IllegalStringValid
-    public CommonResponse<PageInfo<GetGatewayPageRsp>> getGatewayByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, @RequestParam(required = false) String name);
+    public CommonResponse<Object> getGatewayByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, @RequestParam(required = false) String name);
 
 
     /**

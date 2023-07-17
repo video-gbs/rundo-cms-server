@@ -1,6 +1,5 @@
 package com.runjian.device.expansion.feign.fallback;
 
-import cn.hutool.json.JSONObject;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
@@ -9,8 +8,6 @@ import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.*;
 import com.runjian.device.expansion.vo.response.ChannelPresetListsResp;
-import com.runjian.device.expansion.vo.response.DeviceUnRegisterPageRsp;
-import com.runjian.device.expansion.vo.response.PageInfo;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -163,15 +160,15 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
             }
 
             @Override
-            public CommonResponse<PageInfo<DeviceUnRegisterPageRsp>> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
+            public CommonResponse<Object> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--待注册设备列表获取失败",deviceName, throwable);
-                return (CommonResponse<PageInfo<DeviceUnRegisterPageRsp>>) finalFailure;
+                return (CommonResponse<Object>) finalFailure;
             }
 
             @Override
-            public CommonResponse<PageInfo<GetGatewayPageRsp>> getGatewayByPage(int page, int num, String name) {
+            public CommonResponse<Object> getGatewayByPage(int page, int num, String name) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--获取网关信息失败",name, throwable);
-                return (CommonResponse<PageInfo<GetGatewayPageRsp>>) finalFailure;
+                return (CommonResponse<Object>) finalFailure;
             }
 
             @Override

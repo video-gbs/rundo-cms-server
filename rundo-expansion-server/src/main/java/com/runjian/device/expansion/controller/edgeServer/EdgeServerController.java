@@ -3,24 +3,17 @@ package com.runjian.device.expansion.controller.edgeServer;
 import com.runjian.common.aspect.annotation.BlankStringValid;
 import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.device.expansion.entity.DeviceChannelExpansion;
-import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.feign.StreamManageApi;
-import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
-import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.vo.feign.request.PostDispatchBindingGatewayReq;
 import com.runjian.device.expansion.vo.feign.request.PostGatewayBindingDispatchReq;
 import com.runjian.device.expansion.vo.feign.request.PutDispatchExtraDataReq;
 import com.runjian.device.expansion.vo.feign.request.PutGatewayReq;
 import com.runjian.device.expansion.vo.feign.response.*;
-import com.runjian.device.expansion.vo.response.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,7 +44,7 @@ public class EdgeServerController {
     @GetMapping("/gateway/page")
     @BlankStringValid
     @IllegalStringValid
-    public CommonResponse<PageInfo<GetGatewayPageRsp>> getGatewayByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, String name){
+    public CommonResponse<Object> getGatewayByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, String name){
         return deviceControlApi.getGatewayByPage(page, num, name);
 
     }
@@ -100,7 +93,7 @@ public class EdgeServerController {
     @GetMapping("/dispatch/page")
     @BlankStringValid
     @IllegalStringValid
-    public CommonResponse<PageInfo<GetDispatchRsp>> getDispatchByPage(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer num, String name){
+    public CommonResponse<Object> getDispatchByPage(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer num, String name){
 
         return streamManageApi.getDispatchByPage(page, num, name);
     }
@@ -138,7 +131,7 @@ public class EdgeServerController {
      */
     @ApiOperation("获取流媒体服务绑定的网关")
     @GetMapping("/gateway-dispatch/dispatch/data/in")
-    public CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByDispatchIdIn(@RequestParam(defaultValue = "1") int page,
+    public CommonResponse<Object> getGatewayByDispatchIdIn(@RequestParam(defaultValue = "1") int page,
                                                                                  @RequestParam(defaultValue = "10") int num,
                                                                                  @RequestParam Long dispatchId, String name){
         return streamManageApi.getGatewayByDispatchIdIn(page, num, dispatchId, name);
@@ -154,7 +147,7 @@ public class EdgeServerController {
      */
     @ApiOperation("获取流媒体服务未绑定的网关")
     @GetMapping("/gateway-dispatch/dispatch/data/not-in")
-    public CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByDispatchIdNotIn(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
+    public CommonResponse<Object> getGatewayByDispatchIdNotIn(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
                                                                                     @RequestParam Long dispatchId, String name){
         return streamManageApi.getGatewayByDispatchIdNotIn(page, num, dispatchId, name);
     }
@@ -190,7 +183,7 @@ public class EdgeServerController {
     @ApiOperation("调度服务取消绑定网关")
     @PostMapping("/gateway-dispatch/dispatch/unbinding")
     public CommonResponse<?> dispatchUnBindingGateway(@RequestBody PostDispatchBindingGatewayReq req){
-        return streamManageApi.dispatchBindingGateway(req);
+        return streamManageApi.dispatchUnBindingGateway(req);
     }
 
 }

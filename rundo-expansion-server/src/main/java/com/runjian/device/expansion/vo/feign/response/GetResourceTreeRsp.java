@@ -1,8 +1,6 @@
 package com.runjian.device.expansion.vo.feign.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.runjian.rbac.constant.ResourceType;
-import com.runjian.rbac.vo.AbstractTreeInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.time.LocalDateTime;
@@ -53,20 +51,4 @@ public class GetResourceTreeRsp extends AbstractTreeInfo {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
-
-    /**
-     * 获取根节点
-     * @param resourceKey 资源key
-     * @return
-     */
-    public static GetResourceTreeRsp getRoot(String resourceKey){
-        GetResourceTreeRsp root = new GetResourceTreeRsp();
-        root.setId(0L);
-        root.setResourceType(ResourceType.CATALOGUE.getCode());
-        root.setResourceName("根节点");
-        root.setResourceKey(resourceKey);
-        root.setResourceValue(null);
-        root.setLevel("0");
-        return root;
-    }
 }

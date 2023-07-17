@@ -8,13 +8,10 @@ import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.expansion.feign.StreamManageApi;
 import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.GetDispatchNameRsp;
-import com.runjian.device.expansion.vo.feign.response.GetDispatchRsp;
-import com.runjian.device.expansion.vo.feign.response.GetGatewayByIdsRsp;
 import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.RecordStreamOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSeekOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSpeedOperationReq;
-import com.runjian.device.expansion.vo.response.PageInfo;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
@@ -104,9 +101,9 @@ public class StreamManageApiFallbackFactory implements FallbackFactory<StreamMan
             }
 
             @Override
-            public CommonResponse<PageInfo<GetDispatchRsp>> getDispatchByPage(Integer page, Integer num, String name) {
+            public CommonResponse<Object> getDispatchByPage(Integer page, Integer num, String name) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--getDispatchByPage操作失败",name, throwable);
-                return (CommonResponse<PageInfo<GetDispatchRsp>>) finalFailure;
+                return (CommonResponse<Object>) finalFailure;
             }
 
             @Override
@@ -122,15 +119,15 @@ public class StreamManageApiFallbackFactory implements FallbackFactory<StreamMan
             }
 
             @Override
-            public CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByDispatchIdIn(int page, int num, Long dispatchId, String name) {
+            public CommonResponse<Object> getGatewayByDispatchIdIn(int page, int num, Long dispatchId, String name) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--getGatewayByDispatchIdIn操作失败",name, throwable);
-                return (CommonResponse<PageInfo<GetGatewayByIdsRsp>>) finalFailure;
+                return (CommonResponse<Object>) finalFailure;
             }
 
             @Override
-            public CommonResponse<PageInfo<GetGatewayByIdsRsp>> getGatewayByDispatchIdNotIn(int page, int num, Long dispatchId, String name) {
+            public CommonResponse<Object> getGatewayByDispatchIdNotIn(int page, int num, Long dispatchId, String name) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--getGatewayByDispatchIdNotIn操作失败",name, throwable);
-                return (CommonResponse<PageInfo<GetGatewayByIdsRsp>>) finalFailure;
+                return (CommonResponse<Object>) finalFailure;
             }
 
             @Override
