@@ -9,6 +9,7 @@ import com.runjian.device.expansion.feign.StreamManageApi;
 import com.runjian.device.expansion.vo.feign.request.FeignStreamOperationReq;
 import com.runjian.device.expansion.vo.feign.request.PlayBackFeignReq;
 import com.runjian.device.expansion.vo.feign.request.PlayFeignReq;
+import com.runjian.device.expansion.vo.feign.request.PutStreamOperationReq;
 import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.RecordStreamOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSeekOperationReq;
@@ -86,6 +87,12 @@ public class StreamManageApiFallbackFactory implements FallbackFactory<StreamMan
             public CommonResponse<JSONObject> getStreamMediaInfo(FeignStreamOperationReq req) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--操作失败",req, throwable);
                 return (CommonResponse<JSONObject>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<?> stopPlay(PutStreamOperationReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--stopPlay操作失败",req, throwable);
+                return finalFailure;
             }
         };
     }

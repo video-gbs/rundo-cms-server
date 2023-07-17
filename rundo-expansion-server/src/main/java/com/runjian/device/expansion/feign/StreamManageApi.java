@@ -6,6 +6,7 @@ import com.runjian.device.expansion.feign.fallback.StreamManageApiFallbackFactor
 import com.runjian.device.expansion.vo.feign.request.FeignStreamOperationReq;
 import com.runjian.device.expansion.vo.feign.request.PlayBackFeignReq;
 import com.runjian.device.expansion.vo.feign.request.PlayFeignReq;
+import com.runjian.device.expansion.vo.feign.request.PutStreamOperationReq;
 import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.RecordStreamOperationReq;
 import com.runjian.device.expansion.vo.request.RecordStreamSeekOperationReq;
@@ -78,5 +79,12 @@ public interface StreamManageApi {
     @GetMapping("/stream/north/stream/media/info")
     public CommonResponse<JSONObject> getStreamMediaInfo(@SpringQueryMap FeignStreamOperationReq req);
 
+    /**
+     * 停止播放
+     * @param req
+     * @return
+     */
+    @PutMapping("/stream/north/play/stop")
+    CommonResponse<?> stopPlay(@RequestBody PutStreamOperationReq req);
 
 }

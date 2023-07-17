@@ -5,6 +5,7 @@ import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.expansion.feign.StreamManageApi;
 import com.runjian.device.expansion.service.IPlayService;
 import com.runjian.device.expansion.vo.feign.request.FeignStreamOperationReq;
+import com.runjian.device.expansion.vo.feign.request.PutStreamOperationReq;
 import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.*;
 import io.swagger.annotations.Api;
@@ -45,6 +46,17 @@ public class ChannelPlayController {
         validatorService.validateRequest(request);
 
         return playService.playBack(request);
+    }
+
+    /**
+     * 停止播放
+     * @param req
+     * @return
+     */
+    @PutMapping("/stop")
+    @ApiOperation("停止播放")
+    public CommonResponse<?> stopPlay(@RequestBody PutStreamOperationReq req){
+        return playService.stopPlay(req);
     }
 
 
