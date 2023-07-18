@@ -6,6 +6,7 @@ import com.runjian.device.expansion.aspect.annotation.ChannelStatusPoint;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
+import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
 import com.runjian.device.expansion.vo.feign.response.VideoRecordRsp;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
@@ -38,6 +39,8 @@ public class DeviceChannelExpansionController {
 
     @Autowired
     private IDeviceChannelExpansionService deviceChannelExpansionService;
+
+    final String resourceKey = "safety_channel";
 
     @PostMapping(value = "/add",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("添加接口")
@@ -116,5 +119,11 @@ public class DeviceChannelExpansionController {
     @GetMapping("/record")
     public CommonResponse<VideoRecordRsp> videoRecordInfo(@RequestParam Long channelId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime){
         return deviceChannelExpansionService.channelRecord(channelId, startTime, endTime);
+    }
+
+    @ApiOperation("安防通道列表")
+    @GetMapping("/videoAreaList")
+    public CommonResponse<GetResourceTreeRsp> videoAreaList(){
+        return deviceChannelExpansionService.videoAreaList(resourceKey);
     }
 }

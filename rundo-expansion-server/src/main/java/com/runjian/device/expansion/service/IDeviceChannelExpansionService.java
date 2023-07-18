@@ -5,6 +5,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
+import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
 import com.runjian.device.expansion.vo.feign.response.VideoRecordRsp;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
@@ -104,4 +105,11 @@ public interface IDeviceChannelExpansionService extends IService<DeviceChannelEx
      * @return
      */
     CommonResponse<VideoRecordRsp> channelRecord(Long channelId, LocalDateTime startTime, LocalDateTime endTime);
+
+    /**
+     * 安防通道列表获取
+     * @param resourceKey
+     * @return
+     */
+    CommonResponse<GetResourceTreeRsp> videoAreaList(String resourceKey);
 }

@@ -172,6 +172,10 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Override
     public PageResp<DeviceChannelExpansionResp> list(DeviceChannelExpansionListReq deviceChannelExpansionListReq) {
+        //获取安防通道资源
+
+
+
         //安防区域的节点id
         List<Long> areaIdsArr = new ArrayList<>();
         VideoAreaResp videoAreaData = new VideoAreaResp();
@@ -339,5 +343,13 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     @Override
     public CommonResponse<VideoRecordRsp> channelRecord(Long channelId, LocalDateTime startTime, LocalDateTime endTime) {
         return channelControlApi.videoRecordInfo(channelId, startTime, endTime);
+    }
+
+    @Override
+    public CommonResponse<GetResourceTreeRsp> videoAreaList(String resourceKey) {
+
+
+        return authRbacServerApi.getResourcePage(resourceKey, false);
+
     }
 }
