@@ -7,6 +7,7 @@ import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.expansion.aspect.annotation.DeviceStatusPoint;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
+import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
@@ -34,6 +35,9 @@ public class DeviceExpansionController {
 
     @Autowired
     private IDeviceExpansionService deviceExpansionService;
+
+
+    final String resourceKey = "safety_device";
 
     @PostMapping(value = "/add",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("添加接口")
@@ -98,6 +102,13 @@ public class DeviceExpansionController {
         return CommonResponse.success(deviceExpansionService.getDeviceByPage(page, num, signState, deviceName, ip));
 
 
+    }
+
+
+    @ApiOperation("设备--安防通道列表")
+    @GetMapping("/videoAreaList")
+    public CommonResponse<GetResourceTreeRsp> videoAreaList(){
+        return deviceExpansionService.videoAreaList(resourceKey);
     }
 
 

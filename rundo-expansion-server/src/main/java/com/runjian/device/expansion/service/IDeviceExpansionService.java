@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
+import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
 import com.runjian.device.expansion.vo.request.DeviceExpansionEditReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionReq;
@@ -82,4 +83,11 @@ public interface IDeviceExpansionService extends IService<DeviceExpansion> {
      * @return
      */
     Object getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip);
+
+    /**
+     * 安防通道
+     * @param resourceKey
+     * @return
+     */
+    CommonResponse<GetResourceTreeRsp> videoAreaList(String resourceKey);
 }

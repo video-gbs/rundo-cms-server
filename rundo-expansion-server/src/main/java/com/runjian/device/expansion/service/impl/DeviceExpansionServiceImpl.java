@@ -16,15 +16,13 @@ import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
 import com.runjian.device.expansion.service.IBaseDeviceAndChannelService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.utils.RedisCommonUtil;
-import com.runjian.device.expansion.vo.feign.request.PostBatchResourceReq;
-import com.runjian.device.expansion.vo.feign.request.PutDeviceSignSuccessReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceReq;
+import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
+import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import com.runjian.device.expansion.vo.request.DeviceExpansionEditReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionReq;
-import com.runjian.device.expansion.vo.feign.request.DeviceReq;
 import com.runjian.device.expansion.vo.request.MoveReq;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
@@ -188,32 +186,22 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     }
     @Override
     public  PageResp<DeviceExpansionResp> list(DeviceExpansionListReq deviceExpansionListReq) {
-        //远程调用获取当前全部的节点信息
-        //安防区域的节点id
-        List<Long> areaIdsArr = new ArrayList<>();
-        VideoAreaResp videoAreaData = new VideoAreaResp();
-        List<VideoAreaResp> videoAreaRespList = new ArrayList<>();
-        if(deviceExpansionListReq.getIncludeEquipment()){
-            //安防区域不得为空
+        //获取安防通道资源
+        Long videoAreaId = deviceExpansionListReq.getVideoAreaId();
+        Boolean includeEquipment = deviceExpansionListReq.getIncludeEquipment();
+        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authrbacServerApi.getCatalogueResourceRsp(videoAreaId, includeEquipment);
+        if(catalogueResourceRsp.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
 
-            CommonResponse<List<VideoAreaResp>> videoAraeList = authServerApi.getVideoAraeList(deviceExpansionListReq.getVideoAreaId());
-            if(CollectionUtils.isEmpty(videoAraeList.getData())){
-                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS,videoAraeList.getMsg());
-
-            }
-            videoAreaRespList = videoAraeList.getData();
-            areaIdsArr = videoAreaRespList.stream().map(VideoAreaResp::getId).collect(Collectors.toList());
-        }else {
-            if(ObjectUtils.isEmpty(deviceExpansionListReq.getVideoAreaId())){
-                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
-            }
-            CommonResponse<VideoAreaResp> videoAraeInfo = authServerApi.getVideoAraeInfo(deviceExpansionListReq.getVideoAreaId());
-            if(ObjectUtils.isEmpty(videoAraeInfo.getData())){
-                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS,videoAraeInfo.getMsg());
-
-            }
-            videoAreaData = videoAraeInfo.getData();
-            areaIdsArr.add(videoAreaData.getId());
+            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, catalogueResourceRsp.getMsg());
+        }
+        List<GetCatalogueResourceRsp> dataList = catalogueResourceRsp.getData();
+        ArrayList<Long> longs = new ArrayList<>();
+        //获取全部的资源树id
+        for (GetCatalogueResourceRsp one : dataList){
+            longs.add(Long.parseLong(one.getResourceValue()));
+        }
+        if(ObjectUtils.isEmpty(longs)){
+            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, "数据数据不存在");
         }
 
         LambdaQueryWrapper<DeviceExpansion> queryWrapper = new LambdaQueryWrapper<>();
@@ -230,7 +218,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             queryWrapper.eq(DeviceExpansion::getOnlineState,deviceExpansionListReq.getOnlineState());
         }
         queryWrapper.eq(DeviceExpansion::getDeleted,0);
-        queryWrapper.in(DeviceExpansion::getVideoAreaId,areaIdsArr);
+        queryWrapper.in(DeviceExpansion::getId,longs);
         queryWrapper.orderByDesc(DeviceExpansion::getCreatedAt);
         queryWrapper.orderByDesc(DeviceExpansion::getOnlineState);
         Page<DeviceExpansion> page = new Page<>(deviceExpansionListReq.getPageNum(), deviceExpansionListReq.getPageSize());
@@ -240,28 +228,18 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         List<DeviceExpansionResp> deviceExpansionRespList = new ArrayList<>();
         if(!CollectionUtils.isEmpty(records)){
             //拼接所属区域
-            if(deviceExpansionListReq.getIncludeEquipment()){
+            for (DeviceExpansion deviceExpansion: records){
+                DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
+                BeanUtil.copyProperties(deviceExpansion,deviceExpansionResp);
+                for (GetCatalogueResourceRsp videoAreaResp: dataList){
+                    if(videoAreaResp.getResourceValue().equals(deviceExpansion.getId())){
+                        deviceExpansionResp.setAreaNames(videoAreaResp.getLevelName());
 
-                for (DeviceExpansion deviceExpansion: records){
-                    DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
-                    BeanUtil.copyProperties(deviceExpansion,deviceExpansionResp);
-                    for (VideoAreaResp videoAreaResp: videoAreaRespList){
-                        if(videoAreaResp.getId().equals(deviceExpansion.getVideoAreaId())){
-                            deviceExpansionResp.setAreaNames(videoAreaResp.getAreaNames());
-
-                        }
                     }
-                    deviceExpansionRespList.add(deviceExpansionResp);
                 }
-
-            }else {
-                for (DeviceExpansion deviceExpansion: records){
-                    DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
-                    BeanUtil.copyProperties(deviceExpansion,deviceExpansionResp);
-                    deviceExpansionResp.setAreaNames(videoAreaData.getAreaNames());
-                    deviceExpansionRespList.add(deviceExpansionResp);
-                }
+                deviceExpansionRespList.add(deviceExpansionResp);
             }
+
 
         }
         PageResp<DeviceExpansionResp> listPageResp = new PageResp<>();
@@ -333,5 +311,14 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         }
 
         return deviceByPage.getData();
+    }
+
+
+    @Override
+    public CommonResponse<GetResourceTreeRsp> videoAreaList(String resourceKey) {
+
+
+        return authrbacServerApi.getResourcePage(resourceKey, false);
+
     }
 }
