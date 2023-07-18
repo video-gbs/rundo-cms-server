@@ -19,7 +19,7 @@ spring:
   # REDIS数据库配置
   redis:
     # [必须修改] Redis服务器IP, REDIS安装在本机的,使用127.0.0.1
-    host: ${REDIS_HOST:127.0.0.1}
+    host: ${REDIS_HOST:124.71.20.118}
     # [必须修改] 端口号
     port: ${REDIS_PORT:6379}
     # [可选] 数据库 DB
