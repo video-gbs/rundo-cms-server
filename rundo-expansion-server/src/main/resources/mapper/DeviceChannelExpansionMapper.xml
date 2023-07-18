@@ -12,9 +12,9 @@
 	left join
 			rundo_device_expansion t2 on t1.device_expansion_id=t2.id
 	WHERE
-			t1.deleted = 0 and t1.video_area_id in
-			<foreach collection="videaAreaIdList" item="areaId" index="index" open="(" close=")" separator=",">
-				#{areaId}
+			t1.deleted = 0 and t1.id in
+			<foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+				#{id}
 			</foreach>
 
 			<if test="deviceChannelExpansionListReq.name != null and deviceChannelExpansionListReq.name !=''">

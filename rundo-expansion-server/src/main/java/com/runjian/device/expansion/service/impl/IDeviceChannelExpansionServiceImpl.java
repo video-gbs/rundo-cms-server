@@ -17,6 +17,7 @@ import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.utils.RedisCommonUtil;
+import com.runjian.device.expansion.vo.feign.request.GetCatalogueResourceRsp;
 import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
 import com.runjian.device.expansion.vo.feign.response.*;
 import com.runjian.device.expansion.vo.request.*;
@@ -173,58 +174,36 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     @Override
     public PageResp<DeviceChannelExpansionResp> list(DeviceChannelExpansionListReq deviceChannelExpansionListReq) {
         //获取安防通道资源
+        Long videoAreaId = deviceChannelExpansionListReq.getVideoAreaId();
+        Boolean includeEquipment = deviceChannelExpansionListReq.getIncludeEquipment();
+        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId, includeEquipment);
+        if(catalogueResourceRsp.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
 
-
-
-        //安防区域的节点id
-        List<Long> areaIdsArr = new ArrayList<>();
-        VideoAreaResp videoAreaData = new VideoAreaResp();
-        List<VideoAreaResp> videoAreaRespList = new ArrayList<>();
-        if(deviceChannelExpansionListReq.getIncludeEquipment()){
-            //安防区域不得为空
-
-            CommonResponse<List<VideoAreaResp>> videoAraeList = authServerApi.getVideoAraeList(deviceChannelExpansionListReq.getVideoAreaId());
-            if(CollectionUtils.isEmpty(videoAraeList.getData())){
-                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS);
-
-            }
-            videoAreaRespList = videoAraeList.getData();
-            areaIdsArr = videoAreaRespList.stream().map(VideoAreaResp::getId).collect(Collectors.toList());
-        }else {
-            if(ObjectUtils.isEmpty(deviceChannelExpansionListReq.getVideoAreaId())){
-                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
-            }
-            CommonResponse<VideoAreaResp> videoAraeInfo = authServerApi.getVideoAraeInfo(deviceChannelExpansionListReq.getVideoAreaId());
-            if(ObjectUtils.isEmpty(videoAraeInfo.getData())){
-                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS);
-
-            }
-            videoAreaData = videoAraeInfo.getData();
-            areaIdsArr.add(videoAreaData.getId());
+            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, catalogueResourceRsp.getMsg());
         }
+        List<GetCatalogueResourceRsp> channelList = catalogueResourceRsp.getData();
+        ArrayList<Long> longs = new ArrayList<>();
+        //获取全部的资源树id
+        for (GetCatalogueResourceRsp one : channelList){
+            longs.add(Long.parseLong(one.getResourceValue()));
+        }
+        if(ObjectUtils.isEmpty(longs)){
+            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, "数据数据不存在");
+        }
+
         Page<DeviceChannelExpansion> page = new Page<>(deviceChannelExpansionListReq.getPageNum(), deviceChannelExpansionListReq.getPageSize());
-        Page<DeviceChannelExpansionResp> channelExpansionPage = deviceChannelExpansionMapper.listPage(page,deviceChannelExpansionListReq,areaIdsArr);
+        Page<DeviceChannelExpansionResp> channelExpansionPage = deviceChannelExpansionMapper.listPage(page,deviceChannelExpansionListReq,longs);
 
         List<DeviceChannelExpansionResp> records = channelExpansionPage.getRecords();
         if(!CollectionUtils.isEmpty(records)){
-            //拼接所属区域
-            if(deviceChannelExpansionListReq.getIncludeEquipment()){
+            for (DeviceChannelExpansionResp channelExpansion: records){
+                for (GetCatalogueResourceRsp videoAreaResp: channelList){
+                    if(Long.parseLong(videoAreaResp.getResourceValue()) == channelExpansion.getId()){
+                        channelExpansion.setAreaNames(videoAreaResp.getLevelName());
 
-                for (DeviceChannelExpansionResp channelExpansion: records){
-                    for (VideoAreaResp videoAreaResp: videoAreaRespList){
-                        if(videoAreaResp.getId().equals(channelExpansion.getVideoAreaId())){
-                            channelExpansion.setAreaNames(videoAreaResp.getAreaNames());
-
-                        }
                     }
                 }
-
-            }else {
-                for (DeviceChannelExpansionResp channelExpansion: records){
-                    channelExpansion.setAreaNames(videoAreaData.getAreaNames());
-                }
             }
-
         }
         PageResp<DeviceChannelExpansionResp> listPageResp = new PageResp<>();
         listPageResp.setCurrent(channelExpansionPage.getCurrent());

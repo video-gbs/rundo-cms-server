@@ -5,16 +5,14 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.expansion.feign.AuthRbacServerApi;
-import com.runjian.device.expansion.vo.feign.request.PostBatchResourceReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceBtMoveReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceFsMoveReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceReq;
+import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -84,6 +82,12 @@ public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AuthRba
             public CommonResponse<?> btMove(PutResourceBtMoveReq req) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--btMove操作失败",req, throwable);
                 return finalFailure;
+            }
+
+            @Override
+            public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(Long pid, Boolean isIncludeChild) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--getCatalogueResourceRsp操作失败",pid, throwable);
+                return (CommonResponse<List<GetCatalogueResourceRsp>>) finalFailure;
             }
         };
     }

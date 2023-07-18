@@ -2,10 +2,7 @@ package com.runjian.device.expansion.feign;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.AuthServerApiFallbackFactory;
-import com.runjian.device.expansion.vo.feign.request.PostBatchResourceReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceBtMoveReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceFsMoveReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceReq;
+import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -71,5 +68,14 @@ public interface AuthRbacServerApi {
      */
     @PutMapping("/move/bt")
     public CommonResponse<?> btMove(@RequestBody PutResourceBtMoveReq req);
+
+    /**
+     * 获取目录下的所有资源数据
+     * @param pid 父id
+     * @param isIncludeChild 是否包含子目录数据
+     * @return
+     */
+    @GetMapping("/pid")
+    public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(@RequestParam Long pid, @RequestParam Boolean isIncludeChild);
 
 }

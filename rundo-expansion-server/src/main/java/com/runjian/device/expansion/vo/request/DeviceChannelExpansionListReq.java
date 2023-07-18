@@ -23,6 +23,7 @@ public class DeviceChannelExpansionListReq {
     private Integer onlineState;
 
     @ApiModelProperty("安放区域id")
+    @NotNull(message ="安放区域id不得为null")
     private Long videoAreaId;
 
     @ApiModelProperty("是否包含下级组织")
