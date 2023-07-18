@@ -2,17 +2,15 @@ package com.runjian.device.expansion.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
-import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.entity.DeviceExpansion;
-import com.runjian.device.expansion.feign.AutRbacServerApi;
+import com.runjian.device.expansion.feign.AuthRbacServerApi;
 import com.runjian.device.expansion.feign.AuthServerApi;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
@@ -24,7 +22,6 @@ import com.runjian.device.expansion.vo.feign.response.*;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
-import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -71,7 +68,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     AuthServerApi authServerApi;
 
     @Autowired
-    AutRbacServerApi autRbacServerApi;
+    AuthRbacServerApi authRbacServerApi;
 
     @Autowired
     RedissonClient redissonClient;

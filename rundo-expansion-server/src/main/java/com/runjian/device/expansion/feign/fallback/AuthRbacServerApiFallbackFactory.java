@@ -4,18 +4,17 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.MarkConstant;
-import com.runjian.device.expansion.feign.AutRbacServerApi;
-import com.runjian.device.expansion.feign.AuthServerApi;
+import com.runjian.device.expansion.feign.AuthRbacServerApi;
 import com.runjian.device.expansion.vo.feign.request.PostBatchResourceReq;
+import com.runjian.device.expansion.vo.feign.request.PutResourceBtMoveReq;
+import com.runjian.device.expansion.vo.feign.request.PutResourceFsMoveReq;
 import com.runjian.device.expansion.vo.feign.request.PutResourceReq;
 import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
-import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -25,10 +24,10 @@ import java.util.concurrent.TimeoutException;
  */
 @Slf4j
 @Component
-public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AutRbacServerApi> {
+public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AuthRbacServerApi> {
 
     @Override
-    public AutRbacServerApi create(Throwable throwable) {
+    public AuthRbacServerApi create(Throwable throwable) {
         String message = throwable.getMessage();
         CommonResponse<?> failure = null;
         if(throwable instanceof FeignException){
@@ -49,7 +48,7 @@ public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AutRbac
 
 
         final CommonResponse<?> finalFailure = failure;
-        return new AutRbacServerApi() {
+        return new AuthRbacServerApi() {
 
             @Override
             public CommonResponse<?> batchAddResource(PostBatchResourceReq req) {
@@ -73,6 +72,18 @@ public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AutRbac
             public CommonResponse<GetResourceTreeRsp> getResourcePage(String resourceKey, Boolean isIncludeResource) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--getResourcePage操作失败",resourceKey, throwable);
                 return (CommonResponse<GetResourceTreeRsp>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<?> fsMove(PutResourceFsMoveReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--dfsMove操作失败",req, throwable);
+                return finalFailure;
+            }
+
+            @Override
+            public CommonResponse<?> btMove(PutResourceBtMoveReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--btMove操作失败",req, throwable);
+                return finalFailure;
             }
         };
     }
