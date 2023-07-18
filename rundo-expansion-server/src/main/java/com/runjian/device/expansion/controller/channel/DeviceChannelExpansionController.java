@@ -123,7 +123,7 @@ public class DeviceChannelExpansionController {
 
     @ApiOperation("安防通道列表")
     @GetMapping("/videoAreaList")
-    public CommonResponse<GetResourceTreeRsp> videoAreaList(){
+    public CommonResponse<Object> videoAreaList(){
         return deviceChannelExpansionService.videoAreaList(resourceKey);
     }
 }

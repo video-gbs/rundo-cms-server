@@ -111,5 +111,5 @@ public interface IDeviceChannelExpansionService extends IService<DeviceChannelEx
      * @param resourceKey
      * @return
      */
-    CommonResponse<GetResourceTreeRsp> videoAreaList(String resourceKey);
+    CommonResponse<Object> videoAreaList(String resourceKey);
 }

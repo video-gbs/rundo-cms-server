@@ -1,6 +1,7 @@
 package com.runjian.device.expansion.feign;
 
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.device.expansion.feign.fallback.AuthRbacServerApiFallbackFactory;
 import com.runjian.device.expansion.feign.fallback.AuthServerApiFallbackFactory;
 import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
@@ -15,7 +16,7 @@ import java.util.List;
  * @author Miracle
  * @date 2023/1/11 10:32
  */
-@FeignClient(value = "auth-rbac",fallbackFactory= AuthServerApiFallbackFactory.class)
+@FeignClient(value = "auth-rbac",fallbackFactory= AuthRbacServerApiFallbackFactory.class)
 public interface AuthRbacServerApi {
 
     /**
@@ -50,15 +51,15 @@ public interface AuthRbacServerApi {
      * @param isIncludeResource 是否包含资源数据
      * @return
      */
-    @GetMapping("/resource/tree")
-    CommonResponse<GetResourceTreeRsp> getResourcePage(@RequestParam String resourceKey, @RequestParam Boolean isIncludeResource);
+    @GetMapping("/auth/user/resource")
+    CommonResponse<Object> getResourcePage(@RequestParam String resourceKey, @RequestParam Boolean isIncludeResource);
 
     /**
      * 资源父子级别移动--移动
      * @param req 资源父子移动请求体
      * @return
      */
-    @PutMapping("/move/fs")
+    @PutMapping("/resource/move/fs")
     public CommonResponse<?> fsMove(@RequestBody PutResourceFsMoveReq req);
 
     /**
@@ -66,7 +67,7 @@ public interface AuthRbacServerApi {
      * @param req 部门兄弟节点移动请求体
      * @return
      */
-    @PutMapping("/move/bt")
+    @PutMapping("/resource/move/bt")
     public CommonResponse<?> btMove(@RequestBody PutResourceBtMoveReq req);
 
     /**
@@ -75,7 +76,7 @@ public interface AuthRbacServerApi {
      * @param isIncludeChild 是否包含子目录数据
      * @return
      */
-    @GetMapping("/pid")
+    @GetMapping("/auth/user/resource/pid")
     public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(@RequestParam Long pid, @RequestParam Boolean isIncludeChild);
 
 }

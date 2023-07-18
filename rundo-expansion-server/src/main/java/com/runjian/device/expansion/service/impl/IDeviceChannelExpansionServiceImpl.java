@@ -325,7 +325,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     }
 
     @Override
-    public CommonResponse<GetResourceTreeRsp> videoAreaList(String resourceKey) {
+    public CommonResponse<Object> videoAreaList(String resourceKey) {
 
 
         return authRbacServerApi.getResourcePage(resourceKey, false);

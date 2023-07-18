@@ -67,9 +67,9 @@ public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AuthRba
             }
 
             @Override
-            public CommonResponse<GetResourceTreeRsp> getResourcePage(String resourceKey, Boolean isIncludeResource) {
+            public CommonResponse<Object> getResourcePage(String resourceKey, Boolean isIncludeResource) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--getResourcePage操作失败",resourceKey, throwable);
-                return (CommonResponse<GetResourceTreeRsp>) finalFailure;
+                return (CommonResponse<Object>) finalFailure;
             }
 
             @Override

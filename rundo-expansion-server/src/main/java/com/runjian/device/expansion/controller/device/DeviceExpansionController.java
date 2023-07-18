@@ -18,7 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 设备controller
@@ -71,8 +75,16 @@ public class DeviceExpansionController {
     @PostMapping(value = "/list", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("列表")
     @DeviceStatusPoint
-    public CommonResponse<PageResp<DeviceExpansionResp>> list(@RequestBody DeviceExpansionListReq deviceExpansionListReq) {
+    public CommonResponse<PageResp<DeviceExpansionResp>> list(@RequestBody DeviceExpansionListReq deviceExpansionListReq, HttpServletRequest request) {
+        Map<String, String> headerMap = new HashMap<>();
+        Enumeration<String> enumeration = request.getHeaderNames();
+        while (enumeration.hasMoreElements()) {
+            String name	= enumeration.nextElement();
+            String value = request.getHeader(name);
+            headerMap.put(name, value);
+        }
 
+        log.info(request.toString());
         return CommonResponse.success(deviceExpansionService.list(deviceExpansionListReq));
     }
 
@@ -107,7 +119,7 @@ public class DeviceExpansionController {
 
     @ApiOperation("设备--安防通道列表")
     @GetMapping("/videoAreaList")
-    public CommonResponse<GetResourceTreeRsp> videoAreaList(){
+    public CommonResponse<Object> videoAreaList(){
         return deviceExpansionService.videoAreaList(resourceKey);
     }
 

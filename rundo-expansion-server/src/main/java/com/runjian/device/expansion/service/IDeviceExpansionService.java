@@ -89,5 +89,5 @@ public interface IDeviceExpansionService extends IService<DeviceExpansion> {
      * @param resourceKey
      * @return
      */
-    CommonResponse<GetResourceTreeRsp> videoAreaList(String resourceKey);
+    CommonResponse<Object> videoAreaList(String resourceKey);
 }

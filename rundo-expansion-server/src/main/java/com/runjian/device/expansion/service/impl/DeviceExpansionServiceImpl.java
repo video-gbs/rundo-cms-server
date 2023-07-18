@@ -19,6 +19,7 @@ import com.runjian.device.expansion.utils.RedisCommonUtil;
 import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
 import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
+import com.runjian.device.expansion.vo.feign.response.VideoAreaResourceRsp;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import com.runjian.device.expansion.vo.request.DeviceExpansionEditReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
@@ -78,8 +79,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         DeviceAddResp data = longCommonResponse.getData();
         Long encoderId = data.getId();
 
-        commonResourceBind(deviceExpansionReq.getVideoAreaId(),encoderId,deviceExpansionReq.getName());
-
+        baseDeviceAndChannelService.commonResourceBind(deviceExpansionReq.getVideoAreaId(),encoderId,deviceExpansionReq.getName());
         DeviceExpansion deviceExpansion = new DeviceExpansion();
         BeanUtil.copyProperties(deviceExpansionReq,deviceExpansion);
         deviceExpansion.setId(data.getId());
@@ -91,36 +91,6 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         return CommonResponse.success();
     }
 
-    /**
-     * 公共绑定
-     * @param videoAreaId
-     * @param resourceId
-     * @param resourceName
-     */
-    private void commonResourceBind(Long videoAreaId,Long resourceId,String resourceName){
-        PostBatchResourceReq postBatchResourceReq = new PostBatchResourceReq();
-        postBatchResourceReq.setResourcePid(videoAreaId);
-        postBatchResourceReq.setResourceType(2);
-        HashMap<String, String> stringStringHashMap = new HashMap<>();
-        stringStringHashMap.put(resourceId.toString(), resourceName);
-        postBatchResourceReq.setResourceMap(stringStringHashMap);
-        CommonResponse<?> commonResponse = authrbacServerApi.batchAddResource(postBatchResourceReq);
-        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-            //调用失败
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器资源绑定失败",videoAreaId, commonResponse);
-            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
-        }
-    }
-
-    /**
-     * 公共绑定
-     * @param videoAreaId
-     * @param resourceId
-     * @param resourceName
-     */
-    private void commonResourceUpdate(Long videoAreaId,Long resourceId,String resourceName){
-
-    }
 
     @Override
     public CommonResponse<Long> edit(DeviceExpansionEditReq deviceExpansionEditReq) {
@@ -136,7 +106,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器状态通知失败",deviceExpansionEditReq, longCommonResponse);
                 throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, longCommonResponse.getMsg());
             }
-            commonResourceBind(deviceExpansionEditReq.getVideoAreaId(),deviceExpansionEditReq.getId(), deviceExpansionEditReq.getName());
+            baseDeviceAndChannelService.commonResourceBind(deviceExpansionEditReq.getVideoAreaId(),deviceExpansionEditReq.getId(),deviceExpansionEditReq.getName());
 
             DeviceExpansion deviceExpansion = new DeviceExpansion();
             BeanUtil.copyProperties(deviceExpansionEditReq,deviceExpansion);
@@ -144,7 +114,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         }else {
             if(!deviceExpansionEditReq.getVideoAreaId().equals(deviceExpansionDb.getVideoAreaId())){
                 //判断安防通道需要修改
-//                commonesourceBind(deviceExpansionEditReq.getVideoAreaId(),deviceExpansionEditReq.getId(), deviceExpansionEditReq.getName());
+                baseDeviceAndChannelService.commonResourceUpdate(deviceExpansionDb.getVideoAreaId(),deviceExpansionEditReq.getVideoAreaId());
             }
 
             DeviceExpansion deviceExpansion = new DeviceExpansion();
@@ -189,21 +159,9 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         //获取安防通道资源
         Long videoAreaId = deviceExpansionListReq.getVideoAreaId();
         Boolean includeEquipment = deviceExpansionListReq.getIncludeEquipment();
-        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authrbacServerApi.getCatalogueResourceRsp(videoAreaId, includeEquipment);
-        if(catalogueResourceRsp.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-
-            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, catalogueResourceRsp.getMsg());
-        }
-        List<GetCatalogueResourceRsp> dataList = catalogueResourceRsp.getData();
-        ArrayList<Long> longs = new ArrayList<>();
-        //获取全部的资源树id
-        for (GetCatalogueResourceRsp one : dataList){
-            longs.add(Long.parseLong(one.getResourceValue()));
-        }
-        if(ObjectUtils.isEmpty(longs)){
-            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, "数据数据不存在");
-        }
-
+        VideoAreaResourceRsp videoAreaResourceRsp = baseDeviceAndChannelService.resourceIdList(videoAreaId, includeEquipment);
+        List<Long> longs = videoAreaResourceRsp.getChannelData();
+        List<GetCatalogueResourceRsp> dataList = videoAreaResourceRsp.getDataList();
         LambdaQueryWrapper<DeviceExpansion> queryWrapper = new LambdaQueryWrapper<>();
         if(!ObjectUtils.isEmpty(deviceExpansionListReq.getName())){
             queryWrapper.like(DeviceExpansion::getName,deviceExpansionListReq.getName());
@@ -315,7 +273,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
 
     @Override
-    public CommonResponse<GetResourceTreeRsp> videoAreaList(String resourceKey) {
+    public CommonResponse<Object> videoAreaList(String resourceKey) {
 
 
         return authrbacServerApi.getResourcePage(resourceKey, false);
