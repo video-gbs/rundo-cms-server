@@ -144,8 +144,8 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, booleanCommonResponse);
             return booleanCommonResponse;
         }
-        baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
         dataSourceTransactionManager.commit(transactionStatus);
+        baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
         return CommonResponse.success();
     }
 
@@ -164,8 +164,9 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",idList, booleanCommonResponse);
                 return booleanCommonResponse;
             }
-            baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
             dataSourceTransactionManager.commit(transactionStatus);
+            baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
+
 
         }
 
