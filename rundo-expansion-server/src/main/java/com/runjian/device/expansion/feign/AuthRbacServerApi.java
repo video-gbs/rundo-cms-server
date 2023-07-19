@@ -46,6 +46,14 @@ public interface AuthRbacServerApi {
     CommonResponse<?> delete(@RequestParam Long resourceId);
 
     /**
+     * 根据资源信息删除
+     * @param resourceKey
+     * @param resourceValue
+     * @return
+     */
+    @DeleteMapping("/resource/delete/kv")
+    CommonResponse<?> deleteByResourceValue(@RequestParam String resourceKey,@RequestParam String resourceValue);
+    /**
      * 分页查询资源
      * @param resourceKey 资源组
      * @param isIncludeResource 是否包含资源数据
@@ -62,6 +70,14 @@ public interface AuthRbacServerApi {
     @PutMapping("/resource/move/fs")
     public CommonResponse<?> fsMove(@RequestBody PutResourceFsMoveReq req);
 
+
+    /**
+     * 资源父子级别移动--移动
+     * @param req 资源父子移动请求体
+     * @return
+     */
+    @PutMapping("/resource/move/fs/kv")
+    public CommonResponse<?> moveResourceValue(@RequestBody ResourceFsMoveKvReq req);
     /**
      * 部门的兄弟节点移动--排序
      * @param req 部门兄弟节点移动请求体

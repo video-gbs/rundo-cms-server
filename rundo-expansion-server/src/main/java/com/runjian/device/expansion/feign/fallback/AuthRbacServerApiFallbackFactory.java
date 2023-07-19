@@ -89,6 +89,18 @@ public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AuthRba
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--getCatalogueResourceRsp操作失败",pid, throwable);
                 return (CommonResponse<List<GetCatalogueResourceRsp>>) finalFailure;
             }
+
+            @Override
+            public CommonResponse<?> deleteByResourceValue(String resourceKey, String resourceValue) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--deleteByResourceValue操作失败",resourceValue, throwable);
+                return finalFailure;
+            }
+
+            @Override
+            public CommonResponse<?> fsMove(ResourceFsMoveKvReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--fsMove操作失败",req, throwable);
+                return finalFailure;
+            }
         };
     }
 }

@@ -14,6 +14,7 @@ import com.runjian.device.expansion.feign.AuthRbacServerApi;
 import com.runjian.device.expansion.feign.AuthServerApi;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
+import com.runjian.device.expansion.service.IBaseDeviceAndChannelService;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.utils.RedisCommonUtil;
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
@@ -77,11 +79,15 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     @Autowired
     RedisTemplate redisTemplate;
 
+    @Autowired
+    IBaseDeviceAndChannelService baseDeviceAndChannelService;
+
+    @Value("${resourceKeys.channelKey:safety_channel}")
+    String resourceKey;
     @Override
     public CommonResponse<Boolean> add(FindChannelListReq findChannelListReq) {
         //进行添加
         List<DeviceChannelExpansion> channelList = new ArrayList<>();
-        ArrayList<Long> ids = new ArrayList<>();
         for (DeviceChannelExpansionAddReq deviceChannelExpansionAddReq : findChannelListReq.getChannelList()){
             DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
             deviceChannelExpansion.setId(deviceChannelExpansionAddReq.getChannelId());
@@ -91,32 +97,23 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             deviceChannelExpansion.setOnlineState(deviceChannelExpansionAddReq.getOnlineState());
             deviceChannelExpansion.setVideoAreaId(findChannelListReq.getVideoAreaId());
             channelList.add(deviceChannelExpansion);
-            ids.add(deviceChannelExpansionAddReq.getChannelId());
         }
-        TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-        try{
-            this.saveBatch(channelList);
+        for (DeviceChannelExpansion channel : channelList){
+            ArrayList<Long> ids = new ArrayList<>();
+            ids.add(channel.getId());
             //通知控制服务修改添加状态
             PutChannelSignSuccessReq putChannelSignSuccessReq = new PutChannelSignSuccessReq();
             putChannelSignSuccessReq.setChannelIdList(ids);
             CommonResponse<Boolean> longCommonResponse = channelControlApi.channelSignSuccess(putChannelSignSuccessReq);
             if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-                dataSourceTransactionManager.rollback(transactionStatus);
                 //调用失败
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",findChannelListReq, longCommonResponse);
-                return longCommonResponse;
+                throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, longCommonResponse.getMsg());
             }
+            baseDeviceAndChannelService.commonResourceBind(channel.getVideoAreaId(),channel.getId(),channel.getChannelName());
+            this.save(channel);
 
-//            autRbacServerApi.batchAddResource();
-
-
-            dataSourceTransactionManager.commit(transactionStatus);
-        }catch(Exception e){
-            dataSourceTransactionManager.rollback(transactionStatus);
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--添加异常",findChannelListReq, e);
-            throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR,e.getMessage());
         }
-
         return CommonResponse.success();
     }
 
@@ -124,6 +121,8 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     public CommonResponse<Boolean> edit(DeviceChannelExpansionReq deviceChannelExpansionReq) {
         DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
         BeanUtil.copyProperties(deviceChannelExpansionReq,deviceChannelExpansion);
+        baseDeviceAndChannelService.commonResourceBind(deviceChannelExpansionReq.getVideoAreaId(),deviceChannelExpansionReq.getId(),deviceChannelExpansionReq.getChannelName());
+
         deviceChannelExpansionMapper.updateById(deviceChannelExpansion);
         return CommonResponse.success();
     }
@@ -257,9 +256,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     public Boolean move(MoveReq moveReq) {
         DeviceChannelExpansion deviceExpansion = new DeviceChannelExpansion();
         moveReq.getIdList().forEach(id->{
-            deviceExpansion.setVideoAreaId(moveReq.getVideoAreaId());
-            deviceExpansion.setId(id);
-            deviceChannelExpansionMapper.updateById(deviceExpansion);
+            baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(id),moveReq.getPResourceValue());
         });
 
         return true;

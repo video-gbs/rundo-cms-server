@@ -40,4 +40,12 @@ public interface IBaseDeviceAndChannelService {
      * @param pid
      */
     void commonResourceUpdate(Long resourceId,Long pid);
+
+    /**
+     * 资源移动目录
+     * @param resourceKey
+     * @param resourceValue
+     * @param pResourceValue
+     */
+    void moveResourceByValue(String resourceKey,String resourceValue,String pResourceValue);
 }

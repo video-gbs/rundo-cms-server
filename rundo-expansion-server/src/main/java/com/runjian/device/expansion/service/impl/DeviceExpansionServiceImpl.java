@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -63,6 +64,9 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
     @Autowired
     IBaseDeviceAndChannelService baseDeviceAndChannelService;
+
+    @Value("${resourceKeys.deviceKey:safety_device}")
+    String resourceKey;
 
     @Override
     public CommonResponse<DeviceAddResp> add(DeviceExpansionReq deviceExpansionReq) {
@@ -212,9 +216,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     public Boolean move(MoveReq deviceExpansionMoveReq) {
         DeviceExpansion deviceExpansion = new DeviceExpansion();
         deviceExpansionMoveReq.getIdList().forEach(id->{
-            deviceExpansion.setVideoAreaId(deviceExpansionMoveReq.getVideoAreaId());
-            deviceExpansion.setId(id);
-            deviceExpansionMapper.updateById(deviceExpansion);
+            baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(id),deviceExpansionMoveReq.getPResourceValue());
         });
 
         return true;

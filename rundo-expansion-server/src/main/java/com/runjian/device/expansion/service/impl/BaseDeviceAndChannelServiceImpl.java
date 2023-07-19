@@ -15,6 +15,7 @@ import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.vo.feign.request.GetCatalogueResourceRsp;
 import com.runjian.device.expansion.vo.feign.request.PostBatchResourceReq;
 import com.runjian.device.expansion.vo.feign.request.PutResourceFsMoveReq;
+import com.runjian.device.expansion.vo.feign.request.ResourceFsMoveKvReq;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResourceRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,6 +126,20 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
         if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器资源移动失败",putResourceFsMoveReq, commonResponse);
+            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
+        }
+    }
+
+    @Override
+    public void moveResourceByValue(String resourceKey, String resourceValue, String pResourceValue) {
+        ResourceFsMoveKvReq resourceFsMoveKvReq = new ResourceFsMoveKvReq();
+        resourceFsMoveKvReq.setResourceKey(resourceKey);
+        resourceFsMoveKvReq.setResourceValue(resourceValue);
+        resourceFsMoveKvReq.setPResourceValue(pResourceValue);
+        CommonResponse<?> commonResponse = authrbacServerApi.moveResourceValue(resourceFsMoveKvReq);
+        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            //调用失败
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--资源移动失败",resourceFsMoveKvReq, commonResponse);
             throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
         }
     }
