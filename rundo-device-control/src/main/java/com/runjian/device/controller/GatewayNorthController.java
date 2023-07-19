@@ -61,7 +61,7 @@ public class GatewayNorthController {
      * @return
      */
     @GetMapping("/name")
-    public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(Long gatewayId){
+    public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(@RequestParam(required = false) Long gatewayId){
         return CommonResponse.success(gatewayNorthService.getGatewayNameList(gatewayId));
     }
 
