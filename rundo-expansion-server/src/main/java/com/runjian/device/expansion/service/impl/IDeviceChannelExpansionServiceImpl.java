@@ -191,8 +191,14 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         for (GetCatalogueResourceRsp one : channelList){
             longs.add(Long.parseLong(one.getResourceValue()));
         }
+        PageResp<DeviceChannelExpansionResp> listPageResp = new PageResp<>();
         if(ObjectUtils.isEmpty(longs)){
-            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, "数据数据不存在");
+            //数据不存在直接返回
+            listPageResp.setCurrent(1);
+            listPageResp.setSize(10);
+            listPageResp.setTotal(0);
+            listPageResp.setRecords(null);
+            return listPageResp;
         }
 
         Page<DeviceChannelExpansion> page = new Page<>(deviceChannelExpansionListReq.getPageNum(), deviceChannelExpansionListReq.getPageSize());
@@ -209,7 +215,6 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 }
             }
         }
-        PageResp<DeviceChannelExpansionResp> listPageResp = new PageResp<>();
         listPageResp.setCurrent(channelExpansionPage.getCurrent());
         listPageResp.setSize(channelExpansionPage.getSize());
         listPageResp.setTotal(channelExpansionPage.getTotal());

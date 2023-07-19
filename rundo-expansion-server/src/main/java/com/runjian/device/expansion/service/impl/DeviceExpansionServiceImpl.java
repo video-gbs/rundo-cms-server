@@ -167,6 +167,16 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         Boolean includeEquipment = deviceExpansionListReq.getIncludeEquipment();
         VideoAreaResourceRsp videoAreaResourceRsp = baseDeviceAndChannelService.resourceIdList(videoAreaId, includeEquipment);
         List<Long> longs = videoAreaResourceRsp.getChannelData();
+        PageResp<DeviceExpansionResp> listPageResp = new PageResp<>();
+        if(ObjectUtils.isEmpty(longs)){
+            //数据不存在直接返回
+            listPageResp.setCurrent(1);
+            listPageResp.setSize(10);
+            listPageResp.setTotal(0);
+            listPageResp.setRecords(null);
+            return listPageResp;
+        }
+
         List<GetCatalogueResourceRsp> dataList = videoAreaResourceRsp.getDataList();
         LambdaQueryWrapper<DeviceExpansion> queryWrapper = new LambdaQueryWrapper<>();
         if(!ObjectUtils.isEmpty(deviceExpansionListReq.getName())){
@@ -206,7 +216,6 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
 
         }
-        PageResp<DeviceExpansionResp> listPageResp = new PageResp<>();
         listPageResp.setCurrent(deviceExpansionPage.getCurrent());
         listPageResp.setSize(deviceExpansionPage.getSize());
         listPageResp.setTotal(deviceExpansionPage.getTotal());
