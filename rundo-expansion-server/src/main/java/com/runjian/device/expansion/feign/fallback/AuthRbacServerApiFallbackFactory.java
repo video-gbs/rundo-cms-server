@@ -85,7 +85,7 @@ public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AuthRba
             }
 
             @Override
-            public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(Long pid, Boolean isIncludeChild) {
+            public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(Long pid) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--getCatalogueResourceRsp操作失败",pid, throwable);
                 return (CommonResponse<List<GetCatalogueResourceRsp>>) finalFailure;
             }

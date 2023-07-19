@@ -177,7 +177,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         //获取安防通道资源
         Long videoAreaId = deviceChannelExpansionListReq.getVideoAreaId();
         Boolean includeEquipment = deviceChannelExpansionListReq.getIncludeEquipment();
-        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId, includeEquipment);
+        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId);
         if(catalogueResourceRsp.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
 
             throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, catalogueResourceRsp.getMsg());
@@ -310,8 +310,23 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Override
     public List<DeviceChannelExpansion> playList(Long videoAreaId) {
+        //获取全部的资源信息
+        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId);
+        if(catalogueResourceRsp.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+
+            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, catalogueResourceRsp.getMsg());
+        }
+        List<GetCatalogueResourceRsp> channelList = catalogueResourceRsp.getData();
+        ArrayList<Long> longs = new ArrayList<>();
+        //获取全部的资源树id
+        for (GetCatalogueResourceRsp one : channelList){
+            longs.add(Long.parseLong(one.getResourceValue()));
+        }
+        if(ObjectUtils.isEmpty(longs)){
+            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, "数据数据不存在");
+        }
         LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(DeviceChannelExpansion::getVideoAreaId,videoAreaId);
+        queryWrapper.in(DeviceChannelExpansion::getVideoAreaId,longs);
         queryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
         queryWrapper.orderByDesc(DeviceChannelExpansion::getCreatedAt);
         queryWrapper.orderByDesc(DeviceChannelExpansion::getOnlineState);

@@ -81,8 +81,7 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     @Override
     public VideoAreaResourceRsp resourceIdList(Long videoAreaId, Boolean includeEquipment) {
         //获取安防通道资源
-        videoAreaId = 39L;
-        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authrbacServerApi.getCatalogueResourceRsp(videoAreaId, includeEquipment);
+        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authrbacServerApi.getCatalogueResourceRsp(videoAreaId);
         if(catalogueResourceRsp.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
 
             throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, catalogueResourceRsp.getMsg());

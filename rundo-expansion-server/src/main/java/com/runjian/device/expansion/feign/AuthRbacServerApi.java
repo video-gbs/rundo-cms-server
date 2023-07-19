@@ -89,10 +89,9 @@ public interface AuthRbacServerApi {
     /**
      * 获取目录下的所有资源数据
      * @param pid 父id
-     * @param isIncludeChild 是否包含子目录数据
      * @return
      */
     @GetMapping("/auth/user/resource/pid")
-    public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(@RequestParam Long pid, @RequestParam Boolean isIncludeChild);
+    public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(@RequestParam Long pid);
 
 }
