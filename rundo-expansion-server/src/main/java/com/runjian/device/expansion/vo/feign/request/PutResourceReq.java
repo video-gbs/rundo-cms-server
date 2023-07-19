@@ -16,11 +16,10 @@ import javax.validation.constraints.Size;
 public class PutResourceReq {
 
     /**
-     * 资源id
+     * 资源key
      */
-    @NotNull(message = "资源id不能为空")
-    @Min(value = 1, message = "非法资源id")
-    private Long resourceId;
+    @NotNull(message = "资源key不能为空")
+    private String resourceKey;
 
     /**
      * 资源名称

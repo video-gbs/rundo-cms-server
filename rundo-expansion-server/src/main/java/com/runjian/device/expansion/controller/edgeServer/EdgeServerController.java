@@ -55,7 +55,7 @@ public class EdgeServerController {
      */
     @ApiOperation("获取网关所有名称")
     @GetMapping("/gateway/name")
-    public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(Long gatewayId){
+    public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(@RequestParam(required = false) Long gatewayId){
         return deviceControlApi.getGatewayName(gatewayId);
     }
 

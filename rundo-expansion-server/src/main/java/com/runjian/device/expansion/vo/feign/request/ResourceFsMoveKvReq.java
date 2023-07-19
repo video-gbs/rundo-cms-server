@@ -1,5 +1,6 @@
 package com.runjian.device.expansion.vo.feign.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Min;
@@ -16,15 +17,18 @@ public class ResourceFsMoveKvReq {
     /**
      * 资源key【必须】
      */
+    @ApiModelProperty("资源key，区分设备和通道资源")
     private String resourceKey;
 
     /**
      * 资源value【必须】
      */
+    @ApiModelProperty("资源value,后端返回的resourceValue")
     private String resourceValue;
 
     /**
      * 资源value【必须】
      */
+    @ApiModelProperty("父级资源value,后端返回的上一级的resourceValue")
     private String pResourceValue;
 }

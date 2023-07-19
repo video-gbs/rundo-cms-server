@@ -55,7 +55,7 @@ public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AuthRba
             }
 
             @Override
-            public CommonResponse<?> updateResource(PutResourceReq req) {
+            public CommonResponse<?> updateResourceKv(PutResourceReq req) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--updateResource操作失败",req, throwable);
                 return finalFailure;
             }
@@ -79,13 +79,13 @@ public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AuthRba
             }
 
             @Override
-            public CommonResponse<?> btMove(PutResourceBtMoveReq req) {
+            public CommonResponse<?> btMoveKv(PutResourceBtMoveReq req) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--btMove操作失败",req, throwable);
                 return finalFailure;
             }
 
             @Override
-            public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(Long pid) {
+            public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(Long pid, Boolean isIncludeChild) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--getCatalogueResourceRsp操作失败",pid, throwable);
                 return (CommonResponse<List<GetCatalogueResourceRsp>>) finalFailure;
             }

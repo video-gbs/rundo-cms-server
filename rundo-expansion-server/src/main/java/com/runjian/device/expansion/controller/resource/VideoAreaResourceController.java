@@ -5,10 +5,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.nacos.common.utils.UuidUtils;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.AuthRbacServerApi;
-import com.runjian.device.expansion.vo.feign.request.PostBatchResourceReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceBtMoveReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceFsMoveReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceReq;
+import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.request.ChannelPtzControlReq;
 import com.runjian.device.expansion.vo.request.PostVideoAreaReq;
 import com.runjian.device.expansion.vo.request.PutVideoAreaReq;
@@ -52,25 +49,25 @@ public class VideoAreaResourceController {
         PutResourceReq putResourceReq = new PutResourceReq();
         BeanUtil.copyProperties(req,putResourceReq);
         putResourceReq.setResourceValue(UuidUtils.generateUuid());
-        return authRbacServerApi.updateResource(putResourceReq);
+        return authRbacServerApi.updateResourceKv(putResourceReq);
     }
 
-    @PutMapping(value = "/delete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("安防通道删除")
-    public CommonResponse<?> delete(@RequestParam Long resourceId) {
-        return authRbacServerApi.delete(resourceId);
+    public CommonResponse<?> delete(@RequestParam String resourceKey,@RequestParam String resourceValue) {
+        return authRbacServerApi.deleteByResourceValue(resourceKey,resourceValue);
     }
 
     @PutMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("安防通道移动")
-    public CommonResponse<?> move(@RequestBody PutResourceFsMoveReq req) {
-        return authRbacServerApi.fsMove(req);
+    public CommonResponse<?> move(@RequestBody ResourceFsMoveKvReq req) {
+        return authRbacServerApi.moveResourceValue(req);
     }
 
     @PutMapping(value = "/sort", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("安防通道排序")
     public CommonResponse<?> sort(@RequestBody PutResourceBtMoveReq req) {
-        return authRbacServerApi.btMove(req);
+        return authRbacServerApi.btMoveKv(req);
     }
 
 

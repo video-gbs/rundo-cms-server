@@ -119,10 +119,12 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Override
     public CommonResponse<Boolean> edit(DeviceChannelExpansionReq deviceChannelExpansionReq) {
+        DeviceChannelExpansion channelExpansionDb = deviceChannelExpansionMapper.selectById(deviceChannelExpansionReq.getId());
         DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
         BeanUtil.copyProperties(deviceChannelExpansionReq,deviceChannelExpansion);
+        //资源修改和移动
         baseDeviceAndChannelService.commonResourceBind(deviceChannelExpansionReq.getVideoAreaId(),deviceChannelExpansionReq.getId(),deviceChannelExpansionReq.getChannelName());
-
+        baseDeviceAndChannelService.commonResourceMove(channelExpansionDb.getVideoAreaId(),deviceChannelExpansionReq.getVideoAreaId());
         deviceChannelExpansionMapper.updateById(deviceChannelExpansion);
         return CommonResponse.success();
     }
@@ -178,7 +180,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         //获取安防通道资源
         Long videoAreaId = deviceChannelExpansionListReq.getVideoAreaId();
         Boolean includeEquipment = deviceChannelExpansionListReq.getIncludeEquipment();
-        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId);
+        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId,includeEquipment);
         if(catalogueResourceRsp.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
 
             throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, catalogueResourceRsp.getMsg());
@@ -312,7 +314,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     @Override
     public List<DeviceChannelExpansion> playList(Long videoAreaId) {
         //获取全部的资源信息
-        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId);
+        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId,false);
         if(catalogueResourceRsp.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
 
             throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, catalogueResourceRsp.getMsg());

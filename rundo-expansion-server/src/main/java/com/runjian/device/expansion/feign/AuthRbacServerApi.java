@@ -34,8 +34,8 @@ public interface AuthRbacServerApi {
      * @param req 修改资源请求体
      * @return
      */
-    @PutMapping("/resource/update")
-    CommonResponse<?> updateResource(@RequestBody PutResourceReq req);
+    @PutMapping("/resource/update/kv")
+    CommonResponse<?> updateResourceKv(@RequestBody PutResourceReq req);
 
     /**
      * 删除资源
@@ -43,6 +43,7 @@ public interface AuthRbacServerApi {
      * @return
      */
     @DeleteMapping("/resource/delete")
+    @Deprecated
     CommonResponse<?> delete(@RequestParam Long resourceId);
 
     /**
@@ -68,6 +69,7 @@ public interface AuthRbacServerApi {
      * @return
      */
     @PutMapping("/resource/move/fs")
+    @Deprecated
     public CommonResponse<?> fsMove(@RequestBody PutResourceFsMoveReq req);
 
 
@@ -83,8 +85,8 @@ public interface AuthRbacServerApi {
      * @param req 部门兄弟节点移动请求体
      * @return
      */
-    @PutMapping("/resource/move/bt")
-    public CommonResponse<?> btMove(@RequestBody PutResourceBtMoveReq req);
+    @PutMapping("/resource/move/bt/kv")
+    public CommonResponse<?> btMoveKv(@RequestBody PutResourceBtMoveReq req);
 
     /**
      * 获取目录下的所有资源数据
@@ -92,6 +94,6 @@ public interface AuthRbacServerApi {
      * @return
      */
     @GetMapping("/auth/user/resource/pid")
-    public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(@RequestParam Long pid);
+    public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(@RequestParam Long pid, @RequestParam Boolean isIncludeChild);
 
 }

@@ -215,7 +215,7 @@ public interface DeviceControlApi {
      * @return
      */
     @GetMapping("/gateway/north/name")
-    public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(Long gatewayId);
+    public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(@RequestParam(required = false) Long gatewayId);
 
 
     /**

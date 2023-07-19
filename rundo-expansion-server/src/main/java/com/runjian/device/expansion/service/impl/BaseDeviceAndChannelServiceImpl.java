@@ -81,7 +81,7 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     @Override
     public VideoAreaResourceRsp resourceIdList(Long videoAreaId, Boolean includeEquipment) {
         //获取安防通道资源
-        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authrbacServerApi.getCatalogueResourceRsp(videoAreaId);
+        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authrbacServerApi.getCatalogueResourceRsp(videoAreaId,includeEquipment);
         if(catalogueResourceRsp.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
 
             throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, catalogueResourceRsp.getMsg());
@@ -118,10 +118,10 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     }
 
     @Override
-    public void commonResourceUpdate(Long resourceId, Long pid) {
+    public void commonResourceMove(Long resourceId, Long pid) {
         PutResourceFsMoveReq putResourceFsMoveReq = new PutResourceFsMoveReq();
         putResourceFsMoveReq.setId(resourceId);
-        putResourceFsMoveReq.setSectionPid(pid);
+        putResourceFsMoveReq.setResourcePid(pid);
         CommonResponse<?> commonResponse = authrbacServerApi.fsMove(putResourceFsMoveReq);
         if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败

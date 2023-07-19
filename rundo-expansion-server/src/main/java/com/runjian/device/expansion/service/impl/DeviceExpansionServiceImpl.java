@@ -99,6 +99,10 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     @Override
     public CommonResponse<Long> edit(DeviceExpansionEditReq deviceExpansionEditReq) {
         DeviceExpansion deviceExpansionDb = deviceExpansionMapper.selectById(deviceExpansionEditReq.getId());
+        //资源修改和移动
+        baseDeviceAndChannelService.commonResourceBind(deviceExpansionEditReq.getVideoAreaId(),deviceExpansionEditReq.getId(),deviceExpansionEditReq.getName());
+        baseDeviceAndChannelService.commonResourceMove(deviceExpansionDb.getVideoAreaId(),deviceExpansionEditReq.getVideoAreaId());
+
         if(ObjectUtils.isEmpty(deviceExpansionDb)){
             // 来自待注册列表的数据操作，编辑/恢复
             PutDeviceSignSuccessReq putDeviceSignSuccessReq = new PutDeviceSignSuccessReq();
@@ -110,16 +114,11 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器状态通知失败",deviceExpansionEditReq, longCommonResponse);
                 throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, longCommonResponse.getMsg());
             }
-            baseDeviceAndChannelService.commonResourceBind(deviceExpansionEditReq.getVideoAreaId(),deviceExpansionEditReq.getId(),deviceExpansionEditReq.getName());
-
             DeviceExpansion deviceExpansion = new DeviceExpansion();
             BeanUtil.copyProperties(deviceExpansionEditReq,deviceExpansion);
             deviceExpansionMapper.insert(deviceExpansion);
         }else {
-            if(!deviceExpansionEditReq.getVideoAreaId().equals(deviceExpansionDb.getVideoAreaId())){
-                //判断安防通道需要修改
-                baseDeviceAndChannelService.commonResourceUpdate(deviceExpansionDb.getVideoAreaId(),deviceExpansionEditReq.getVideoAreaId());
-            }
+
 
             DeviceExpansion deviceExpansion = new DeviceExpansion();
             BeanUtil.copyProperties(deviceExpansionEditReq,deviceExpansion);
@@ -197,7 +196,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
                 DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
                 BeanUtil.copyProperties(deviceExpansion,deviceExpansionResp);
                 for (GetCatalogueResourceRsp videoAreaResp: dataList){
-                    if(videoAreaResp.getResourceValue().equals(deviceExpansion.getId())){
+                    if(Long.parseLong(videoAreaResp.getResourceValue()) == deviceExpansion.getId()){
                         deviceExpansionResp.setAreaNames(videoAreaResp.getLevelName());
 
                     }

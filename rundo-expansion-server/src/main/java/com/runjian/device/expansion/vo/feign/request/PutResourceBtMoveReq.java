@@ -4,7 +4,9 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * 资源兄弟节点移动请求体
@@ -13,13 +15,18 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class PutResourceBtMoveReq {
+    /**
+     * 资源key
+     */
+    @NotNull(message = "资源key不能为空")
+    private String resourceKey;
 
     /**
-     * 部门id
+     * 资源value
      */
-    @NotNull(message = "资源id不能为空")
-    @Min(value = 1, message = "非法资源id")
-    private Long id;
+    @NotBlank(message = "资源value不能为空")
+    @Size(max = 50, message = "资源value的范围在1~50")
+    private String resourceValue;
 
     /**
      * 移动指令，0-下移 1-上移

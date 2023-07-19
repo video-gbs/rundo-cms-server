@@ -10,12 +10,22 @@ import lombok.Data;
 public class GetCatalogueResourceRsp {
 
     /**
-     * 资源id
+     * 资源value
      */
     private String resourceValue;
+
+    /**
+     * 资源id
+     */
+    private Long resourceId;
 
     /**
      * 层级名称
      */
     private String levelName;
+
+    /**
+     * 资源名称
+     */
+    private String resourceName;
 }
