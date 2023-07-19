@@ -62,6 +62,7 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void removeDeviceSoft(Long id) {
 
         DeviceExpansion deviceExpansion = new DeviceExpansion();
@@ -140,6 +141,17 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
         if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--资源移动失败",resourceFsMoveKvReq, commonResponse);
+            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
+        }
+    }
+
+    @Override
+    public void commonDeleteByResourceValue(String resourceKey, String resourceValue) {
+
+        CommonResponse<?> commonResponse = authrbacServerApi.deleteByResourceValue(resourceKey,resourceValue);
+        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            //调用失败
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--资源删除失败",resourceValue, commonResponse);
             throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
         }
     }

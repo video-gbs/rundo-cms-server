@@ -138,7 +138,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
             return res;
         }
-
+        baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
         baseDeviceAndChannelService.removeDeviceSoft(id);
         return CommonResponse.success();
     }
@@ -152,6 +152,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
                 throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR,res.getMsg());
             }else {
+                baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
                 baseDeviceAndChannelService.removeDeviceSoft(id);
             }
         }

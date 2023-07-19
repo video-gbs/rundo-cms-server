@@ -97,7 +97,7 @@ public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AuthRba
             }
 
             @Override
-            public CommonResponse<?> fsMove(ResourceFsMoveKvReq req) {
+            public CommonResponse<?> moveResourceValue(ResourceFsMoveKvReq req) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--fsMove操作失败",req, throwable);
                 return finalFailure;
             }

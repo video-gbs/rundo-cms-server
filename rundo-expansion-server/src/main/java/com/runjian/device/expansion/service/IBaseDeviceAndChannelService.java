@@ -1,5 +1,6 @@
 package com.runjian.device.expansion.service;
 
+import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResourceRsp;
 
 import java.util.List;
@@ -48,4 +49,11 @@ public interface IBaseDeviceAndChannelService {
      * @param pResourceValue
      */
     void moveResourceByValue(String resourceKey,String resourceValue,String pResourceValue);
+
+    /**
+     * 根据资源value删除数据
+     * @param resourceKey
+     * @param resourceValue
+     */
+    void commonDeleteByResourceValue(String resourceKey, String resourceValue);
 }
