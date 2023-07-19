@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * @author chenjialing
@@ -31,6 +33,9 @@ public class RedissonConfig {
     @Bean(destroyMethod="shutdown")
     public RedissonClient redisson() throws IOException {
         Config config = Config.fromYAML(new ClassPathResource("redisson.yml").getInputStream());
+        if (!StringUtils.hasText(password)){
+            password = null;
+        }
         config.useSingleServer()
                 .setAddress("redis://" + redisHost + ":" + redisPort)
                 .setDatabase(redisDatabase)
