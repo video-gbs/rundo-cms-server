@@ -45,11 +45,8 @@ public class VideoAreaResourceController {
 
     @PutMapping(value = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("安防通道编辑")
-    public CommonResponse<?> add(@RequestBody PutVideoAreaReq req) {
-        PutResourceReq putResourceReq = new PutResourceReq();
-        BeanUtil.copyProperties(req,putResourceReq);
-        putResourceReq.setResourceValue(UuidUtils.generateUuid());
-        return authRbacServerApi.updateResourceKv(putResourceReq);
+    public CommonResponse<?> add(@RequestBody PutResourceReq req) {
+        return authRbacServerApi.updateResourceKv(req);
     }
 
     @DeleteMapping(value = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -124,7 +124,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         BeanUtil.copyProperties(deviceChannelExpansionReq,deviceChannelExpansion);
         //资源修改和移动
         baseDeviceAndChannelService.commonResourceBind(deviceChannelExpansionReq.getVideoAreaId(),deviceChannelExpansionReq.getId(),deviceChannelExpansionReq.getChannelName());
-        baseDeviceAndChannelService.commonResourceMove(channelExpansionDb.getVideoAreaId(),deviceChannelExpansionReq.getVideoAreaId());
+        baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(deviceChannelExpansionReq.getId()),deviceChannelExpansionReq.getPResourceValue());
         deviceChannelExpansionMapper.updateById(deviceChannelExpansion);
         return CommonResponse.success();
     }
@@ -331,7 +331,8 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             longs.add(Long.parseLong(one.getResourceValue()));
         }
         if(ObjectUtils.isEmpty(longs)){
-            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, "数据数据不存在");
+            //没有数据
+            return new ArrayList<>();
         }
         LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(DeviceChannelExpansion::getVideoAreaId,longs);

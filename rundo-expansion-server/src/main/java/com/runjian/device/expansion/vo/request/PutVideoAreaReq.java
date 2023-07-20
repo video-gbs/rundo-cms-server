@@ -15,6 +15,12 @@ import javax.validation.constraints.Size;
 @Data
 public class PutVideoAreaReq {
 
+
+    /**
+     * 资源key
+     */
+    @NotNull(message = "资源key不能为空")
+    private String resourceKey;
     /**
      * 资源id
      */

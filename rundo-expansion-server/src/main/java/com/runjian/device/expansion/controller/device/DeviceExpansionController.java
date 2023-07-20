@@ -85,8 +85,6 @@ public class DeviceExpansionController {
             String value = request.getHeader(name);
             headerMap.put(name, value);
         }
-
-        log.info(request.toString());
         return CommonResponse.success(deviceExpansionService.list(deviceExpansionListReq));
     }
 

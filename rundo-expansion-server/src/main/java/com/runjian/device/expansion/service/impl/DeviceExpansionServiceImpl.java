@@ -101,7 +101,8 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         DeviceExpansion deviceExpansionDb = deviceExpansionMapper.selectById(deviceExpansionEditReq.getId());
         //资源修改和移动
         baseDeviceAndChannelService.commonResourceBind(deviceExpansionEditReq.getVideoAreaId(),deviceExpansionEditReq.getId(),deviceExpansionEditReq.getName());
-        baseDeviceAndChannelService.commonResourceMove(deviceExpansionDb.getVideoAreaId(),deviceExpansionEditReq.getVideoAreaId());
+        baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(deviceExpansionEditReq.getId()),deviceExpansionEditReq.getPResourceValue());
+
 
         if(ObjectUtils.isEmpty(deviceExpansionDb)){
             // 来自待注册列表的数据操作，编辑/恢复
@@ -208,7 +209,6 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
                 for (GetCatalogueResourceRsp videoAreaResp: dataList){
                     if(Long.parseLong(videoAreaResp.getResourceValue()) == deviceExpansion.getId()){
                         deviceExpansionResp.setAreaNames(videoAreaResp.getLevelName());
-
                     }
                 }
                 deviceExpansionRespList.add(deviceExpansionResp);
