@@ -92,9 +92,6 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
         for (GetCatalogueResourceRsp one : dataList){
             longs.add(Long.parseLong(one.getResourceValue()));
         }
-        if(ObjectUtils.isEmpty(longs)){
-            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, "数据数据不存在");
-        }
         VideoAreaResourceRsp videoAreaResourceRsp = new VideoAreaResourceRsp();
         videoAreaResourceRsp.setChannelData(longs);
         videoAreaResourceRsp.setDataList(dataList);

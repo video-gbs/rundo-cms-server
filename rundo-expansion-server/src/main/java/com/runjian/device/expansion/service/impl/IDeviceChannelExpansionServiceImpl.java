@@ -335,7 +335,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             return new ArrayList<>();
         }
         LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(DeviceChannelExpansion::getVideoAreaId,longs);
+        queryWrapper.in(DeviceChannelExpansion::getId,longs);
         queryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
         queryWrapper.orderByDesc(DeviceChannelExpansion::getCreatedAt);
         queryWrapper.orderByDesc(DeviceChannelExpansion::getOnlineState);

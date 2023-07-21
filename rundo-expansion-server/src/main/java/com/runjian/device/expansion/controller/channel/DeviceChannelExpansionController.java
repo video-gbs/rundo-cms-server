@@ -103,9 +103,17 @@ public class DeviceChannelExpansionController {
     }
 
     @GetMapping(value = "/playList", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation("播放列表")
+    @ApiOperation("直播--播放列表")
     @ChannelStatusPoint
     public CommonResponse<List<DeviceChannelExpansion>> playList(@RequestParam Long videoAreaId) {
+
+        return CommonResponse.success(deviceChannelExpansionService.playList(videoAreaId));
+    }
+
+    @GetMapping(value = "/playBackList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation("回放--播放列表")
+    @ChannelStatusPoint
+    public CommonResponse<List<DeviceChannelExpansion>> playBackList(@RequestParam Long videoAreaId) {
 
         return CommonResponse.success(deviceChannelExpansionService.playList(videoAreaId));
     }
