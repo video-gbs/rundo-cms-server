@@ -15,10 +15,9 @@ public class MoveReq {
 
 
 
-    @ApiModelProperty("安防区域id")
+    @ApiModelProperty("安防区域的resourceValue")
     @NotNull(message = "安防区域id不能为空")
-    @Range(min = 1, message = "非法安防区域id")
-    private Long videoAreaId;
+    private String pResourceValue;
 
     @ApiModelProperty("id")
     @NotNull(message = "id参数不得为空")

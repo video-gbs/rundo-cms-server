@@ -3,14 +3,17 @@ package com.runjian.device.expansion.controller.play;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.expansion.feign.StreamManageApi;
+import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.service.IPlayService;
 import com.runjian.device.expansion.vo.feign.request.FeignStreamOperationReq;
+import com.runjian.device.expansion.vo.feign.request.PutStreamOperationReq;
 import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +32,13 @@ public class ChannelPlayController {
     private IPlayService playService;
 
     @Autowired
+    IDeviceChannelExpansionService deviceChannelExpansionService;
+
+    @Autowired
     private StreamManageApi streamManageApi;
+
+    @Value("${resourceKeys.channelKey:safety_channel}")
+    String resourceKey;
 
     @PostMapping(value = "/live",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("直播接口")
@@ -45,6 +54,17 @@ public class ChannelPlayController {
         validatorService.validateRequest(request);
 
         return playService.playBack(request);
+    }
+
+    /**
+     * 停止播放
+     * @param req
+     * @return
+     */
+    @PutMapping("/stop")
+    @ApiOperation("停止播放")
+    public CommonResponse<?> stopPlay(@RequestBody PutStreamOperationReq req){
+        return playService.stopPlay(req);
     }
 
 
@@ -92,5 +112,27 @@ public class ChannelPlayController {
         feignStreamOperationReq.setChannelId(channelExpansionId);
         feignStreamOperationReq.setStreamId(streamId);
         return streamManageApi.getStreamMediaInfo(feignStreamOperationReq);
+    }
+
+
+    @GetMapping("/back/streamId/info")
+    @ApiOperation("回放通道流信息")
+    public CommonResponse<?> backStreamIdInfo(@RequestParam Long channelExpansionId,@RequestParam String streamId){
+        FeignStreamOperationReq feignStreamOperationReq = new FeignStreamOperationReq();
+        feignStreamOperationReq.setChannelId(channelExpansionId);
+        feignStreamOperationReq.setStreamId(streamId);
+        return streamManageApi.getStreamMediaInfo(feignStreamOperationReq);
+    }
+
+    @ApiOperation("直播--安防通道列表")
+    @GetMapping("/videoAreaList")
+    public CommonResponse<Object> videoAreaList(){
+        return deviceChannelExpansionService.videoAreaList(resourceKey);
+    }
+
+    @ApiOperation("回放--安防通道列表")
+    @GetMapping("/back/videoAreaList")
+    public CommonResponse<Object> playBackVideoAreaList(){
+        return deviceChannelExpansionService.videoAreaList(resourceKey);
     }
 }

@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
@@ -117,6 +118,12 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
             }
 
             @Override
+            public CommonResponse<VideoRecordRsp> videoRecordInfo(Long channelId, LocalDateTime startTime, LocalDateTime endTime) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--获取设备录像信息失败",channelId, throwable);
+                return (CommonResponse<VideoRecordRsp>) finalFailure;
+            }
+
+            @Override
             public CommonResponse deleteDeviceSoft(Long deviceId) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--设备删除失败",deviceId, throwable);
                 return (CommonResponse<Boolean>) finalFailure;
@@ -149,6 +156,30 @@ public class DeviceControlApiFallbackFactory implements FallbackFactory<DeviceCo
             @Override
             public CommonResponse<?> cancelMsg(Set<String> msgHandles) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--消息订阅取消失败",msgHandles, throwable);
+                return finalFailure;
+            }
+
+            @Override
+            public CommonResponse<Object> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--待注册设备列表获取失败",deviceName, throwable);
+                return (CommonResponse<Object>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<Object> getGatewayByPage(int page, int num, String name) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--获取网关信息失败",name, throwable);
+                return (CommonResponse<Object>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(Long gatewayId) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--获取网关信息byname失败",gatewayId, throwable);
+                return (CommonResponse<List<GetGatewayNameRsp>>) finalFailure;
+            }
+
+            @Override
+            public CommonResponse<?> updateGateway(PutGatewayReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--更新网关信息失败",req, throwable);
                 return finalFailure;
             }
         };

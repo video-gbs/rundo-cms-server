@@ -8,22 +8,22 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
-import com.runjian.common.constant.MarkConstant;
-import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.entity.DeviceExpansion;
+import com.runjian.device.expansion.feign.AuthRbacServerApi;
 import com.runjian.device.expansion.feign.AuthServerApi;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
 import com.runjian.device.expansion.service.IBaseDeviceAndChannelService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.utils.RedisCommonUtil;
-import com.runjian.device.expansion.vo.feign.request.PutDeviceSignSuccessReq;
+import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
+import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
+import com.runjian.device.expansion.vo.feign.response.VideoAreaResourceRsp;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
 import com.runjian.device.expansion.vo.request.DeviceExpansionEditReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionReq;
-import com.runjian.device.expansion.vo.feign.request.DeviceReq;
 import com.runjian.device.expansion.vo.request.MoveReq;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -59,7 +60,13 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     AuthServerApi authServerApi;
 
     @Autowired
+    AuthRbacServerApi authrbacServerApi;
+
+    @Autowired
     IBaseDeviceAndChannelService baseDeviceAndChannelService;
+
+    @Value("${resourceKeys.deviceKey:safety_device}")
+    String resourceKey;
 
     @Override
     public CommonResponse<DeviceAddResp> add(DeviceExpansionReq deviceExpansionReq) {
@@ -74,18 +81,29 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             return longCommonResponse;
         }
         DeviceAddResp data = longCommonResponse.getData();
+        Long encoderId = data.getId();
 
+        baseDeviceAndChannelService.commonResourceBind(deviceExpansionReq.getVideoAreaId(),encoderId,deviceExpansionReq.getName());
         DeviceExpansion deviceExpansion = new DeviceExpansion();
         BeanUtil.copyProperties(deviceExpansionReq,deviceExpansion);
         deviceExpansion.setId(data.getId());
         deviceExpansion.setOnlineState(data.getOnlineState());
         deviceExpansionMapper.insert(deviceExpansion);
+
+
+
         return CommonResponse.success();
     }
+
 
     @Override
     public CommonResponse<Long> edit(DeviceExpansionEditReq deviceExpansionEditReq) {
         DeviceExpansion deviceExpansionDb = deviceExpansionMapper.selectById(deviceExpansionEditReq.getId());
+        //资源修改和移动
+        baseDeviceAndChannelService.commonResourceBind(deviceExpansionEditReq.getVideoAreaId(),deviceExpansionEditReq.getId(),deviceExpansionEditReq.getName());
+        baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(deviceExpansionEditReq.getId()),deviceExpansionEditReq.getPResourceValue());
+
+
         if(ObjectUtils.isEmpty(deviceExpansionDb)){
             // 来自待注册列表的数据操作，编辑/恢复
             PutDeviceSignSuccessReq putDeviceSignSuccessReq = new PutDeviceSignSuccessReq();
@@ -95,12 +113,14 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
                 //调用失败
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器状态通知失败",deviceExpansionEditReq, longCommonResponse);
-                return longCommonResponse;
+                throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, longCommonResponse.getMsg());
             }
             DeviceExpansion deviceExpansion = new DeviceExpansion();
             BeanUtil.copyProperties(deviceExpansionEditReq,deviceExpansion);
             deviceExpansionMapper.insert(deviceExpansion);
         }else {
+
+
             DeviceExpansion deviceExpansion = new DeviceExpansion();
             BeanUtil.copyProperties(deviceExpansionEditReq,deviceExpansion);
             deviceExpansionMapper.updateById(deviceExpansion);
@@ -118,8 +138,9 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
             return res;
         }
-
         baseDeviceAndChannelService.removeDeviceSoft(id);
+        baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
+
         return CommonResponse.success();
     }
 
@@ -133,6 +154,8 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
                 throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR,res.getMsg());
             }else {
                 baseDeviceAndChannelService.removeDeviceSoft(id);
+                baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
+
             }
         }
 
@@ -140,34 +163,22 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     }
     @Override
     public  PageResp<DeviceExpansionResp> list(DeviceExpansionListReq deviceExpansionListReq) {
-        //远程调用获取当前全部的节点信息
-        //安防区域的节点id
-        List<Long> areaIdsArr = new ArrayList<>();
-        VideoAreaResp videoAreaData = new VideoAreaResp();
-        List<VideoAreaResp> videoAreaRespList = new ArrayList<>();
-        if(deviceExpansionListReq.getIncludeEquipment()){
-            //安防区域不得为空
-
-            CommonResponse<List<VideoAreaResp>> videoAraeList = authServerApi.getVideoAraeList(deviceExpansionListReq.getVideoAreaId());
-            if(CollectionUtils.isEmpty(videoAraeList.getData())){
-                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS,videoAraeList.getMsg());
-
-            }
-            videoAreaRespList = videoAraeList.getData();
-            areaIdsArr = videoAreaRespList.stream().map(VideoAreaResp::getId).collect(Collectors.toList());
-        }else {
-            if(ObjectUtils.isEmpty(deviceExpansionListReq.getVideoAreaId())){
-                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
-            }
-            CommonResponse<VideoAreaResp> videoAraeInfo = authServerApi.getVideoAraeInfo(deviceExpansionListReq.getVideoAreaId());
-            if(ObjectUtils.isEmpty(videoAraeInfo.getData())){
-                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS,videoAraeInfo.getMsg());
-
-            }
-            videoAreaData = videoAraeInfo.getData();
-            areaIdsArr.add(videoAreaData.getId());
+        //获取安防通道资源
+        Long videoAreaId = deviceExpansionListReq.getVideoAreaId();
+        Boolean includeEquipment = deviceExpansionListReq.getIncludeEquipment();
+        VideoAreaResourceRsp videoAreaResourceRsp = baseDeviceAndChannelService.resourceIdList(videoAreaId, includeEquipment);
+        List<Long> longs = videoAreaResourceRsp.getChannelData();
+        PageResp<DeviceExpansionResp> listPageResp = new PageResp<>();
+        if(ObjectUtils.isEmpty(longs)){
+            //数据不存在直接返回
+            listPageResp.setCurrent(1);
+            listPageResp.setSize(10);
+            listPageResp.setTotal(0);
+            listPageResp.setRecords(null);
+            return listPageResp;
         }
 
+        List<GetCatalogueResourceRsp> dataList = videoAreaResourceRsp.getDataList();
         LambdaQueryWrapper<DeviceExpansion> queryWrapper = new LambdaQueryWrapper<>();
         if(!ObjectUtils.isEmpty(deviceExpansionListReq.getName())){
             queryWrapper.like(DeviceExpansion::getName,deviceExpansionListReq.getName());
@@ -182,7 +193,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             queryWrapper.eq(DeviceExpansion::getOnlineState,deviceExpansionListReq.getOnlineState());
         }
         queryWrapper.eq(DeviceExpansion::getDeleted,0);
-        queryWrapper.in(DeviceExpansion::getVideoAreaId,areaIdsArr);
+        queryWrapper.in(DeviceExpansion::getId,longs);
         queryWrapper.orderByDesc(DeviceExpansion::getCreatedAt);
         queryWrapper.orderByDesc(DeviceExpansion::getOnlineState);
         Page<DeviceExpansion> page = new Page<>(deviceExpansionListReq.getPageNum(), deviceExpansionListReq.getPageSize());
@@ -192,31 +203,19 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         List<DeviceExpansionResp> deviceExpansionRespList = new ArrayList<>();
         if(!CollectionUtils.isEmpty(records)){
             //拼接所属区域
-            if(deviceExpansionListReq.getIncludeEquipment()){
-
-                for (DeviceExpansion deviceExpansion: records){
-                    DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
-                    BeanUtil.copyProperties(deviceExpansion,deviceExpansionResp);
-                    for (VideoAreaResp videoAreaResp: videoAreaRespList){
-                        if(videoAreaResp.getId().equals(deviceExpansion.getVideoAreaId())){
-                            deviceExpansionResp.setAreaNames(videoAreaResp.getAreaNames());
-
-                        }
+            for (DeviceExpansion deviceExpansion: records){
+                DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
+                BeanUtil.copyProperties(deviceExpansion,deviceExpansionResp);
+                for (GetCatalogueResourceRsp videoAreaResp: dataList){
+                    if(Long.parseLong(videoAreaResp.getResourceValue()) == deviceExpansion.getId()){
+                        deviceExpansionResp.setAreaNames(videoAreaResp.getLevelName());
                     }
-                    deviceExpansionRespList.add(deviceExpansionResp);
                 }
-
-            }else {
-                for (DeviceExpansion deviceExpansion: records){
-                    DeviceExpansionResp deviceExpansionResp = new DeviceExpansionResp();
-                    BeanUtil.copyProperties(deviceExpansion,deviceExpansionResp);
-                    deviceExpansionResp.setAreaNames(videoAreaData.getAreaNames());
-                    deviceExpansionRespList.add(deviceExpansionResp);
-                }
+                deviceExpansionRespList.add(deviceExpansionResp);
             }
 
+
         }
-        PageResp<DeviceExpansionResp> listPageResp = new PageResp<>();
         listPageResp.setCurrent(deviceExpansionPage.getCurrent());
         listPageResp.setSize(deviceExpansionPage.getSize());
         listPageResp.setTotal(deviceExpansionPage.getTotal());
@@ -228,9 +227,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     public Boolean move(MoveReq deviceExpansionMoveReq) {
         DeviceExpansion deviceExpansion = new DeviceExpansion();
         deviceExpansionMoveReq.getIdList().forEach(id->{
-            deviceExpansion.setVideoAreaId(deviceExpansionMoveReq.getVideoAreaId());
-            deviceExpansion.setId(id);
-            deviceExpansionMapper.updateById(deviceExpansion);
+            baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(id),deviceExpansionMoveReq.getPResourceValue());
         });
 
         return true;
@@ -273,6 +270,26 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             lock.unlock();
         }
 
+
+    }
+
+    @Override
+    public Object getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
+        CommonResponse<Object> deviceByPage = deviceControlApi.getDeviceByPage(page, num, signState, deviceName, ip);
+        if(deviceByPage.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            //调用失败
+            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, deviceByPage.getMsg());
+        }
+
+        return deviceByPage.getData();
+    }
+
+
+    @Override
+    public CommonResponse<Object> videoAreaList(String resourceKey) {
+
+
+        return authrbacServerApi.getResourcePage(resourceKey, false);
 
     }
 }

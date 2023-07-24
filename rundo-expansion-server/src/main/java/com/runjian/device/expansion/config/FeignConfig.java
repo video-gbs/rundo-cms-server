@@ -30,7 +30,18 @@ public class FeignConfig implements RequestInterceptor {
                 if(CommonConstant.AUTHORIZATION.equalsIgnoreCase(name)){
                     //添加token
                     requestTemplate.header(CommonConstant.AUTHORIZATION, request.getHeader(name));
+                }else if(CommonConstant.CLINET_ID.equalsIgnoreCase(name)){
+                    requestTemplate.header(CommonConstant.CLINET_ID, request.getHeader(name));
+                }else if(CommonConstant.IS_ADMIN.equalsIgnoreCase(name)){
+                    requestTemplate.header(CommonConstant.IS_ADMIN, request.getHeader(name));
+                }else if(CommonConstant.ROLE_IDS.equalsIgnoreCase(name)){
+                    requestTemplate.header(CommonConstant.ROLE_IDS, request.getHeader(name));
+                }else if(CommonConstant.RECOURCE_KEY.equalsIgnoreCase(name)){
+                    requestTemplate.header(CommonConstant.RECOURCE_KEY, request.getHeader(name));
+                }else if(CommonConstant.USERNAME.equalsIgnoreCase(name)){
+                    requestTemplate.header(CommonConstant.USERNAME, request.getHeader(name));
                 }
+
             }
         }
 

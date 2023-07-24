@@ -1,14 +1,18 @@
 package com.runjian.device.expansion.feign;
 
+import com.runjian.common.aspect.annotation.BlankStringValid;
+import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.DeviceControlApiFallbackFactory;
 import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.*;
 import com.runjian.device.expansion.vo.response.ChannelPresetListsResp;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +25,7 @@ import java.util.Set;
 public interface DeviceControlApi {
 
 
+    /************************************************设备-start**********************************************************/
     /**
      * 控制服务 设备添加
      * @param deviceReq
@@ -53,6 +58,21 @@ public interface DeviceControlApi {
     @PutMapping("/device/north/sign/success")
     CommonResponse deviceSignSuccess(@RequestBody PutDeviceSignSuccessReq putDeviceSignSuccessReq);
 
+    /**
+     * 设备分页获取
+     * @param page 页码
+     * @param num 每页数据量
+     * @param signState 注册状态
+     * @param deviceName 设备名称
+     * @param ip ip地址
+     * @return
+     */
+    @GetMapping("/device/north/page")
+    CommonResponse<Object> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, @RequestParam(required = false) Integer signState, @RequestParam(required = false) String deviceName, @RequestParam(required = false) String ip);
+
+
+
+    /************************************************通道-start**********************************************************/
     /**
      * 控制服务 通道添加状态修改
      * @param putChannelSignSuccessReq
@@ -148,6 +168,15 @@ public interface DeviceControlApi {
     @PutMapping("/channel/north/ptz/3d")
     CommonResponse<?> ptz3d(@RequestBody FeignPtz3dReq req);
 
+    /**
+     * 视频回放
+     * @param channelId 回放请求体
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 视频播放返回体
+     */
+    @GetMapping("/channel/north/record")
+    CommonResponse<VideoRecordRsp> videoRecordInfo(@RequestParam Long channelId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime);
 
 
     /**
@@ -165,4 +194,35 @@ public interface DeviceControlApi {
     @DeleteMapping("/message/cancel")
     public CommonResponse<?> cancelMsg(@RequestParam Set<String> msgHandles);
 
+
+
+    /************************************************网关服务-start**********************************************************/
+    /**
+     * 分页获取网关信息
+     * @param page 页码
+     * @param num 每页数据量
+     * @param name 网关名称
+     * @return
+     */
+    @GetMapping("/gateway/north/page")
+    @BlankStringValid
+    @IllegalStringValid
+    public CommonResponse<Object> getGatewayByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, @RequestParam(required = false) String name);
+
+
+    /**
+     * 获取网关所有名称
+     * @return
+     */
+    @GetMapping("/gateway/north/name")
+    public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(@RequestParam(required = false) Long gatewayId);
+
+
+    /**
+     * 修改网关信息
+     * @param req 修改网关信息请求体
+     * @return
+     */
+    @PutMapping("/gateway/north/update")
+    public CommonResponse<?> updateGateway(@RequestBody PutGatewayReq req);
 }

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -27,6 +28,7 @@ public class DeviceExpansionListReq {
     private Integer onlineState;
 
     @ApiModelProperty("安放区域id")
+    @Min(message = "安放区域id不得为空", value = 1L)
     private Long videoAreaId;
 
     @ApiModelProperty("是否包含下级组织")
