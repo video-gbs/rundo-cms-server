@@ -39,9 +39,10 @@ public interface ChannelMapper {
     void save(ChannelInfo channelInfo);
 
     @Insert({" <script> " +
-            " INSERT INTO " + CHANNEL_TABLE_NAME + "(id, device_id, origin_id, update_time, create_time) values " +
-            " <foreach collection='channelInfoList' item='item' separator=','>(#{item.id}, #{item.deviceId}, #{item.originId}, #{item.updateTime}, #{item.createTime})</foreach> " +
+            " INSERT INTO " + CHANNEL_TABLE_NAME + "(device_id, origin_id, update_time, create_time) values " +
+            " <foreach collection='channelInfoList' item='item' separator=','>(#{item.deviceId}, #{item.originId}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>"})
+    @Options(useGeneratedKeys = true, keyProperty = "channelInfoList.id", keyColumn = "id")
     void batchSave(List<ChannelInfo> channelInfoList);
 
     @Delete(" DELETE FROM " + CHANNEL_TABLE_NAME +

@@ -64,11 +64,6 @@ public interface GatewayMapper {
             " WHERE id = #{gatewayId} ")
     void updateOnlineState(Long gatewayId, Integer onlineState, LocalDateTime updateTime);
 
-    @Update(" UPDATE "  + GATEWAY_TABLE_NAME +
-            " SET update_time = #{updateTime}, " +
-            " online_state = #{onlineState} ")
-    void setAllOnlineState(Integer onlineState, LocalDateTime updateTime);
-
     @Select(" <script> " +
             " SELECT id, name, protocol FROM " + GATEWAY_TABLE_NAME+
             " WHERE 1=1 " +
@@ -92,14 +87,6 @@ public interface GatewayMapper {
             " <if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%') </if>" +
             " </script> ")
     List<GetGatewayByIdsRsp> selectByIds(List<Long> gatewayIds, Boolean isIn, String name);
-
-
-    @Select(" <script> " +
-            " SELECT * FROM " + GATEWAY_TABLE_NAME +
-            " WHERE 1=1 "+
-            " <if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%') </if>" +
-            " </script> ")
-    List<GetGatewayByIdsRsp> selectByName(String name);
 
     @Select(" SELECT id FROM " + GATEWAY_TABLE_NAME +
             " WHERE online_state = #{onlineState} ")
