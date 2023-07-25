@@ -284,7 +284,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
                     channelMapper.batchSave(channelInfoList);
                     for (int i = 0; i < addObjectIndex.size(); i++){
                         JSONObject jsonObject = objects.getJSONObject(addObjectIndex.get(i));
-                        jsonObject.put(StandardName.CHANNEL_ID, channelInfoList.get(i));
+                        jsonObject.put(StandardName.CHANNEL_ID, channelInfoList.get(i).getId());
                     }
                     dataSourceTransactionManager.commit(transactionStatus);
                 }catch (Exception ex){
