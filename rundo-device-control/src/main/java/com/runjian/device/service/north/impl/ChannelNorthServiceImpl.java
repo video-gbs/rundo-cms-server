@@ -90,7 +90,10 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
         ChannelSyncRsp channelSyncRsp = JSONObject.parseObject(JSONObject.toJSONString(response.getData()), ChannelSyncRsp.class);
-        channelSyncRsp.setNum(channelSyncRsp.getChannelDetailList().size());
+        List<ChannelDetailRsp> channelDetailList = channelSyncRsp.getChannelDetailList();
+        channelSyncRsp.setNum(channelDetailList.size());
+        Set<Long> channelIds = channelDetailList.stream().map(ChannelDetailRsp::getChannelId).collect(Collectors.toSet());
+        boolean checkRepeat = !Objects.equals(channelDetailList.size(), channelIds.size());
         // 判断是否有通道
         if (channelSyncRsp.getNum() > 0) {
             List<ChannelInfo> channelSaveList = new ArrayList<>(channelSyncRsp.getNum());
@@ -101,7 +104,11 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
             LocalDateTime nowTime = LocalDateTime.now();
             // 循环通道进行添加
-            for (ChannelDetailRsp rsp : channelSyncRsp.getChannelDetailList()) {
+            for (ChannelDetailRsp rsp : channelDetailList) {
+                if (checkRepeat && !channelIds.remove(rsp.getChannelId())){
+                    continue;
+                }
+
                 Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(rsp.getChannelId());
                 ChannelInfo channelInfo = channelInfoOp.orElse(new ChannelInfo());
                 // 判断通道信息是否已存在
