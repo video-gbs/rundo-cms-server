@@ -8,6 +8,7 @@ import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.service.south.GatewaySouthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.Duration;
@@ -38,6 +39,12 @@ public class GatewaySouthServiceImpl implements GatewaySouthService {
         if (gatewayInfoOp.isEmpty()){
             gatewayInfo.setName(gatewayInfo.getProtocol() + ":" + gatewayInfo.getId());
             gatewayMapper.save(gatewayInfo);
+        } else {
+            GatewayInfo oldGatewayInfo = gatewayInfoOp.get();
+            oldGatewayInfo.setIp(gatewayInfo.getIp());
+            oldGatewayInfo.setPort(gatewayInfo.getPort());
+            oldGatewayInfo.setUpdateTime(gatewayInfo.getUpdateTime());
+            update(oldGatewayInfo);
         }
         updateHeartbeat(gatewayInfo.getId(), outTime);
     }
