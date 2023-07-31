@@ -19,9 +19,11 @@ import com.runjian.device.expansion.vo.feign.request.ResourceFsMoveKvReq;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResourceRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
@@ -51,6 +53,13 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     @Autowired
     AuthRbacServerApi authrbacServerApi;
 
+    @Value("${resourceKeys.deviceKey:safety_device}")
+    String resourceDeviceKey;
+
+    @Value("${resourceKeys.channelKey:safety_channel}")
+    String resourceChannelKey;
+
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void removeDevice(Long id) {
@@ -62,20 +71,40 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void removeDeviceSoft(Long id) {
+    public synchronized void removeDeviceSoft(Long id) {
+        TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+        try{
+            DeviceExpansion deviceExpansion = new DeviceExpansion();
+            deviceExpansion.setId(id);
+            deviceExpansion.setDeleted(1);
+            deviceExpansionMapper.updateById(deviceExpansion);
+            //删除对应的通道
+            LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
+            DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
+            channelExpansion.setDeleted(1);
+            deviceChannelExpansionMapper.update(channelExpansion,lambdaQueryWrapper);
 
-        DeviceExpansion deviceExpansion = new DeviceExpansion();
-        deviceExpansion.setId(id);
-        deviceExpansion.setDeleted(1);
+            dataSourceTransactionManager.commit(transactionStatus);
 
-        deviceExpansionMapper.updateById(deviceExpansion);
-        //删除对应的通道
+        }catch (Exception e){
+            log.error(LogTemplate.PROCESS_LOG_TEMPLATE, "设备与通道删除", "删除异常",e);
+            dataSourceTransactionManager.rollback(transactionStatus);
+        }
+        //获取通道数据
         LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
         DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
-        channelExpansion.setDeleted(1);
-        deviceChannelExpansionMapper.update(channelExpansion,lambdaQueryWrapper);
+        channelExpansion.setDeleted(0);
+        List<DeviceChannelExpansion> deviceChannelExpansions = deviceChannelExpansionMapper.selectList(lambdaQueryWrapper);
+
+        commonDeleteByResourceValue(resourceDeviceKey,String.valueOf(id));
+        if(!ObjectUtils.isEmpty(deviceChannelExpansions)){
+            deviceChannelExpansions.forEach(deviceChannelExpansion -> {
+                //删除通道资源
+                commonDeleteByResourceValue(resourceChannelKey,String.valueOf(deviceChannelExpansion.getId()));
+            });
+        }
     }
 
     @Override
