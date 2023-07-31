@@ -105,7 +105,20 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             deviceExpansionMapper.insert(deviceExpansion);
         }else {
             DeviceExpansion deviceExpansion = new DeviceExpansion();
+            if(deviceExpansionDb.getDeleted() != 0){
+                //设备恢复
+                PutDeviceSignSuccessReq putDeviceSignSuccessReq = new PutDeviceSignSuccessReq();
+                putDeviceSignSuccessReq.setDeviceId(deviceExpansionEditReq.getId());
+                CommonResponse longCommonResponse = deviceControlApi.deviceSignSuccess(putDeviceSignSuccessReq);
+                log.info(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器编辑返回",deviceExpansionEditReq, longCommonResponse);
+                if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                    //调用失败
+                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器状态通知失败",deviceExpansionEditReq, longCommonResponse);
+                    return longCommonResponse;
+                }
+            }
             BeanUtil.copyProperties(deviceExpansionEditReq,deviceExpansion);
+            deviceExpansion.setDeleted(0);
             deviceExpansionMapper.updateById(deviceExpansion);
         }
 
