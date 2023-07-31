@@ -152,7 +152,6 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
             return res;
         }
         baseDeviceAndChannelService.removeDeviceSoft(id);
-        baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
 
         return CommonResponse.success();
     }
@@ -167,7 +166,6 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
                 throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR,res.getMsg());
             }else {
                 baseDeviceAndChannelService.removeDeviceSoft(id);
-                baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
 
             }
         }
