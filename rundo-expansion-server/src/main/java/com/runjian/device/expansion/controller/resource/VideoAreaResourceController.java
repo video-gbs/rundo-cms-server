@@ -4,6 +4,7 @@ package com.runjian.device.expansion.controller.resource;
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.nacos.common.utils.UuidUtils;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.expansion.feign.AuthRbacServerApi;
 import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.request.ChannelPtzControlReq;
@@ -29,10 +30,13 @@ public class VideoAreaResourceController {
     @Autowired
     AuthRbacServerApi authRbacServerApi;
 
+    @Autowired
+    private ValidatorService validatorService;
 
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("安防通道添加")
     public CommonResponse<?> add(@RequestBody PostVideoAreaReq req) {
+        validatorService.validateRequest(req);
         PostBatchResourceReq postBatchResourceReq = new PostBatchResourceReq();
         postBatchResourceReq.setResourceType(1);
         postBatchResourceReq.setResourcePid(req.getResourcePid());
@@ -45,7 +49,8 @@ public class VideoAreaResourceController {
 
     @PutMapping(value = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("安防通道编辑")
-    public CommonResponse<?> add(@RequestBody PutResourceReq req) {
+    public CommonResponse<?> edit(@RequestBody PutResourceReq req) {
+        validatorService.validateRequest(req);
         return authRbacServerApi.updateResourceKv(req);
     }
 
@@ -58,12 +63,14 @@ public class VideoAreaResourceController {
     @PutMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("安防通道移动")
     public CommonResponse<?> move(@RequestBody ResourceFsMoveKvReq req) {
+        validatorService.validateRequest(req);
         return authRbacServerApi.moveResourceValue(req);
     }
 
     @PutMapping(value = "/sort", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("安防通道排序")
     public CommonResponse<?> sort(@RequestBody PutResourceBtMoveReq req) {
+        validatorService.validateRequest(req);
         return authRbacServerApi.btMoveKv(req);
     }
 
