@@ -101,6 +101,6 @@ public interface AuthRbacServerApi {
      * @param req 刷新用户资源缓存请求体
      * @return
      */
-    @PutMapping("/auth/user/resource/refresh")
+    @PutMapping("/resource/refresh")
     public CommonResponse<?> refreshUserResource(@RequestBody PutRefreshUserResourceReq req);
 }
