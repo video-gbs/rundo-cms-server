@@ -96,11 +96,4 @@ public interface AuthRbacServerApi {
     @GetMapping("/auth/user/resource/pid")
     public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(@RequestParam Long pid, @RequestParam Boolean isIncludeChild);
 
-    /**
-     * 刷新用户资源缓存
-     * @param req 刷新用户资源缓存请求体
-     * @return
-     */
-    @PutMapping("/auth/user/resource/refresh")
-    public CommonResponse<?> refreshUserResource(@RequestBody PutRefreshUserResourceReq req);
 }
