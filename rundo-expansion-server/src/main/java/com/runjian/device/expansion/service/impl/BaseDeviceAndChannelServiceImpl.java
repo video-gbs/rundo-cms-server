@@ -12,10 +12,7 @@ import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
 import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
 import com.runjian.device.expansion.service.IBaseDeviceAndChannelService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
-import com.runjian.device.expansion.vo.feign.request.GetCatalogueResourceRsp;
-import com.runjian.device.expansion.vo.feign.request.PostBatchResourceReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceFsMoveReq;
-import com.runjian.device.expansion.vo.feign.request.ResourceFsMoveKvReq;
+import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResourceRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,7 +125,7 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     }
 
     @Override
-    public void commonResourceBind(Long videoAreaId, Long resourceId, String resourceName) {
+    public void commonResourceBind(Long videoAreaId, Long resourceId, String resourceName,  String resourceKey) {
         PostBatchResourceReq postBatchResourceReq = new PostBatchResourceReq();
         postBatchResourceReq.setResourcePid(videoAreaId);
         postBatchResourceReq.setResourceType(2);
@@ -141,20 +138,12 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器资源绑定失败",videoAreaId, commonResponse);
             throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
         }
+
+        PutRefreshUserResourceReq putRefreshUserResourceReq = new PutRefreshUserResourceReq();
+        putRefreshUserResourceReq.setResourceKey(resourceKey);
+        authrbacServerApi.refreshUserResource(putRefreshUserResourceReq);
     }
 
-    @Override
-    public void commonResourceMove(Long resourceId, Long pid) {
-        PutResourceFsMoveReq putResourceFsMoveReq = new PutResourceFsMoveReq();
-        putResourceFsMoveReq.setId(resourceId);
-        putResourceFsMoveReq.setResourcePid(pid);
-        CommonResponse<?> commonResponse = authrbacServerApi.fsMove(putResourceFsMoveReq);
-        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-            //调用失败
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器资源移动失败",putResourceFsMoveReq, commonResponse);
-            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
-        }
-    }
 
     @Override
     public void moveResourceByValue(String resourceKey, String resourceValue, String pResourceValue) {
@@ -168,6 +157,9 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--资源移动失败",resourceFsMoveKvReq, commonResponse);
             throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
         }
+        PutRefreshUserResourceReq putRefreshUserResourceReq = new PutRefreshUserResourceReq();
+        putRefreshUserResourceReq.setResourceKey(resourceKey);
+        authrbacServerApi.refreshUserResource(putRefreshUserResourceReq);
     }
 
     @Override
@@ -179,5 +171,8 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--资源删除失败",resourceValue, commonResponse);
             throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
         }
+        PutRefreshUserResourceReq putRefreshUserResourceReq = new PutRefreshUserResourceReq();
+        putRefreshUserResourceReq.setResourceKey(resourceKey);
+        authrbacServerApi.refreshUserResource(putRefreshUserResourceReq);
     }
 }

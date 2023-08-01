@@ -21,7 +21,7 @@ import java.util.HashMap;
 /**
  * @author chenjialing
  */
-@Api(tags = "安防通道操作")
+@Api(tags = "安防区域操作")
 @Slf4j
 @RestController
 @RequestMapping("/expansion/videoArea")
@@ -31,7 +31,7 @@ public class VideoAreaResourceController {
 
 
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation("安防通道添加")
+    @ApiOperation("安防区域添加")
     public CommonResponse<?> add(@RequestBody PostVideoAreaReq req) {
         PostBatchResourceReq postBatchResourceReq = new PostBatchResourceReq();
         postBatchResourceReq.setResourceType(1);
@@ -40,29 +40,43 @@ public class VideoAreaResourceController {
         String s = UuidUtils.generateUuid();
         stringStringHashMap.put(s, req.getName());
         postBatchResourceReq.setResourceMap(stringStringHashMap);
-        return authRbacServerApi.batchAddResource(postBatchResourceReq);
+        authRbacServerApi.batchAddResource(postBatchResourceReq);
+        PutRefreshUserResourceReq putRefreshUserResourceReq = new PutRefreshUserResourceReq();
+        putRefreshUserResourceReq.setResourceKey(req.getResourceKey());
+        return authRbacServerApi.refreshUserResource(putRefreshUserResourceReq);
     }
 
     @PutMapping(value = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation("安防通道编辑")
+    @ApiOperation("安防区域编辑")
     public CommonResponse<?> add(@RequestBody PutResourceReq req) {
-        return authRbacServerApi.updateResourceKv(req);
+        authRbacServerApi.updateResourceKv(req);
+        PutRefreshUserResourceReq putRefreshUserResourceReq = new PutRefreshUserResourceReq();
+        putRefreshUserResourceReq.setResourceKey(req.getResourceKey());
+        return authRbacServerApi.refreshUserResource(putRefreshUserResourceReq);
     }
 
     @DeleteMapping(value = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation("安防通道删除")
+    @ApiOperation("安防区域删除")
     public CommonResponse<?> delete(@RequestParam String resourceKey,@RequestParam String resourceValue) {
-        return authRbacServerApi.deleteByResourceValue(resourceKey,resourceValue);
+        authRbacServerApi.deleteByResourceValue(resourceKey,resourceValue);
+        PutRefreshUserResourceReq putRefreshUserResourceReq = new PutRefreshUserResourceReq();
+        putRefreshUserResourceReq.setResourceKey(resourceKey);
+        return authRbacServerApi.refreshUserResource(putRefreshUserResourceReq);
+
     }
 
     @PutMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation("安防通道移动")
+    @ApiOperation("安防区域移动")
     public CommonResponse<?> move(@RequestBody ResourceFsMoveKvReq req) {
-        return authRbacServerApi.moveResourceValue(req);
+
+        authRbacServerApi.moveResourceValue(req);
+        PutRefreshUserResourceReq putRefreshUserResourceReq = new PutRefreshUserResourceReq();
+        putRefreshUserResourceReq.setResourceKey(req.getResourceKey());
+        return authRbacServerApi.refreshUserResource(putRefreshUserResourceReq);
     }
 
     @PutMapping(value = "/sort", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation("安防通道排序")
+    @ApiOperation("安防区域排序")
     public CommonResponse<?> sort(@RequestBody PutResourceBtMoveReq req) {
         return authRbacServerApi.btMoveKv(req);
     }
