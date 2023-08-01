@@ -1,5 +1,6 @@
 package com.runjian.device.expansion.vo.request;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
@@ -16,6 +17,9 @@ import java.util.Map;
 @Data
 public class PostVideoAreaReq {
 
+    @NotNull(message = "资源名称不能为空")
+    @ApiModelProperty("资源名称")
+    private String resourceKey;
     /**
      * 父节点id
      */
@@ -26,6 +30,6 @@ public class PostVideoAreaReq {
     /**
      * 资源Map resourceValue:resourceName
      */
-    @NotNull(message = "安防通道名称不能为空")
+    @NotNull(message = "安防区域名称不能为空")
     private String name;
 }

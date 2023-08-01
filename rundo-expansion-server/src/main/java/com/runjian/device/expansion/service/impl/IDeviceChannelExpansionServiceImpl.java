@@ -110,7 +110,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",findChannelListReq, longCommonResponse);
                 throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, longCommonResponse.getMsg());
             }
-            baseDeviceAndChannelService.commonResourceBind(channel.getVideoAreaId(),channel.getId(),channel.getChannelName());
+            baseDeviceAndChannelService.commonResourceBind(channel.getVideoAreaId(),channel.getId(),channel.getChannelName(),resourceKey);
             this.save(channel);
 
         }
@@ -123,7 +123,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
         BeanUtil.copyProperties(deviceChannelExpansionReq,deviceChannelExpansion);
         //资源修改和移动
-        baseDeviceAndChannelService.commonResourceBind(deviceChannelExpansionReq.getVideoAreaId(),deviceChannelExpansionReq.getId(),deviceChannelExpansionReq.getChannelName());
+        baseDeviceAndChannelService.commonResourceBind(deviceChannelExpansionReq.getVideoAreaId(),deviceChannelExpansionReq.getId(),deviceChannelExpansionReq.getChannelName(),resourceKey);
         baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(deviceChannelExpansionReq.getId()),deviceChannelExpansionReq.getPResourceValue());
         deviceChannelExpansionMapper.updateById(deviceChannelExpansion);
         return CommonResponse.success();
