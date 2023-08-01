@@ -69,8 +69,9 @@ public class DeviceChannelExpansionController {
 
     @PostMapping(value = "/batchDelete")
     @ApiOperation("批量删除")
-    public CommonResponse<Boolean> batchDelete(@RequestBody List<Long> idList) {
-       return deviceChannelExpansionService.removeBatch(idList);
+    public CommonResponse<Boolean> batchDelete(@RequestBody DeleteDtoReq request) {
+        validatorService.validateRequest(request);
+       return deviceChannelExpansionService.removeBatch(request.getIdList());
     }
 
     @PostMapping(value = "/list", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -91,7 +92,7 @@ public class DeviceChannelExpansionController {
     @PostMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("移动")
     public CommonResponse<Boolean> move(@RequestBody MoveReq moveReq) {
-
+        validatorService.validateRequest(moveReq);
         return CommonResponse.success(deviceChannelExpansionService.move(moveReq));
     }
 
