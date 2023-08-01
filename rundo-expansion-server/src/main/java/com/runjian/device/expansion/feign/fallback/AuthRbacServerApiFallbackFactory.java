@@ -101,12 +101,6 @@ public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AuthRba
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--fsMove操作失败",req, throwable);
                 return finalFailure;
             }
-
-            @Override
-            public CommonResponse<?> refreshUserResource(PutRefreshUserResourceReq req) {
-                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--refreshUserResource操作失败",req, throwable);
-                return finalFailure;
-            }
         };
     }
 }
