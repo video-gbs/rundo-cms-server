@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author chenjialing
@@ -88,6 +89,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     public CommonResponse<Boolean> add(FindChannelListReq findChannelListReq) {
         //进行添加
         List<DeviceChannelExpansion> channelList = new ArrayList<>();
+        ArrayList<Long> longs = new ArrayList<>();
         for (DeviceChannelExpansionAddReq deviceChannelExpansionAddReq : findChannelListReq.getChannelList()){
             DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
             deviceChannelExpansion.setId(deviceChannelExpansionAddReq.getChannelId());
@@ -97,7 +99,12 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             deviceChannelExpansion.setOnlineState(deviceChannelExpansionAddReq.getOnlineState());
             deviceChannelExpansion.setVideoAreaId(findChannelListReq.getVideoAreaId());
             channelList.add(deviceChannelExpansion);
+            longs.add(deviceChannelExpansionAddReq.getChannelId());
         }
+        LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(DeviceChannelExpansion::getId,longs);
+        List<DeviceChannelExpansion> channelDbs = deviceChannelExpansionMapper.selectList(queryWrapper);
+        List<Long> existCollect = channelDbs.stream().map(DeviceChannelExpansion::getId).collect(Collectors.toList());
         for (DeviceChannelExpansion channel : channelList){
             ArrayList<Long> ids = new ArrayList<>();
             ids.add(channel.getId());
@@ -111,7 +118,12 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, longCommonResponse.getMsg());
             }
             baseDeviceAndChannelService.commonResourceBind(channel.getVideoAreaId(),channel.getId(),channel.getChannelName());
-            this.save(channel);
+            if(existCollect.contains(channel.getId())){
+                channel.setDeleted(0);
+                deviceChannelExpansionMapper.updateById(channel);
+            }else {
+                this.save(channel);
+            }
 
         }
         return CommonResponse.success();
