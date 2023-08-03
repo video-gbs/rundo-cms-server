@@ -1,10 +1,8 @@
 package com.runjian.parsing.dao;
 
 import com.runjian.parsing.entity.DispatchInfo;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import com.runjian.parsing.entity.GatewayInfo;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -37,4 +35,13 @@ public interface DispatchMapper {
     @Select(" SELECT * FROM " + GATEWAY_DISPATCH_TABLE_NAME +
             " WHERE id = #{dispatchId} ")
     Optional<DispatchInfo> selectById(Long dispatchId);
+
+    @Update(value = {" <script> " +
+            " UPDATE " + GATEWAY_DISPATCH_TABLE_NAME +
+            " SET update_time = #{updateTime} " +
+            " <if test='ip != null'>, ip = #{ip} </if> " +
+            " <if test='port != null'>, port = #{port} </if> " +
+            " WHERE id = #{id} "+
+            " </script> "})
+    void update(DispatchInfo dispatchInfo);
 }

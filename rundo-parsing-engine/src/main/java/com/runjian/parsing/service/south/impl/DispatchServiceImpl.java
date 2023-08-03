@@ -41,18 +41,19 @@ public class DispatchServiceImpl implements DispatchService {
         Optional<DispatchInfo> dispatchInfoOp = dispatchMapper.selectBySerialNum(serialNum);
         SignInRsp signInRsp = new SignInRsp();
         DispatchInfo dispatchInfo = dispatchInfoOp.orElse(new DispatchInfo());
+        LocalDateTime nowTime = LocalDateTime.now();
+        dispatchInfo.setIp(ip);
+        dispatchInfo.setPort(port);
+        dispatchInfo.setUpdateTime(nowTime);
         if (dispatchInfoOp.isEmpty()){
-            LocalDateTime nowTime = LocalDateTime.now();
             dispatchInfo.setSerialNum(serialNum);
             dispatchInfo.setSignType(signType);
-            dispatchInfo.setIp(ip);
-            dispatchInfo.setPort(port);
             dispatchInfo.setCreateTime(nowTime);
-            dispatchInfo.setUpdateTime(nowTime);
             dispatchMapper.save(dispatchInfo);
             signInRsp.setIsFirstSignIn(true);
         } else {
             signInRsp.setIsFirstSignIn(false);
+            dispatchMapper.update(dispatchInfo);
         }
         signInRsp.setDispatchId(dispatchInfo.getId());
         PostDispatchSignInReq req = new PostDispatchSignInReq(dispatchInfo, Instant.ofEpochMilli(Long.parseLong(outTime)).atZone(ZoneId.systemDefault()).toLocalDateTime());

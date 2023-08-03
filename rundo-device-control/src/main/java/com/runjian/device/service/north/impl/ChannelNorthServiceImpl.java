@@ -61,7 +61,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Override
     public PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String name) {
         List<Long> deviceIds = deviceMapper.selectIdBySignState(SignState.SUCCESS.getCode());
-        if (deviceIds.size() == 0){
+        if (deviceIds.isEmpty()){
             return new PageInfo<>();
         }
         PageHelper.startPage(page, num);
