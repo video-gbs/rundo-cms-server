@@ -116,7 +116,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             deviceInfo.setUpdateTime(nowTime);
             deviceMapper.updateSignState(deviceInfo);
             Constant.poolExecutor.execute(() -> channelNorthService.channelSync(id));
-            messageBaseService.msgDistribute(SubMsgType.DEVICE_ADD_STATE, Map.of(deviceInfo.getId(), JSONObject.toJSONString(deviceInfo)));
+            messageBaseService.msgDistribute(SubMsgType.DEVICE_ADD_OR_DELETE_STATE, Map.of(deviceInfo.getId(), JSONObject.toJSONString(deviceInfo)));
             messageBaseService.msgDistribute(SubMsgType.DEVICE_ONLINE_STATE, Map.of(deviceInfo.getId(), deviceInfo.getOnlineState()));
             return new PostDeviceAddRsp(id, deviceInfo.getOnlineState());
         }
@@ -150,7 +150,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         deviceInfo.setUpdateTime(LocalDateTime.now());
         // 修改设备注册状态
         deviceMapper.updateSignState(deviceInfo);
-        messageBaseService.msgDistribute(SubMsgType.DEVICE_ADD_STATE, Map.of(deviceInfo.getId(), JSONObject.toJSONString(deviceInfo)));
+        messageBaseService.msgDistribute(SubMsgType.DEVICE_ADD_OR_DELETE_STATE, Map.of(deviceInfo.getId(), JSONObject.toJSONString(deviceInfo)));
         messageBaseService.msgDistribute(SubMsgType.DEVICE_ONLINE_STATE, Map.of(deviceInfo.getId(), deviceInfo.getOnlineState()));
         // 异步触发通道同步
         Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceId));
@@ -207,7 +207,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备软删除失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
-        messageBaseService.msgDistribute(SubMsgType.DEVICE_DELETE_STATE, Map.of(deviceId, CommonEnum.ENABLE.getCode()));
+        messageBaseService.msgDistribute(SubMsgType.DEVICE_ADD_OR_DELETE_STATE, Map.of(deviceId, JSONObject.toJSONString(deviceInfo)));
     }
 
     /**
@@ -225,7 +225,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
         }
-        if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.DEVICE_DELETE_STATE, Set.of(deviceId))){
+        if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.DEVICE_ADD_OR_DELETE_STATE, Set.of(deviceId))){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用使用该数据，请稍后重试");
         }
         // 删除通道信息
