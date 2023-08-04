@@ -33,7 +33,7 @@ public class PostVideoAreaReq {
      */
     @NotNull(message = "父节点value不能为空")
     @JsonProperty(value = "pResourceValue")
-    private Long pResourceValue;
+    private String pResourceValue;
 
     /**
      * 资源Map resourceValue:resourceName
