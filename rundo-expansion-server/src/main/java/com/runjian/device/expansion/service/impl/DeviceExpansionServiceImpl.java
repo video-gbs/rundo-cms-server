@@ -83,7 +83,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         DeviceAddResp data = longCommonResponse.getData();
         Long encoderId = data.getId();
 
-        baseDeviceAndChannelService.commonResourceBind(deviceExpansionReq.getVideoAreaId(),encoderId,deviceExpansionReq.getName());
+        baseDeviceAndChannelService.commonResourceBind(resourceKey,deviceExpansionReq.getPResourceValue(),encoderId,deviceExpansionReq.getName());
         DeviceExpansion deviceExpansion = new DeviceExpansion();
         BeanUtil.copyProperties(deviceExpansionReq,deviceExpansion);
         deviceExpansion.setId(data.getId());
@@ -100,7 +100,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
     public CommonResponse<Long> edit(DeviceExpansionEditReq deviceExpansionEditReq) {
         DeviceExpansion deviceExpansionDb = deviceExpansionMapper.selectById(deviceExpansionEditReq.getId());
         //资源修改和移动
-        baseDeviceAndChannelService.commonResourceBind(deviceExpansionEditReq.getVideoAreaId(),deviceExpansionEditReq.getId(),deviceExpansionEditReq.getName());
+        baseDeviceAndChannelService.commonResourceBind(resourceKey,deviceExpansionEditReq.getPResourceValue(),deviceExpansionEditReq.getId(),deviceExpansionEditReq.getName());
         baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(deviceExpansionEditReq.getId()),deviceExpansionEditReq.getPResourceValue());
 
 

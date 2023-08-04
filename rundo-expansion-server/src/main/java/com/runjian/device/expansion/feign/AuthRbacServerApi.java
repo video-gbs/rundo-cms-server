@@ -28,6 +28,13 @@ public interface AuthRbacServerApi {
     CommonResponse<?> batchAddResource(@RequestBody PostBatchResourceReq req);
 
 
+    /**
+     * 批量添加资源
+     * @param req 批量添加资源请求体
+     * @return
+     */
+    @PostMapping("/resource/batch/add/kv")
+    CommonResponse<?> batchAddResourceKv(@RequestBody PostBatchResourceKvReq req);
 
     /**
      * 修改资源

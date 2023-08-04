@@ -1,5 +1,6 @@
 package com.runjian.device.expansion.vo.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
@@ -39,9 +40,15 @@ public class DeviceExpansionReq {
 
 
     @ApiModelProperty("安防区域id")
-    @NotNull(message = "安防区域id不能为空")
-    @Range(min = 1, message = "非法安防区域id")
+//    @NotNull(message = "安防区域id不能为空")
+//    @Range(min = 1, message = "非法安防区域id")
     private Long videoAreaId;
+
+    @NotNull(message = "安防区域id的目标value不能为空")
+    @JsonProperty(value = "pResourceValue")
+    private String pResourceValue;
+
+
 
     @ApiModelProperty("ip")
     @NotNull(message = "ip不能为空")

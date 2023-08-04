@@ -12,10 +12,7 @@ import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
 import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
 import com.runjian.device.expansion.service.IBaseDeviceAndChannelService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
-import com.runjian.device.expansion.vo.feign.request.GetCatalogueResourceRsp;
-import com.runjian.device.expansion.vo.feign.request.PostBatchResourceReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceFsMoveReq;
-import com.runjian.device.expansion.vo.feign.request.ResourceFsMoveKvReq;
+import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResourceRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,17 +125,19 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     }
 
     @Override
-    public void commonResourceBind(Long videoAreaId, Long resourceId, String resourceName) {
-        PostBatchResourceReq postBatchResourceReq = new PostBatchResourceReq();
-        postBatchResourceReq.setResourcePid(videoAreaId);
-        postBatchResourceReq.setResourceType(2);
+    public void commonResourceBind(String resourceKey,String pResourceValue, Long resourceId, String resourceName) {
+        PostBatchResourceKvReq postBatchResourceKvReq = new PostBatchResourceKvReq();
+        postBatchResourceKvReq.setResourceType(2);
+        postBatchResourceKvReq.setResourceKey(resourceKey);
+        postBatchResourceKvReq.setPResourceValue(pResourceValue);
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put(resourceId.toString(), resourceName);
-        postBatchResourceReq.setResourceMap(stringStringHashMap);
-        CommonResponse<?> commonResponse = authrbacServerApi.batchAddResource(postBatchResourceReq);
+        postBatchResourceKvReq.setResourceMap(stringStringHashMap);
+
+        CommonResponse<?> commonResponse = authrbacServerApi.batchAddResourceKv(postBatchResourceKvReq);
         if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器资源绑定失败",videoAreaId, commonResponse);
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器资源绑定失败",pResourceValue, commonResponse);
             throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
         }
     }

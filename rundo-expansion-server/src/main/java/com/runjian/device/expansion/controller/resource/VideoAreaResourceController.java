@@ -37,14 +37,19 @@ public class VideoAreaResourceController {
     @ApiOperation("安防通道添加")
     public CommonResponse<?> add(@RequestBody PostVideoAreaReq req) {
         validatorService.validateRequest(req);
-        PostBatchResourceReq postBatchResourceReq = new PostBatchResourceReq();
-        postBatchResourceReq.setResourceType(1);
-        postBatchResourceReq.setResourcePid(req.getResourcePid());
+
+        PostBatchResourceKvReq postBatchResourceKvReq = new PostBatchResourceKvReq();
+        postBatchResourceKvReq.setResourceType(1);
+        postBatchResourceKvReq.setResourceKey(req.getResourceKey());
+        postBatchResourceKvReq.setPResourceValue(postBatchResourceKvReq.getPResourceValue());
+
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         String s = UuidUtils.generateUuid();
         stringStringHashMap.put(s, req.getName());
-        postBatchResourceReq.setResourceMap(stringStringHashMap);
-        return authRbacServerApi.batchAddResource(postBatchResourceReq);
+        postBatchResourceKvReq.setResourceMap(stringStringHashMap);
+        return authRbacServerApi.batchAddResourceKv(postBatchResourceKvReq);
+
+
     }
 
     @PutMapping(value = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
