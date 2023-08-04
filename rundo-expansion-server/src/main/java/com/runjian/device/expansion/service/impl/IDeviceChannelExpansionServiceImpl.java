@@ -39,10 +39,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -117,7 +114,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",findChannelListReq, longCommonResponse);
                 throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, longCommonResponse.getMsg());
             }
-            baseDeviceAndChannelService.commonResourceBind(channel.getVideoAreaId(),channel.getId(),channel.getChannelName());
+            baseDeviceAndChannelService.commonResourceBind(resourceKey,findChannelListReq.getPResourceValue(),channel.getId(),channel.getChannelName());
             if(existCollect.contains(channel.getId())){
                 channel.setDeleted(0);
                 deviceChannelExpansionMapper.updateById(channel);
@@ -135,7 +132,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
         BeanUtil.copyProperties(deviceChannelExpansionReq,deviceChannelExpansion);
         //资源修改和移动
-        baseDeviceAndChannelService.commonResourceBind(deviceChannelExpansionReq.getVideoAreaId(),deviceChannelExpansionReq.getId(),deviceChannelExpansionReq.getChannelName());
+        baseDeviceAndChannelService.commonResourceBind(resourceKey, deviceChannelExpansionReq.getPResourceValue(),deviceChannelExpansionReq.getId(),deviceChannelExpansionReq.getChannelName());
         baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(deviceChannelExpansionReq.getId()),deviceChannelExpansionReq.getPResourceValue());
         deviceChannelExpansionMapper.updateById(deviceChannelExpansion);
         return CommonResponse.success();
