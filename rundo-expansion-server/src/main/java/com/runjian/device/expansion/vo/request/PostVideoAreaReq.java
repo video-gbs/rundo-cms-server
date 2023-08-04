@@ -1,5 +1,6 @@
 package com.runjian.device.expansion.vo.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
@@ -31,6 +32,7 @@ public class PostVideoAreaReq {
      * 父节点id
      */
     @NotNull(message = "父节点value不能为空")
+    @JsonProperty(value = "pResourceValue")
     private Long pResourceValue;
 
     /**
