@@ -49,7 +49,7 @@ spring:
       pool-prepared-statements: false         # 是否開啟PSCache，並且指定每個連線上PSCache的大小
       time-between-eviction-runs-millis: 60000  # 配置間隔多久才進行一次檢測，檢測需要關閉的空閒連線，單位是毫秒
       min-evictable-idle-time-millis: 600000    # 配置一個連線在池中最小生存的時間，單位是毫秒
-      filters: config,stat,slf4j             # 配置监控统计拦截的filters，监控统计用的filter:sta, 日志用的filter:log4j, 防御sql注入的filter:wall
+      filters: config,stat,slf4j             # 配置监控统计拦截的filters，监控统计用的filter:stat, 日志用的filter:log4j, 防御sql注入的filter:wall
       filter:
         wall:
           config:
