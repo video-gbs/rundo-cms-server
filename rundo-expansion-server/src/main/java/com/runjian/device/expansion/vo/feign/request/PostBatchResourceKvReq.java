@@ -30,8 +30,7 @@ public class PostBatchResourceKvReq {
      * 资源value
      */
     @NotBlank(message = "父资源value不能为空")
-    @JsonProperty(value = "pResourceValue")
-    private String pResourceValue;
+    private String parentResourceValue;
 
     /**
      * 资源类型 1-目录 2-资源

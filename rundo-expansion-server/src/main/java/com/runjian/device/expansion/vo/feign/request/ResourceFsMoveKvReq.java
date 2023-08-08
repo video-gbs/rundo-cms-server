@@ -34,6 +34,5 @@ public class ResourceFsMoveKvReq {
      */
     @ApiModelProperty("父级资源value,后端返回的上一级的resourceValue")
     @NotNull(message = "父级资源value不能为空")
-    @JsonProperty(value = "pResourceValue")
-    private String pResourceValue;
+    private String parentResourceValue;
 }

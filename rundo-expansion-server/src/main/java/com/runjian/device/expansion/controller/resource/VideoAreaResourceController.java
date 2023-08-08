@@ -41,7 +41,7 @@ public class VideoAreaResourceController {
         PostBatchResourceKvReq postBatchResourceKvReq = new PostBatchResourceKvReq();
         postBatchResourceKvReq.setResourceType(1);
         postBatchResourceKvReq.setResourceKey(req.getResourceKey());
-        postBatchResourceKvReq.setPResourceValue(req.getPResourceValue());
+        postBatchResourceKvReq.setParentResourceValue(req.getPResourceValue());
 
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         String s = UuidUtils.generateUuid();
