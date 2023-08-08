@@ -10,6 +10,7 @@ import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.request.ChannelPtzControlReq;
 import com.runjian.device.expansion.vo.request.PostVideoAreaReq;
 import com.runjian.device.expansion.vo.request.PutVideoAreaReq;
+import com.runjian.device.expansion.vo.request.VideoResourceFsMoveKvReq;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -67,9 +68,12 @@ public class VideoAreaResourceController {
 
     @PutMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("安防通道移动")
-    public CommonResponse<?> move(@RequestBody ResourceFsMoveKvReq req) {
+    public CommonResponse<?> move(@RequestBody VideoResourceFsMoveKvReq req) {
         validatorService.validateRequest(req);
-        return authRbacServerApi.moveResourceValue(req);
+        ResourceFsMoveKvReq resourceFsMoveKvReq = new ResourceFsMoveKvReq();
+        BeanUtil.copyProperties(req,resourceFsMoveKvReq);
+        resourceFsMoveKvReq.setParentResourceValue(req.getPResourceValue());
+        return authRbacServerApi.moveResourceValue(resourceFsMoveKvReq);
     }
 
     @PutMapping(value = "/sort", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
