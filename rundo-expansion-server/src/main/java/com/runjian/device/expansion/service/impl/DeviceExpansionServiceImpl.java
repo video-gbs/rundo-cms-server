@@ -78,11 +78,15 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",deviceReq, longCommonResponse);
-            return longCommonResponse;
+            throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, longCommonResponse.getMsg());
         }
         DeviceAddResp data = longCommonResponse.getData();
         Long encoderId = data.getId();
+        DeviceExpansion oldOne = this.getById(encoderId);
 
+        if(!ObjectUtils.isEmpty(oldOne)){
+            throw new BusinessException(BusinessErrorEnums.DATA_ALREADY_EXISTED,"数据已存在，请勿重复添加");
+        }
         baseDeviceAndChannelService.commonResourceBind(resourceKey,deviceExpansionReq.getPResourceValue(),encoderId,deviceExpansionReq.getName());
         DeviceExpansion deviceExpansion = new DeviceExpansion();
         BeanUtil.copyProperties(deviceExpansionReq,deviceExpansion);
