@@ -57,16 +57,6 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     String resourceChannelKey;
 
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void removeDevice(Long id) {
-        deviceExpansionMapper.deleteById(id);
-        //删除对应的通道
-        LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
-        deviceChannelExpansionMapper.delete(lambdaQueryWrapper);
-    }
-
     @Override
     public synchronized void removeDeviceSoft(Long id) {
         TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
@@ -129,7 +119,7 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
         PostBatchResourceKvReq postBatchResourceKvReq = new PostBatchResourceKvReq();
         postBatchResourceKvReq.setResourceType(2);
         postBatchResourceKvReq.setResourceKey(resourceKey);
-        postBatchResourceKvReq.setPResourceValue(pResourceValue);
+        postBatchResourceKvReq.setParentResourceValue(pResourceValue);
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put(resourceId.toString(), resourceName);
         postBatchResourceKvReq.setResourceMap(stringStringHashMap);
@@ -143,24 +133,11 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     }
 
     @Override
-    public void commonResourceMove(Long resourceId, Long pid) {
-        PutResourceFsMoveReq putResourceFsMoveReq = new PutResourceFsMoveReq();
-        putResourceFsMoveReq.setId(resourceId);
-        putResourceFsMoveReq.setResourcePid(pid);
-        CommonResponse<?> commonResponse = authrbacServerApi.fsMove(putResourceFsMoveReq);
-        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-            //调用失败
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器资源移动失败",putResourceFsMoveReq, commonResponse);
-            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
-        }
-    }
-
-    @Override
     public void moveResourceByValue(String resourceKey, String resourceValue, String pResourceValue) {
         ResourceFsMoveKvReq resourceFsMoveKvReq = new ResourceFsMoveKvReq();
         resourceFsMoveKvReq.setResourceKey(resourceKey);
         resourceFsMoveKvReq.setResourceValue(resourceValue);
-        resourceFsMoveKvReq.setPResourceValue(pResourceValue);
+        resourceFsMoveKvReq.setParentResourceValue(pResourceValue);
         CommonResponse<?> commonResponse = authrbacServerApi.moveResourceValue(resourceFsMoveKvReq);
         if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
