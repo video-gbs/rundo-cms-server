@@ -1,5 +1,6 @@
 package com.runjian.device.expansion.vo.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
@@ -17,6 +18,7 @@ public class MoveReq {
 
     @ApiModelProperty("安防区域的resourceValue")
     @NotNull(message = "安防区域id不能为空")
+    @JsonProperty(value = "pResourceValue")
     private String pResourceValue;
 
     @ApiModelProperty("id")

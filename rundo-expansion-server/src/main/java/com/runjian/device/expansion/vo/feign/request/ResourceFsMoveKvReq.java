@@ -1,5 +1,6 @@
 package com.runjian.device.expansion.vo.feign.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -33,5 +34,6 @@ public class ResourceFsMoveKvReq {
      */
     @ApiModelProperty("父级资源value,后端返回的上一级的resourceValue")
     @NotNull(message = "父级资源value不能为空")
+    @JsonProperty(value = "pResourceValue")
     private String pResourceValue;
 }

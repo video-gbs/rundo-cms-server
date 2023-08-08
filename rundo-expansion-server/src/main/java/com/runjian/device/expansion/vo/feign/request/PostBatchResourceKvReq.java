@@ -1,5 +1,6 @@
 package com.runjian.device.expansion.vo.feign.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
@@ -29,6 +30,7 @@ public class PostBatchResourceKvReq {
      * 资源value
      */
     @NotBlank(message = "父资源value不能为空")
+    @JsonProperty(value = "pResourceValue")
     private String pResourceValue;
 
     /**
