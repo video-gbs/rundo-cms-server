@@ -57,6 +57,13 @@ public class DeviceExpansionController {
         validatorService.validateRequest(request);
         return deviceExpansionService.edit(request);
     }
+    @PutMapping(value = "/resume", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation("恢复")
+    public CommonResponse<Long> resume(@RequestBody DeviceExpansionEditReq request) {
+
+        validatorService.validateRequest(request);
+        return deviceExpansionService.edit(request);
+    }
 
     @DeleteMapping(value = "/delete",produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("删除")
