@@ -60,14 +60,19 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     @Override
     public synchronized void removeDeviceSoft(Long id) {
         TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+        //获取通道数据
+        LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
+        lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
+        List<DeviceChannelExpansion> deviceChannelExpansions = deviceChannelExpansionMapper.selectList(lambdaQueryWrapper);
         try{
             DeviceExpansion deviceExpansion = new DeviceExpansion();
             deviceExpansion.setId(id);
             deviceExpansion.setDeleted(1);
             deviceExpansionMapper.updateById(deviceExpansion);
             //删除对应的通道
-            LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-            lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
+            LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapperUpdate = new LambdaQueryWrapper<>();
+            lambdaQueryWrapperUpdate.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
             DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
             channelExpansion.setDeleted(1);
             deviceChannelExpansionMapper.update(channelExpansion,lambdaQueryWrapper);
@@ -78,12 +83,7 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
             log.error(LogTemplate.PROCESS_LOG_TEMPLATE, "设备与通道删除", "删除异常",e);
             dataSourceTransactionManager.rollback(transactionStatus);
         }
-        //获取通道数据
-        LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
-        DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
-        channelExpansion.setDeleted(0);
-        List<DeviceChannelExpansion> deviceChannelExpansions = deviceChannelExpansionMapper.selectList(lambdaQueryWrapper);
+
 
         commonDeleteByResourceValue(resourceDeviceKey,String.valueOf(id));
         if(!ObjectUtils.isEmpty(deviceChannelExpansions)){
