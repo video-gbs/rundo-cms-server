@@ -1,10 +1,9 @@
-package com.runjian.device.expansion.vo.feign.request;
+package com.runjian.device.expansion.vo.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -13,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * @date 2023/6/9 14:38
  */
 @Data
-public class ResourceFsMoveKvReq {
+public class VideoResourceFsMoveKvReq {
 
     /**
      * 资源key【必须】
@@ -34,5 +33,6 @@ public class ResourceFsMoveKvReq {
      */
     @ApiModelProperty("父级资源value,后端返回的上一级的resourceValue")
     @NotNull(message = "父级资源value不能为空")
-    private String parentResourceValue;
+    @JsonProperty(value = "pResourceValue")
+    private String pResourceValue;
 }

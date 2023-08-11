@@ -3,7 +3,8 @@ spring:
     name: device-expansion
   mvc:
     pathmatch:
-      matching-strategy: ant_path_matcher
+      matching-strategy: ANT_PATH_MATCHER
+
   cloud:
     nacos:
       server-addr: ${NACOS_SERVER:124.71.21.11:8848}
@@ -40,7 +41,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://124.71.20.118:3306/rundo_expansion_server?useUnicode=true&characterEncoding=UTF8&rewriteBatchedStatements=true&serverTimezone=PRC&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://124.71.16.209:3306/rundo_expansion_server?useUnicode=true&characterEncoding=UTF8&rewriteBatchedStatements=true&serverTimezone=PRC&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
     username: root
     password: rundomysql
     druid:
@@ -65,27 +66,36 @@ spring:
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1000
       #stat-view-servlet.url-pattern: /admin/druid/*
+    # druid管理监控页面的一些配置
+
+rj-druid-manage:
+  allow:                        # 访问druid监控页面的IP白名单
+  deny: 192.168.1.100           # 访问druid监控页面IP黑名单
+  loginUsername: rjAdmin          # 访问druid监控页面账号
+  loginPassword: rj@2022     # 访问druid监控页面密码
+  resetEnable: false            # 是否能够重置数据 禁用HTML页面上的“Reset All”功能
 
   # rabbitmq 配置
-  rabbitmq:
-    host: 124.71.20.118
-    port: 5672
-    username: wvp
-    password: wvp12345678
-    publisher-returns: true      # 消息发送到交换机确认机制，是否确认回调
-    #        publisher-confirm-type: correlated
-    template:
-      mandatory: true           #不可达消息是否回调,false时会忽略掉spring.rabbitmq.publisher-returns属性的值
-    listener:
-      simple:
-        concurrency: 8            # 指定最小的消费者数量
-        max-concurrency: 32       # 指定最大的消费者数量
-        acknowledge-mode: manual  # 采用手动应答
-        retry:
-          enabled: true           # 是否支持重试
+#  rabbitmq:
+#    host: 124.71.20.118
+#    port: 5672
+#    username: wvp
+#    password: wvp12345678
+#    publisher-returns: true      # 消息发送到交换机确认机制，是否确认回调
+#    #        publisher-confirm-type: correlated
+#    template:
+#      mandatory: true           #不可达消息是否回调,false时会忽略掉spring.rabbitmq.publisher-returns属性的值
+#    listener:
+#      simple:
+#        concurrency: 8            # 指定最小的消费者数量
+#        max-concurrency: 32       # 指定最大的消费者数量
+#        acknowledge-mode: manual  # 采用手动应答
+#        retry:
+#          enabled: true           # 是否支持重试
 
 server:
   port: 8060
+
 
 feign:
   circuitbreaker:
