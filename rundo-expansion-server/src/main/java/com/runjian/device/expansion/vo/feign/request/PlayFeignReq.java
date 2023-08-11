@@ -23,7 +23,7 @@ public class PlayFeignReq {
     private Boolean ssrcCheck = true;
 
     @ApiModelProperty("推流模式，1UDP，2TCP")
-    private Integer streamType = 1;
+    private Integer streamType = 2;
 
     private Integer playType = 2;
 
@@ -32,6 +32,13 @@ public class PlayFeignReq {
 
     @ApiModelProperty("无人观看是否开启，0关，1开")
     private Integer autoCloseState = 1;
+
+    /**
+     * 码流id(主子码流)
+     */
+    @NotNull(message = "主子码流选择不能为空")
+    @Range(min = 0, message = "非法主子码流")
+    private Integer bitStreamId = 0;
 
 
 

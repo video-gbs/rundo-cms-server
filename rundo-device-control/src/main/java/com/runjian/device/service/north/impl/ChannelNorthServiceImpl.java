@@ -61,7 +61,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Override
     public PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String name) {
         List<Long> deviceIds = deviceMapper.selectIdBySignState(SignState.SUCCESS.getCode());
-        if (deviceIds.size() == 0){
+        if (deviceIds.isEmpty()){
             return new PageInfo<>();
         }
         PageHelper.startPage(page, num);
@@ -90,7 +90,10 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
         ChannelSyncRsp channelSyncRsp = JSONObject.parseObject(JSONObject.toJSONString(response.getData()), ChannelSyncRsp.class);
-        channelSyncRsp.setNum(channelSyncRsp.getChannelDetailList().size());
+        List<ChannelDetailRsp> channelDetailList = channelSyncRsp.getChannelDetailList();
+        channelSyncRsp.setNum(channelDetailList.size());
+        Set<Long> channelIds = channelDetailList.stream().map(ChannelDetailRsp::getChannelId).collect(Collectors.toSet());
+        boolean checkRepeat = !Objects.equals(channelDetailList.size(), channelIds.size());
         // 判断是否有通道
         if (channelSyncRsp.getNum() > 0) {
             List<ChannelInfo> channelSaveList = new ArrayList<>(channelSyncRsp.getNum());
@@ -101,7 +104,11 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
             LocalDateTime nowTime = LocalDateTime.now();
             // 循环通道进行添加
-            for (ChannelDetailRsp rsp : channelSyncRsp.getChannelDetailList()) {
+            for (ChannelDetailRsp rsp : channelDetailList) {
+                if (checkRepeat && !channelIds.remove(rsp.getChannelId())){
+                    continue;
+                }
+
                 Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(rsp.getChannelId());
                 ChannelInfo channelInfo = channelInfoOp.orElse(new ChannelInfo());
                 // 判断通道信息是否已存在
@@ -180,7 +187,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             channelInfo.setUpdateTime(LocalDateTime.now());
         }
         channelMapper.batchUpdateSignState(channelInfoList);
-        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, JSONObject::toJSONString)));
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_OR_DELETE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, JSONObject::toJSONString)));
         messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
     }
 
@@ -208,7 +215,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道软删除失败", commonResponse.getData(), commonResponse.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
         }
-        messageBaseService.msgDistribute(SubMsgType.CHANNEL_DELETE_STATE, Map.of(channelId, CommonEnum.ENABLE.getCode()));
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_OR_DELETE_STATE, Map.of(channelId, JSONObject.toJSONString(channelInfo)));
     }
 
     @Override
@@ -223,7 +230,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
         }
-        if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, Set.of(channelId))){
+        if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_ADD_OR_DELETE_STATE, Set.of(channelId))){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用在使用该数据，请稍后再删除");
         }
         channelMapper.deleteById(channelId);
@@ -243,15 +250,15 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Transactional(rollbackFor = Exception.class)
     public void channelDeleteByDeviceId(Long deviceId, Boolean isDeleteData) {
         List<ChannelInfo> channelInfoList = channelMapper.selectByDeviceId(deviceId);
-        if (channelInfoList.size() == 0) {
+        if (channelInfoList.isEmpty()) {
             return;
         }
         if (isDeleteData) {
             List<Long> channelInfoIdList = channelInfoList.stream().map(ChannelInfo::getId).collect(Collectors.toList());
-            if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_DELETE_STATE, new HashSet<>(channelInfoIdList))){
+            if (!messageBaseService.checkMsgConsumeFinish(SubMsgType.CHANNEL_ADD_OR_DELETE_STATE, new HashSet<>(channelInfoIdList))){
                 throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "存在应用使用该设备下的通道，请稍后重试");
             }
-            if (channelInfoIdList.size() > 0) {
+            if (!channelInfoIdList.isEmpty()) {
                 detailMapper.deleteByDcIdsAndType(channelInfoIdList, DetailType.CHANNEL.getCode());
             }
             channelMapper.deleteByDeviceId(deviceId);
@@ -262,7 +269,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                 channelInfo.setUpdateTime(nowTime);
             });
             channelMapper.batchUpdateSignState(channelInfoList);
-            messageBaseService.msgDistribute(SubMsgType.CHANNEL_DELETE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, deleted -> CommonEnum.ENABLE.getCode())));
+            messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_OR_DELETE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, JSONObject::toJSONString)));
         }
 
 

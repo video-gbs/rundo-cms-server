@@ -28,10 +28,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -255,10 +252,11 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         JSONArray objects = jsonData.getJSONArray(StandardName.CHANNEL_SYNC_LIST);
         GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
         jsonData.put(StandardName.DEVICE_ID, gatewayTaskInfo.getDeviceId());
-        List<ChannelInfo> channelInfoList = new ArrayList<>(objects.size());
         RLock lock = redissonClient.getLock(MarkConstant.REDIS_CHANNEL_SYNC_LOCK + gatewayTaskInfo.getDeviceId());
         try{
             lock.lock(15, TimeUnit.SECONDS);
+            List<ChannelInfo> channelInfoList = new ArrayList<>(objects.size());
+            List<Integer> addObjectIndex = new ArrayList<>(objects.size());
             for (int i = 0; i < objects.size(); i++) {
                 // 转换数据
                 JSONObject jsonObject = channelSyncConvert(objects.getJSONObject(i));
@@ -274,14 +272,20 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
                     channelInfo.setCreateTime(nowTime);
                     channelInfo.setUpdateTime(nowTime);
                     channelInfoList.add(channelInfo);
+                    addObjectIndex.add(i);
+                }else {
+                    jsonObject.put(StandardName.CHANNEL_ID, channelInfo.getId());
                 }
                 jsonObject.put(StandardName.DEVICE_ID, channelInfo.getDeviceId());
-                jsonObject.put(StandardName.CHANNEL_ID, channelInfo.getId());
             }
             if (channelInfoList.size() > 0){
                 TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
                 try{
                     channelMapper.batchSave(channelInfoList);
+                    for (int i = 0; i < addObjectIndex.size(); i++){
+                        JSONObject jsonObject = objects.getJSONObject(addObjectIndex.get(i));
+                        jsonObject.put(StandardName.CHANNEL_ID, channelInfoList.get(i).getId());
+                    }
                     dataSourceTransactionManager.commit(transactionStatus);
                 }catch (Exception ex){
                     dataSourceTransactionManager.rollback(transactionStatus);

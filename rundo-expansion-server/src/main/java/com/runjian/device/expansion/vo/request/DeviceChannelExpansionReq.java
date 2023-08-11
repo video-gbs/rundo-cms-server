@@ -3,6 +3,7 @@ package com.runjian.device.expansion.vo.request;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -53,6 +54,11 @@ public class DeviceChannelExpansionReq {
     @Range(min = 1, message = "非法安防区域id")
     private Long videoAreaId;
 
+
+    @NotNull(message = "安防区域id的目标value不能为空")
+    @ApiModelProperty("安防区域id的目标value")
+    @JsonProperty(value = "pResourceValue")
+    private String pResourceValue;
 
     @ApiModelProperty("通道编码")
     private String gb28181Code;

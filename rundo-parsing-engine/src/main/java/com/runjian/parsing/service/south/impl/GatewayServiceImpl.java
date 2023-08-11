@@ -47,20 +47,21 @@ public class GatewayServiceImpl implements GatewayService {
         Optional<GatewayInfo> gatewayInfoOp = gatewayMapper.selectBySerialNum(serialNum);
         SignInRsp signInRsp = new SignInRsp();
         GatewayInfo gatewayInfo = gatewayInfoOp.orElse(new GatewayInfo());
+        LocalDateTime nowTime = LocalDateTime.now();
+        gatewayInfo.setIp(ip);
+        gatewayInfo.setPort(port);
+        gatewayInfo.setUpdateTime(nowTime);
         if (gatewayInfoOp.isEmpty()){
-            LocalDateTime nowTime = LocalDateTime.now();
             gatewayInfo.setSerialNum(serialNum);
             gatewayInfo.setSignType(signType);
             gatewayInfo.setGatewayType(gatewayType);
             gatewayInfo.setProtocol(protocol);
-            gatewayInfo.setIp(ip);
-            gatewayInfo.setPort(port);
             gatewayInfo.setCreateTime(nowTime);
-            gatewayInfo.setUpdateTime(nowTime);
             gatewayMapper.save(gatewayInfo);
             signInRsp.setIsFirstSignIn(true);
         }else {
             signInRsp.setIsFirstSignIn(false);
+            gatewayMapper.update(gatewayInfo);
         }
         signInRsp.setGatewayId(gatewayInfo.getId());
         PostGatewaySignInReq req = new PostGatewaySignInReq(gatewayInfo, Instant.ofEpochMilli(Long.parseLong(outTime)).atZone(ZoneId.systemDefault()).toLocalDateTime());

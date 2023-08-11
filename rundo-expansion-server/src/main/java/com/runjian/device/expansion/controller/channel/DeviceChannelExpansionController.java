@@ -6,6 +6,8 @@ import com.runjian.device.expansion.aspect.annotation.ChannelStatusPoint;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
+import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
+import com.runjian.device.expansion.vo.feign.response.VideoRecordRsp;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
@@ -15,9 +17,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -35,6 +40,9 @@ public class DeviceChannelExpansionController {
 
     @Autowired
     private IDeviceChannelExpansionService deviceChannelExpansionService;
+
+    @Value("${resourceKeys.channelKey:safety_channel}")
+    String resourceKey;
 
     @PostMapping(value = "/add",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("添加接口")
@@ -61,8 +69,9 @@ public class DeviceChannelExpansionController {
 
     @PostMapping(value = "/batchDelete")
     @ApiOperation("批量删除")
-    public CommonResponse<Boolean> batchDelete(@RequestBody List<Long> idList) {
-       return deviceChannelExpansionService.removeBatch(idList);
+    public CommonResponse<Boolean> batchDelete(@RequestBody DeleteDtoReq request) {
+        validatorService.validateRequest(request);
+       return deviceChannelExpansionService.removeBatch(request.getIdList());
     }
 
     @PostMapping(value = "/list", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -83,7 +92,7 @@ public class DeviceChannelExpansionController {
     @PostMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("移动")
     public CommonResponse<Boolean> move(@RequestBody MoveReq moveReq) {
-
+        validatorService.validateRequest(moveReq);
         return CommonResponse.success(deviceChannelExpansionService.move(moveReq));
     }
 
@@ -95,10 +104,37 @@ public class DeviceChannelExpansionController {
     }
 
     @GetMapping(value = "/playList", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation("播放列表")
+    @ApiOperation("直播--播放列表")
     @ChannelStatusPoint
     public CommonResponse<List<DeviceChannelExpansion>> playList(@RequestParam Long videoAreaId) {
 
         return CommonResponse.success(deviceChannelExpansionService.playList(videoAreaId));
+    }
+
+    @GetMapping(value = "/playBackList", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation("回放--播放列表")
+    @ChannelStatusPoint
+    public CommonResponse<List<DeviceChannelExpansion>> playBackList(@RequestParam Long videoAreaId) {
+
+        return CommonResponse.success(deviceChannelExpansionService.playList(videoAreaId));
+    }
+
+    /**
+     * 视频回放
+     * @param channelId 回放请求体
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @return 视频播放返回体
+     */
+    @ApiOperation("视频回放录像文件列表")
+    @GetMapping("/record")
+    public CommonResponse<VideoRecordRsp> videoRecordInfo(@RequestParam Long channelId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime){
+        return deviceChannelExpansionService.channelRecord(channelId, startTime, endTime);
+    }
+
+    @ApiOperation("安防通道列表")
+    @GetMapping("/videoAreaList")
+    public CommonResponse<Object> videoAreaList(){
+        return deviceChannelExpansionService.videoAreaList(resourceKey);
     }
 }

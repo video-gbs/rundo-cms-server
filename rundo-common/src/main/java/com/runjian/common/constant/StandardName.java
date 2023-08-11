@@ -261,4 +261,14 @@ public class StandardName {
 
 
     public static final String CHANNEL_ID_LIST = "channelIdList";
+
+    /**
+     * 网关协议
+     */
+    public static final String GATEWAY_PROTOCOL = "gatewayProtocol";
+
+    /**
+     * 码流id
+     */
+    public static final String STREAM_BIT_STREAM_ID = "bitStreamId";
 }

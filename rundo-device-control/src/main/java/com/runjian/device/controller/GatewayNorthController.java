@@ -10,6 +10,7 @@ import com.runjian.device.vo.request.PutGatewayReq;
 import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
+import com.runjian.device.vo.response.GetGatewayRsp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,7 +61,7 @@ public class GatewayNorthController {
      * @return
      */
     @GetMapping("/name")
-    public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(Long gatewayId){
+    public CommonResponse<List<GetGatewayNameRsp>> getGatewayName(@RequestParam(required = false) Long gatewayId){
         return CommonResponse.success(gatewayNorthService.getGatewayNameList(gatewayId));
     }
 
@@ -70,7 +71,7 @@ public class GatewayNorthController {
      * @return
      */
     @GetMapping("/id/channel")
-    public CommonResponse<Long> getGatewayId(@RequestParam Long channelId){
+    public CommonResponse<GetGatewayRsp> getGatewayId(@RequestParam Long channelId){
         return CommonResponse.success(gatewayNorthService.getGatewayInfoByChannelId(channelId));
     }
 

@@ -2,6 +2,7 @@ package com.runjian.device.expansion.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.device.expansion.vo.feign.request.PutStreamOperationReq;
 import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.PlayBackReq;
 import com.runjian.device.expansion.vo.request.PlayReq;
@@ -24,4 +25,11 @@ public interface IPlayService {
      * @return
      */
     CommonResponse<StreamInfo> playBack(PlayBackReq playBackReq);
+
+    /**
+     * 流停止
+     * @param req
+     * @return
+     */
+    CommonResponse<?> stopPlay(PutStreamOperationReq req);
 }

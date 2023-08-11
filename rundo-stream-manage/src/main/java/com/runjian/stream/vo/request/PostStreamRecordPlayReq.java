@@ -79,4 +79,11 @@ public class PostStreamRecordPlayReq {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private LocalDateTime endTime;
+
+    /**
+     * 码流id(主子码流)
+     */
+    @NotNull(message = "主子码流选择不能为空")
+    @Range(min = 0, message = "非法主子码流")
+    private Integer bitStreamId;
 }

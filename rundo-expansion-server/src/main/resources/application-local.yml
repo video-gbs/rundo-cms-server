@@ -98,6 +98,9 @@ feign:
         loggerLevel: basic
 
 
+resourceKeys:
+  deviceKey: safety_device
+  channelKey: safety_channel
 
 
 # [可选] 日志配置, 一般不需要改

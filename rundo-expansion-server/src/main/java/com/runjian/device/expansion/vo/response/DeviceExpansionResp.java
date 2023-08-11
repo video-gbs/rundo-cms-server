@@ -46,6 +46,8 @@ public class DeviceExpansionResp {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long videoAreaId;
 
+
+
     @ApiModelProperty("所属区域")
     private String areaNames;
 

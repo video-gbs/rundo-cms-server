@@ -4,10 +4,6 @@ import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.vo.feign.DeviceControlReq;
-import com.runjian.device.vo.response.ChannelSyncRsp;
-import com.runjian.device.vo.response.DeviceSyncRsp;
-import com.runjian.device.vo.response.VideoPlayRsp;
-import com.runjian.device.vo.response.VideoRecordRsp;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.stereotype.Component;
 

@@ -28,6 +28,6 @@ public interface DeviceChannelExpansionMapper extends BaseMapper<DeviceChannelEx
      * @param deviceChannelExpansionListReq
      * @return
      */
-    Page<DeviceChannelExpansionResp> listPage(Page<DeviceChannelExpansion> page, DeviceChannelExpansionListReq deviceChannelExpansionListReq, List<Long> videaAreaIdList);
+    Page<DeviceChannelExpansionResp> listPage(Page<DeviceChannelExpansion> page, DeviceChannelExpansionListReq deviceChannelExpansionListReq, List<Long> idList);
 
 }

@@ -7,6 +7,7 @@ import com.runjian.device.expansion.feign.StreamManageApi;
 import com.runjian.device.expansion.service.IPlayService;
 import com.runjian.device.expansion.vo.feign.request.PlayBackFeignReq;
 import com.runjian.device.expansion.vo.feign.request.PlayFeignReq;
+import com.runjian.device.expansion.vo.feign.request.PutStreamOperationReq;
 import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.PlayBackReq;
 import com.runjian.device.expansion.vo.request.PlayReq;
@@ -38,5 +39,10 @@ public class PlayServiceImpl implements IPlayService {
         PlayBackFeignReq playBackFeignReq = new PlayBackFeignReq();
         BeanUtil.copyProperties(playBackReq,playBackFeignReq);
         return streamManageApi.playBack(playBackFeignReq);
+    }
+
+    @Override
+    public CommonResponse<?> stopPlay(PutStreamOperationReq req) {
+        return streamManageApi.stopPlay(req);
     }
 }

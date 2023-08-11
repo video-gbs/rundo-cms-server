@@ -4,6 +4,7 @@ import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.vo.response.GetGatewayByIdsRsp;
 import com.runjian.device.vo.response.GetGatewayNameRsp;
 import com.runjian.device.vo.response.GetGatewayPageRsp;
+import com.runjian.device.vo.response.GetGatewayRsp;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -63,11 +64,6 @@ public interface GatewayMapper {
             " WHERE id = #{gatewayId} ")
     void updateOnlineState(Long gatewayId, Integer onlineState, LocalDateTime updateTime);
 
-    @Update(" UPDATE "  + GATEWAY_TABLE_NAME +
-            " SET update_time = #{updateTime}, " +
-            " online_state = #{onlineState} ")
-    void setAllOnlineState(Integer onlineState, LocalDateTime updateTime);
-
     @Select(" <script> " +
             " SELECT id, name, protocol FROM " + GATEWAY_TABLE_NAME+
             " WHERE 1=1 " +
@@ -92,17 +88,13 @@ public interface GatewayMapper {
             " </script> ")
     List<GetGatewayByIdsRsp> selectByIds(List<Long> gatewayIds, Boolean isIn, String name);
 
-
-    @Select(" <script> " +
-            " SELECT * FROM " + GATEWAY_TABLE_NAME +
-            " WHERE 1=1 "+
-            " <if test=\"name != null\" > AND name LIKE CONCAT('%', #{name}, '%') </if>" +
-            " </script> ")
-    List<GetGatewayByIdsRsp> selectByName(String name);
-
-    @Select(" <script> " +
-            " SELECT id FROM " + GATEWAY_TABLE_NAME +
-            " WHERE online_state = #{onlineState} "+
-            " </script> ")
+    @Select(" SELECT id FROM " + GATEWAY_TABLE_NAME +
+            " WHERE online_state = #{onlineState} ")
     Set<Long> selectIdByOnlineState(Integer onlineState);
+
+    @Select(" SELECT * FROM " + GATEWAY_TABLE_NAME + " gt " +
+            " LEFT JOIN " + DeviceMapper.DEVICE_TABLE_NAME + " dt ON dt.gateway_id = gt.id " +
+            " LEFT JOIN " + ChannelMapper.CHANNEL_TABLE_NAME + " ct ON ct.device_id = dt.id " +
+            " WHERE ct.id = #{channelId} ")
+    GetGatewayRsp selectByChannelId(Long channelId);
 }

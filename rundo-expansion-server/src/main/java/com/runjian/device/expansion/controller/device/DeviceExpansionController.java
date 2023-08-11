@@ -1,10 +1,13 @@
 package com.runjian.device.expansion.controller.device;
 
+import com.runjian.common.aspect.annotation.BlankStringValid;
+import com.runjian.common.aspect.annotation.IllegalStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.expansion.aspect.annotation.DeviceStatusPoint;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.vo.feign.response.DeviceAddResp;
+import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
@@ -12,10 +15,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 设备controller
@@ -32,6 +40,10 @@ public class DeviceExpansionController {
 
     @Autowired
     private IDeviceExpansionService deviceExpansionService;
+
+
+    @Value("${resourceKeys.deviceKey:safety_device}")
+    String resourceKey;
 
     @PostMapping(value = "/add",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("添加接口")
@@ -58,23 +70,58 @@ public class DeviceExpansionController {
 
     @PostMapping(value = "/batchDelete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("批量删除")
-    public CommonResponse<Boolean> batchDelete(@RequestBody List<Long> idList) {
-       return deviceExpansionService.removeBatch(idList);
+    public CommonResponse<Boolean> batchDelete(@RequestBody DeleteDtoReq req) {
+        validatorService.validateRequest(req);
+       return deviceExpansionService.removeBatch(req.getIdList());
     }
 
     @PostMapping(value = "/list", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("列表")
     @DeviceStatusPoint
-    public CommonResponse<PageResp<DeviceExpansionResp>> list(@RequestBody DeviceExpansionListReq deviceExpansionListReq) {
-
+    public CommonResponse<PageResp<DeviceExpansionResp>> list(@RequestBody DeviceExpansionListReq deviceExpansionListReq, HttpServletRequest request) {
+        Map<String, String> headerMap = new HashMap<>();
+        Enumeration<String> enumeration = request.getHeaderNames();
+        while (enumeration.hasMoreElements()) {
+            String name	= enumeration.nextElement();
+            String value = request.getHeader(name);
+            headerMap.put(name, value);
+        }
         return CommonResponse.success(deviceExpansionService.list(deviceExpansionListReq));
     }
 
     @PostMapping(value = "/move", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("移动")
     public CommonResponse<Boolean> move(@RequestBody MoveReq deviceExpansionMoveReq) {
-
+        validatorService.validateRequest(deviceExpansionMoveReq);
         return CommonResponse.success(deviceExpansionService.move(deviceExpansionMoveReq));
+    }
+
+
+    /**
+     * 设备分页获取
+     * @param page 页码
+     * @param num 每页数据量
+     * @param signState 注册状态
+     * @param deviceName 设备名称
+     * @param ip ip地址
+     * @return
+     */
+    @ApiOperation("待注册列表")
+    @GetMapping("/unregister/list")
+    @BlankStringValid
+    @IllegalStringValid
+    public CommonResponse<Object> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Integer signState, String deviceName, String ip){
+
+        return CommonResponse.success(deviceExpansionService.getDeviceByPage(page, num, signState, deviceName, ip));
+
+
+    }
+
+
+    @ApiOperation("设备--安防通道列表")
+    @GetMapping("/videoAreaList")
+    public CommonResponse<Object> videoAreaList(){
+        return deviceExpansionService.videoAreaList(resourceKey);
     }
 
 

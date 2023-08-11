@@ -2,36 +2,34 @@ package com.runjian.device.expansion.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
-import com.runjian.common.constant.MarkConstant;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
 import com.runjian.device.expansion.entity.DeviceExpansion;
+import com.runjian.device.expansion.feign.AuthRbacServerApi;
 import com.runjian.device.expansion.feign.AuthServerApi;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
+import com.runjian.device.expansion.service.IBaseDeviceAndChannelService;
 import com.runjian.device.expansion.service.IDeviceChannelExpansionService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
 import com.runjian.device.expansion.utils.RedisCommonUtil;
+import com.runjian.device.expansion.vo.feign.request.GetCatalogueResourceRsp;
 import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
-import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
-import com.runjian.device.expansion.vo.feign.response.GetChannelByPageRsp;
-import com.runjian.device.expansion.vo.feign.response.PageListResp;
-import com.runjian.device.expansion.vo.feign.response.VideoAreaResp;
+import com.runjian.device.expansion.vo.feign.response.*;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
-import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
@@ -40,12 +38,14 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author chenjialing
@@ -72,16 +72,24 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     AuthServerApi authServerApi;
 
     @Autowired
+    AuthRbacServerApi authRbacServerApi;
+
+    @Autowired
     RedissonClient redissonClient;
 
     @Autowired
     RedisTemplate redisTemplate;
 
+    @Autowired
+    IBaseDeviceAndChannelService baseDeviceAndChannelService;
+
+    @Value("${resourceKeys.channelKey:safety_channel}")
+    String resourceKey;
     @Override
     public CommonResponse<Boolean> add(FindChannelListReq findChannelListReq) {
         //进行添加
         List<DeviceChannelExpansion> channelList = new ArrayList<>();
-        ArrayList<Long> ids = new ArrayList<>();
+        ArrayList<Long> longs = new ArrayList<>();
         for (DeviceChannelExpansionAddReq deviceChannelExpansionAddReq : findChannelListReq.getChannelList()){
             DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
             deviceChannelExpansion.setId(deviceChannelExpansionAddReq.getChannelId());
@@ -91,35 +99,44 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             deviceChannelExpansion.setOnlineState(deviceChannelExpansionAddReq.getOnlineState());
             deviceChannelExpansion.setVideoAreaId(findChannelListReq.getVideoAreaId());
             channelList.add(deviceChannelExpansion);
-            ids.add(deviceChannelExpansionAddReq.getChannelId());
+            longs.add(deviceChannelExpansionAddReq.getChannelId());
         }
-        TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-        try{
-            this.saveBatch(channelList);
+        LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(DeviceChannelExpansion::getId,longs);
+        List<DeviceChannelExpansion> channelDbs = deviceChannelExpansionMapper.selectList(queryWrapper);
+        List<Long> existCollect = channelDbs.stream().map(DeviceChannelExpansion::getId).collect(Collectors.toList());
+        for (DeviceChannelExpansion channel : channelList){
+            ArrayList<Long> ids = new ArrayList<>();
+            ids.add(channel.getId());
             //通知控制服务修改添加状态
             PutChannelSignSuccessReq putChannelSignSuccessReq = new PutChannelSignSuccessReq();
             putChannelSignSuccessReq.setChannelIdList(ids);
             CommonResponse<Boolean> longCommonResponse = channelControlApi.channelSignSuccess(putChannelSignSuccessReq);
             if(longCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-                dataSourceTransactionManager.rollback(transactionStatus);
                 //调用失败
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",findChannelListReq, longCommonResponse);
-                return longCommonResponse;
+                throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, longCommonResponse.getMsg());
             }
-            dataSourceTransactionManager.commit(transactionStatus);
-        }catch(Exception e){
-            dataSourceTransactionManager.rollback(transactionStatus);
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--添加异常",findChannelListReq, e);
-            throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR,e.getMessage());
-        }
+            baseDeviceAndChannelService.commonResourceBind(channel.getVideoAreaId(),channel.getId(),channel.getChannelName());
+            if(existCollect.contains(channel.getId())){
+                channel.setDeleted(0);
+                deviceChannelExpansionMapper.updateById(channel);
+            }else {
+                this.save(channel);
+            }
 
+        }
         return CommonResponse.success();
     }
 
     @Override
     public CommonResponse<Boolean> edit(DeviceChannelExpansionReq deviceChannelExpansionReq) {
+        DeviceChannelExpansion channelExpansionDb = deviceChannelExpansionMapper.selectById(deviceChannelExpansionReq.getId());
         DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
         BeanUtil.copyProperties(deviceChannelExpansionReq,deviceChannelExpansion);
+        //资源修改和移动
+        baseDeviceAndChannelService.commonResourceBind(deviceChannelExpansionReq.getVideoAreaId(),deviceChannelExpansionReq.getId(),deviceChannelExpansionReq.getChannelName());
+        baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(deviceChannelExpansionReq.getId()),deviceChannelExpansionReq.getPResourceValue());
         deviceChannelExpansionMapper.updateById(deviceChannelExpansion);
         return CommonResponse.success();
     }
@@ -142,6 +159,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
             return booleanCommonResponse;
         }
         dataSourceTransactionManager.commit(transactionStatus);
+        baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
         return CommonResponse.success();
     }
 
@@ -161,6 +179,8 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 return booleanCommonResponse;
             }
             dataSourceTransactionManager.commit(transactionStatus);
+            baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
+
 
         }
 
@@ -169,57 +189,44 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Override
     public PageResp<DeviceChannelExpansionResp> list(DeviceChannelExpansionListReq deviceChannelExpansionListReq) {
-        //安防区域的节点id
-        List<Long> areaIdsArr = new ArrayList<>();
-        VideoAreaResp videoAreaData = new VideoAreaResp();
-        List<VideoAreaResp> videoAreaRespList = new ArrayList<>();
-        if(deviceChannelExpansionListReq.getIncludeEquipment()){
-            //安防区域不得为空
+        //获取安防通道资源
+        Long videoAreaId = deviceChannelExpansionListReq.getVideoAreaId();
+        Boolean includeEquipment = deviceChannelExpansionListReq.getIncludeEquipment();
+        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId,includeEquipment);
+        if(catalogueResourceRsp.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
 
-            CommonResponse<List<VideoAreaResp>> videoAraeList = authServerApi.getVideoAraeList(deviceChannelExpansionListReq.getVideoAreaId());
-            if(CollectionUtils.isEmpty(videoAraeList.getData())){
-                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS);
-
-            }
-            videoAreaRespList = videoAraeList.getData();
-            areaIdsArr = videoAreaRespList.stream().map(VideoAreaResp::getId).collect(Collectors.toList());
-        }else {
-            if(ObjectUtils.isEmpty(deviceChannelExpansionListReq.getVideoAreaId())){
-                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
-            }
-            CommonResponse<VideoAreaResp> videoAraeInfo = authServerApi.getVideoAraeInfo(deviceChannelExpansionListReq.getVideoAreaId());
-            if(ObjectUtils.isEmpty(videoAraeInfo.getData())){
-                throw new BusinessException(BusinessErrorEnums.USER_FORBID_ACCESS);
-
-            }
-            videoAreaData = videoAraeInfo.getData();
-            areaIdsArr.add(videoAreaData.getId());
+            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, catalogueResourceRsp.getMsg());
         }
+        List<GetCatalogueResourceRsp> channelList = catalogueResourceRsp.getData();
+        ArrayList<Long> longs = new ArrayList<>();
+        //获取全部的资源树id
+        for (GetCatalogueResourceRsp one : channelList){
+            longs.add(Long.parseLong(one.getResourceValue()));
+        }
+        PageResp<DeviceChannelExpansionResp> listPageResp = new PageResp<>();
+        if(ObjectUtils.isEmpty(longs)){
+            //数据不存在直接返回
+            listPageResp.setCurrent(1);
+            listPageResp.setSize(10);
+            listPageResp.setTotal(0);
+            listPageResp.setRecords(null);
+            return listPageResp;
+        }
+
         Page<DeviceChannelExpansion> page = new Page<>(deviceChannelExpansionListReq.getPageNum(), deviceChannelExpansionListReq.getPageSize());
-        Page<DeviceChannelExpansionResp> channelExpansionPage = deviceChannelExpansionMapper.listPage(page,deviceChannelExpansionListReq,areaIdsArr);
+        Page<DeviceChannelExpansionResp> channelExpansionPage = deviceChannelExpansionMapper.listPage(page,deviceChannelExpansionListReq,longs);
 
         List<DeviceChannelExpansionResp> records = channelExpansionPage.getRecords();
         if(!CollectionUtils.isEmpty(records)){
-            //拼接所属区域
-            if(deviceChannelExpansionListReq.getIncludeEquipment()){
+            for (DeviceChannelExpansionResp channelExpansion: records){
+                for (GetCatalogueResourceRsp videoAreaResp: channelList){
+                    if(Long.parseLong(videoAreaResp.getResourceValue()) == channelExpansion.getId()){
+                        channelExpansion.setAreaNames(videoAreaResp.getLevelName());
 
-                for (DeviceChannelExpansionResp channelExpansion: records){
-                    for (VideoAreaResp videoAreaResp: videoAreaRespList){
-                        if(videoAreaResp.getId().equals(channelExpansion.getVideoAreaId())){
-                            channelExpansion.setAreaNames(videoAreaResp.getAreaNames());
-
-                        }
                     }
                 }
-
-            }else {
-                for (DeviceChannelExpansionResp channelExpansion: records){
-                    channelExpansion.setAreaNames(videoAreaData.getAreaNames());
-                }
             }
-
         }
-        PageResp<DeviceChannelExpansionResp> listPageResp = new PageResp<>();
         listPageResp.setCurrent(channelExpansionPage.getCurrent());
         listPageResp.setSize(channelExpansionPage.getSize());
         listPageResp.setTotal(channelExpansionPage.getTotal());
@@ -271,9 +278,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     public Boolean move(MoveReq moveReq) {
         DeviceChannelExpansion deviceExpansion = new DeviceChannelExpansion();
         moveReq.getIdList().forEach(id->{
-            deviceExpansion.setVideoAreaId(moveReq.getVideoAreaId());
-            deviceExpansion.setId(id);
-            deviceChannelExpansionMapper.updateById(deviceExpansion);
+            baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(id),moveReq.getPResourceValue());
         });
 
         return true;
@@ -325,11 +330,40 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Override
     public List<DeviceChannelExpansion> playList(Long videoAreaId) {
+        //获取全部的资源信息
+        CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId,false);
+        if(catalogueResourceRsp.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+
+            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, catalogueResourceRsp.getMsg());
+        }
+        List<GetCatalogueResourceRsp> channelList = catalogueResourceRsp.getData();
+        ArrayList<Long> longs = new ArrayList<>();
+        //获取全部的资源树id
+        for (GetCatalogueResourceRsp one : channelList){
+            longs.add(Long.parseLong(one.getResourceValue()));
+        }
+        if(ObjectUtils.isEmpty(longs)){
+            //没有数据
+            return new ArrayList<>();
+        }
         LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(DeviceChannelExpansion::getVideoAreaId,videoAreaId);
+        queryWrapper.in(DeviceChannelExpansion::getId,longs);
         queryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
         queryWrapper.orderByDesc(DeviceChannelExpansion::getCreatedAt);
         queryWrapper.orderByDesc(DeviceChannelExpansion::getOnlineState);
         return deviceChannelExpansionMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public CommonResponse<VideoRecordRsp> channelRecord(Long channelId, LocalDateTime startTime, LocalDateTime endTime) {
+        return channelControlApi.videoRecordInfo(channelId, startTime, endTime);
+    }
+
+    @Override
+    public CommonResponse<Object> videoAreaList(String resourceKey) {
+
+
+        return authRbacServerApi.getResourcePage(resourceKey, false);
+
     }
 }

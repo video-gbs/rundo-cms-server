@@ -40,7 +40,7 @@ public class StreamNorthController {
     @PostMapping("/play/live")
     public CommonResponse<PostVideoPlayRsp> applyStreamId(@RequestBody PostStreamLivePlayReq req){
         validatorService.validateRequest(req);
-        return CommonResponse.success(streamNorthService.streamLivePlay(req.getChannelId(), req.getStreamType(), req.getEnableAudio(), req.getSsrcCheck(), req.getRecordState(), req.getAutoCloseState()));
+        return CommonResponse.success(streamNorthService.streamLivePlay(req.getChannelId(), req.getStreamType(), req.getEnableAudio(), req.getSsrcCheck(), req.getRecordState(), req.getAutoCloseState(), req.getBitStreamId()));
     }
 
     /**
@@ -51,7 +51,7 @@ public class StreamNorthController {
     @PostMapping("/play/record")
     public CommonResponse<PostVideoPlayRsp> applyStreamId(@RequestBody PostStreamRecordPlayReq req){
         validatorService.validateRequest(req);
-        return CommonResponse.success(streamNorthService.streamRecordPlay(req.getChannelId(), req.getStreamType(), req.getEnableAudio(), req.getSsrcCheck(), req.getPlayType(), req.getRecordState(), req.getAutoCloseState(), req.getStartTime(), req.getEndTime()));
+        return CommonResponse.success(streamNorthService.streamRecordPlay(req.getChannelId(), req.getStreamType(), req.getEnableAudio(), req.getSsrcCheck(), req.getPlayType(), req.getRecordState(), req.getAutoCloseState(), req.getStartTime(), req.getEndTime(), req.getBitStreamId()));
     }
 
     /**
@@ -125,7 +125,7 @@ public class StreamNorthController {
     }
 
     /**
-     * 调整录播的播放速度
+     * 恢复录播
      * @param req
      * @return
      */

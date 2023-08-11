@@ -29,7 +29,7 @@ public class GatewaySouthController {
      * @return
      */
     @PostMapping("/sign-in")
-    public CommonResponse signIn(@RequestBody PostGatewaySignInReq request){
+    public CommonResponse<?> signIn(@RequestBody PostGatewaySignInReq request){
         validatorService.validateRequest(request);
         gatewaySouthService.signIn(request.toGatewayInfo(), request.getOutTime());
         return CommonResponse.success();

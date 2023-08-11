@@ -68,7 +68,7 @@ public interface ChannelMapper {
             " SELECT ch.id AS channelId, ch.device_id, dt.name AS channelName, ch.sign_state, ch.online_state, ch.create_time, " +
             " dt.origin_id, dt.ip, dt.port, dt.manufacturer, dt.model, dt.firmware, dt.ptz_type, dt.username, dt.password  FROM " + CHANNEL_TABLE_NAME + " ch " +
             " LEFT JOIN " + DetailMapper.DETAIL_TABLE_NAME + " dt ON ch.id = dt.dc_id AND type = 2 " +
-            " WHERE ch.sign_state = 1 " +
+            " WHERE ch.sign_state != 0 " +
             " AND ch.device_id IN "  +
             " <foreach collection='deviceIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " <if test=\"nameOrOriginId != null\" >  AND (dt.name LIKE CONCAT('%', #{nameOrOriginId}, '%')  OR dt.origin_id LIKE CONCAT('%', #{nameOrOriginId}, '%')) </if> " +
