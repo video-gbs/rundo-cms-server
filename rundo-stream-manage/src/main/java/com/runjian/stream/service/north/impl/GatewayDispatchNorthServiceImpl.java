@@ -112,7 +112,7 @@ public class GatewayDispatchNorthServiceImpl implements GatewayDispatchNorthServ
         List<GatewayDispatchInfo> gatewayDispatchInfoList = gatewayDispatchMapper.selectByGatewayIds(gatewayIds);
         LocalDateTime nowTime = LocalDateTime.now();
         // 判断数据是否已经存在
-        if (gatewayDispatchInfoList.size() > 0){
+        if (!gatewayDispatchInfoList.isEmpty()){
             for (GatewayDispatchInfo gatewayDispatchInfo : gatewayDispatchInfoList){
                 gatewayDispatchInfo.setUpdateTime(nowTime);
                 gatewayDispatchInfo.setDispatchId(dispatchId);
