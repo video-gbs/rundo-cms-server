@@ -42,7 +42,6 @@ public class StreamNorthController {
     @PostMapping("/play/live")
     public CommonResponse<PostVideoPlayRsp> applyStreamId(@RequestBody PostStreamLivePlayReq req){
         validatorService.validateRequest(req);
-        log.error(req.toString());
         return CommonResponse.success(streamNorthService.streamLivePlay(req.getChannelId(), req.getStreamType(), req.getEnableAudio(), req.getSsrcCheck(), req.getRecordState(), req.getAutoCloseState(), req.getBitStreamId()));
     }
 

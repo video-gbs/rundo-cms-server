@@ -82,9 +82,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     public PostVideoPlayRsp streamLivePlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState, Integer bitStreamId) {
         String streamId = PlayType.LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + channelId;
         StreamManageDto streamManageDto = getStreamManageDto(channelId, MsgType.STREAM_LIVE_PLAY_START, streamId, PlayType.LIVE.getCode(), streamMode, enableAudio, ssrcCheck, recordState, autoCloseState, bitStreamId);
-        log.error(streamManageDto.toString());
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
-        log.error(commonResponse.toString());
         if (commonResponse.isError()){
             streamMapper.deleteByStreamId(streamId);
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向接口服务", "直播播放失败", commonResponse.getMsg(), commonResponse.getData());
