@@ -1,6 +1,8 @@
 package com.runjian.device.expansion.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.service.IPlayService;
@@ -33,7 +35,11 @@ public class PtzServiceImpl implements IPtzService {
         feignPtzControlReq.setChannelId(request.getChannelExpansionId());
         feignPtzControlReq.setCmdCode(request.getPtzOperationType());
         feignPtzControlReq.setCmdValue(request.getOperationValue());
-        return deviceControlApi.ptzControl(feignPtzControlReq);
+        CommonResponse<?> commonResponse = deviceControlApi.ptzControl(feignPtzControlReq);
+        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
+        }
+        return commonResponse;
 
     }
 }

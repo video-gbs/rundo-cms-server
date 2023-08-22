@@ -141,21 +141,27 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     @Override
     public CommonResponse<Boolean> remove(Long id) {
         TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-        DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
-        channelExpansion.setDeleted(1);
-        channelExpansion.setId(id);
-        deviceChannelExpansionMapper.updateById(channelExpansion);
-        //通知控制服务修改添加状态 删除接口待定义
+        try {
+            DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
+            channelExpansion.setDeleted(1);
+            channelExpansion.setId(id);
+            deviceChannelExpansionMapper.updateById(channelExpansion);
+            //通知控制服务修改添加状态 删除接口待定义
 
 
-        CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
-        if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
+            if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                dataSourceTransactionManager.rollback(transactionStatus);
+                //调用失败
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, booleanCommonResponse);
+                throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, booleanCommonResponse.getMsg());
+
+            }
+            dataSourceTransactionManager.commit(transactionStatus);
+        }catch (Exception e){
             dataSourceTransactionManager.rollback(transactionStatus);
-            //调用失败
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, booleanCommonResponse);
-            return booleanCommonResponse;
         }
-        dataSourceTransactionManager.commit(transactionStatus);
+
         baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
         return CommonResponse.success();
     }
@@ -164,18 +170,23 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     public CommonResponse<Boolean> removeBatch(List<Long> idList) {
         for (Long id : idList){
             TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-            DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
-            channelExpansion.setDeleted(1);
-            channelExpansion.setId(id);
-            deviceChannelExpansionMapper.updateById(channelExpansion);
-            CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
-            if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            try {
+                DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
+                channelExpansion.setDeleted(1);
+                channelExpansion.setId(id);
+                deviceChannelExpansionMapper.updateById(channelExpansion);
+                CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
+                if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                    dataSourceTransactionManager.rollback(transactionStatus);
+                    //调用失败
+                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",idList, booleanCommonResponse);
+                    throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, booleanCommonResponse.getMsg());
+                }
+                dataSourceTransactionManager.commit(transactionStatus);
+            }catch (Exception e){
                 dataSourceTransactionManager.rollback(transactionStatus);
-                //调用失败
-                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",idList, booleanCommonResponse);
-                return booleanCommonResponse;
             }
-            dataSourceTransactionManager.commit(transactionStatus);
+
             baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
 
 
