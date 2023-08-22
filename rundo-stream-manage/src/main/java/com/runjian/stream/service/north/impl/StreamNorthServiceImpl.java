@@ -89,7 +89,6 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
         }
         streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
-
         return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()), PostVideoPlayRsp.class);
     }
 

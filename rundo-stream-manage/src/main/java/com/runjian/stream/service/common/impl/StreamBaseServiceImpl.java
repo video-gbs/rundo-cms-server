@@ -59,9 +59,9 @@ public class StreamBaseServiceImpl implements StreamBaseService {
     public void checkStreamState(LocalDateTime nowTime){
         List<StreamInfo> streamInfoList = streamMapper.selectByStreamState(CommonEnum.ENABLE.getCode());
         Map<Long, List<StreamInfo>> dispatchRecordMap = streamInfoList.stream().collect(Collectors.groupingBy(StreamInfo::getDispatchId));
-        if (dispatchRecordMap.size() > 0){
+        if (!dispatchRecordMap.isEmpty()){
             List<Long> unUseStream = getUnUseStream(dispatchRecordMap, nowTime);
-            if (unUseStream.size() > 0){
+            if (!unUseStream.isEmpty()){
                 streamMapper.deleteByIdsAndCreateTime(unUseStream, nowTime);
             }
         }
@@ -71,9 +71,9 @@ public class StreamBaseServiceImpl implements StreamBaseService {
     public void checkRecordState(LocalDateTime nowTime) {
         List<StreamInfo> streamInfoList = streamMapper.selectByRecordStateAndStreamState(CommonEnum.ENABLE.getCode(), CommonEnum.ENABLE.getCode());
         Map<Long, List<StreamInfo>> dispatchRecordMap = streamInfoList.stream().collect(Collectors.groupingBy(StreamInfo::getDispatchId));
-        if (dispatchRecordMap.size() > 0){
+        if (!dispatchRecordMap.isEmpty()){
             List<Long> noRecordIds = getUnUseStream(dispatchRecordMap, nowTime);
-            if (noRecordIds.size() > 0){
+            if (!noRecordIds.isEmpty()){
                 streamMapper.batchUpdateRecordState(noRecordIds, CommonEnum.DISABLE.getCode(), nowTime);
             }
         }
@@ -92,7 +92,7 @@ public class StreamBaseServiceImpl implements StreamBaseService {
                 break;
             }
             List<String> recordingStreamIds = JSONArray.parseArray(JSONArray.toJSONString(commonResponse.getData())).toJavaList(String.class);
-            if (Objects.nonNull(recordingStreamIds) && recordingStreamIds.size() > 0){
+            if (Objects.nonNull(recordingStreamIds) && !recordingStreamIds.isEmpty()){
                 List<Long> dispatchNoRecordIds = entry.getValue().stream().filter(streamInfo -> !recordingStreamIds.remove(streamInfo.getStreamId())).map(StreamInfo::getId).collect(Collectors.toList());
                 noRecordIds.addAll(dispatchNoRecordIds);
             }else {

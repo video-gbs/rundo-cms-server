@@ -8,6 +8,7 @@ import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.request.*;
 import com.runjian.stream.vo.response.PostVideoPlayRsp;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * @author Miracle
  * @date 2023/2/7 20:36
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/stream/north")

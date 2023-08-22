@@ -57,7 +57,7 @@ public class StreamTaskServiceImpl implements StreamTaskService {
             streamTaskInfo.setUpdateTime(LocalDateTime.now());
             streamTaskInfo.setDetail(OUT_TIME);
         }
-        if (streamTaskInfoList.size() > 0){
+        if (!streamTaskInfoList.isEmpty()){
             streamTaskMapper.updateAll(streamTaskInfoList);
         }
     }
