@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 通道北向服务
@@ -182,13 +183,32 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("缺失的数据%s", channelIdList));
         }
 
+        Set<Long> hasErrorChannelIds = new HashSet<>(channelIdList.size());
         for (ChannelInfo channelInfo : channelInfoList){
+            if (channelInfo.getSignState().equals(SignState.DELETED.getCode())){
+                try{
+                    CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(channelInfo.getId(), IdType.CHANNEL, MsgType.CHANNEL_DELETE_RECOVER, 15000L));
+                    if (response.isError()){
+                        log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道恢复失败", response.getData(), response.getMsg());
+                        throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
+                    }
+                }catch (Exception ex){
+                    log.error(LogTemplate.ERROR_LOG_TEMPLATE, "通道北向服务", "通道恢复失败", ex);
+                    hasErrorChannelIds.add(channelInfo.getId());
+                    continue;
+                }
+            }
             channelInfo.setSignState(SignState.SUCCESS.getCode());
             channelInfo.setUpdateTime(LocalDateTime.now());
         }
-        channelMapper.batchUpdateSignState(channelInfoList);
-        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_OR_DELETE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, JSONObject::toJSONString)));
-        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
+
+        List<ChannelInfo> newChannelInfoList = channelInfoList.stream().filter(channelInfo -> hasErrorChannelIds.contains(channelInfo.getId())).collect(Collectors.toList());
+        channelMapper.batchUpdateSignState(newChannelInfoList);
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_OR_DELETE_STATE, newChannelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, JSONObject::toJSONString)));
+        messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE,newChannelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
+        if (!hasErrorChannelIds.isEmpty()){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, String.format("通道恢复失败，失败通道id为：%s", hasErrorChannelIds));
+        }
     }
 
     /**
