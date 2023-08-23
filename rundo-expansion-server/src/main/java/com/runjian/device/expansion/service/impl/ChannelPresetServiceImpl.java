@@ -95,6 +95,9 @@ public class ChannelPresetServiceImpl extends ServiceImpl<ChannelPresetMapper, C
                 insertPresetId = channelPresetListsLasted.getPresetId();
             }
             insertPresetId = insertPresetId+1;
+            if(insertPresetId > 255){
+                throw new BusinessException(BusinessErrorEnums.DATA_IS_WRONG,"预置位的编码不得超过255,请进行预置位的编辑或则删除");
+            }
             //
             FeignPtzControlReq feignPtzControlReq = new FeignPtzControlReq();
             feignPtzControlReq.setChannelId(channelPresetEditReq.getChannelExpansionId());
