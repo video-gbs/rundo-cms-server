@@ -202,7 +202,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             channelInfo.setUpdateTime(LocalDateTime.now());
         }
 
-        List<ChannelInfo> newChannelInfoList = channelInfoList.stream().filter(channelInfo -> hasErrorChannelIds.contains(channelInfo.getId())).collect(Collectors.toList());
+        List<ChannelInfo> newChannelInfoList = channelInfoList.stream().filter(channelInfo -> !hasErrorChannelIds.contains(channelInfo.getId())).collect(Collectors.toList());
         channelMapper.batchUpdateSignState(newChannelInfoList);
         messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_OR_DELETE_STATE, newChannelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, JSONObject::toJSONString)));
         messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE,newChannelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, ChannelInfo::getOnlineState)));
