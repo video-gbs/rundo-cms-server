@@ -28,4 +28,8 @@ public class GetCatalogueResourceRsp {
      * 资源名称
      */
     private String resourceName;
+    /**
+     * 夫资源的id
+     */
+    private Long parentResourceId;
 }

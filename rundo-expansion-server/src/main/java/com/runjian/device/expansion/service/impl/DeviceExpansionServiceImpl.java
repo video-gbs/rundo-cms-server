@@ -224,6 +224,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
                 for (GetCatalogueResourceRsp videoAreaResp: dataList){
                     if(Long.parseLong(videoAreaResp.getResourceValue()) == deviceExpansion.getId()){
                         deviceExpansionResp.setAreaNames(videoAreaResp.getLevelName());
+                        deviceExpansionResp.setVideoAreaId(videoAreaResp.getParentResourceId());
                     }
                 }
                 deviceExpansionRespList.add(deviceExpansionResp);

@@ -230,6 +230,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 for (GetCatalogueResourceRsp videoAreaResp: channelList){
                     if(Long.parseLong(videoAreaResp.getResourceValue()) == channelExpansion.getId()){
                         channelExpansion.setAreaNames(videoAreaResp.getLevelName());
+                        channelExpansion.setVideoAreaId(videoAreaResp.getParentResourceId());
 
                     }
                 }
