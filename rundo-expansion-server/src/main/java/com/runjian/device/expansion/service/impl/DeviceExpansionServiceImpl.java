@@ -101,10 +101,17 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
 
 
     @Override
-    public CommonResponse<Long> edit(DeviceExpansionEditReq deviceExpansionEditReq) {
+    public CommonResponse<Long> edit(DeviceExpansionEditReq deviceExpansionEditReq,int kind) {
         DeviceExpansion deviceExpansionDb = deviceExpansionMapper.selectById(deviceExpansionEditReq.getId());
-        //资源修改和移动
-        baseDeviceAndChannelService.commonResourceBind(resourceKey,deviceExpansionEditReq.getPResourceValue(),deviceExpansionEditReq.getId(),deviceExpansionEditReq.getName());
+        //恢复与编辑
+        if(kind ==1){
+            //恢复
+            baseDeviceAndChannelService.commonResourceBind(resourceKey,deviceExpansionEditReq.getPResourceValue(),deviceExpansionEditReq.getId(),deviceExpansionEditReq.getName());
+
+        }else {
+            baseDeviceAndChannelService.commonResourceUpdate(resourceKey,String.valueOf(deviceExpansionEditReq.getId()),deviceExpansionEditReq.getName());
+
+        }
         baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(deviceExpansionEditReq.getId()),deviceExpansionEditReq.getPResourceValue());
 
 
