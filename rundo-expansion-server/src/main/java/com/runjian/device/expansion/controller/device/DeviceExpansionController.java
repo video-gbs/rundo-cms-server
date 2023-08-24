@@ -55,14 +55,14 @@ public class DeviceExpansionController {
     public CommonResponse<Long> edit(@RequestBody DeviceExpansionEditReq request) {
 
         validatorService.validateRequest(request);
-        return deviceExpansionService.edit(request);
+        return deviceExpansionService.edit(request,0);
     }
     @PutMapping(value = "/resume", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("恢复")
     public CommonResponse<Long> resume(@RequestBody DeviceExpansionEditReq request) {
 
         validatorService.validateRequest(request);
-        return deviceExpansionService.edit(request);
+        return deviceExpansionService.edit(request,1);
     }
 
     @DeleteMapping(value = "/delete",produces = MediaType.APPLICATION_JSON_VALUE)

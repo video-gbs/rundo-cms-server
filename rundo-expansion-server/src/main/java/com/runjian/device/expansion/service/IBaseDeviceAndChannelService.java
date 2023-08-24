@@ -30,6 +30,14 @@ public interface IBaseDeviceAndChannelService {
      */
     void commonResourceBind(String resourceKey,String pResourceValue,Long resourceId,String resourceName);
 
+
+    /**
+     * 资源修改
+     * @param videoAreaId
+     * @param resourceId
+     * @param resourceName
+     */
+    void commonResourceUpdate(String resourceKey, String resourceValue,String resourceName);
     /**
      * 资源移动
      * @param resourceId

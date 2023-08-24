@@ -132,7 +132,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
         BeanUtil.copyProperties(deviceChannelExpansionReq,deviceChannelExpansion);
         //资源修改和移动
-        baseDeviceAndChannelService.commonResourceBind(resourceKey, deviceChannelExpansionReq.getPResourceValue(),deviceChannelExpansionReq.getId(),deviceChannelExpansionReq.getChannelName());
+        baseDeviceAndChannelService.commonResourceUpdate(resourceKey,String.valueOf(deviceChannelExpansionReq.getId()),deviceChannelExpansionReq.getChannelName());
         baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(deviceChannelExpansionReq.getId()),deviceChannelExpansionReq.getPResourceValue());
         deviceChannelExpansionMapper.updateById(deviceChannelExpansion);
         return CommonResponse.success();

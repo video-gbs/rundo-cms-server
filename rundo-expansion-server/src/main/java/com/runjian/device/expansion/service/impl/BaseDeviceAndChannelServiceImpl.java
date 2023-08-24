@@ -133,6 +133,21 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     }
 
     @Override
+    public void commonResourceUpdate(String resourceKey, String resourceValue, String resourceName) {
+
+        PutResourceReq putResourceReq = new PutResourceReq();
+        putResourceReq.setResourceKey(resourceKey);
+        putResourceReq.setResourceName(resourceName);
+        putResourceReq.setResourceValue(resourceValue);
+        CommonResponse<?> commonResponse = authrbacServerApi.updateResourceKv(putResourceReq);
+        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            //调用失败
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--资源修改失败",putResourceReq, commonResponse);
+            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
+        }
+    }
+
+    @Override
     public void moveResourceByValue(String resourceKey, String resourceValue, String pResourceValue) {
         ResourceFsMoveKvReq resourceFsMoveKvReq = new ResourceFsMoveKvReq();
         resourceFsMoveKvReq.setResourceKey(resourceKey);

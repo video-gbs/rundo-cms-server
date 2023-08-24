@@ -31,7 +31,7 @@ public interface IDeviceExpansionService extends IService<DeviceExpansion> {
      * @param deviceExpansionEditReq
      * @return
      */
-    CommonResponse<Long> edit(DeviceExpansionEditReq deviceExpansionEditReq);
+    CommonResponse<Long> edit(DeviceExpansionEditReq deviceExpansionEditReq,int kind);
 
     /**
      * 设备删除
