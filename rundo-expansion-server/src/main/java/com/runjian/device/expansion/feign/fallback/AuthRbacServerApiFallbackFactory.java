@@ -55,6 +55,12 @@ public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AuthRba
             }
 
             @Override
+            public CommonResponse<?> batchAddResourceKv(PostBatchResourceKvReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--batchAddResourceKv操作失败",req, throwable);
+                return finalFailure;
+            }
+
+            @Override
             public CommonResponse<?> updateResourceKv(PutResourceReq req) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--updateResource操作失败",req, throwable);
                 return finalFailure;

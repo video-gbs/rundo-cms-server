@@ -23,6 +23,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -67,11 +69,12 @@ public class DeviceChannelExpansionController {
         return deviceChannelExpansionService.remove(id);
     }
 
-    @PostMapping(value = "/batchDelete")
+    @DeleteMapping(value = "/batchDelete")
     @ApiOperation("批量删除")
-    public CommonResponse<Boolean> batchDelete(@RequestBody DeleteDtoReq request) {
-        validatorService.validateRequest(request);
-       return deviceChannelExpansionService.removeBatch(request.getIdList());
+    public CommonResponse<Boolean> batchDelete(@RequestParam(value = "idList") Long[]  idList) {
+//        validatorService.validateRequest(request);
+        List<Long> list = Arrays.asList(idList);
+        return deviceChannelExpansionService.removeBatch(list);
     }
 
     @PostMapping(value = "/list", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -20,10 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 设备controller
@@ -58,7 +55,14 @@ public class DeviceExpansionController {
     public CommonResponse<Long> edit(@RequestBody DeviceExpansionEditReq request) {
 
         validatorService.validateRequest(request);
-        return deviceExpansionService.edit(request);
+        return deviceExpansionService.edit(request,0);
+    }
+    @PutMapping(value = "/resume", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation("恢复")
+    public CommonResponse<Long> resume(@RequestBody DeviceExpansionEditReq request) {
+
+        validatorService.validateRequest(request);
+        return deviceExpansionService.edit(request,1);
     }
 
     @DeleteMapping(value = "/delete",produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,11 +72,11 @@ public class DeviceExpansionController {
         return deviceExpansionService.remove(id);
     }
 
-    @PostMapping(value = "/batchDelete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/batchDelete")
     @ApiOperation("批量删除")
-    public CommonResponse<Boolean> batchDelete(@RequestBody DeleteDtoReq req) {
-        validatorService.validateRequest(req);
-       return deviceExpansionService.removeBatch(req.getIdList());
+    public CommonResponse<Boolean> batchDelete(@RequestParam(value = "idList") Long[]  idList) {
+        List<Long> list = Arrays.asList(idList);
+       return deviceExpansionService.removeBatch(list);
     }
 
     @PostMapping(value = "/list", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -39,10 +39,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -117,7 +114,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器添加失败",findChannelListReq, longCommonResponse);
                 throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, longCommonResponse.getMsg());
             }
-            baseDeviceAndChannelService.commonResourceBind(channel.getVideoAreaId(),channel.getId(),channel.getChannelName());
+            baseDeviceAndChannelService.commonResourceBind(resourceKey,findChannelListReq.getPResourceValue(),channel.getId(),channel.getChannelName());
             if(existCollect.contains(channel.getId())){
                 channel.setDeleted(0);
                 deviceChannelExpansionMapper.updateById(channel);
@@ -135,7 +132,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         DeviceChannelExpansion deviceChannelExpansion = new DeviceChannelExpansion();
         BeanUtil.copyProperties(deviceChannelExpansionReq,deviceChannelExpansion);
         //资源修改和移动
-        baseDeviceAndChannelService.commonResourceBind(deviceChannelExpansionReq.getVideoAreaId(),deviceChannelExpansionReq.getId(),deviceChannelExpansionReq.getChannelName());
+        baseDeviceAndChannelService.commonResourceUpdate(resourceKey,String.valueOf(deviceChannelExpansionReq.getId()),deviceChannelExpansionReq.getChannelName());
         baseDeviceAndChannelService.moveResourceByValue(resourceKey,String.valueOf(deviceChannelExpansionReq.getId()),deviceChannelExpansionReq.getPResourceValue());
         deviceChannelExpansionMapper.updateById(deviceChannelExpansion);
         return CommonResponse.success();
@@ -144,21 +141,27 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     @Override
     public CommonResponse<Boolean> remove(Long id) {
         TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-        DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
-        channelExpansion.setDeleted(1);
-        channelExpansion.setId(id);
-        deviceChannelExpansionMapper.updateById(channelExpansion);
-        //通知控制服务修改添加状态 删除接口待定义
+        try {
+            DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
+            channelExpansion.setDeleted(1);
+            channelExpansion.setId(id);
+            deviceChannelExpansionMapper.updateById(channelExpansion);
+            //通知控制服务修改添加状态 删除接口待定义
 
 
-        CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
-        if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
+            if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                dataSourceTransactionManager.rollback(transactionStatus);
+                //调用失败
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, booleanCommonResponse);
+                throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, booleanCommonResponse.getMsg());
+
+            }
+            dataSourceTransactionManager.commit(transactionStatus);
+        }catch (Exception e){
             dataSourceTransactionManager.rollback(transactionStatus);
-            //调用失败
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, booleanCommonResponse);
-            return booleanCommonResponse;
         }
-        dataSourceTransactionManager.commit(transactionStatus);
+
         baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
         return CommonResponse.success();
     }
@@ -167,18 +170,23 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     public CommonResponse<Boolean> removeBatch(List<Long> idList) {
         for (Long id : idList){
             TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-            DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
-            channelExpansion.setDeleted(1);
-            channelExpansion.setId(id);
-            deviceChannelExpansionMapper.updateById(channelExpansion);
-            CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
-            if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            try {
+                DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
+                channelExpansion.setDeleted(1);
+                channelExpansion.setId(id);
+                deviceChannelExpansionMapper.updateById(channelExpansion);
+                CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
+                if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                    dataSourceTransactionManager.rollback(transactionStatus);
+                    //调用失败
+                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",idList, booleanCommonResponse);
+                    throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, booleanCommonResponse.getMsg());
+                }
+                dataSourceTransactionManager.commit(transactionStatus);
+            }catch (Exception e){
                 dataSourceTransactionManager.rollback(transactionStatus);
-                //调用失败
-                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",idList, booleanCommonResponse);
-                return booleanCommonResponse;
             }
-            dataSourceTransactionManager.commit(transactionStatus);
+
             baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
 
 
@@ -222,6 +230,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 for (GetCatalogueResourceRsp videoAreaResp: channelList){
                     if(Long.parseLong(videoAreaResp.getResourceValue()) == channelExpansion.getId()){
                         channelExpansion.setAreaNames(videoAreaResp.getLevelName());
+                        channelExpansion.setVideoAreaId(videoAreaResp.getParentResourceId());
 
                     }
                 }

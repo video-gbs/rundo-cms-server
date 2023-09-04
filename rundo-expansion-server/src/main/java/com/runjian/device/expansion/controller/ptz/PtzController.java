@@ -55,10 +55,12 @@ public class PtzController {
         return  channelPresetService.presetEdit(channelPresetEditReq);
     }
 
-    @DeleteMapping(value = "/preset/delete", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/preset/delete")
     @ApiOperation("预置位删除:channelExpansionId为通道id")
-    public CommonResponse<Boolean> presetDelete(@RequestBody ChannelPresetControlReq channelPresetControlReq) {
-
+    public CommonResponse<Boolean> presetDelete(@RequestParam Long channelExpansionId,@RequestParam Integer presetId) {
+        ChannelPresetControlReq channelPresetControlReq = new ChannelPresetControlReq();
+        channelPresetControlReq.setPresetId(presetId);
+        channelPresetControlReq.setChannelExpansionId(channelExpansionId);
         return channelPresetService.presetDelete(channelPresetControlReq);
     }
 

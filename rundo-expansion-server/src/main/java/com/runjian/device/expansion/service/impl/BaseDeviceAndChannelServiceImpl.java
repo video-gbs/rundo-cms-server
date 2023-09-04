@@ -12,10 +12,7 @@ import com.runjian.device.expansion.mapper.DeviceChannelExpansionMapper;
 import com.runjian.device.expansion.mapper.DeviceExpansionMapper;
 import com.runjian.device.expansion.service.IBaseDeviceAndChannelService;
 import com.runjian.device.expansion.service.IDeviceExpansionService;
-import com.runjian.device.expansion.vo.feign.request.GetCatalogueResourceRsp;
-import com.runjian.device.expansion.vo.feign.request.PostBatchResourceReq;
-import com.runjian.device.expansion.vo.feign.request.PutResourceFsMoveReq;
-import com.runjian.device.expansion.vo.feign.request.ResourceFsMoveKvReq;
+import com.runjian.device.expansion.vo.feign.request.*;
 import com.runjian.device.expansion.vo.feign.response.VideoAreaResourceRsp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,27 +57,22 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     String resourceChannelKey;
 
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void removeDevice(Long id) {
-        deviceExpansionMapper.deleteById(id);
-        //删除对应的通道
-        LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
-        deviceChannelExpansionMapper.delete(lambdaQueryWrapper);
-    }
-
     @Override
     public synchronized void removeDeviceSoft(Long id) {
         TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+        //获取通道数据
+        LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
+        lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
+        List<DeviceChannelExpansion> deviceChannelExpansions = deviceChannelExpansionMapper.selectList(lambdaQueryWrapper);
         try{
             DeviceExpansion deviceExpansion = new DeviceExpansion();
             deviceExpansion.setId(id);
             deviceExpansion.setDeleted(1);
             deviceExpansionMapper.updateById(deviceExpansion);
             //删除对应的通道
-            LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-            lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
+            LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapperUpdate = new LambdaQueryWrapper<>();
+            lambdaQueryWrapperUpdate.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
             DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
             channelExpansion.setDeleted(1);
             deviceChannelExpansionMapper.update(channelExpansion,lambdaQueryWrapper);
@@ -91,12 +83,7 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
             log.error(LogTemplate.PROCESS_LOG_TEMPLATE, "设备与通道删除", "删除异常",e);
             dataSourceTransactionManager.rollback(transactionStatus);
         }
-        //获取通道数据
-        LambdaQueryWrapper<DeviceChannelExpansion> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(DeviceChannelExpansion::getDeviceExpansionId,id);
-        DeviceChannelExpansion channelExpansion = new DeviceChannelExpansion();
-        channelExpansion.setDeleted(0);
-        List<DeviceChannelExpansion> deviceChannelExpansions = deviceChannelExpansionMapper.selectList(lambdaQueryWrapper);
+
 
         commonDeleteByResourceValue(resourceDeviceKey,String.valueOf(id));
         if(!ObjectUtils.isEmpty(deviceChannelExpansions)){
@@ -128,30 +115,34 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
     }
 
     @Override
-    public void commonResourceBind(Long videoAreaId, Long resourceId, String resourceName) {
-        PostBatchResourceReq postBatchResourceReq = new PostBatchResourceReq();
-        postBatchResourceReq.setResourcePid(videoAreaId);
-        postBatchResourceReq.setResourceType(2);
+    public void commonResourceBind(String resourceKey,String pResourceValue, Long resourceId, String resourceName) {
+        PostBatchResourceKvReq postBatchResourceKvReq = new PostBatchResourceKvReq();
+        postBatchResourceKvReq.setResourceType(2);
+        postBatchResourceKvReq.setResourceKey(resourceKey);
+        postBatchResourceKvReq.setParentResourceValue(pResourceValue);
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put(resourceId.toString(), resourceName);
-        postBatchResourceReq.setResourceMap(stringStringHashMap);
-        CommonResponse<?> commonResponse = authrbacServerApi.batchAddResource(postBatchResourceReq);
+        postBatchResourceKvReq.setResourceMap(stringStringHashMap);
+
+        CommonResponse<?> commonResponse = authrbacServerApi.batchAddResourceKv(postBatchResourceKvReq);
         if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器资源绑定失败",videoAreaId, commonResponse);
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器资源绑定失败",pResourceValue, commonResponse);
             throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
         }
     }
 
     @Override
-    public void commonResourceMove(Long resourceId, Long pid) {
-        PutResourceFsMoveReq putResourceFsMoveReq = new PutResourceFsMoveReq();
-        putResourceFsMoveReq.setId(resourceId);
-        putResourceFsMoveReq.setResourcePid(pid);
-        CommonResponse<?> commonResponse = authrbacServerApi.fsMove(putResourceFsMoveReq);
+    public void commonResourceUpdate(String resourceKey, String resourceValue, String resourceName) {
+
+        PutResourceReq putResourceReq = new PutResourceReq();
+        putResourceReq.setResourceKey(resourceKey);
+        putResourceReq.setResourceName(resourceName);
+        putResourceReq.setResourceValue(resourceValue);
+        CommonResponse<?> commonResponse = authrbacServerApi.updateResourceKv(putResourceReq);
         if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器资源移动失败",putResourceFsMoveReq, commonResponse);
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--资源修改失败",putResourceReq, commonResponse);
             throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
         }
     }
@@ -161,7 +152,7 @@ public class BaseDeviceAndChannelServiceImpl implements IBaseDeviceAndChannelSer
         ResourceFsMoveKvReq resourceFsMoveKvReq = new ResourceFsMoveKvReq();
         resourceFsMoveKvReq.setResourceKey(resourceKey);
         resourceFsMoveKvReq.setResourceValue(resourceValue);
-        resourceFsMoveKvReq.setPResourceValue(pResourceValue);
+        resourceFsMoveKvReq.setParentResourceValue(pResourceValue);
         CommonResponse<?> commonResponse = authrbacServerApi.moveResourceValue(resourceFsMoveKvReq);
         if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败

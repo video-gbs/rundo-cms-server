@@ -7,11 +7,6 @@ import java.util.List;
 
 public interface IBaseDeviceAndChannelService {
 
-    /**
-     * 删除设备
-     * @param id
-     */
-    void removeDevice(Long id);
 
     /**
      * 软删除设备
@@ -33,14 +28,21 @@ public interface IBaseDeviceAndChannelService {
      * @param resourceId
      * @param resourceName
      */
-    void commonResourceBind(Long videoAreaId,Long resourceId,String resourceName);
+    void commonResourceBind(String resourceKey,String pResourceValue,Long resourceId,String resourceName);
 
+
+    /**
+     * 资源修改
+     * @param videoAreaId
+     * @param resourceId
+     * @param resourceName
+     */
+    void commonResourceUpdate(String resourceKey, String resourceValue,String resourceName);
     /**
      * 资源移动
      * @param resourceId
      * @param pid
-     */
-    void commonResourceMove(Long resourceId,Long pid);
+
 
     /**
      * 资源移动目录

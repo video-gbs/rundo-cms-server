@@ -39,8 +39,7 @@ public class DataBaseServiceImpl implements DataBaseService {
         if (gatewayInfoOp.isEmpty()){
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("网关%s不存在", gatewayId));
         }
-        GatewayInfo gatewayInfo = gatewayInfoOp.get();
-        return gatewayInfo;
+        return gatewayInfoOp.get();
     }
 
     @Override
@@ -49,8 +48,7 @@ public class DataBaseServiceImpl implements DataBaseService {
         if (deviceInfoOp.isEmpty()){
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("设备%s不存在", deviceId));
         }
-        DeviceInfo deviceInfo = deviceInfoOp.get();
-        return deviceInfo;
+        return deviceInfoOp.get();
     }
 
     @Override

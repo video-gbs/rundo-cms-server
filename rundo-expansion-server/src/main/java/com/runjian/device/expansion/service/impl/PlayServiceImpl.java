@@ -1,7 +1,10 @@
 package com.runjian.device.expansion.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.expansion.feign.DeviceControlApi;
 import com.runjian.device.expansion.feign.StreamManageApi;
 import com.runjian.device.expansion.service.IPlayService;
@@ -31,18 +34,30 @@ public class PlayServiceImpl implements IPlayService {
     public  CommonResponse<StreamInfo> play(PlayReq playReq) {
         PlayFeignReq playFeignReq = new PlayFeignReq();
         BeanUtil.copyProperties(playReq,playFeignReq);
-        return streamManageApi.play(playFeignReq);
+        CommonResponse<StreamInfo> commonResponse = streamManageApi.play(playFeignReq);
+        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
+        }
+        return commonResponse;
     }
 
     @Override
     public CommonResponse<StreamInfo> playBack(PlayBackReq playBackReq) {
         PlayBackFeignReq playBackFeignReq = new PlayBackFeignReq();
         BeanUtil.copyProperties(playBackReq,playBackFeignReq);
-        return streamManageApi.playBack(playBackFeignReq);
+        CommonResponse<StreamInfo> commonResponse = streamManageApi.playBack(playBackFeignReq);
+        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
+        }
+        return commonResponse;
     }
 
     @Override
     public CommonResponse<?> stopPlay(PutStreamOperationReq req) {
-        return streamManageApi.stopPlay(req);
+        CommonResponse<?> commonResponse = streamManageApi.stopPlay(req);
+        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
+        }
+        return commonResponse;
     }
 }

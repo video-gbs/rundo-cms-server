@@ -146,12 +146,20 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "该设备注册状态已是成功状态");
         }
+        if (deviceInfo.getSignState().equals(SignState.DELETED.getCode())){
+            CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE_RECOVER, 15000L));
+            if (response.isError()){
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备恢复失败", response.getData(), response.getMsg());
+                throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
+            }
+        }
         deviceInfo.setSignState(SignState.SUCCESS.getCode());
         deviceInfo.setUpdateTime(LocalDateTime.now());
         // 修改设备注册状态
         deviceMapper.updateSignState(deviceInfo);
         messageBaseService.msgDistribute(SubMsgType.DEVICE_ADD_OR_DELETE_STATE, Map.of(deviceInfo.getId(), JSONObject.toJSONString(deviceInfo)));
         messageBaseService.msgDistribute(SubMsgType.DEVICE_ONLINE_STATE, Map.of(deviceInfo.getId(), deviceInfo.getOnlineState()));
+
         // 异步触发通道同步
         Constant.poolExecutor.execute(() -> channelNorthService.channelSync(deviceId));
     }

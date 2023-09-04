@@ -124,6 +124,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
         CommonResponse<?> commonResponse = deviceControlApi.deviceSignIn(jsonObject);
         if (commonResponse.isError()) {
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"设备注册","失败",commonResponse.getMsg(),jsonObject);
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
         }
     }
@@ -138,7 +139,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "data为空");
         }
         JSONArray jsonArray = JSONArray.parseArray(data.toString());
-        if (jsonArray.size() == 0){
+        if (jsonArray.isEmpty()){
             return;
         }
         RLock lock = redissonClient.getLock(MarkConstant.REDIS_DEVICE_BATCH_SIGN_IN_LOCK + gatewayId);
@@ -278,7 +279,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
                 }
                 jsonObject.put(StandardName.DEVICE_ID, channelInfo.getDeviceId());
             }
-            if (channelInfoList.size() > 0){
+            if (!channelInfoList.isEmpty()){
                 TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
                 try{
                     channelMapper.batchSave(channelInfoList);
