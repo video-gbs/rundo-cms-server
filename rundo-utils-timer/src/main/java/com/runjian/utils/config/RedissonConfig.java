@@ -1,4 +1,4 @@
-package com.runjian.device.config;
+package com.runjian.utils.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -44,3 +44,4 @@ public class RedissonConfig {
         return Redisson.create(config);
     }
 }
+
