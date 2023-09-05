@@ -1,4 +1,4 @@
-package com.runjian.utils;
+package com.runjian.timer;
 
 import com.runjian.common.utils.SpringContextUtils;
 import org.springframework.boot.SpringApplication;

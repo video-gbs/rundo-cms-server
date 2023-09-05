@@ -1,4 +1,4 @@
-package com.runjian.utils.dao;
+package com.runjian.timer.dao;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Mapper
 @Repository
-public interface TemplateInfoMapper {
+public interface TemplateDetailInfoMapper {
 }

@@ -1,4 +1,4 @@
-package com.runjian.utils.config;
+package com.runjian.timer.config;
 
 
 import com.alibaba.druid.wall.WallConfig;

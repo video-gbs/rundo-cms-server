@@ -1,4 +1,4 @@
-package com.runjian.utils.entity;
+package com.runjian.timer.entity;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.runjian.utils.config;
+package com.runjian.timer.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
