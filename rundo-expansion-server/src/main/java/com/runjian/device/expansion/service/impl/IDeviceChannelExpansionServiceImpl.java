@@ -151,7 +151,6 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
             CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
             if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-                dataSourceTransactionManager.rollback(transactionStatus);
                 //调用失败
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, booleanCommonResponse);
                 throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, booleanCommonResponse.getMsg());
@@ -177,7 +176,6 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                 deviceChannelExpansionMapper.updateById(channelExpansion);
                 CommonResponse<Boolean> booleanCommonResponse = channelControlApi.channelDeleteSoft(id);
                 if(booleanCommonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-                    dataSourceTransactionManager.rollback(transactionStatus);
                     //调用失败
                     log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",idList, booleanCommonResponse);
                     throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, booleanCommonResponse.getMsg());
