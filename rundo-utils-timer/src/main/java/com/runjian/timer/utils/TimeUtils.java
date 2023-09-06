@@ -15,7 +15,7 @@ public class TimeUtils {
      * @param timePeriodDtoList
      * @return
      */
-    private static boolean validTimeRange(List<TimePeriodDto> timePeriodDtoList){
+    public static boolean validTimeRange(Set<TimePeriodDto> timePeriodDtoList){
         // 判断数据是否为空
         if (timePeriodDtoList.isEmpty()){
             return false;

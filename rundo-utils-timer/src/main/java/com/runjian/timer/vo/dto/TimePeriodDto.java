@@ -3,12 +3,14 @@ package com.runjian.timer.vo.dto;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.validator.ValidationResult;
 import com.runjian.common.validator.ValidatorFunction;
+import com.runjian.timer.entity.TemplateDetailInfo;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Miracle
@@ -37,9 +39,27 @@ public class TimePeriodDto implements ValidatorFunction {
     private  LocalTime endTime;
 
     /**
-     * 是否下一台
+     * 是否延续下一天
      */
-    private Integer isNextDay;
+    private int isNextDay;
+
+    public TemplateDetailInfo toTemplateDetailInfo() {
+        TemplateDetailInfo templateDetailInfo = new TemplateDetailInfo();
+        templateDetailInfo.setDateType(this.dateType);
+        templateDetailInfo.setStartTime(this.startTime);
+        templateDetailInfo.setEndTime(this.endTime);
+        templateDetailInfo.setIsNextDay(this.isNextDay);
+        return templateDetailInfo;
+    }
+
+    public static  TimePeriodDto fromTemplateDetailInfo(TemplateDetailInfo templateDetailInfo) {
+        TimePeriodDto timePeriodDto = new TimePeriodDto();
+        timePeriodDto.setDateType(templateDetailInfo.getDateType());
+        timePeriodDto.setStartTime(templateDetailInfo.getStartTime());
+        timePeriodDto.setEndTime(templateDetailInfo.getEndTime());
+        timePeriodDto.setIsNextDay(templateDetailInfo.getIsNextDay());
+        return timePeriodDto;
+    }
 
     @Override
     public void validEvent(ValidationResult result, Object data, Object matchData) throws BusinessException {
@@ -47,5 +67,32 @@ public class TimePeriodDto implements ValidatorFunction {
             result.setHasErrors(true);
             result.setErrorMsgMap(Map.of("时间有误", "开始时间不能大于结束时间"));
         }
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if (o == this){
+            return true;
+        }
+        if (o instanceof TimePeriodDto){
+            TimePeriodDto timePeriodDto = (TimePeriodDto) o;
+            if (!Objects.equals(this.dateType, timePeriodDto.getDateType())){
+                return false;
+            }
+            if (!Objects.equals(this.startTime, timePeriodDto.getStartTime())){
+                return false;
+            }
+            return Objects.equals(this.endTime, timePeriodDto.getEndTime());
+        }
+        return false;
+    }
+
+
+    @Override
+    public int hashCode(){
+        int result = this.dateType.hashCode();
+        result = 17 * result + this.startTime.hashCode();
+        result = 17 * result + this.endTime.hashCode();
+        return result;
     }
 }

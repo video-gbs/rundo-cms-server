@@ -1,7 +1,12 @@
 package com.runjian.timer.dao;
 
+import com.runjian.timer.entity.TemplateInfo;
+import com.runjian.timer.vo.response.GetTemplateInfoRsp;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Miracle
@@ -10,4 +15,17 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface TemplateInfoMapper {
+
+    String TEMPLATE_TABLE_NAME = "rundo_template";
+
+    List<GetTemplateInfoRsp> selectByTemplateNameLike(String templateName);
+
+    Optional<TemplateInfo> selectByTemplateName(String templateName);
+
+
+    void save(TemplateInfo templateInfo);
+
+    Optional<TemplateInfo> selectById(Long templateId);
+
+    void deleteById(Long templateId);
 }

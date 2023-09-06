@@ -59,7 +59,7 @@
         <!--文档工具包-->
         <knife4j.version>3.0.3</knife4j.version>
         <japidocs.version>1.4.4</japidocs.version>
-
+        <commons-langs.version>3.13.0</commons-langs.version>
     </properties>
 
     <dependencyManagement>
@@ -206,7 +206,11 @@
                 <artifactId>rundo-cms-redis</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-langs.version}</version>
+            </dependency>
             <!--项目产生的通用依赖 End-->
         </dependencies>
     </dependencyManagement>
