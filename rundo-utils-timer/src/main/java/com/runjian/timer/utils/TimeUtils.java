@@ -1,8 +1,11 @@
 package com.runjian.timer.utils;
 
+import com.runjian.common.constant.CommonEnum;
 import com.runjian.timer.vo.dto.TimePeriodDto;
 
+import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Miracle
@@ -59,5 +62,31 @@ public class TimeUtils {
             }
         }
         return false;
+    }
+
+    public static Set<TimePeriodDto> setNextDay(Set<TimePeriodDto> timePeriodList){
+        LocalTime startTime = LocalTime.of(0,0, 0);
+        LocalTime endTime = LocalTime.of(23,59,59);
+        List<TimePeriodDto> timePeriodStartAndEndList = timePeriodList.stream().filter(timePeriodDto -> timePeriodDto.getStartTime().equals(startTime) || timePeriodDto.getEndTime().equals(endTime)).collect(Collectors.toList());
+        Map<Integer, TimePeriodDto> nextDayMap = new HashMap<>(7);
+        for (TimePeriodDto timePeriodDto : timePeriodStartAndEndList){
+            if (timePeriodDto.getStartTime().equals(startTime)){
+                if (timePeriodDto.getDateType() == 1){
+                    nextDayMap.put(timePeriodDto.getDateType(), null);
+                } else if (nextDayMap.containsKey(timePeriodDto.getDateType() - 1)){
+                    nextDayMap.get(timePeriodDto.getDateType() - 1).setIsNextDay(CommonEnum.ENABLE.getCode());
+                }
+            }
+            if (timePeriodDto.getEndTime().equals(endTime)){
+                if (timePeriodDto.getDateType() == 7 && nextDayMap.containsKey(1)){
+                    timePeriodDto.setIsNextDay(CommonEnum.ENABLE.getCode());
+                } else {
+                    nextDayMap.put(timePeriodDto.getDateType(), timePeriodDto);
+                }
+            }
+        }
+        // 替换数据
+        timePeriodList.addAll(nextDayMap.values().stream().filter(Objects::nonNull).collect(Collectors.toList()));
+        return timePeriodList;
     }
 }

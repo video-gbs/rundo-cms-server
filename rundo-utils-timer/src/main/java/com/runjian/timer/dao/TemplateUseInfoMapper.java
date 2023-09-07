@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -26,4 +27,6 @@ public interface TemplateUseInfoMapper {
     Optional<TemplateUseInfo> selectByServiceNameAndServiceUseMark(String serviceName, String serviceUseMark);
 
     void deleteById(Long id);
+
+    List<TemplateUseInfo> selectByTemplateIds(Set<Long> templateIds);
 }

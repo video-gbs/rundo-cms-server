@@ -5,6 +5,7 @@ import com.runjian.timer.entity.TemplateDetailInfo;
 import com.runjian.timer.vo.response.GetTemplateInfoRsp;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -19,7 +20,7 @@ public interface TemplateService {
      * @param templateName 模板名称
      * @return
      */
-    PageInfo<GetTemplateInfoRsp> getTemplateList(int page, int num, String templateName);
+    PageInfo<GetTemplateInfoRsp> getTemplatePage(int page, int num, String templateName);
 
     /**
      * 添加模板
@@ -53,7 +54,7 @@ public interface TemplateService {
 
     /**
      * 删除模板
-     * @param templateId 模板id
+     * @param templateIds 模板id
      */
-    void deleteTemplate(Long templateId);
+    void deleteTemplate(Set<Long> templateIds);
 }

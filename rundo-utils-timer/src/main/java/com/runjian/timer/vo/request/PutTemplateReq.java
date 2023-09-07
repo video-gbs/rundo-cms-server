@@ -1,6 +1,5 @@
 package com.runjian.timer.vo.request;
 
-
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.validator.ValidationResult;
@@ -10,18 +9,29 @@ import com.runjian.timer.entity.TemplateDetailInfo;
 import com.runjian.timer.utils.TimeUtils;
 import com.runjian.timer.vo.dto.TimePeriodDto;
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
+
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 添加时间模板请求体
+ * 修改时间模板请求体
  * @author Miracle
- * @date 2022/4/20 9:40
+ * @date 2023/9/7 16:01
  */
 @Data
-public class PostTemplateReq implements ValidatorFunction {
+public class PutTemplateReq implements ValidatorFunction {
+
+    /**
+     * 时间模板id
+     */
+    @NotNull(message = "时间模板id不能为空")
+    @Range(min = 1, max = 99999999, message = "非法时间模板id")
+    private Long templateId;
 
     /**
      * 计划名称

@@ -18,12 +18,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +40,7 @@ public class TemplateServiceImpl implements TemplateService {
     private final TemplateUseInfoMapper templateUseInfoMapper;
 
     @Override
-    public PageInfo<GetTemplateInfoRsp> getTemplateList(int page, int num, String templateName) {
+    public PageInfo<GetTemplateInfoRsp> getTemplatePage(int page, int num, String templateName) {
         PageHelper.startPage(page, num);
         List<GetTemplateInfoRsp> getTemplateInfoRspList = templateInfoMapper.selectByTemplateNameLike(templateName);
         if (getTemplateInfoRspList.isEmpty()){
@@ -70,12 +68,15 @@ public class TemplateServiceImpl implements TemplateService {
         templateInfo.setUpdateTime(nowTime);
         templateInfoMapper.save(templateInfo);
 
-        for (TemplateDetailInfo templateDetailInfo : templateDetailInfoList) {
-            templateDetailInfo.setTemplateId(templateInfo.getId());
-            templateDetailInfo.setCreateTime(nowTime);
-            templateDetailInfo.setUpdateTime(nowTime);
+        if (!CollectionUtils.isEmpty(templateDetailInfoList)){
+            for (TemplateDetailInfo templateDetailInfo : templateDetailInfoList) {
+                templateDetailInfo.setTemplateId(templateInfo.getId());
+                templateDetailInfo.setCreateTime(nowTime);
+                templateDetailInfo.setUpdateTime(nowTime);
+            }
+            templateDetailInfoMapper.batchSave(templateDetailInfoList);
         }
-        templateDetailInfoMapper.batchSave(templateDetailInfoList);
+
     }
 
     @Override
@@ -126,11 +127,11 @@ public class TemplateServiceImpl implements TemplateService {
             if (!Objects.equals(templateUseInfo.getEnableTimer(), enableTimer)){
                 isUpdate = true;
                 templateUseInfo.setEnableTimer(enableTimer);
-                if (Objects.equals(enableTimer, CommonEnum.ENABLE.getCode())){
-                    // todo 启用定时器
-                } else {
-                    // todo 关闭定时器
-                }
+//                if (Objects.equals(enableTimer, CommonEnum.ENABLE.getCode())){
+//                    // todo 启用定时器，判断是否第一次初始化定时器
+//                } else {
+//                    // todo 关闭定时器
+//                }
             }
             if (isUpdate){
                 templateUseInfo.setUpdateTime(nowTime);
@@ -144,11 +145,11 @@ public class TemplateServiceImpl implements TemplateService {
             templateUseInfo.setCreateTime(nowTime);
             templateUseInfo.setUpdateTime(nowTime);
             templateUseInfoMapper.save(templateUseInfo);
-            if (Objects.equals(enableTimer, CommonEnum.ENABLE.getCode())){
-                // todo 启用定时器
-            } else {
-                // todo 关闭定时器
-            }
+//            if (Objects.equals(enableTimer, CommonEnum.ENABLE.getCode())){
+//                // todo 启用定时器，判断是否第一次初始化定时器
+//            } else {
+//                // todo 关闭定时器
+//            }
         }
 
     }
@@ -158,24 +159,27 @@ public class TemplateServiceImpl implements TemplateService {
         Optional<TemplateUseInfo> templateUseInfoOptional = templateUseInfoMapper.selectByServiceNameAndServiceUseMark(serviceName, serviceUseMark);
         if (templateUseInfoOptional.isPresent()){
             TemplateUseInfo templateUseInfo = templateUseInfoOptional.get();
-            if (CommonEnum.getBoolean(templateUseInfo.getIsInitTimer())){
-                // todo 删除所有定时器
-            }
+//            if (CommonEnum.getBoolean(templateUseInfo.getIsInitTimer())){
+//                // todo 删除所有定时器
+//            }
             templateUseInfoMapper.deleteById(templateUseInfo.getId());
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteTemplate(Long templateId) {
-        if (templateInfoMapper.selectById(templateId).isEmpty()){
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("模板'%s'不存在", templateId));
+    public void deleteTemplate(Set<Long> templateIds) {
+        if(CollectionUtils.isEmpty(templateIds)){
+            return;
         }
-        List<TemplateUseInfo> templateUseInfoList = templateUseInfoMapper.selectByTemplateId(templateId);
+        // 查询仍然存在的模板
+        List<TemplateInfo> templateInfos = templateInfoMapper.selectByIds(templateIds);
+        Set<Long> existTemplateIds = templateInfos.stream().map(TemplateInfo::getId).collect(Collectors.toSet());
+        List<TemplateUseInfo> templateUseInfoList = templateUseInfoMapper.selectByTemplateIds(existTemplateIds);
         if (!templateUseInfoList.isEmpty()){
-            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "该模板正在被使用，无法删除");
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "存在模板正在被使用，无法删除");
         }
-        templateInfoMapper.deleteById(templateId);
-        templateDetailInfoMapper.deleteByTemplateId(templateId);
+        templateInfoMapper.deleteByIds(existTemplateIds);
+        templateDetailInfoMapper.deleteByTemplateIds(existTemplateIds);
     }
 }

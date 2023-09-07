@@ -5,8 +5,10 @@ import com.runjian.timer.vo.response.GetTemplateInfoRsp;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -28,4 +30,8 @@ public interface TemplateInfoMapper {
     Optional<TemplateInfo> selectById(Long templateId);
 
     void deleteById(Long templateId);
+
+    List<TemplateInfo> selectByIds(Set<Long> templateIds);
+
+    void deleteByIds(Set<Long> templateIds);
 }
