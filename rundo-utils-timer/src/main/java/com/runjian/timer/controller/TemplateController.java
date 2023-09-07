@@ -108,6 +108,7 @@ public class TemplateController {
     @PutMapping("/unuse")
     public CommonResponse<?> unUseTemplate(@RequestBody PutUnUseTemplateReq req){
         validatorService.validateRequest(req);
+        templateService.unUseTemplate(req.getServiceName(), req.getServiceUseMark());
         return CommonResponse.success();
     }
 }
