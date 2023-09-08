@@ -23,6 +23,7 @@
         <module>rundo-expansion-server</module>
         <module>rundo-foreign-server</module>
         <module>rundo-utils-timer</module>
+        <module>rundo-alarm-manage</module>
     </modules>
     <properties>
         <!--项目基础信息-->

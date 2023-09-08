@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: alarm-manage
+  profiles:
+    active: ${PROFILES_ACTIVE:local}
