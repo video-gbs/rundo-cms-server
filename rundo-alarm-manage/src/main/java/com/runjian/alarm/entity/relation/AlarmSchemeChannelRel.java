@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  * @date 2023/9/8 14:34
  */
 @Data
-public class AlarmSchemeDeviceRel {
+public class AlarmSchemeChannelRel {
 
     /**
      * 主键id

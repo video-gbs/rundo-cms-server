@@ -1,19 +1,14 @@
-package com.runjian.alarm.entity;
+package com.runjian.alarm.vo.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 /**
+ * 告警事件返回体
  * @author Miracle
- * @date 2023/9/8 17:02
+ * @date 2023/9/11 9:28
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class AlarmEventInfo {
+public class GetAlarmEventRsp {
 
     /**
      * 主键id
@@ -40,7 +35,4 @@ public class AlarmEventInfo {
      */
     private String eventDesc;
 
-    private LocalDateTime updateTime;
-
-    private LocalDateTime createTime;
 }

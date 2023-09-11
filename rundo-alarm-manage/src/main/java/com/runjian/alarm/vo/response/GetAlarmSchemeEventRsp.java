@@ -1,16 +1,13 @@
-package com.runjian.alarm.entity.relation;
+package com.runjian.alarm.vo.response;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 /**
- * 告警事件信息
  * @author Miracle
- * @date 2023/9/8 11:23
+ * @date 2023/9/11 11:01
  */
 @Data
-public class AlarmSchemeEventRel {
+public class GetAlarmSchemeEventRsp {
 
     /**
      * 主键id
@@ -18,19 +15,9 @@ public class AlarmSchemeEventRel {
     private Long id;
 
     /**
-     * 事件id
+     * 事件名称
      */
-    private Long eventId;
-
-    /**
-     * 预案id
-     */
-    private Long schemeId;
-
-    /**
-     * 事件编码
-     */
-    private String eventCode;
+    private String eventName;
 
     /**
      * 事件等级
@@ -62,7 +49,4 @@ public class AlarmSchemeEventRel {
      */
     private Integer enablePhoto;
 
-    private LocalDateTime updateTime;
-
-    private LocalDateTime createTime;
 }
