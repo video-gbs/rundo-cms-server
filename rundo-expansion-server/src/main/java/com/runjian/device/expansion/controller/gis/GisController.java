@@ -66,7 +66,7 @@ public class GisController {
     }
 
 
-    @GetMapping(value = "/findOneStatusOn",produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/findVideoAreaOne",produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("gis与节点得配置--查询节点得地图信息")
     public CommonResponse<GisConfig> findVideoAreaOne(@RequestParam Long videoAreaId) {
 
