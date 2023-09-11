@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @author chenjialing
  */
@@ -37,6 +39,13 @@ public class GisController {
         validatorService.validateRequest(request);
         gisService.save(request);
         return CommonResponse.success();
+    }
+
+    @GetMapping(value = "/configList",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation("gis配置--列表")
+    public CommonResponse<List<GisConfig>> configList() {
+
+        return CommonResponse.success(gisService.list());
     }
 
 

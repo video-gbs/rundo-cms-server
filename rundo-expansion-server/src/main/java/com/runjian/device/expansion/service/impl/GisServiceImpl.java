@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.List;
+
 /**
  * gis地图服务控制
  * @author chenjialing
@@ -44,6 +46,11 @@ public class GisServiceImpl implements IGisService {
             //编辑
             gisConfigMapper.updateById(gisConfig);
         }
+    }
+
+    @Override
+    public List<GisConfig> list() {
+        return gisConfigMapper.selectList(null);
     }
 
     @Override
