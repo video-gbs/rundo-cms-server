@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -35,4 +36,6 @@ public interface AlarmSchemeEventRelMapper {
     void batchDeleteBySchemeIdAndEventCodes(Long id, List<String> deleteEventCodeList);
 
     void deleteBySchemeId(Long id);
+
+    Optional<AlarmSchemeEventRel> selectBySchemeIdAndEventCode(Long id, String eventCode);
 }

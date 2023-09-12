@@ -1,11 +1,13 @@
 package com.runjian.alarm.dao;
 
+import com.runjian.alarm.entity.AlarmMsgInfo;
 import com.runjian.alarm.vo.response.GetAlarmMsgRsp;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Miracle
@@ -21,4 +23,9 @@ public interface AlarmMsgInfoMapper {
 
     List<GetAlarmMsgRsp> selectByAlarmTypeAndAlarmTime(String alarmType, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime);
 
+    void save(AlarmMsgInfo alarmMsgInfo);
+
+    Optional<AlarmMsgInfo> selectById(Long alarmMsgId);
+
+    void update(AlarmMsgInfo alarmMsgInfo);
 }

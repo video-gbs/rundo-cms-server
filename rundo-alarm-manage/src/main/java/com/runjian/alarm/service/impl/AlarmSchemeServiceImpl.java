@@ -132,22 +132,24 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
 
         // 更新通道
         Map<Long, AlarmSchemeChannelRel> alarmSchemeChannelRelMap = alarmSchemeChannelRelMapper.selectByChannelIds(channelIds).stream().collect(Collectors.toMap(AlarmSchemeChannelRel::getChannelId, alarmSchemeChannelRel -> alarmSchemeChannelRel));
-        List<AlarmSchemeChannelRel> alarmSchemeChannelRelList = new ArrayList<>(channelIds.size());
+        List<AlarmSchemeChannelRel> newSchemeChannelRelList = new ArrayList<>(channelIds.size());
+        List<AlarmSchemeChannelRel> updateSchemeChannelRelList = new ArrayList<>(alarmSchemeChannelRelMap.size());
         for (Long channelId : channelIds){
-            AlarmSchemeChannelRel alarmSchemeChannelRel = alarmSchemeChannelRelMap.get(channelId);
+            AlarmSchemeChannelRel alarmSchemeChannelRel = alarmSchemeChannelRelMap.remove(channelId);
             if (Objects.isNull(alarmSchemeChannelRel)){
                 alarmSchemeChannelRel = new AlarmSchemeChannelRel();
                 alarmSchemeChannelRel.setChannelId(channelId);
                 alarmSchemeChannelRel.setSchemeId(id);
                 alarmSchemeChannelRel.setCreateTime(nowTime);
-                alarmSchemeChannelRelList.add(alarmSchemeChannelRel);
+                newSchemeChannelRelList.add(alarmSchemeChannelRel);
             }else {
-                alarmSchemeChannelRel.setSchemeId(id);
                 alarmSchemeChannelRel.setCreateTime(nowTime);
+                updateSchemeChannelRelList.add(alarmSchemeChannelRel);
             }
         }
-        alarmSchemeChannelRelMapper.batchSave(alarmSchemeChannelRelList);
-        alarmSchemeChannelRelMapper.batchUpdate(new ArrayList<>(alarmSchemeChannelRelMap.values()));
+        alarmSchemeChannelRelMapper.batchSave(newSchemeChannelRelList);
+        alarmSchemeChannelRelMapper.batchUpdate(updateSchemeChannelRelList);
+        alarmSchemeChannelRelMapper.batchDelete(new ArrayList<>(alarmSchemeChannelRelMap.values()));
 
         // 更新事件信息
         Set<String> existEventCodes = alarmSchemeEventRelMapper.selectEventCodeBySchemeId(id);

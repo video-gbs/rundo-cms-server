@@ -36,4 +36,6 @@ public interface AlarmSchemeInfoMapper {
     void update(AlarmSchemeInfo alarmSchemeInfo);
 
     void deleteById(Long id);
+
+    Optional<AlarmSchemeInfo> selectByChannelId(Long channelId);
 }

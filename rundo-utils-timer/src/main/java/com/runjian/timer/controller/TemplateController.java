@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -45,6 +46,17 @@ public class TemplateController {
                                                                         @RequestParam(defaultValue = "10") int num,
                                                                         String templateName){
         return CommonResponse.success(templateService.getTemplatePage(page, num, templateName));
+    }
+
+    /**
+     * 检测时间是否可用
+     * @param templateId 时间模板id
+     * @param time 时间
+     * @return
+     */
+    @GetMapping("/check/time-in")
+    public CommonResponse<Boolean> checkTime(@RequestParam Long templateId, @RequestParam LocalDateTime time){
+        return CommonResponse.success(templateService.checkTime(templateId, time));
     }
 
     /**

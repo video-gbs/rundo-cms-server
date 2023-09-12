@@ -55,6 +55,11 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
+    public Boolean checkTime(Long templateId, LocalDateTime time) {
+        return templateDetailInfoMapper.selectByTemplateIdAndDateTypeAndTimeIn(templateId, time.getDayOfWeek().getValue(), time).isPresent();
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void addTemplate(String templateName, List<TemplateDetailInfo> templateDetailInfoList) {
         Optional<TemplateInfo> templateInfoOptional = templateInfoMapper.selectByTemplateName(templateName);

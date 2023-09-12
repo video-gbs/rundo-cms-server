@@ -30,7 +30,9 @@ public interface AlarmSchemeChannelRelMapper {
 
     void batchSave(List<AlarmSchemeChannelRel> alarmSchemeChannelRelList);
 
-    void batchUpdate(ArrayList<AlarmSchemeChannelRel> alarmSchemeChannelRelList);
+    void batchUpdate(List<AlarmSchemeChannelRel> alarmSchemeChannelRelList);
 
     void deleteBySchemeId(Long id);
+
+    void batchDelete(List<AlarmSchemeChannelRel> alarmSchemeChannelRelList);
 }

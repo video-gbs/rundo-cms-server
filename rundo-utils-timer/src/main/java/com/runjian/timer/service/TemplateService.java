@@ -2,8 +2,10 @@ package com.runjian.timer.service;
 
 import com.github.pagehelper.PageInfo;
 import com.runjian.timer.entity.TemplateDetailInfo;
+import com.runjian.timer.vo.dto.TimePeriodDto;
 import com.runjian.timer.vo.response.GetTemplateInfoRsp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +23,14 @@ public interface TemplateService {
      * @return
      */
     PageInfo<GetTemplateInfoRsp> getTemplatePage(int page, int num, String templateName);
+
+    /**
+     * 获取时间段
+     * @param templateId
+     * @param time
+     * @return
+     */
+    Boolean checkTime(Long templateId, LocalDateTime time);
 
     /**
      * 添加模板

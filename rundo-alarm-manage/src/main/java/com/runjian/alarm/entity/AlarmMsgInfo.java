@@ -25,7 +25,7 @@ public class AlarmMsgInfo {
     /**
      * 告警等级
      */
-    private String alarmLevel;
+    private Integer alarmLevel;
 
     /**
      * 告警类型
@@ -58,14 +58,26 @@ public class AlarmMsgInfo {
     private Integer videoLength;
 
     /**
+     * 音频状态
+     */
+    private Integer videoAudioState;
+
+    /**
      * 视频流ID
      */
     private String videoStreamId;
 
     /**
-     * 错误描述
+     * 视频状态：0->失败重试 1->进行中 2->已完成 3->异常
      */
-    private String videoErrorMsg;
+    private Integer photoState;
+
+    /**
+     * 图片地址
+     */
+    private String photoUrl;
+
+
 
     private LocalDateTime createTime;
 

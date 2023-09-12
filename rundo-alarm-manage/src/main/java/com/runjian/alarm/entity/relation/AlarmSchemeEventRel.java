@@ -38,7 +38,7 @@ public class AlarmSchemeEventRel {
     private Integer eventLevel;
 
     /**
-     * 事件重复触发间隔时间 单位：分钟 3、5、10、30
+     * 事件重复触发间隔时间 单位：秒 3、5、10、30
      */
     private Integer eventInterval;
 

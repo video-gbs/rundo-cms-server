@@ -5,7 +5,9 @@ import com.runjian.timer.vo.dto.TimePeriodDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -25,4 +27,6 @@ public interface TemplateDetailInfoMapper {
     void deleteByTemplateId(Long templateId);
 
     void deleteByTemplateIds(Set<Long> templateIds);
+
+    Optional<TemplateDetailInfo> selectByTemplateIdAndDateTypeAndTimeIn(Long templateId, Integer dayOfWeek, LocalDateTime time);
 }
