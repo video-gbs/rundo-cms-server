@@ -9,11 +9,12 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum VideoState {
+public enum AlarmFileState {
 
-    INIT(0, "等待中"),
-    GENERATING(1, "录制中"),
-    SUCCESS(2, "生成成功"),
+    INIT(0, "初始化"),
+    WAITING(1, "等待中"),
+    GENERATING(2, "生成中"),
+    SUCCESS(3, "生成成功"),
     ERROR(-1, "异常"),
 
     ;

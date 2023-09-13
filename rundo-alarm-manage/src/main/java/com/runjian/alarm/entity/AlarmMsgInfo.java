@@ -23,6 +23,11 @@ public class AlarmMsgInfo {
     private Long channelId;
 
     /**
+     * 告警编码
+     */
+    private String alarmCode;
+
+    /**
      * 告警等级
      */
     private Integer alarmLevel;
@@ -33,14 +38,29 @@ public class AlarmMsgInfo {
     private String alarmType;
 
     /**
-     * 告警时间
+     * 告警开始时间
      */
-    private LocalDateTime alarmTime;
+    private LocalDateTime alarmStartTime;
+
+    /**
+     * 告警结束时间
+     */
+    private LocalDateTime alarmEndTime;
 
     /**
      * 告警描述
      */
     private String alarmDesc;
+
+    /**
+     * 告警状态 0->进行中 1->已完成
+     */
+    private Integer alarmState;
+
+    /**
+     * 告警间隔时间
+     */
+    private Integer alarmInterval;
 
     /**
      * 播放地址
@@ -76,6 +96,11 @@ public class AlarmMsgInfo {
      * 图片地址
      */
     private String photoUrl;
+
+    /**
+     * 图片是否已存在
+     */
+    private Integer photoHasExist;
 
 
 

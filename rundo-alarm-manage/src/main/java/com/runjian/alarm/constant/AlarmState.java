@@ -5,18 +5,14 @@ import lombok.Getter;
 
 /**
  * @author Miracle
- * @date 2022/9/16 14:40
+ * @date 2023/9/13 15:25
  */
 @Getter
 @AllArgsConstructor
-public enum PhotoState {
+public enum AlarmState {
 
-    INIT(0, "等待中"),
-    GENERATING(1, "截图中"),
-    SUCCESS(2, "生成成功"),
-    ERROR(-1, "异常"),
-
-    ;
+    UNDERWAY(0, "进行中"),
+    SUCCESS(1, "已完成");
 
     private final Integer code;
 

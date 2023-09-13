@@ -12,12 +12,20 @@ public interface AlarmMsgSouthService {
 
     /**
      * 接收告警信息
-     * @param channelId
-     * @param eventCode
-     * @param eventDesc
-     * @param eventTime
+     * @param channelId 通道id
+     * @param eventCode 事件编码
+     * @param eventMsgTypeCode 事件消息类型编码
+     * @param eventDesc 事件描述
+     * @param eventTime 事件时间
+     * @param hasEventPhoto 是否有事件照片
      */
-    void receiveAlarmMsg(Long channelId, String eventCode, Integer eventEndType, String eventDesc, LocalDateTime eventTime);
+    void receiveAlarmMsg(Long channelId, String eventCode, Integer eventMsgTypeCode, String eventDesc, LocalDateTime eventTime, Integer hasEventPhoto);
+
+    /**
+     * 定时任务
+     * 检测正在事件中的告警
+     */
+    void checkUnderwayAlarm();
 
 
     /**

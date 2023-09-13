@@ -28,4 +28,6 @@ public interface AlarmMsgInfoMapper {
     Optional<AlarmMsgInfo> selectById(Long alarmMsgId);
 
     void update(AlarmMsgInfo alarmMsgInfo);
+
+    List<AlarmMsgInfo> selectByAlarmState(Integer alarmState);
 }
