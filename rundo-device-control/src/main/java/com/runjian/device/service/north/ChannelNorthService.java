@@ -6,6 +6,7 @@ import com.runjian.device.vo.response.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -85,4 +86,11 @@ public interface ChannelNorthService {
      * @param lengthY 拉框宽度像素值
      */
     void channelPtz3d(Long channelId, Integer dragType, Integer length, Integer width, Integer midPointX, Integer midPointY, Integer lengthX, Integer lengthY);
+
+    /**
+     * 布防/撤防
+     * @param channelIdList 通道id数组
+     * @param isDeploy 是否布防
+     */
+    void channelDeployAndWithdrawDefenses(List<Long> channelIdList,  Boolean isDeploy);
 }

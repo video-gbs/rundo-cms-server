@@ -110,8 +110,8 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                     alarmMsgInfo.setAlarmDesc(eventDesc);
                     alarmMsgInfo.setCreateTime(nowTime);
                     alarmMsgInfo.setUpdateTime(nowTime);
-
                     alarmMsgInfo.setAlarmInterval(alarmSchemeEventRel.getEventInterval());
+                    alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventRel.getVideoLength()));
                     // 判断是否开启视频录制
                     if (CommonEnum.getBoolean(alarmSchemeEventRel.getEnableVideo())){
                         alarmMsgInfo.setVideoLength(alarmSchemeEventRel.getVideoLength());
@@ -132,7 +132,6 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                             }
                         } else {
                             alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
-                            alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventRel.getVideoLength()));
                             alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
                             redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval() + alarmSchemeEventRel.getVideoLength(), TimeUnit.SECONDS);
                         }
@@ -146,6 +145,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 }
                 return;
             case COMPOUND_HEARTBEAT:
+                // 延迟锁过期
                 redisTemplate.expire(lockKey, 5, TimeUnit.MINUTES);
                 return;
             case COMPOUND_END:
@@ -162,10 +162,12 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 if (Objects.equals(AlarmState.SUCCESS.getCode(), alarmMsgInfo.getAlarmState())){
                     return;
                 }
+                // 设置告警状态为成功
                 alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
                 alarmMsgInfo.setUpdateTime(LocalDateTime.now());
+                alarmMsgInfo.setAlarmEndTime(eventTime);
+                // 判断录像状态是否是初始化
                 if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo.getVideoState())){
-                    alarmMsgInfo.setAlarmEndTime(eventTime);
                     alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
                 }
                 alarmMsgInfoMapper.update(alarmMsgInfo);

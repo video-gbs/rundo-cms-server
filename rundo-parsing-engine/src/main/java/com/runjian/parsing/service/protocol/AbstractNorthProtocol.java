@@ -45,10 +45,16 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
             case CHANNEL_DELETE_HARD:
                 channelDelete(mainId, response, msgType);
                 return;
+            case CHANNEL_DEFENSES_DEPLOY:
+            case CHANNEL_DEFENSES_WITHDRAW:
+                channelDefensesDeploy(mainId, msgType, dataMap, response);
+                return;
             default:
                 customEvent(mainId, idType, msgType.getMsg(), dataMap, response);
         }
     }
+
+
 
     @Override
     public void customEvent(Long mainId, IdType idType, String msgType, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
@@ -71,6 +77,10 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
                 gatewayTaskService.sendMsgToGateway(mainId, deviceId, channelId, msgType, gatewayConvertDto, response);
                 break;
         }
+    }
+
+    private void channelDefensesDeploy(Long gatewayId, MsgType msgType, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
+        // todo 转义数据
     }
 
     public void deviceDelete(Long deviceId, DeferredResult<CommonResponse<?>> response, MsgType msgType) {

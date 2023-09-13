@@ -71,7 +71,6 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     /**
      * 通道同步
-     *
      * @param deviceId 设备ID
      * @return 通道同步信息
      */
@@ -157,13 +156,13 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             // 更新通道的在线状态
             messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelOnlineMap);
             // 对数据进行批量保存
-            if (channelSaveList.size() > 0)
+            if (!channelSaveList.isEmpty())
                 channelMapper.batchSave(channelSaveList);
-            if (channelUpdateList.size() > 0)
+            if (!channelUpdateList.isEmpty())
                 channelMapper.batchUpdateOnlineState(channelUpdateList);
-            if (detailSaveList.size() > 0)
+            if (!detailSaveList.isEmpty())
                 detailMapper.batchSave(detailSaveList);
-            if (detailUpdateList.size() > 0)
+            if (!detailUpdateList.isEmpty())
                 detailMapper.batchUpdate(detailUpdateList);
         }
         return channelSyncRsp;
@@ -336,7 +335,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         DeviceControlReq req = new DeviceControlReq(channelId, IdType.CHANNEL, MsgType.CHANNEL_PTZ_CONTROL, 15000L);
         req.putData(StandardName.PTZ_CMD_CODE, cmdCode);
         req.putData(StandardName.PTZ_CMD_VALUE, cmdValue);
-        if (Objects.nonNull(valueMap) && valueMap.size() > 0){
+        if (Objects.nonNull(valueMap) && !valueMap.isEmpty()){
             req.putAllData(valueMap);
         }
         CommonResponse<?> response = parsingEngineApi.customEvent(req);
@@ -392,6 +391,27 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         if (response.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "云台控制北向服务", "3D控制", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
+        }
+    }
+
+    @Override
+    public void channelDeployAndWithdrawDefenses(List<Long> channelIdList, Boolean isDeploy) {
+        Map<Long, List<Long>> deviceChannelIdMap = channelMapper.selectByIds(channelIdList).stream().collect(Collectors.groupingBy(ChannelInfo::getDeviceId, Collectors.mapping(ChannelInfo::getId, Collectors.toList())));
+        Map<Long, List<Long>> gatewayDeviceIdMap = deviceMapper.selectByIds(deviceChannelIdMap.keySet()).stream().collect(Collectors.groupingBy(DeviceInfo::getGatewayId, Collectors.mapping(DeviceInfo::getId, Collectors.toList())));
+        MsgType msgType =  isDeploy ? MsgType.CHANNEL_DEFENSES_DEPLOY : MsgType.CHANNEL_DEFENSES_WITHDRAW;
+        for (Map.Entry<Long, List<Long>> entry : gatewayDeviceIdMap.entrySet()){
+            DeviceControlReq deviceControlReq = new DeviceControlReq(entry.getKey(), IdType.GATEWAY, msgType, 15000L);
+            for (Long deviceId : entry.getValue()){
+                deviceControlReq.putData(String.valueOf(deviceId), deviceChannelIdMap.get(deviceId));
+            }
+            try {
+                CommonResponse<?> response = parsingEngineApi.customEvent(deviceControlReq);
+                if (response.isError()) {
+                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "设备布防与撤防失败", String.format("请求体%s", deviceControlReq), String.format("%s:%s", response.getMsg(), response.getData().toString()));
+                }
+            }catch (Exception ex){
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "设备布防与撤防失败", String.format("请求体%s", deviceControlReq), ex);
+            }
         }
     }
 
