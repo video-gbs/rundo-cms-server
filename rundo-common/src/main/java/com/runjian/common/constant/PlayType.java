@@ -17,8 +17,8 @@ public enum PlayType {
     ALARM(3, "ALARM"),
     DOWNLOAD(4, "DOWNLOAD");
 
-    private Integer code;
-    private String msg;
+    private final Integer code;
+    private final String msg;
 
     public static String getMsgByCode(int code){
         if (code == LIVE.code){

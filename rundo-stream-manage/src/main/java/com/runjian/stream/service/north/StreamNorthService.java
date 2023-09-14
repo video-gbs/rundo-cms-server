@@ -3,7 +3,6 @@ package com.runjian.stream.service.north;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.runjian.stream.entity.StreamInfo;
-import com.runjian.stream.vo.response.PostApplyStreamRsp;
 import com.runjian.stream.vo.response.PostVideoPlayRsp;
 
 import java.time.LocalDateTime;
@@ -57,6 +56,31 @@ public interface StreamNorthService {
      */
     PostVideoPlayRsp streamRecordPlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer playType, Integer recordState, Integer autoCloseState, LocalDateTime startTime, LocalDateTime endTime, Integer bitStreamId);
 
+    /**
+     * 下载录像视频
+     * @param channelId 通道id
+     * @param streamMode 码流类型
+     * @param enableAudio 是否播放音频
+     * @param playType 播放类型
+     * @param startTime 播放时间
+     * @param endTime 结束时间
+     * @param uploadId 上传id
+     * @param uploadUrl 上传地址
+     * @return 流id
+     */
+    String downloadRecord(Long channelId, Integer streamMode, Boolean enableAudio, Integer playType, LocalDateTime startTime, LocalDateTime endTime, String uploadId, String uploadUrl);
+
+    /**
+     * 下载图片
+     * @param channelId 通道id
+     * @param streamMode 码流类型
+     * @param playType 播放类型
+     * @param time 截图时间
+     * @param uploadId 上传id
+     * @param uploadUrl 上传地址
+     * @return 流id
+     */
+    String downloadPicture(Long channelId, Integer streamMode, Integer playType, LocalDateTime time, String uploadId, String uploadUrl);
 
     /**
      * 停止播放

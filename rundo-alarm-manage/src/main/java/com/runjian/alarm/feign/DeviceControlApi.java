@@ -14,6 +14,6 @@ public interface DeviceControlApi {
      * @param req 布防请求体
      * @return
      */
-    @PutMapping("/defenses")
+    @PutMapping("/channel/north/defenses")
     CommonResponse<?> defense(@RequestBody PutDefenseReq req);
 }
