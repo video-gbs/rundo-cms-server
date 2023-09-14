@@ -9,7 +9,9 @@ import com.runjian.alarm.entity.AlarmEventInfo;
 import com.runjian.alarm.entity.AlarmSchemeInfo;
 import com.runjian.alarm.entity.relation.AlarmSchemeChannelRel;
 import com.runjian.alarm.entity.relation.AlarmSchemeEventRel;
+import com.runjian.alarm.feign.DeviceControlApi;
 import com.runjian.alarm.service.AlarmSchemeService;
+import com.runjian.alarm.vo.request.PutDefenseReq;
 import com.runjian.alarm.vo.response.*;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
@@ -36,6 +38,8 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
 
     private final AlarmSchemeChannelRelMapper alarmSchemeChannelRelMapper;
 
+    private final DeviceControlApi deviceControlApi;
+
     @Override
     public PageInfo<GetAlarmSchemePageRsp> getAlarmSchemeByPage(int page, int num, String schemeName, Integer disabled, LocalDateTime createTime) {
         PageHelper.startPage(page, num);
@@ -51,7 +55,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
     @Override
     public GetAlarmSchemeRsp getAlarmScheme(Long id) {
         Optional<GetAlarmSchemeRsp> getAlarmSchemeRspOp = alarmSchemeInfoMapper.selectRspById(id);
-        if (getAlarmSchemeRspOp.isEmpty()){
+        if (getAlarmSchemeRspOp.isEmpty()) {
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "告警预案不存在，请刷新重试");
         }
         List<Long> channelIdList = alarmSchemeChannelRelMapper.selectChannelIdBySchemeId(id);
@@ -93,7 +97,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
     @Transactional(rollbackFor = Exception.class)
     public void updateAlarmSchemeDisabled(Long id, Integer disabled) {
         Optional<AlarmSchemeInfo> alarmSchemeInfoOp = alarmSchemeInfoMapper.selectLockById(id);
-        if(alarmSchemeInfoOp.isEmpty()){
+        if (alarmSchemeInfoOp.isEmpty()) {
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "告警预案不存在");
         }
         AlarmSchemeInfo alarmSchemeInfo = alarmSchemeInfoOp.get();
@@ -103,10 +107,14 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         alarmSchemeInfo.setDisabled(disabled);
         alarmSchemeInfo.setUpdateTime(LocalDateTime.now());
         alarmSchemeInfoMapper.updateDisabled(alarmSchemeInfo);
-        if (CommonEnum.getBoolean(disabled)){
-            // todo 禁用布防
-        }else {
-            // todo 启用布防
+        List<Long> channelIds = alarmSchemeChannelRelMapper.selectChannelIdBySchemeId(id);
+        if (channelIds.isEmpty()) {
+            return;
+        }
+        if (CommonEnum.getBoolean(disabled)) {
+            deviceControlApi.defense(new PutDefenseReq(channelIds, false));
+        } else {
+            deviceControlApi.defense(new PutDefenseReq(channelIds, true));
         }
     }
 
@@ -114,13 +122,13 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
     @Transactional(rollbackFor = Exception.class)
     public void updateAlarmScheme(Long id, String schemeName, Long templateId, Set<Long> channelIds, List<AlarmSchemeEventRel> alarmSchemeEventRelList) {
         Optional<AlarmSchemeInfo> alarmSchemeInfoOp = alarmSchemeInfoMapper.selectLockById(id);
-        if(alarmSchemeInfoOp.isEmpty()){
+        if (alarmSchemeInfoOp.isEmpty()) {
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "告警预案不存在");
         }
         LocalDateTime nowTime = LocalDateTime.now();
         AlarmSchemeInfo alarmSchemeInfo = alarmSchemeInfoOp.get();
-        if (!Objects.equals(alarmSchemeInfo.getSchemeName(), schemeName)){
-            if (alarmSchemeInfoMapper.selectBySchemeName(schemeName).isPresent()){
+        if (!Objects.equals(alarmSchemeInfo.getSchemeName(), schemeName)) {
+            if (alarmSchemeInfoMapper.selectBySchemeName(schemeName).isPresent()) {
                 throw new BusinessException(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, "该告警预案名称已存在，请重新输入");
             }
             alarmSchemeInfo.setSchemeName(schemeName);
@@ -134,15 +142,15 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         Map<Long, AlarmSchemeChannelRel> alarmSchemeChannelRelMap = alarmSchemeChannelRelMapper.selectByChannelIds(channelIds).stream().collect(Collectors.toMap(AlarmSchemeChannelRel::getChannelId, alarmSchemeChannelRel -> alarmSchemeChannelRel));
         List<AlarmSchemeChannelRel> newSchemeChannelRelList = new ArrayList<>(channelIds.size());
         List<AlarmSchemeChannelRel> updateSchemeChannelRelList = new ArrayList<>(alarmSchemeChannelRelMap.size());
-        for (Long channelId : channelIds){
+        for (Long channelId : channelIds) {
             AlarmSchemeChannelRel alarmSchemeChannelRel = alarmSchemeChannelRelMap.remove(channelId);
-            if (Objects.isNull(alarmSchemeChannelRel)){
+            if (Objects.isNull(alarmSchemeChannelRel)) {
                 alarmSchemeChannelRel = new AlarmSchemeChannelRel();
                 alarmSchemeChannelRel.setChannelId(channelId);
                 alarmSchemeChannelRel.setSchemeId(id);
                 alarmSchemeChannelRel.setCreateTime(nowTime);
                 newSchemeChannelRelList.add(alarmSchemeChannelRel);
-            }else {
+            } else {
                 alarmSchemeChannelRel.setCreateTime(nowTime);
                 updateSchemeChannelRelList.add(alarmSchemeChannelRel);
             }
@@ -156,11 +164,11 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         Map<String, AlarmSchemeEventRel> newEventMap = alarmSchemeEventRelList.stream().collect(Collectors.toMap(AlarmSchemeEventRel::getEventCode, alarmSchemeEventRel -> alarmSchemeEventRel));
         List<String> deleteEventCodeList = new ArrayList<>(existEventCodes.size());
         List<AlarmSchemeEventRel> updateEventList = new ArrayList<>(newEventMap.size());
-        for (String eventCode : existEventCodes){
+        for (String eventCode : existEventCodes) {
             AlarmSchemeEventRel alarmSchemeEventRel = newEventMap.remove(eventCode);
-            if (Objects.isNull(alarmSchemeEventRel)){
+            if (Objects.isNull(alarmSchemeEventRel)) {
                 deleteEventCodeList.add(eventCode);
-            }else {
+            } else {
                 updateEventList.add(alarmSchemeEventRel);
             }
         }
@@ -168,26 +176,38 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         alarmSchemeEventRelMapper.batchUpdate(updateEventList);
         alarmSchemeEventRelMapper.batchSave(new ArrayList<>(newEventMap.values()));
 
-        if (CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())){
-            // todo 禁用布防
-        }else {
-            // todo 启用布防
+        if (channelIds.isEmpty()) {
+            return;
+        }
+        if (CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())) {
+            channelIds.addAll(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()));
+            deviceControlApi.defense(new PutDefenseReq(new ArrayList<>(channelIds), false));
+        } else {
+            // 撤防删除的设备
+            deviceControlApi.defense(new PutDefenseReq(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false));
+            // 布防新增的设备
+            deviceControlApi.defense(new PutDefenseReq(new ArrayList<>(channelIds), true));
         }
     }
 
     @Override
-    @Transactional(rollbackFor =  Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void deleteAlarmScheme(Long id) {
         Optional<AlarmSchemeInfo> alarmSchemeInfoOp = alarmSchemeInfoMapper.selectLockById(id);
-        if(alarmSchemeInfoOp.isEmpty()){
+        if (alarmSchemeInfoOp.isEmpty()) {
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "告警预案不存在");
         }
         AlarmSchemeInfo alarmSchemeInfo = alarmSchemeInfoOp.get();
-        if (!CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())){
-            // todo 禁用布防
+        if (!CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())) {
+            List<Long> channelIds = alarmSchemeChannelRelMapper.selectChannelIdBySchemeId(id);
+            if (channelIds.isEmpty()) {
+                return;
+            }
+            deviceControlApi.defense(new PutDefenseReq(channelIds, true));
+            alarmSchemeChannelRelMapper.deleteBySchemeId(id);
         }
         alarmSchemeEventRelMapper.deleteBySchemeId(id);
-        alarmSchemeChannelRelMapper.deleteBySchemeId(id);
         alarmSchemeInfoMapper.deleteById(id);
     }
+
 }

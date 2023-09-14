@@ -132,6 +132,18 @@ public class ChannelNorthController {
         return CommonResponse.success();
     }
 
+    /**
+     * 布防与撤防
+     * @param req 布防撤防请求体
+     * @return
+     */
+    @PutMapping("/defenses")
+    public CommonResponse<?> defense(@RequestBody PutDefenseReq req){
+        validatorService.validateRequest(req);
+        channelNorthService.channelDeployAndWithdrawDefenses(req.getChannelIdList(), req.getIsDeploy());
+        return CommonResponse.success();
+    }
+
 }
 
 

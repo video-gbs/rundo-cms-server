@@ -68,7 +68,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
         switch (eventMsgType){
             case SINGLE:
             case COMPOUND_START:
-                if (redisLockUtil.lock(lockKey,  UNLOCK_PWD, 15, TimeUnit.SECONDS, 1)) {
+                if (redisLockUtil.lock(lockKey,  UNLOCK_PWD, DEFAULT_SINGLE_MSG_END, TimeUnit.SECONDS, 1)) {
                     Optional<AlarmSchemeInfo> alarmSchemeInfoOp = alarmSchemeInfoMapper.selectByChannelId(channelId);
                     if (alarmSchemeInfoOp.isEmpty()){
                         redisLockUtil.unLock(lockKey, UNLOCK_PWD);

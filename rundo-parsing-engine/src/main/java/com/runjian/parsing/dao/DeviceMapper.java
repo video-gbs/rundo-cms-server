@@ -38,9 +38,10 @@ public interface DeviceMapper {
             " </script>")
     Optional<DeviceInfo> selectByGatewayIdAndOriginId(Long gatewayId, String originId);
 
-    @Insert({" <script> " +
-            " INSERT INTO " + DEVICE_TABLE_NAME + "(id, gateway_id, origin_id, update_time, create_time) values " +
-            " <foreach collection='deviceInfoList' item='item' separator=','>(#{item.id}, #{item.gatewayId}, #{item.originId}, #{item.updateTime}, #{item.createTime})</foreach> " +
-            " </script>"})
-    void batchSave(List<DeviceInfo> deviceInfoList);
+    @Select(" <script> " +
+            " SELECT * FROM " + DEVICE_TABLE_NAME +
+            " WHERE id IN " +
+            " <foreach collection='deviceIdList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    List<DeviceInfo> selectByIds(List<Long> deviceIdList);
 }
