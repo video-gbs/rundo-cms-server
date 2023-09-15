@@ -72,10 +72,10 @@ public class StreamNorthController {
      * @param req 图片下载请求体
      * @return 流id
      */
-    @PostMapping("/download/picture")
-    public CommonResponse<String> applyStreamId(@RequestBody PostPictureDownloadReq req){
+    @PostMapping("/download/image")
+    public CommonResponse<String> applyStreamId(@RequestBody PostImageDownloadReq req){
         validatorService.validateRequest(req);
-        return CommonResponse.success(streamNorthService.downloadPicture(req.getChannelId(), req.getStreamType(), req.getPlayType(), req.getTime(), req.getUploadId(), req.getUploadUrl()));
+        return CommonResponse.success(streamNorthService.downloadImage(req.getChannelId(), req.getStreamType(), req.getPlayType(), req.getTime(), req.getUploadId(), req.getUploadUrl()));
     }
 
     /**

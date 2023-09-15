@@ -96,6 +96,16 @@ public class RedisLockUtil {
         }
     }
 
+    public boolean unLock(String key){
+        try{
+            redisTemplate.opsForValue().getOperations().delete(key);
+            return true;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
     /**
      * 检测值
      * @param key
@@ -107,13 +117,15 @@ public class RedisLockUtil {
             // 获取分布式锁
             String currentValue = redisTemplate.opsForValue().get(key);
             // 这里避免解了其他人的锁，要匹配value值
-            if (!StringUtils.isEmpty(currentValue) && currentValue.equals(value)){
-                return true;
-            }
-            return false;
+            return !StringUtils.isEmpty(currentValue) && currentValue.equals(value);
         }catch (Exception ex){
             return false;
         }
 
     }
+    public Long getLockExpire(String key, TimeUnit timeUnit){
+        return redisTemplate.getExpire(key, timeUnit);
+    }
+
+
 }

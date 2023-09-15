@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
  * @date 2023/9/14 17:42
  */
 @Data
-public class PostPictureDownloadReq {
+public class PostImageDownloadReq {
 
     /**
      * 通道id不能为空

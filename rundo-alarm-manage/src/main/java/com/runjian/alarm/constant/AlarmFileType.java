@@ -1,10 +1,7 @@
 package com.runjian.alarm.constant;
 
-import com.runjian.common.constant.MsgType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.Objects;
 
 /**
  * @author Miracle
@@ -14,11 +11,13 @@ import java.util.Objects;
 @AllArgsConstructor
 public enum AlarmFileType {
 
-    UNKNOWN(0),
-    PHOTO(1),
-    VIDEO(2);
+    UNKNOWN(0, "UNKNOWN"),
+    IMAGE(1, "IMAGE"),
+    VIDEO(2, "VIDEO");
 
     private final Integer code;
+
+    private final String msg;
 
     public static AlarmFileType getByCode(int code) {
         for (AlarmFileType alarmFileType : AlarmFileType.values()) {

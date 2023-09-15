@@ -80,7 +80,7 @@ public interface StreamNorthService {
      * @param uploadUrl 上传地址
      * @return 流id
      */
-    String downloadPicture(Long channelId, Integer streamMode, Integer playType, LocalDateTime time, String uploadId, String uploadUrl);
+    String downloadImage(Long channelId, Integer streamMode, Integer playType, LocalDateTime time, String uploadId, String uploadUrl);
 
     /**
      * 停止播放

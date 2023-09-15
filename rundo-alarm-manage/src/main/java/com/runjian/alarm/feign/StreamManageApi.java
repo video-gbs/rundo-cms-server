@@ -1,6 +1,6 @@
 package com.runjian.alarm.feign;
 
-import com.runjian.alarm.vo.request.PostPictureDownloadReq;
+import com.runjian.alarm.vo.request.PostImageDownloadReq;
 import com.runjian.alarm.vo.request.PostRecordDownloadReq;
 import com.runjian.common.config.response.CommonResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -18,6 +18,6 @@ public interface StreamManageApi {
     CommonResponse<String> applyStreamId(@RequestBody PostRecordDownloadReq req);
 
 
-    @PostMapping("/stream/north/download/picture")
-    CommonResponse<String> applyStreamId(@RequestBody PostPictureDownloadReq req);
+    @PostMapping("/stream/north/download/image")
+    CommonResponse<String> applyStreamId(@RequestBody PostImageDownloadReq req);
 }

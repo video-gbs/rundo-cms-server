@@ -17,15 +17,8 @@ public interface AlarmMsgSouthService {
      * @param eventMsgTypeCode 事件消息类型编码
      * @param eventDesc 事件描述
      * @param eventTime 事件时间
-     * @param hasEventPhoto 是否有事件照片
      */
-    void receiveAlarmMsg(Long channelId, String eventCode, Integer eventMsgTypeCode, String eventDesc, LocalDateTime eventTime, Integer hasEventPhoto);
-
-    /**
-     * 定时任务
-     * 检测正在事件中的告警
-     */
-    void checkUnderwayAlarm();
+    void receiveAlarmMsg(Long channelId, String eventCode, Integer eventMsgTypeCode, String eventDesc, LocalDateTime eventTime);
 
 
     /**

@@ -2,7 +2,9 @@ package com.runjian.alarm.vo.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.runjian.common.constant.PlayType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,6 +18,8 @@ import java.time.LocalDateTime;
  * @date 2023/9/14 17:39
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostRecordDownloadReq {
 
     /**

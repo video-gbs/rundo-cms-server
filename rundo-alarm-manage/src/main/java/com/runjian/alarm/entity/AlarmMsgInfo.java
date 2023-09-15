@@ -90,18 +90,12 @@ public class AlarmMsgInfo {
     /**
      * 视频状态：0->失败重试 1->进行中 2->已完成 3->异常
      */
-    private Integer photoState;
+    private Integer imageState;
 
     /**
      * 图片地址
      */
-    private String photoUrl;
-
-    /**
-     * 图片是否已存在
-     */
-    private Integer photoHasExist;
-
+    private String imageUrl;
 
 
     private LocalDateTime createTime;

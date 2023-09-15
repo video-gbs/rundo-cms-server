@@ -30,4 +30,12 @@ public interface AlarmMsgInfoMapper {
     void update(AlarmMsgInfo alarmMsgInfo);
 
     List<AlarmMsgInfo> selectByAlarmState(Integer alarmState);
+
+    void batchUpdate(List<AlarmMsgInfo> alarmMsgInfoList);
+
+    List<AlarmMsgInfo> selectByVideoStateAndAlarmEndTime(Integer alarmFileState, LocalDateTime nowTime);
+
+    List<AlarmMsgInfo> selectByVideoStateOrImageState(Integer alarmFileState);
+
+    List<AlarmMsgInfo> selectByImageState(Integer alarmFileState);
 }

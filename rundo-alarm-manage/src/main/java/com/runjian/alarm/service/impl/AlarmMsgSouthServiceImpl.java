@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -61,7 +60,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
     private final static int DEFAULT_SINGLE_MSG_END = 15;
 
     @Override
-    public void receiveAlarmMsg(Long channelId, String eventCode, Integer eventMsgTypeCode, String eventDesc, LocalDateTime eventTime, Integer hasEventPhoto) {
+    public void receiveAlarmMsg(Long channelId, String eventCode, Integer eventMsgTypeCode, String eventDesc, LocalDateTime eventTime) {
         String lockKey = eventCode + MarkConstant.MARK_SPLIT_SEMICOLON + channelId;
         // 缓存过滤
         EventMsgType eventMsgType = EventMsgType.getByCode(eventMsgTypeCode);
@@ -138,66 +137,57 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                     }
                     // 判断是否开启截图
                     if (CommonEnum.getBoolean(alarmSchemeEventRel.getEnablePhoto())){
-                        alarmMsgInfo.setPhotoState(AlarmFileState.WAITING.getCode());
-                        alarmMsgInfo.setPhotoHasExist(hasEventPhoto);
+                        alarmMsgInfo.setImageState(AlarmFileState.WAITING.getCode());
                     }
                     alarmMsgInfoMapper.save(alarmMsgInfo);
                 }
                 return;
             case COMPOUND_HEARTBEAT:
                 // 延迟锁过期
+                String alarmMsgInfoId1 = redisTemplate.opsForValue().get(lockKey);
+                if (Objects.isNull(alarmMsgInfoId1)){
+                    return;
+                }
+                Optional<AlarmMsgInfo> alarmMsgInfoOp1 = alarmMsgInfoMapper.selectById(Long.valueOf(alarmMsgInfoId1));
+                if (alarmMsgInfoOp1.isEmpty()){
+                    return;
+                }
+                LocalDateTime nowTime = LocalDateTime.now();
+                AlarmMsgInfo alarmMsgInfo1 = alarmMsgInfoOp1.get();
+                alarmMsgInfo1.setUpdateTime(nowTime);
+                alarmMsgInfo1.setAlarmEndTime(nowTime);
+                alarmMsgInfoMapper.update(alarmMsgInfo1);
                 redisTemplate.expire(lockKey, 5, TimeUnit.MINUTES);
                 return;
             case COMPOUND_END:
-                String alarmMsgInfoId = redisTemplate.opsForValue().get(lockKey);
-                if (Objects.isNull(alarmMsgInfoId)){
+                String alarmMsgInfoId2 = redisTemplate.opsForValue().get(lockKey);
+                if (Objects.isNull(alarmMsgInfoId2)){
                     return;
                 }
-                Optional<AlarmMsgInfo> alarmMsgInfoOp = alarmMsgInfoMapper.selectById(Long.valueOf(alarmMsgInfoId));
-                if (alarmMsgInfoOp.isEmpty()){
+                Optional<AlarmMsgInfo> alarmMsgInfoOp2 = alarmMsgInfoMapper.selectById(Long.valueOf(alarmMsgInfoId2));
+                if (alarmMsgInfoOp2.isEmpty()){
                     return;
                 }
-                AlarmMsgInfo alarmMsgInfo = alarmMsgInfoOp.get();
+                AlarmMsgInfo alarmMsgInfo2 = alarmMsgInfoOp2.get();
                 // 判断事件是否被提前结束了，提前结束也直接返回
-                if (Objects.equals(AlarmState.SUCCESS.getCode(), alarmMsgInfo.getAlarmState())){
+                if (Objects.equals(AlarmState.SUCCESS.getCode(), alarmMsgInfo2.getAlarmState())){
                     return;
                 }
                 // 设置告警状态为成功
-                alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
-                alarmMsgInfo.setUpdateTime(LocalDateTime.now());
-                alarmMsgInfo.setAlarmEndTime(eventTime);
+                alarmMsgInfo2.setAlarmState(AlarmState.SUCCESS.getCode());
+                alarmMsgInfo2.setUpdateTime(LocalDateTime.now());
+                alarmMsgInfo2.setAlarmEndTime(eventTime);
                 // 判断录像状态是否是初始化
-                if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo.getVideoState())){
-                    alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
+                if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo2.getVideoState())){
+                    alarmMsgInfo2.setVideoState(AlarmFileState.WAITING.getCode());
                 }
-                alarmMsgInfoMapper.update(alarmMsgInfo);
+                alarmMsgInfoMapper.update(alarmMsgInfo2);
                 // 设置下次间隔时间
-                redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval(), TimeUnit.SECONDS);
+                redisTemplate.expire(lockKey, alarmMsgInfo2.getAlarmInterval(), TimeUnit.SECONDS);
         }
     }
 
-    /**
-     * 定时任务
-     * 检测正在事件中的告警
-     */
-    @Override
-    public void checkUnderwayAlarm(){
-        List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByAlarmState(AlarmState.UNDERWAY.getCode());
-        for (AlarmMsgInfo alarmMsgInfo : alarmMsgInfoList){
-            String lockKey = alarmMsgInfo.getAlarmCode() + MarkConstant.MARK_SPLIT_SEMICOLON + alarmMsgInfo.getChannelId();
-            if(Objects.nonNull(redisTemplate.opsForValue().get(lockKey))){
-                return;
-            }
-            LocalDateTime nowTime = LocalDateTime.now();
-            alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
-            alarmMsgInfo.setUpdateTime(nowTime);
-            if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo.getVideoState())) {
-                alarmMsgInfo.setAlarmEndTime(nowTime);
-                alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
-            }
-            alarmMsgInfoMapper.update(alarmMsgInfo);
-        }
-    }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -208,19 +198,20 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
         }
 
         AlarmMsgInfo alarmMsgInfo = alarmMsgInfoOp.get();
+        redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId());
         String filename = alarmMsgInfo.getId() + MarkConstant.MARK_SPLIT_RAIL + alarmMsgInfo.getAlarmStartTime() + ".";
         String path = DEFAULT_UPLOAD_ADDRESS + "/" + alarmMsgInfo.getChannelId();
         Path filePath;
         switch (AlarmFileType.getByCode(alarmFileType)){
-            case PHOTO:
+            case IMAGE:
                 filePath = Paths.get(path, filename + (Objects.isNull(file.getOriginalFilename()) ? "jpg" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1)));
-                alarmMsgInfo.setPhotoUrl(filePath.toString());
+                alarmMsgInfo.setImageUrl(filePath.toString());
                 alarmMsgInfo.setVideoState(AlarmFileState.SUCCESS.getCode());
                 break;
             case VIDEO:
                 filePath = Paths.get(path, filename + (Objects.isNull(file.getOriginalFilename()) ? "mp4" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1)));
                 alarmMsgInfo.setVideoUrl(filePath.toString());
-                alarmMsgInfo.setPhotoState(AlarmFileState.SUCCESS.getCode());
+                alarmMsgInfo.setImageState(AlarmFileState.SUCCESS.getCode());
                 break;
             default:
                 return;
