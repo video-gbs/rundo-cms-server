@@ -11,5 +11,8 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface AlarmMsgErrorRelMapper {
+
+    String ALARM_MSG_ERROR_TABLE_NAME = "rundo_alarm_msg_error";
+
     void save(AlarmMsgErrorRel alarmMsgErrorRel);
 }
