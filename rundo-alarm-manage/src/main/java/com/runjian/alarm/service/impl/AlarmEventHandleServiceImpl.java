@@ -58,6 +58,10 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
 
     private final static String uploadUrl = "";
 
+    private final static long DELAY_VIDEO_TIME_SECOND = -30;
+
+    private final static long DEFAULT_OUT_TIME_SECOND = 60;
+
     /**
      * 定时任务
      * 检测正在事件中的告警
@@ -78,7 +82,6 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                     if (Objects.nonNull(redisTemplate.opsForValue().get(lockKey))) {
                         return;
                     }
-
                     alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
                     alarmMsgInfo.setUpdateTime(nowTime);
                     if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo.getVideoState())) {
@@ -98,14 +101,14 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
     public void alarmVideoEventStart() {
         // 视频报警处理
         LocalDateTime nowTime = LocalDateTime.now();
-        List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByVideoStateAndAlarmEndTime(AlarmFileState.WAITING.getCode(), nowTime);
+        List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByVideoStateAndAlarmEndTime(AlarmFileState.WAITING.getCode(), nowTime.plusSeconds(DELAY_VIDEO_TIME_SECOND));
         if (alarmMsgInfoList.isEmpty()) {
             return;
         }
         for (AlarmMsgInfo alarmMsgInfo : alarmMsgInfoList) {
             String lockKey = MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId();
             Duration duration = Duration.between(alarmMsgInfo.getAlarmStartTime(), alarmMsgInfo.getAlarmEndTime());
-            if (redisLockUtil.lock(lockKey, String.valueOf(nowTime.toInstant(ZoneOffset.of("+8")).toEpochMilli()), duration.getSeconds() + 60000, TimeUnit.SECONDS, 1)){
+            if (redisLockUtil.lock(lockKey, String.valueOf(nowTime.toInstant(ZoneOffset.of("+8")).toEpochMilli()), duration.getSeconds() + DEFAULT_OUT_TIME_SECOND, TimeUnit.SECONDS, 1)){
 
                 alarmMsgInfo.setUpdateTime(nowTime);
                 PostRecordDownloadReq postRecordDownloadReq = getPostRecordDownloadReq(alarmMsgInfo);
@@ -142,7 +145,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
         LocalDateTime nowTime = LocalDateTime.now();
         for (AlarmMsgInfo alarmMsgInfo : alarmMsgInfoList) {
             String lockKey = MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId();
-            if (redisLockUtil.lock(lockKey, String.valueOf(nowTime.toInstant(ZoneOffset.of("+8")).toEpochMilli()), 60000, TimeUnit.SECONDS, 1)){
+            if (redisLockUtil.lock(lockKey, String.valueOf(nowTime.toInstant(ZoneOffset.of("+8")).toEpochMilli()), DEFAULT_OUT_TIME_SECOND, TimeUnit.SECONDS, 1)){
                 alarmMsgInfo.setUpdateTime(nowTime);
                 PostImageDownloadReq postImageDownloadReq = getPostImageDownloadReq(alarmMsgInfo);
                 try{
@@ -166,7 +169,6 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
             }
         }
     }
-
 
     @Override
     @Scheduled(fixedDelay = 5000)
@@ -199,8 +201,6 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
             }
         }
     }
-
-
 
     private static PostRecordDownloadReq getPostRecordDownloadReq(AlarmMsgInfo alarmMsgInfo) {
         PostRecordDownloadReq postRecordDownloadReq = new PostRecordDownloadReq();
