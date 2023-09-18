@@ -41,7 +41,7 @@ public class GisController {
         return CommonResponse.success();
     }
 
-    @GetMapping(value = "/configList",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/configList",produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("gis配置--列表")
     public CommonResponse<List<GisConfig>> configList() {
 
