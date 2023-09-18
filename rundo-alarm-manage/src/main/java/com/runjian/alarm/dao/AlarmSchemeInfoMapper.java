@@ -28,7 +28,7 @@ public interface AlarmSchemeInfoMapper {
             " <if test=\"schemeName != null\" > AND scheme_name = #{schemeName} </if>" +
             " <if test=\"disabled != null\" > AND disabled = #{disabled} </if>" +
             " <if test=\"createStartTime != null\" > AND create_time &gt;= #{createStartTime} </if>" +
-            " <if test=\"createEndTime != null\" > AND create_time &lt;= #{createEndTime} </if>" +
+            " <if test=\"createEndTime != null\" > A ND create_time &lt;= #{createEndTime} </if>" +
             " </script> ")
     List<GetAlarmSchemePageRsp> selectByPage(String schemeName, Integer disabled, LocalDateTime createStartTime, LocalDateTime createEndTime);
 
@@ -70,7 +70,7 @@ public interface AlarmSchemeInfoMapper {
     void deleteById(Long id);
 
     @Select(" SELECT ast.* FROM " + ALARM_SCHEME_TABLE_NAME + " ast " +
-            " LEFT JOIN " + AlarmSchemeChannelRelMapper.ALARM_SCHEME_CHANNEL_TABLE_NAME + " asc ON ast.id = asc.template_id " +
-            " WHERE asc.channel_id = #{channelId} ")
+            " LEFT JOIN " + AlarmSchemeChannelRelMapper.ALARM_SCHEME_CHANNEL_TABLE_NAME + " asct ON ast.id = asct.template_id " +
+            " WHERE asct.channel_id = #{channelId} ")
     Optional<AlarmSchemeInfo> selectByChannelId(Long channelId);
 }

@@ -157,7 +157,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         }
         alarmSchemeChannelRelMapper.batchSave(newSchemeChannelRelList);
         alarmSchemeChannelRelMapper.batchUpdate(updateSchemeChannelRelList);
-        alarmSchemeChannelRelMapper.batchDelete(new ArrayList<>(alarmSchemeChannelRelMap.values()));
+        alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
 
         // 更新事件信息
         Set<String> existEventCodes = alarmSchemeEventRelMapper.selectEventCodeBySchemeId(id);

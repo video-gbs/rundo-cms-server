@@ -1,8 +1,9 @@
 package com.runjian.alarm.dao.relation;
 
+import com.runjian.alarm.dao.AlarmSchemeInfoMapper;
 import com.runjian.alarm.entity.relation.AlarmSchemeChannelRel;
 import com.runjian.alarm.vo.response.GetAlarmChannelRsp;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -20,19 +21,55 @@ public interface AlarmSchemeChannelRelMapper {
 
     String ALARM_SCHEME_CHANNEL_TABLE_NAME = "rundo_alarm_scheme_channel";
 
-    List<Long> selectChannelIdBySchemeId(Long id);
+    @Select(" SELECT * FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+            " WHERE id = #{schemeId} ")
+    List<Long> selectChannelIdBySchemeId(Long schemeId);
 
+    @Select(" <script> " +
+            " SELECT asct.channel_id, ast.scheme_name, ast.id AS schemeId FROM " + AlarmSchemeInfoMapper.ALARM_SCHEME_TABLE_NAME + " ast " +
+            " LEFT JOIN " + ALARM_SCHEME_CHANNEL_TABLE_NAME + " asct ON ast.id = asct.template_id " +
+            " WHERE asct.channel_id IN " +
+            " <foreach collection='channelIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
     List<GetAlarmChannelRsp> selectSchemeNameByChannelIds(Set<Long> channelIds);
 
-    void batchSave(Long id, Set<Long> channelIds, LocalDateTime nowTime);
+    @Insert({" <script> " +
+            " INSERT INTO " + ALARM_SCHEME_CHANNEL_TABLE_NAME + "(schemeId, channelId, create_time) values " +
+            " <foreach collection='channelIds' item='item' separator=','>(#{id}, #{item}, #{createTime})</foreach> " +
+            " </script>"})
+    void batchSave(Long id, Set<Long> channelIds, LocalDateTime createTime);
 
+    @Select(" <script> " +
+            " SELECT * FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+            " WHERE channel_id IN " +
+            " <foreach collection='channelIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
     List<AlarmSchemeChannelRel> selectByChannelIds(Set<Long> channelIds);
 
+    @Insert({" <script> " +
+            " INSERT INTO " + ALARM_SCHEME_CHANNEL_TABLE_NAME + "(schemeId, channelId, create_time) values " +
+            " <foreach collection='alarmSchemeChannelRelList' item='item' separator=','>(#{item.scheme_id}, #{item.channel_id}, #{item.createTime})</foreach> " +
+            " </script>"})
     void batchSave(List<AlarmSchemeChannelRel> alarmSchemeChannelRelList);
 
+    @Update(" <script> " +
+            " <foreach collection='alarmSchemeChannelRelList' item='item' separator=';'> " +
+            " UPDATE " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+            " SET create_time = #{item.createTime}  " +
+            " , scheme_id = #{item.schemeId} " +
+            " WHERE id = #{item.id} "+
+            " </foreach> " +
+            " </script> ")
     void batchUpdate(List<AlarmSchemeChannelRel> alarmSchemeChannelRelList);
 
-    void deleteBySchemeId(Long id);
+    @Delete(" DELETE FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+            " WHERE scheme_id = #{schemeId} ")
+    void deleteBySchemeId(Long schemeId);
 
-    void batchDelete(List<AlarmSchemeChannelRel> alarmSchemeChannelRelList);
+    @Delete(" <script> " +
+            " DELETE FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+            " WHERE id IN " +
+            " <foreach collection='idList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void batchDelete(List<Long> idList);
 }
