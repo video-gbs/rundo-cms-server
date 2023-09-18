@@ -41,9 +41,9 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
     private final DeviceControlApi deviceControlApi;
 
     @Override
-    public PageInfo<GetAlarmSchemePageRsp> getAlarmSchemeByPage(int page, int num, String schemeName, Integer disabled, LocalDateTime createTime) {
+    public PageInfo<GetAlarmSchemePageRsp> getAlarmSchemeByPage(int page, int num, String schemeName, Integer disabled, LocalDateTime createStartTime, LocalDateTime createEndTime) {
         PageHelper.startPage(page, num);
-        Map<Long, GetAlarmSchemePageRsp> getAlarmSchemePageRspMap = alarmSchemeInfoMapper.selectByPage(schemeName, disabled, createTime).stream().collect(Collectors.toMap(GetAlarmSchemePageRsp::getId, getAlarmSchemePageRsp -> getAlarmSchemePageRsp));
+        Map<Long, GetAlarmSchemePageRsp> getAlarmSchemePageRspMap = alarmSchemeInfoMapper.selectByPage(schemeName, disabled, createStartTime, createEndTime).stream().collect(Collectors.toMap(GetAlarmSchemePageRsp::getId, getAlarmSchemePageRsp -> getAlarmSchemePageRsp));
         Map<Long, List<GetAlarmSchemeEventNameRsp>> getAlarmSchemeEventNameRsp = alarmSchemeEventRelMapper.selectEventNameBySchemeIds(getAlarmSchemePageRspMap.keySet()).stream().collect(Collectors.groupingBy(GetAlarmSchemeEventNameRsp::getSchemeId, Collectors.toList()));
         for (Map.Entry<Long, GetAlarmSchemePageRsp> entry : getAlarmSchemePageRspMap.entrySet()) {
             List<GetAlarmSchemeEventNameRsp> alarmSchemeEventNameRspList = getAlarmSchemeEventNameRsp.get(entry.getKey());

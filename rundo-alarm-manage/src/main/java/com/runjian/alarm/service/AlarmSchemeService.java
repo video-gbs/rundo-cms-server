@@ -22,10 +22,11 @@ public interface AlarmSchemeService {
      * @param num 每页数据
      * @param schemeName 预案名称
      * @param disabled 是否禁用
-     * @param createTime 创建时间
+     * @param createStartTime 创建开始时间
+     * @param createEndTime 创建结束时间
      * @return
      */
-    PageInfo<GetAlarmSchemePageRsp> getAlarmSchemeByPage(int page, int num, String schemeName, Integer disabled, LocalDateTime createTime);
+    PageInfo<GetAlarmSchemePageRsp> getAlarmSchemeByPage(int page, int num, String schemeName, Integer disabled, LocalDateTime createStartTime, LocalDateTime createEndTime);
 
 
     /**

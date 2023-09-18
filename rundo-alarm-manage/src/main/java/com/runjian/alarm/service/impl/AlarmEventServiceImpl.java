@@ -18,7 +18,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Miracle
@@ -33,7 +32,7 @@ public class AlarmEventServiceImpl implements AlarmEventService {
     @Override
     public PageInfo<GetAlarmEventRsp> getAlarmEventByPage(int page, int num, String eventName, String eventCode) {
         PageHelper.startPage(page, num);
-        List<GetAlarmEventRsp> alarmEventByPage = alarmEventMapper.getAlarmEventByPage(eventName, eventCode);
+        List<GetAlarmEventRsp> alarmEventByPage = alarmEventMapper.selectAlarmEventByPage(eventName, eventCode);
         alarmEventByPage.sort(Comparator.comparing(GetAlarmEventRsp::getEventSort));
         return new PageInfo<>(alarmEventByPage);
     }

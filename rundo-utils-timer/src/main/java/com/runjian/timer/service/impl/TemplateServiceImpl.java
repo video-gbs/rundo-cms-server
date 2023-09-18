@@ -99,6 +99,7 @@ public class TemplateServiceImpl implements TemplateService {
         LocalDateTime nowTime = LocalDateTime.now();
         templateInfo.setTemplateName(templateName);
         templateInfo.setUpdateTime(nowTime);
+        templateInfoMapper.update(templateInfo);
 
         // 删除原有模板明细信息
         templateDetailInfoMapper.deleteByTemplateId(templateId);
