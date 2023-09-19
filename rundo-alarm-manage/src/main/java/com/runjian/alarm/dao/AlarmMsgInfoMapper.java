@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -18,10 +19,6 @@ import java.util.Optional;
 public interface AlarmMsgInfoMapper {
 
     String ALARM_MSG_TABLE_NAME = "rundo_alarm_msg";
-
-    @Delete(" DELETE FROM " + ALARM_MSG_TABLE_NAME +
-            " WHERE id = #{id} " )
-    void deleteById(Long id);
 
     @Select(" <script> " +
             " SELECT * FROM " + ALARM_MSG_TABLE_NAME +
@@ -91,4 +88,12 @@ public interface AlarmMsgInfoMapper {
     @Select(" SELECT * FROM " + ALARM_MSG_TABLE_NAME +
             " WHERE image_state = #{alarmFileState} ")
     List<AlarmMsgInfo> selectByImageState(Integer alarmFileState);
+
+
+    @Delete(" <script> " +
+            " DELETE FROM " + ALARM_MSG_TABLE_NAME +
+            " WHERE id IN " +
+            " <foreach collection='ids' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void deleteByIdList(List<Long> idList);
 }

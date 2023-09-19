@@ -18,11 +18,6 @@ public class AlarmSchemeEventRel {
     private Long id;
 
     /**
-     * 事件id
-     */
-    private Long eventId;
-
-    /**
      * 预案id
      */
     private Long schemeId;

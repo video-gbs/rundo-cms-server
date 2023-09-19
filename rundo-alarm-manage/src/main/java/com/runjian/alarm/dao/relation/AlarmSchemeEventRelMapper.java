@@ -33,14 +33,14 @@ public interface AlarmSchemeEventRelMapper {
     List<GetAlarmSchemeEventRsp> selectRspBySchemeId(Long schemeId);
 
     @Insert(" <script> " +
-            " INSERT INTO " + ALARM_SCHEME_EVENT_TABLE_NAME + "(scheme_id, event_id, event_code, event_level, event_interval, enable_video, video_length, video_has_audio, enable_photo, update_time, create_time) values " +
-            " <foreach collection='channelIds' item='item' separator=','>(#{schemeId}, #{item.eventId}, #{item.eventCode}, #{item.eventLevel}, #{item.eventInterval}, #{item.enableVideo}, #{item.videoLength}, #{item.videoHasAudio}, #{item.enablePhoto}, #{nowTime}, #{nowTime})</foreach> " +
+            " INSERT INTO " + ALARM_SCHEME_EVENT_TABLE_NAME + "(scheme_id, event_code, event_level, event_interval, enable_video, video_length, video_has_audio, enable_photo, update_time, create_time) values " +
+            " <foreach collection='channelIds' item='item' separator=','>(#{schemeId}, #{item.eventCode}, #{item.eventLevel}, #{item.eventInterval}, #{item.enableVideo}, #{item.videoLength}, #{item.videoHasAudio}, #{item.enablePhoto}, #{nowTime}, #{nowTime})</foreach> " +
             " </script>")
     void batchSave(Long schemeId, List<AlarmSchemeEventRel> alarmSchemeEventRelList, LocalDateTime nowTime);
 
     @Insert(" <script> " +
-            " INSERT INTO " + ALARM_SCHEME_EVENT_TABLE_NAME + "(scheme_id, event_id, event_code, event_level, event_interval, enable_video, video_length, video_has_audio, enable_photo, update_time, create_time) values " +
-            " <foreach collection='channelIds' item='item' separator=','>(#{item.schemeId}, #{item.eventId}, #{item.eventCode}, #{item.eventLevel}, #{item.eventInterval}, #{item.enableVideo}, #{item.videoLength}, #{item.videoHasAudio}, #{item.enablePhoto}, #{item.updateTime}, #{item.createTime})</foreach> " +
+            " INSERT INTO " + ALARM_SCHEME_EVENT_TABLE_NAME + "(scheme_id, event_code, event_level, event_interval, enable_video, video_length, video_has_audio, enable_photo, update_time, create_time) values " +
+            " <foreach collection='channelIds' item='item' separator=','>(#{item.schemeId}, #{item.eventCode}, #{item.eventLevel}, #{item.eventInterval}, #{item.enableVideo}, #{item.videoLength}, #{item.videoHasAudio}, #{item.enablePhoto}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>")
     void batchSave(List<AlarmSchemeEventRel> alarmSchemeEventRelList);
 
@@ -54,7 +54,7 @@ public interface AlarmSchemeEventRelMapper {
             " , video_length = #{item.videoLength} " +
             " , video_has_audio = #{item.videoHasAudio} " +
             " , enable_photo = #{item.enablePhoto} " +
-            " WHERE id = #{item.id} "+
+            " WHERE id = #{item.eventCode} "+
             " </foreach> " +
             " </script> ")
     void batchUpdate(List<AlarmSchemeEventRel> alarmSchemeEventRelList);

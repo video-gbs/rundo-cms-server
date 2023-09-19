@@ -88,6 +88,11 @@ spring:
   mvc:
     async:
       request-timeout: 15000
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+      enabled: true
 server:
   port: ${SERVER_PORT:8092}
   compression:
@@ -101,6 +106,7 @@ server:
     no-request-timeout: 60000
     buffer-size: 32768
     direct-buffers: true
+
 
 mybatis:
   configuration:

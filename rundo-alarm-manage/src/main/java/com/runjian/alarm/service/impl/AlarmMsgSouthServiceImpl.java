@@ -65,7 +65,6 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
         // 缓存过滤
         EventMsgType eventMsgType = EventMsgType.getByCode(eventMsgTypeCode);
         switch (eventMsgType){
-            case SINGLE:
             case COMPOUND_START:
                 if (redisLockUtil.lock(lockKey,  UNLOCK_PWD, DEFAULT_SINGLE_MSG_END, TimeUnit.SECONDS, 1)) {
                     Optional<AlarmSchemeInfo> alarmSchemeInfoOp = alarmSchemeInfoMapper.selectByChannelId(channelId);
@@ -117,18 +116,10 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         alarmMsgInfo.setVideoAudioState(alarmSchemeEventRel.getVideoHasAudio());
                         // 判断是否是直到事件结束的录制时间
                         if (Objects.equals(alarmSchemeEventRel.getVideoLength(), 0)){
-                            // 判断是否单条信息
-                            if (Objects.equals(EventMsgType.SINGLE, eventMsgType)){
-                                alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
-                                alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(DEFAULT_SINGLE_MSG_END));
-                                alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
-                                redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval() + DEFAULT_SINGLE_MSG_END, TimeUnit.SECONDS);
-                            } else {
-                                alarmMsgInfo.setAlarmState(AlarmState.UNDERWAY.getCode());
-                                alarmMsgInfo.setVideoState(AlarmFileState.INIT.getCode());
-                                // 设置5分钟超时时间
-                                redisTemplate.opsForValue().set(lockKey, String.valueOf(alarmMsgInfo.getId()), 5, TimeUnit.MINUTES);
-                            }
+                            alarmMsgInfo.setAlarmState(AlarmState.UNDERWAY.getCode());
+                            alarmMsgInfo.setVideoState(AlarmFileState.INIT.getCode());
+                            // 设置30s超时时间
+                            redisTemplate.opsForValue().set(lockKey, String.valueOf(alarmMsgInfo.getId()), 30, TimeUnit.SECONDS);
                         } else {
                             alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
                             alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
@@ -157,7 +148,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 alarmMsgInfo1.setUpdateTime(nowTime);
                 alarmMsgInfo1.setAlarmEndTime(nowTime);
                 alarmMsgInfoMapper.update(alarmMsgInfo1);
-                redisTemplate.expire(lockKey, 5, TimeUnit.MINUTES);
+                redisTemplate.expire(lockKey, 30, TimeUnit.SECONDS);
                 return;
             case COMPOUND_END:
                 String alarmMsgInfoId2 = redisTemplate.opsForValue().get(lockKey);
@@ -176,7 +167,12 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 // 设置告警状态为成功
                 alarmMsgInfo2.setAlarmState(AlarmState.SUCCESS.getCode());
                 alarmMsgInfo2.setUpdateTime(LocalDateTime.now());
-                alarmMsgInfo2.setAlarmEndTime(eventTime);
+                LocalDateTime minEndTime = alarmMsgInfo2.getAlarmStartTime().plusSeconds(15);
+                if(minEndTime.isAfter(eventTime)){
+                    alarmMsgInfo2.setAlarmEndTime(minEndTime);
+                }else {
+                    alarmMsgInfo2.setAlarmEndTime(eventTime);
+                }
                 // 判断录像状态是否是初始化
                 if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo2.getVideoState())){
                     alarmMsgInfo2.setVideoState(AlarmFileState.WAITING.getCode());

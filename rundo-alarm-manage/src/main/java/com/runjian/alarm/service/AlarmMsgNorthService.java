@@ -4,6 +4,8 @@ import com.github.pagehelper.PageInfo;
 import com.runjian.alarm.vo.response.GetAlarmMsgRsp;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 告警信息北向接口
@@ -27,7 +29,7 @@ public interface AlarmMsgNorthService {
      * 删除告警信息
      * @param id 告警信息id
      */
-    void deleteAlarmMsg(Long id);
+    void deleteAlarmMsg(List<Long> idList);
 
 
 }

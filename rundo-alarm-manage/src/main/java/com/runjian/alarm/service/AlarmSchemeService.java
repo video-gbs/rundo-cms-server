@@ -28,7 +28,6 @@ public interface AlarmSchemeService {
      */
     PageInfo<GetAlarmSchemePageRsp> getAlarmSchemeByPage(int page, int num, String schemeName, Integer disabled, LocalDateTime createStartTime, LocalDateTime createEndTime);
 
-
     /**
      * 获取告警预案
      * @param id 主键id

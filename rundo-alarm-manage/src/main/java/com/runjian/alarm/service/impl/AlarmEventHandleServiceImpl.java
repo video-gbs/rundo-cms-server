@@ -67,7 +67,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
      * 检测正在事件中的告警
      */
     @Override
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 5000)
     public void checkUnderwayAlarm() {
         RLock rLock = redissonClient.getLock(MarkConstant.REDIS_ALARM_UNDERWAY_LOCK_KEY);
         if (rLock.tryLock()) {

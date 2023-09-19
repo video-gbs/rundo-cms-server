@@ -14,11 +14,11 @@ public interface AlarmMsgSouthService {
      * 接收告警信息
      * @param channelId 通道id
      * @param eventCode 事件编码
-     * @param eventMsgTypeCode 事件消息类型编码
+     * @param eventMsgType 事件消息类型编码
      * @param eventDesc 事件描述
      * @param eventTime 事件时间
      */
-    void receiveAlarmMsg(Long channelId, String eventCode, Integer eventMsgTypeCode, String eventDesc, LocalDateTime eventTime);
+    void receiveAlarmMsg(Long channelId, String eventCode, Integer eventMsgType, String eventDesc, LocalDateTime eventTime);
 
 
     /**
