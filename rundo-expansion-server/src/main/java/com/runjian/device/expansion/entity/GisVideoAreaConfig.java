@@ -12,14 +12,14 @@ import java.time.LocalDateTime;
 public class GisVideoAreaConfig {
 
   private long id;
-  private long gisConfigId;
-  private long videoAreaId;
-  private double longitude;
-  private double latitude;
-  private double height;
+  private Long gisConfigId;
+  private Long videoAreaId;
+  private Double longitude;
+  private Double latitude;
+  private Double height;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
-  private long deleted;
+  private Long deleted;
 
 
 }

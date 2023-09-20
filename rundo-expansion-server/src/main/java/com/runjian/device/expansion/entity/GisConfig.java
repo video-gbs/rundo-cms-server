@@ -12,15 +12,16 @@ import java.time.LocalDateTime;
 public class GisConfig {
 
   private long id;
-  private long dictId;
+  private Long dictId;
   /**
    * 开启与否
    */
-  private long onStatus;
-  private long deleted;
-  private double longitude;
-  private double latitude;
-  private double height;
+  private Long onStatus;
+  private Long deleted;
+  private Double longitude;
+  private Double latitude;
+  private Double height;
+  private String url;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
