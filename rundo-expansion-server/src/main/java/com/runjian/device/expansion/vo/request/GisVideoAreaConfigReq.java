@@ -1,6 +1,8 @@
 package com.runjian.device.expansion.vo.request;
 
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -11,7 +13,7 @@ import javax.validation.constraints.Min;
  */
 @Data
 public class GisVideoAreaConfigReq {
-
+  @TableId(type= IdType.AUTO)
   private Long id;
 
   @ApiModelProperty("gis配置参数id")

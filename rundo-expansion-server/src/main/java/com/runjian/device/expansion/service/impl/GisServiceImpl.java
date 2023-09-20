@@ -84,7 +84,7 @@ public class GisServiceImpl implements IGisService {
     }
 
     @Override
-    public void gisConfigVideoAreaSave(GisVideoAreaConfigReq req) {
+    public Long gisConfigVideoAreaSave(GisVideoAreaConfigReq req) {
         GisVideoAreaConfig gisVideoAreaConfig = new GisVideoAreaConfig();
         BeanUtil.copyProperties(req,gisVideoAreaConfig);
         if(ObjectUtils.isEmpty(req.getId())){
@@ -94,6 +94,7 @@ public class GisServiceImpl implements IGisService {
             gisVideoAreaConfigMapper.updateById(gisVideoAreaConfig);
 
         }
+        return gisVideoAreaConfig.getId();
 
     }
 

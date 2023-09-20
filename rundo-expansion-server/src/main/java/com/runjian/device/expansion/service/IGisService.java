@@ -33,7 +33,7 @@ public interface IGisService {
     GisConfig findOneStatusOn();
 
 
-    void gisConfigVideoAreaSave(GisVideoAreaConfigReq req);
+    Long gisConfigVideoAreaSave(GisVideoAreaConfigReq req);
 
     /**
      * 查询节点相关的gis配置

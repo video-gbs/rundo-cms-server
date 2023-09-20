@@ -3,6 +3,7 @@ package com.runjian.device.expansion.controller.gis;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.expansion.entity.GisConfig;
+import com.runjian.device.expansion.entity.GisVideoAreaConfig;
 import com.runjian.device.expansion.service.IGisService;
 import com.runjian.device.expansion.vo.request.GisConfigReq;
 import com.runjian.device.expansion.vo.request.GisConfigStatusReq;
@@ -67,19 +68,17 @@ public class GisController {
 
     @PostMapping(value = "/gisVideoAreaSave",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("gis与节点得配置--保存节点与配置的信息")
-    public CommonResponse<GisConfig> gisVideoAreaSave(@RequestBody GisVideoAreaConfigReq request) {
+    public CommonResponse<Long> gisVideoAreaSave(@RequestBody GisVideoAreaConfigReq request) {
         validatorService.validateRequest(request);
-        gisService.gisConfigVideoAreaSave(request);
-        return CommonResponse.success();
+        return CommonResponse.success(gisService.gisConfigVideoAreaSave(request));
     }
 
 
     @GetMapping(value = "/findVideoAreaOne",produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("gis与节点得配置--查询节点得地图信息")
-    public CommonResponse<GisConfig> findVideoAreaOne(@RequestParam Long videoAreaId) {
+    public CommonResponse<GisVideoAreaConfig> findVideoAreaOne(@RequestParam Long videoAreaId) {
 
-        gisService.findVideoAreaOne(videoAreaId);
-        return CommonResponse.success();
+        return CommonResponse.success( gisService.findVideoAreaOne(videoAreaId));
     }
 
 }
