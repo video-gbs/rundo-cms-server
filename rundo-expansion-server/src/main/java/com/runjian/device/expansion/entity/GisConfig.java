@@ -22,6 +22,7 @@ public class GisConfig {
   private Double latitude;
   private Double height;
   private String url;
+  private String imgType;
   private String createdAt;
   private String updatedAt;
 

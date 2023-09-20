@@ -35,4 +35,8 @@ public class GisConfigReq {
   @NotNull(message = "地图加载地址不得为null")
   private String url;
 
+  @ApiModelProperty("瓦片格式")
+  @NotNull(message = "瓦片格式不得为null")
+  private String imgType;
+
 }
