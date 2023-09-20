@@ -28,7 +28,7 @@ public class GisConfigReq {
   private double latitude;
 
   @ApiModelProperty("高度")
-  @Min(value = 0,message = "高度不得小于0")
+  @NotNull(message = "高度不得为null")
   private double height;
 
   @ApiModelProperty("地图加载地址")

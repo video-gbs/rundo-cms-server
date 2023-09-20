@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author chenjialing
@@ -35,7 +36,7 @@ public class GisVideoAreaConfigReq {
   private double latitude;
 
   @ApiModelProperty("高度")
-  @Min(value = 0,message = "高度不得小于0")
+  @NotNull(message = "高度不得为null")
   private double height;
 
 }
