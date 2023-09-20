@@ -61,4 +61,5 @@ public class MarkConstant {
     public static final String REDIS_ALARM_UNDERWAY_LOCK_KEY = "ALARM_UNDERWAY_LOCK_KEY";
     public static final String REDIS_ALARM_MSG_EVENT_LOCK = "ALARM_MSG_EVENT_LOCK:";
     public static final String REDIS_ALARM_MSG_EVENT_CHECK_LOCK = "ALARM_MSG_EVENT_CHECK_LOCK:";
+    public static final String REDIS_ALARM_MSG_LOCK = "ALARM_MSG_LOCK:";
 }

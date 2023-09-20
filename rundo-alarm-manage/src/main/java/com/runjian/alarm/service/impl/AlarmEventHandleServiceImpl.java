@@ -108,8 +108,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
         for (AlarmMsgInfo alarmMsgInfo : alarmMsgInfoList) {
             String lockKey = MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId();
             Duration duration = Duration.between(alarmMsgInfo.getAlarmStartTime(), alarmMsgInfo.getAlarmEndTime());
-            if (redisLockUtil.lock(lockKey, String.valueOf(nowTime.toInstant(ZoneOffset.of("+8")).toEpochMilli()), duration.getSeconds() + DEFAULT_OUT_TIME_SECOND, TimeUnit.SECONDS, 1)){
-
+            if (redisLockUtil.lock(lockKey, String.format("%s-%s", AlarmFileType.VIDEO.getMsg(), alarmMsgInfo.getId()), duration.getSeconds() + DEFAULT_OUT_TIME_SECOND, TimeUnit.SECONDS, 1)){
                 alarmMsgInfo.setUpdateTime(nowTime);
                 PostRecordDownloadReq postRecordDownloadReq = getPostRecordDownloadReq(alarmMsgInfo);
                 try{
@@ -145,7 +144,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
         LocalDateTime nowTime = LocalDateTime.now();
         for (AlarmMsgInfo alarmMsgInfo : alarmMsgInfoList) {
             String lockKey = MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId();
-            if (redisLockUtil.lock(lockKey, String.valueOf(nowTime.toInstant(ZoneOffset.of("+8")).toEpochMilli()), DEFAULT_OUT_TIME_SECOND, TimeUnit.SECONDS, 1)){
+            if (redisLockUtil.lock(lockKey, String.format("%s-%s", AlarmFileType.VIDEO.getMsg(), alarmMsgInfo.getId()), DEFAULT_OUT_TIME_SECOND, TimeUnit.SECONDS, 1)){
                 alarmMsgInfo.setUpdateTime(nowTime);
                 PostImageDownloadReq postImageDownloadReq = getPostImageDownloadReq(alarmMsgInfo);
                 try{
@@ -187,10 +186,11 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                         if (Objects.equals(alarmMsgInfo.getVideoState(), AlarmFileState.GENERATING.getCode())){
                             alarmMsgInfo.setVideoState(AlarmFileState.ERROR.getCode());
                             alarmMsgErrorRelMapper.save(getAlarmMsgErrorRel(alarmMsgInfo.getId(), AlarmFileType.VIDEO, "告警视频下载超时未完成任务", nowTime));
-
+                            redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId(), String.format("%s-%s", AlarmFileType.VIDEO.getMsg(), alarmMsgInfo.getId()));
                         }else {
                             alarmMsgInfo.setImageState(AlarmFileState.ERROR.getCode());
                             alarmMsgErrorRelMapper.save(getAlarmMsgErrorRel(alarmMsgInfo.getId(), AlarmFileType.IMAGE, "告警截图下载超时未完成任务", nowTime));
+                            redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId(), String.format("%s-%s", AlarmFileType.IMAGE.getMsg(), alarmMsgInfo.getId()));
                         }
                         alarmMsgInfo.setUpdateTime(nowTime);
 

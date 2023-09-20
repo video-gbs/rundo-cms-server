@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 告警预案控制器
+ * 告警预案接口
  * @author Miracle
  * @date 2023/9/19 10:42
  */

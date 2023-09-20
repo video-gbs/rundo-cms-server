@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
+ * 告警事件接口
  * @author Miracle
  * @date 2023/9/19 15:19
  */

@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 /**
+ * 告警消息南向接口
  * @author Miracle
  * @date 2023/9/19 14:39
  */

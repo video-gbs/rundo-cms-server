@@ -3,9 +3,11 @@ package com.runjian.alarm.service.impl;
 import com.runjian.alarm.constant.*;
 import com.runjian.alarm.dao.AlarmMsgInfoMapper;
 import com.runjian.alarm.dao.AlarmSchemeInfoMapper;
+import com.runjian.alarm.dao.relation.AlarmMsgErrorRelMapper;
 import com.runjian.alarm.dao.relation.AlarmSchemeEventRelMapper;
 import com.runjian.alarm.entity.AlarmMsgInfo;
 import com.runjian.alarm.entity.AlarmSchemeInfo;
+import com.runjian.alarm.entity.relation.AlarmMsgErrorRel;
 import com.runjian.alarm.entity.relation.AlarmSchemeEventRel;
 import com.runjian.alarm.feign.TimerUtilsApi;
 import com.runjian.alarm.service.AlarmMsgSouthService;
@@ -53,6 +55,8 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
 
     private final AlarmSchemeEventRelMapper alarmSchemeEventRelMapper;
 
+    private final AlarmMsgErrorRelMapper alarmMsgErrorRelMapper;
+
     private final StringRedisTemplate redisTemplate;
 
     private final TimerUtilsApi timerUtilsApi;
@@ -67,25 +71,27 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
 
     @Override
     public void receiveAlarmMsg(Long channelId, String eventCode, Integer eventMsgTypeCode, String eventDesc, LocalDateTime eventTime) {
-        String lockKey = eventCode + MarkConstant.MARK_SPLIT_SEMICOLON + channelId;
+        String lockKey = MarkConstant.REDIS_ALARM_MSG_LOCK + eventCode + MarkConstant.MARK_SPLIT_SEMICOLON + channelId;
+        String lockValue = Thread.currentThread().getName();
         // 缓存过滤
         EventMsgType eventMsgType = EventMsgType.getByCode(eventMsgTypeCode);
+
         switch (eventMsgType){
             case COMPOUND_START:
-                if (redisLockUtil.lock(lockKey,  UNLOCK_PWD, DEFAULT_SINGLE_MSG_END, TimeUnit.SECONDS, 1)) {
+                if (redisLockUtil.lock(lockKey,  lockValue, DEFAULT_SINGLE_MSG_END, TimeUnit.SECONDS, 1)) {
                     Optional<AlarmSchemeInfo> alarmSchemeInfoOp = alarmSchemeInfoMapper.selectByChannelId(channelId);
                     if (alarmSchemeInfoOp.isEmpty()){
-                        redisLockUtil.unLock(lockKey, UNLOCK_PWD);
+                        redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
                     AlarmSchemeInfo alarmSchemeInfo = alarmSchemeInfoOp.get();
                     if (CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())){
-                        redisLockUtil.unLock(lockKey, UNLOCK_PWD);
+                        redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
                     Optional<AlarmSchemeEventRel> alarmSchemeEventRelOp = alarmSchemeEventRelMapper.selectBySchemeIdAndEventCode(alarmSchemeInfo.getId(), eventCode);
                     if (alarmSchemeEventRelOp.isEmpty()){
-                        redisLockUtil.unLock(lockKey, UNLOCK_PWD);
+                        redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
                     CommonResponse<Boolean> response;
@@ -93,15 +99,15 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         response = timerUtilsApi.checkTime(alarmSchemeInfo.getTemplateId(), eventTime);
                         if (response.isError() || Objects.isNull(response.getData())){
                             log.error(LogTemplate.ERROR_LOG_TEMPLATE, "告警信息南向服务", "时间校验异常", response);
-                            redisLockUtil.unLock(lockKey, UNLOCK_PWD);
+                            redisLockUtil.unLock(lockKey, lockValue);
                         }
                         if (!response.getData()){
-                            redisLockUtil.unLock(lockKey, UNLOCK_PWD);
+                            redisLockUtil.unLock(lockKey, lockValue);
                             return;
                         }
                     }catch (Exception ex){
                         log.error(LogTemplate.ERROR_LOG_TEMPLATE, "告警信息南向服务", "时间校验异常", ex);
-                        redisLockUtil.unLock(lockKey, UNLOCK_PWD);
+                        redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
                     LocalDateTime nowTime = LocalDateTime.now();
@@ -192,7 +198,6 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public void saveAlarmFile(Long alarmMsgId, Integer alarmFileType, MultipartFile file) {
         Optional<AlarmMsgInfo> alarmMsgInfoOp = alarmMsgInfoMapper.selectById(alarmMsgId);
         if (alarmMsgInfoOp.isEmpty()){
@@ -200,17 +205,25 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
         }
 
         AlarmMsgInfo alarmMsgInfo = alarmMsgInfoOp.get();
-        redisTemplate.expire(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId(), alarmMsgInfo.getAlarmInterval(), TimeUnit.SECONDS);
+
         String dir;
         Path filePath;
-        switch (AlarmFileType.getByCode(alarmFileType)){
+        AlarmFileType fileType = AlarmFileType.getByCode(alarmFileType);
+        switch (fileType){
             case IMAGE:
+                if (Objects.equals(AlarmFileState.GENERATING.getCode(), alarmMsgInfo.getVideoState())){
+                    redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId(), String.format("%s-%s", AlarmFileType.IMAGE.getMsg(), alarmMsgInfo.getId()));
+                }
                 dir = DEFAULT_UPLOAD_ADDRESS + MarkConstant.MARK_SPLIT_SLASH + alarmMsgInfo.getChannelId() + MarkConstant.MARK_SPLIT_SLASH + alarmMsgInfo.getId() + MarkConstant.MARK_SPLIT_SLASH + "image";
                 filePath = Paths.get(dir, DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "jpg" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1)));
                 alarmMsgInfo.setImageUrl(filePath.toString());
                 alarmMsgInfo.setVideoState(AlarmFileState.SUCCESS.getCode());
                 break;
             case VIDEO:
+                if (Objects.equals(AlarmFileState.GENERATING.getCode(), alarmMsgInfo.getImageState())){
+                    redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId(), String.format("%s-%s", AlarmFileType.IMAGE.getMsg(), alarmMsgInfo.getId()));
+                }
+                redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId(), String.format("%s-%s", AlarmFileType.VIDEO.getMsg(), alarmMsgInfo.getId()));
                 dir = DEFAULT_UPLOAD_ADDRESS + MarkConstant.MARK_SPLIT_SLASH + alarmMsgInfo.getChannelId() + MarkConstant.MARK_SPLIT_SLASH + alarmMsgInfo.getId() + MarkConstant.MARK_SPLIT_SLASH + "video";
                 filePath = Paths.get(dir, DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "mp4" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1)));
                 alarmMsgInfo.setVideoUrl(filePath.toString());
@@ -228,13 +241,29 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 return;
             }
         }
+        LocalDateTime nowTime = LocalDateTime.now();
         try {
             Files.write(filePath, file.getBytes());
-            alarmMsgInfo.setUpdateTime(LocalDateTime.now());
-            alarmMsgInfoMapper.update(alarmMsgInfo);
+            alarmMsgInfo.setUpdateTime(nowTime);
         } catch (IOException ex) {
+            AlarmMsgErrorRel alarmMsgErrorRel = new AlarmMsgErrorRel();
+            alarmMsgErrorRel.setAlarmMsgId(alarmMsgInfo.getId());
+            alarmMsgErrorRel.setAlarmFileType(alarmFileType);
+            alarmMsgErrorRel.setCreateTime(nowTime);
+            alarmMsgErrorRel.setErrorMsg(String.format("保存文件到本地服务失败，错误原因：%s", ex));
+            switch (fileType){
+                case IMAGE:
+                    alarmMsgInfo.setImageState(AlarmFileState.ERROR.getCode());
+                    break;
+                case VIDEO:
+                    alarmMsgInfo.setVideoState(AlarmFileState.ERROR.getCode());
+                    break;
+            }
+            alarmMsgErrorRelMapper.save(alarmMsgErrorRel);
             log.error(LogTemplate.ERROR_LOG_TEMPLATE, "告警信息南向服务", "文件写入本地失败", ex);
             throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
+        }finally {
+            alarmMsgInfoMapper.update(alarmMsgInfo);
         }
     }
 }

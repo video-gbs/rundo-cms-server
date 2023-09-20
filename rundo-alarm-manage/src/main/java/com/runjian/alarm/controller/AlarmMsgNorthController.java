@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
+ * 告警消息北向接口
  * @author Miracle
  * @date 2023/9/19 15:01
  */
