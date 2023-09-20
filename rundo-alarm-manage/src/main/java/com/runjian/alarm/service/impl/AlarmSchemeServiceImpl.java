@@ -87,9 +87,9 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         alarmSchemeInfo.setDisabled(CommonEnum.DISABLE.getCode());
         alarmSchemeInfoMapper.save(alarmSchemeInfo);
 
-        alarmSchemeChannelRelMapper.batchSave(alarmSchemeInfo.getId(), channelIds, nowTime);
+        alarmSchemeChannelRelMapper.batchSaveBySchemeId(alarmSchemeInfo.getId(), channelIds, nowTime);
 
-        alarmSchemeEventRelMapper.batchSave(alarmSchemeInfo.getId(), alarmSchemeEventRelList, nowTime);
+        alarmSchemeEventRelMapper.batchSaveBySchemeId(alarmSchemeInfo.getId(), alarmSchemeEventRelList, nowTime);
 
     }
 

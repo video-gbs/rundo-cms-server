@@ -31,6 +31,8 @@ public class MarkConstant {
 
     public static final String MARK_SPLIT_RAIL = "-";
 
+    public static final String MARK_SPLIT_SLASH = "/";
+
     /*********************************解析引擎redis字段占用*******************************************/
 
     public static final String REDIS_DEVICE_BATCH_SIGN_IN_LOCK = "DEVICE_BATCH_SIGN_IN_LOCK:";

@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -33,11 +32,11 @@ public interface AlarmSchemeChannelRelMapper {
             " </script> ")
     List<GetAlarmChannelRsp> selectSchemeNameByChannelIds(Set<Long> channelIds);
 
-    @Insert({" <script> " +
+    @Insert(" <script> " +
             " INSERT INTO " + ALARM_SCHEME_CHANNEL_TABLE_NAME + "(schemeId, channelId, create_time) values " +
-            " <foreach collection='channelIds' item='item' separator=','>(#{id}, #{item}, #{createTime})</foreach> " +
-            " </script>"})
-    void batchSave(Long id, Set<Long> channelIds, LocalDateTime createTime);
+            " <foreach collection='channelIds' item='item' separator=','>(#{schemeId}, #{item}, #{createTime})</foreach> " +
+            " </script>")
+    void batchSaveBySchemeId(Long schemeId, Set<Long> channelIds, LocalDateTime createTime);
 
     @Select(" <script> " +
             " SELECT * FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +

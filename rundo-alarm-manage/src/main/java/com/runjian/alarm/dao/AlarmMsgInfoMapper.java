@@ -44,13 +44,13 @@ public interface AlarmMsgInfoMapper {
     @Update(" <script> " +
             " UPDATE " + ALARM_MSG_TABLE_NAME +
             " SET update_time = #{updateTime}  " +
-            " AND alarm_state = #{alarmState} " +
-            " AND alarm_end_time = #{alarmEndTime} " +
-            " AND video_url = #{videoUrl} " +
-            " AND video_state = #{videoState} " +
-            " AND video_stream_id = #{videoStreamId}" +
-            " AND image_state = #{imageState} " +
-            " AND image_url = #{imageUrl} " +
+            " , alarm_state = #{alarmState} " +
+            " , alarm_end_time = #{alarmEndTime} " +
+            " , video_url = #{videoUrl} " +
+            " , video_state = #{videoState} " +
+            " , video_stream_id = #{videoStreamId}" +
+            " , image_state = #{imageState} " +
+            " , image_url = #{imageUrl} " +
             " WHERE id = #{id} " +
             " </script> ")
     void update(AlarmMsgInfo alarmMsgInfo);
@@ -63,13 +63,13 @@ public interface AlarmMsgInfoMapper {
             " <foreach collection='alarmMsgInfoList' item='item' separator=';'> " +
             " UPDATE " + ALARM_MSG_TABLE_NAME +
             " SET update_time = #{item.updateTime}  " +
-            " AND alarm_state = #{item.alarmState} " +
-            " AND alarm_end_time = #{item.alarmEndTime} " +
-            " AND video_url = #{item.videoUrl} " +
-            " AND video_state = #{item.videoState} " +
-            " AND video_stream_id = #{item.videoStreamId}" +
-            " AND image_state = #{item.imageState} " +
-            " AND image_url = #{item.imageUrl} " +
+            " , alarm_state = #{item.alarmState} " +
+            " , alarm_end_time = #{item.alarmEndTime} " +
+            " , video_url = #{item.videoUrl} " +
+            " , video_state = #{item.videoState} " +
+            " , video_stream_id = #{item.videoStreamId}" +
+            " , image_state = #{item.imageState} " +
+            " , image_url = #{item.imageUrl} " +
             " WHERE id = #{item.id} "+
             " </foreach> " +
             " </script> ")

@@ -13,9 +13,12 @@ import com.runjian.alarm.utils.RedisLockUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.constant.CommonConstant;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.MarkConstant;
+import com.runjian.common.utils.DateUtils;
+import com.runjian.common.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -23,7 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -53,7 +59,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
 
     private final RedisLockUtil redisLockUtil;
 
-    private final static String DEFAULT_UPLOAD_ADDRESS = "/";
+    private final static String DEFAULT_UPLOAD_ADDRESS = "D:\\uploadTest";
     
     private final static String UNLOCK_PWD = "1";
 
@@ -194,33 +200,41 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
         }
 
         AlarmMsgInfo alarmMsgInfo = alarmMsgInfoOp.get();
-        redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId());
-        String filename = alarmMsgInfo.getId() + MarkConstant.MARK_SPLIT_RAIL + alarmMsgInfo.getAlarmStartTime() + ".";
-        String path = DEFAULT_UPLOAD_ADDRESS + "/" + alarmMsgInfo.getChannelId();
+        redisTemplate.expire(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId(), alarmMsgInfo.getAlarmInterval(), TimeUnit.SECONDS);
+        String dir;
         Path filePath;
         switch (AlarmFileType.getByCode(alarmFileType)){
             case IMAGE:
-                filePath = Paths.get(path, filename + (Objects.isNull(file.getOriginalFilename()) ? "jpg" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1)));
+                dir = DEFAULT_UPLOAD_ADDRESS + MarkConstant.MARK_SPLIT_SLASH + alarmMsgInfo.getChannelId() + MarkConstant.MARK_SPLIT_SLASH + alarmMsgInfo.getId() + MarkConstant.MARK_SPLIT_SLASH + "image";
+                filePath = Paths.get(dir, DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "jpg" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1)));
                 alarmMsgInfo.setImageUrl(filePath.toString());
                 alarmMsgInfo.setVideoState(AlarmFileState.SUCCESS.getCode());
                 break;
             case VIDEO:
-                filePath = Paths.get(path, filename + (Objects.isNull(file.getOriginalFilename()) ? "mp4" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1)));
+                dir = DEFAULT_UPLOAD_ADDRESS + MarkConstant.MARK_SPLIT_SLASH + alarmMsgInfo.getChannelId() + MarkConstant.MARK_SPLIT_SLASH + alarmMsgInfo.getId() + MarkConstant.MARK_SPLIT_SLASH + "video";
+                filePath = Paths.get(dir, DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "mp4" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1)));
                 alarmMsgInfo.setVideoUrl(filePath.toString());
                 alarmMsgInfo.setImageState(AlarmFileState.SUCCESS.getCode());
                 break;
             default:
                 return;
         }
-        alarmMsgInfo.setUpdateTime(LocalDateTime.now());
-        alarmMsgInfoMapper.update(alarmMsgInfo);
+        // 判断目录是否存在
+        File newFileDir = new File(dir);
+        if (!newFileDir.exists()) {
+            boolean mkdirs = newFileDir.mkdirs();
+            if (!mkdirs){
+                log.error(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "保存文件到本地服务","要移动到目标位置文件的父目录不存在，创建文件目录失败" , newFileDir.getAbsolutePath());
+                return;
+            }
+        }
         try {
             Files.write(filePath, file.getBytes());
+            alarmMsgInfo.setUpdateTime(LocalDateTime.now());
+            alarmMsgInfoMapper.update(alarmMsgInfo);
         } catch (IOException ex) {
             log.error(LogTemplate.ERROR_LOG_TEMPLATE, "告警信息南向服务", "文件写入本地失败", ex);
             throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
         }
     }
-
-
 }

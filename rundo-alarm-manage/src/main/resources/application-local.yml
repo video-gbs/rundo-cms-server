@@ -94,7 +94,7 @@ spring:
       max-request-size: 50MB
       enabled: true
 server:
-  port: ${SERVER_PORT:8092}
+  port: ${SERVER_PORT:8094}
   compression:
     enabled: true
     min-response-size: 2048
