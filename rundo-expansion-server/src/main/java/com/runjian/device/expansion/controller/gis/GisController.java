@@ -62,8 +62,7 @@ public class GisController {
     @ApiOperation("gis配置--获取开启得gis地图")
     public CommonResponse<GisConfig> findOneStatusOn() {
 
-        gisService.findOneStatusOn();
-        return CommonResponse.success();
+        return CommonResponse.success(gisService.findOneStatusOn());
     }
 
     @PostMapping(value = "/gisVideoAreaSave",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
