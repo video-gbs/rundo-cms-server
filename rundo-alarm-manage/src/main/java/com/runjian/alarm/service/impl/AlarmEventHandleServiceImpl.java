@@ -1,5 +1,6 @@
 package com.runjian.alarm.service.impl;
 
+import com.runjian.alarm.config.AlarmProperties;
 import com.runjian.alarm.constant.AlarmFileState;
 import com.runjian.alarm.constant.AlarmFileType;
 import com.runjian.alarm.constant.AlarmState;
@@ -56,7 +57,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
 
     private final StreamManageApi streamManageApi;
 
-    private final static String uploadUrl = "";
+    private final AlarmProperties alarmProperties;
 
     private final static long DELAY_VIDEO_TIME_SECOND = -30;
 
@@ -193,7 +194,6 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                             redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId(), String.format("%s-%s", AlarmFileType.IMAGE.getMsg(), alarmMsgInfo.getId()));
                         }
                         alarmMsgInfo.setUpdateTime(nowTime);
-
                     }
                 }finally {
                     redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_CHECK_LOCK + alarmMsgInfo.getChannelId(), value);
@@ -202,7 +202,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
         }
     }
 
-    private static PostRecordDownloadReq getPostRecordDownloadReq(AlarmMsgInfo alarmMsgInfo) {
+    private PostRecordDownloadReq getPostRecordDownloadReq(AlarmMsgInfo alarmMsgInfo) {
         PostRecordDownloadReq postRecordDownloadReq = new PostRecordDownloadReq();
         postRecordDownloadReq.setChannelId(alarmMsgInfo.getChannelId());
         postRecordDownloadReq.setEnableAudio(CommonEnum.getBoolean(alarmMsgInfo.getVideoAudioState()));
@@ -211,23 +211,23 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
         postRecordDownloadReq.setStartTime(alarmMsgInfo.getAlarmStartTime());
         postRecordDownloadReq.setEndTime(alarmMsgInfo.getAlarmEndTime());
         postRecordDownloadReq.setUploadId(String.valueOf(alarmMsgInfo.getId()));
-        postRecordDownloadReq.setUploadUrl(uploadUrl);
+        postRecordDownloadReq.setUploadUrl(alarmProperties.getUploadUrl());
         return postRecordDownloadReq;
     }
 
-    private static PostImageDownloadReq getPostImageDownloadReq(AlarmMsgInfo alarmMsgInfo) {
+    private PostImageDownloadReq getPostImageDownloadReq(AlarmMsgInfo alarmMsgInfo) {
         PostImageDownloadReq postImageDownloadReq = new PostImageDownloadReq();
         postImageDownloadReq.setChannelId(alarmMsgInfo.getChannelId());
         postImageDownloadReq.setStreamType(2);
         postImageDownloadReq.setPlayType(PlayType.ALARM.getCode());
         postImageDownloadReq.setTime(alarmMsgInfo.getAlarmStartTime());
         postImageDownloadReq.setUploadId(String.valueOf(alarmMsgInfo.getId()));
-        postImageDownloadReq.setUploadUrl(uploadUrl);
+        postImageDownloadReq.setUploadUrl(alarmProperties.getUploadUrl());
         return postImageDownloadReq;
     }
 
 
-    private static AlarmMsgErrorRel getAlarmMsgErrorRel(Long alarmMsgInfoId, AlarmFileType alarmFileType, String errorMsg, LocalDateTime nowTime) {
+    private AlarmMsgErrorRel getAlarmMsgErrorRel(Long alarmMsgInfoId, AlarmFileType alarmFileType, String errorMsg, LocalDateTime nowTime) {
         AlarmMsgErrorRel alarmMsgErrorRel = new AlarmMsgErrorRel();
         alarmMsgErrorRel.setAlarmMsgId(alarmMsgInfoId);
         alarmMsgErrorRel.setErrorMsg(errorMsg);

@@ -131,3 +131,10 @@ feign:
         connect-timeout: 15000
         read-timeout: 15000
         logger-level: basic
+
+alarm:
+  file:
+    store:
+      path: D:\uploadTest
+    upload:
+      url: http://172.20.0.80:8084/msg/south/receive

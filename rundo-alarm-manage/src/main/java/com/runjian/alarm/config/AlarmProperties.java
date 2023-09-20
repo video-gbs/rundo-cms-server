@@ -1,5 +1,6 @@
 package com.runjian.alarm.config;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -8,11 +9,13 @@ import org.springframework.stereotype.Component;
  * @date 2023/9/20 14:57
  */
 @Component
+@Data
 public class AlarmProperties {
 
 
-    @Value("${alarm.file.store.url}")
-    private String fileStoreUrl;
+    @Value("${alarm.file.store.path}")
+    private String fileStorePath;
 
-
+    @Value("${alarm.file.upload.url}")
+    private String uploadUrl;
 }
