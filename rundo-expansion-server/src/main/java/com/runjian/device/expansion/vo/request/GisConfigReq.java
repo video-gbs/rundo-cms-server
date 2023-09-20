@@ -32,7 +32,7 @@ public class GisConfigReq {
   private double height;
 
   @ApiModelProperty("地图加载地址")
-  @Null(message = "地图加载地址不得为null")
+  @NotNull(message = "地图加载地址不得为null")
   private String url;
 
 }

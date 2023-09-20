@@ -22,7 +22,7 @@ public class GisConfig {
   private Double latitude;
   private Double height;
   private String url;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
+  private String createdAt;
+  private String updatedAt;
 
 }
