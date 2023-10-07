@@ -2,6 +2,7 @@ package com.runjian.alarm.service;
 
 import com.github.pagehelper.PageInfo;
 import com.runjian.alarm.entity.relation.AlarmSchemeEventRel;
+import com.runjian.alarm.vo.response.GetAlarmChannelDeployRsp;
 import com.runjian.alarm.vo.response.GetAlarmChannelRsp;
 import com.runjian.alarm.vo.response.GetAlarmSchemePageRsp;
 import com.runjian.alarm.vo.response.GetAlarmSchemeRsp;
@@ -73,4 +74,20 @@ public interface AlarmSchemeService {
      * @param id 预案id
      */
     void deleteAlarmScheme(Long id);
+
+    /**
+     * 获取预案下的设备布撤防状态
+     * @param page 页数
+     * @param num 每页数据
+     * @param schemeId 预案id
+     * @return
+     */
+    PageInfo<GetAlarmChannelDeployRsp>  getAlarmChannelDeploy(int page, int num, Long schemeId);
+
+    /**
+     * 布撤防
+     * @param channelIdList 通道id数组
+     * @param isDeploy 是否布防
+     */
+    void defense(List<Long> channelIdList, boolean isDeploy);
 }

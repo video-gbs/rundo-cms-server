@@ -15,8 +15,11 @@ import com.runjian.alarm.vo.request.PutDefenseReq;
 import com.runjian.alarm.vo.response.*;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
+import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
+import com.runjian.common.constant.LogTemplate;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
  * @author Miracle
  * @date 2023/9/11 11:15
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AlarmSchemeServiceImpl implements AlarmSchemeService {
@@ -112,9 +116,9 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             return;
         }
         if (CommonEnum.getBoolean(disabled)) {
-            deviceControlApi.defense(new PutDefenseReq(channelIds, false));
+            defense(channelIds, false);
         } else {
-            deviceControlApi.defense(new PutDefenseReq(channelIds, true));
+            defense(channelIds, true);
         }
     }
 
@@ -181,12 +185,12 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         }
         if (CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())) {
             channelIds.addAll(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()));
-            deviceControlApi.defense(new PutDefenseReq(new ArrayList<>(channelIds), false));
+            defense(new ArrayList<>(channelIds), false);
         } else {
             // 撤防删除的设备
-            deviceControlApi.defense(new PutDefenseReq(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false));
+            defense(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false);
             // 布防新增的设备
-            deviceControlApi.defense(new PutDefenseReq(new ArrayList<>(channelIds), true));
+            defense(new ArrayList<>(channelIds), true);
         }
     }
 
@@ -203,11 +207,31 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             if (channelIds.isEmpty()) {
                 return;
             }
-            deviceControlApi.defense(new PutDefenseReq(channelIds, true));
+            defense(channelIds, true);
             alarmSchemeChannelRelMapper.deleteBySchemeId(id);
         }
         alarmSchemeEventRelMapper.deleteBySchemeId(id);
         alarmSchemeInfoMapper.deleteById(id);
     }
 
+    @Override
+    public PageInfo<GetAlarmChannelDeployRsp> getAlarmChannelDeploy(int page, int num, Long schemeId) {
+        PageHelper.startPage(page, num);
+        return new PageInfo<>(alarmSchemeChannelRelMapper.selectBySchemeId(schemeId));
+    }
+
+    @Override
+    public void defense(List<Long> channelIdList, boolean isDeploy){
+        CommonResponse<Set<Long>> commonResponse = deviceControlApi.defense(new PutDefenseReq(channelIdList, isDeploy));
+        if (commonResponse.isError()){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "告警预案服务", isDeploy ? "发送布防失败" : "发送撤防失败", String.format("%s:%s", commonResponse.getMsg(), commonResponse.getData()), channelIdList);
+            return;
+        }
+        Set<Long> channelIds = commonResponse.getData();
+        if (Objects.isNull(channelIds) || channelIds.isEmpty()){
+            return;
+        }
+        channelIdList.removeAll(channelIds);
+        alarmSchemeChannelRelMapper.batchUpdateDeployState(channelIdList, isDeploy ? 1 : 0, LocalDateTime.now());
+    }
 }

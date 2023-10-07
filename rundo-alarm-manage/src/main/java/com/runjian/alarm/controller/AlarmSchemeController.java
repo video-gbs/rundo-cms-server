@@ -5,6 +5,8 @@ import com.runjian.alarm.service.AlarmSchemeService;
 import com.runjian.alarm.vo.request.PostAlarmSchemeReq;
 import com.runjian.alarm.vo.request.PutAlarmSchemeDisabledReq;
 import com.runjian.alarm.vo.request.PutAlarmSchemeReq;
+import com.runjian.alarm.vo.request.PutChannelDeployReq;
+import com.runjian.alarm.vo.response.GetAlarmChannelDeployRsp;
 import com.runjian.alarm.vo.response.GetAlarmChannelRsp;
 import com.runjian.alarm.vo.response.GetAlarmSchemePageRsp;
 import com.runjian.alarm.vo.response.GetAlarmSchemeRsp;
@@ -15,6 +17,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -116,6 +119,30 @@ public class AlarmSchemeController {
     @DeleteMapping("/delete")
     public CommonResponse<?> deleteScheme(@RequestParam Long id) {
         alarmSchemeService.deleteAlarmScheme(id);
+        return CommonResponse.success();
+    }
+
+    /**
+     * 获取预案下的设备布撤防状态
+     * @param page 页码
+     * @param num 每页数据
+     * @param schemeId 告警预案id
+     * @return
+     */
+    @GetMapping("/channel/deploy/page")
+    public CommonResponse<PageInfo<GetAlarmChannelDeployRsp>> getChannelDeploy(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Long schemeId){
+        return CommonResponse.success(alarmSchemeService.getAlarmChannelDeploy(page, num, schemeId));
+    }
+
+    /**
+     * 通道布防
+     * @param req 修改通道布防状态请求体
+     * @return
+     */
+    @PutMapping("/channel/defense")
+    public CommonResponse<?> updateChannelDeploy(PutChannelDeployReq req){
+        validatorService.validateRequest(req);
+        alarmSchemeService.defense(new ArrayList<>(req.getChannelIds()), true);
         return CommonResponse.success();
     }
 }

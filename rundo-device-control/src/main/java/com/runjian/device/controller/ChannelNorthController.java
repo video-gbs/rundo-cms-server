@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 通道北向控制器
@@ -138,10 +139,9 @@ public class ChannelNorthController {
      * @return
      */
     @PutMapping("/defenses")
-    public CommonResponse<?> defense(@RequestBody PutDefenseReq req){
+    public CommonResponse<Set<Long>> defense(@RequestBody PutDefenseReq req){
         validatorService.validateRequest(req);
-        channelNorthService.channelDeployAndWithdrawDefenses(req.getChannelIdList(), req.getIsDeploy());
-        return CommonResponse.success();
+        return CommonResponse.success(channelNorthService.channelDeployAndWithdrawDefenses(req.getChannelIdList(), req.getIsDeploy()));
     }
 
 }

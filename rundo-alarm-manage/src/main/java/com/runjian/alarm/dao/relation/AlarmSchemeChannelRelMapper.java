@@ -2,6 +2,7 @@ package com.runjian.alarm.dao.relation;
 
 import com.runjian.alarm.dao.AlarmSchemeInfoMapper;
 import com.runjian.alarm.entity.relation.AlarmSchemeChannelRel;
+import com.runjian.alarm.vo.response.GetAlarmChannelDeployRsp;
 import com.runjian.alarm.vo.response.GetAlarmChannelRsp;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
@@ -20,8 +21,8 @@ public interface AlarmSchemeChannelRelMapper {
 
     String ALARM_SCHEME_CHANNEL_TABLE_NAME = "rundo_alarm_scheme_channel";
 
-    @Select(" SELECT * FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
-            " WHERE id = #{schemeId} ")
+    @Select(" SELECT id FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+            " WHERE scheme_id = #{schemeId} ")
     List<Long> selectChannelIdBySchemeId(Long schemeId);
 
     @Select(" <script> " +
@@ -33,10 +34,10 @@ public interface AlarmSchemeChannelRelMapper {
     List<GetAlarmChannelRsp> selectSchemeNameByChannelIds(Set<Long> channelIds);
 
     @Insert(" <script> " +
-            " INSERT INTO " + ALARM_SCHEME_CHANNEL_TABLE_NAME + "(schemeId, channelId, create_time) values " +
-            " <foreach collection='channelIds' item='item' separator=','>(#{schemeId}, #{item}, #{createTime})</foreach> " +
+            " INSERT INTO " + ALARM_SCHEME_CHANNEL_TABLE_NAME + "(schemeId, channelId, create_time, update_time) values " +
+            " <foreach collection='channelIds' item='item' separator=','>(#{schemeId}, #{item}, #{nowTime}, #{nowTime})</foreach> " +
             " </script>")
-    void batchSaveBySchemeId(Long schemeId, Set<Long> channelIds, LocalDateTime createTime);
+    void batchSaveBySchemeId(Long schemeId, Set<Long> channelIds, LocalDateTime nowTime);
 
     @Select(" <script> " +
             " SELECT * FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
@@ -54,12 +55,21 @@ public interface AlarmSchemeChannelRelMapper {
     @Update(" <script> " +
             " <foreach collection='alarmSchemeChannelRelList' item='item' separator=';'> " +
             " UPDATE " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
-            " SET create_time = #{item.createTime}  " +
+            " SET update_time = #{item.updateTime}  " +
             " , scheme_id = #{item.schemeId} " +
             " WHERE id = #{item.id} "+
             " </foreach> " +
             " </script> ")
     void batchUpdate(List<AlarmSchemeChannelRel> alarmSchemeChannelRelList);
+
+    @Update(" <script> " +
+            " UPDATE " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+            " SET update_time = #{item.updateTime}  " +
+            " , deploy_state = #{item.deployState} " +
+            " WHERE id IN " +
+            " <foreach collection='channelIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void batchUpdateDeployState(List<Long> channelIds, Integer deployState, LocalDateTime nowTime);
 
     @Delete(" DELETE FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
             " WHERE scheme_id = #{schemeId} ")
@@ -71,4 +81,8 @@ public interface AlarmSchemeChannelRelMapper {
             " <foreach collection='idList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
     void batchDelete(List<Long> idList);
+
+    @Select(" SELECT * FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+            " WHERE scheme_id = #{schemeId} ")
+    List<GetAlarmChannelDeployRsp> selectBySchemeId(Long schemeId);
 }

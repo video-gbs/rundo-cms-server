@@ -91,6 +91,7 @@ public interface ChannelNorthService {
      * 布防/撤防
      * @param channelIdList 通道id数组
      * @param isDeploy 是否布防
+     * @return 失败的通道
      */
-    void channelDeployAndWithdrawDefenses(List<Long> channelIdList,  Boolean isDeploy);
+    Set<Long> channelDeployAndWithdrawDefenses(List<Long> channelIdList,  Boolean isDeploy);
 }

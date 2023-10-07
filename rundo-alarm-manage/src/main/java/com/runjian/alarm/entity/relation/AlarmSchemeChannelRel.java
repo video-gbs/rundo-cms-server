@@ -26,6 +26,13 @@ public class AlarmSchemeChannelRel {
      */
     private Long channelId;
 
+    /**
+     * 布防状态
+     */
+    private Integer deployState;
+
 
     private LocalDateTime createTime;
+
+    private LocalDateTime updateTime;
 }

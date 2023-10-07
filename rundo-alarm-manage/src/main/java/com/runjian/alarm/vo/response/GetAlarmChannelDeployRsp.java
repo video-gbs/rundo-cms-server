@@ -7,7 +7,7 @@ import lombok.Data;
  * @date 2023/9/11 11:08
  */
 @Data
-public class GetAlarmChannelRsp {
+public class GetAlarmChannelDeployRsp {
 
     /**
      * 通道id
@@ -20,8 +20,7 @@ public class GetAlarmChannelRsp {
     private Long schemeId;
 
     /**
-     * 预案名称
+     * 布防状态 0:撤防 1:布防
      */
-    private String schemeName;
-
+    private Integer deployState;
 }

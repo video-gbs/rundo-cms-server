@@ -395,24 +395,37 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     }
 
     @Override
-    public void channelDeployAndWithdrawDefenses(List<Long> channelIdList, Boolean isDeploy) {
+    public Set<Long> channelDeployAndWithdrawDefenses(List<Long> channelIdList, Boolean isDeploy) {
         Map<Long, List<Long>> deviceChannelIdMap = channelMapper.selectByIds(channelIdList).stream().collect(Collectors.groupingBy(ChannelInfo::getDeviceId, Collectors.mapping(ChannelInfo::getId, Collectors.toList())));
         Map<Long, List<Long>> gatewayDeviceIdMap = deviceMapper.selectByIds(deviceChannelIdMap.keySet()).stream().collect(Collectors.groupingBy(DeviceInfo::getGatewayId, Collectors.mapping(DeviceInfo::getId, Collectors.toList())));
         MsgType msgType =  isDeploy ? MsgType.CHANNEL_DEFENSES_DEPLOY : MsgType.CHANNEL_DEFENSES_WITHDRAW;
+        Set<Long> failureChannelSet = new HashSet<>(channelIdList.size());
         for (Map.Entry<Long, List<Long>> entry : gatewayDeviceIdMap.entrySet()){
             DeviceControlReq deviceControlReq = new DeviceControlReq(entry.getKey(), IdType.GATEWAY, msgType, 15000L);
+            List<Long> channelIds = new ArrayList<>();
             for (Long deviceId : entry.getValue()){
-                deviceControlReq.putData(String.valueOf(deviceId), deviceChannelIdMap.get(deviceId));
+                List<Long> deviceChannelIdList = deviceChannelIdMap.get(deviceId);
+                channelIds.addAll(deviceChannelIdList);
+                deviceControlReq.putData(String.valueOf(deviceId), channelIdList);
             }
             try {
                 CommonResponse<?> response = parsingEngineApi.customEvent(deviceControlReq);
                 if (response.isError()) {
                     log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "设备布防与撤防失败", String.format("请求体%s", deviceControlReq), String.format("%s:%s", response.getMsg(), response.getData().toString()));
+                    failureChannelSet.addAll(channelIds);
+                }
+                if (Objects.nonNull(response.getData())){
+                    List<Long> failureChannelList = JSONArray.parseArray(response.getData().toString()).toList(Long.class);
+                    if (!failureChannelList.isEmpty()){
+                        failureChannelSet.addAll(failureChannelList);
+                    }
                 }
             }catch (Exception ex){
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "设备布防与撤防失败", String.format("请求体%s", deviceControlReq), ex);
+                failureChannelSet.addAll(channelIds);
             }
         }
+        return failureChannelSet;
     }
 
 }

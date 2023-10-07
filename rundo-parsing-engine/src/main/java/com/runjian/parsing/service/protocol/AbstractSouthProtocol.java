@@ -89,9 +89,31 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             case CHANNEL_DELETE_HARD:
                 channelDeleteSoft(taskId, data);
                 return;
+            case CHANNEL_DEFENSES_DEPLOY:
+            case CHANNEL_DEFENSES_WITHDRAW:
+                channelDefensesDeploy(gatewayId, taskId, data);
+                return;
             default:
                 customEvent(taskId, data);
         }
+    }
+
+    private void channelDefensesDeploy(Long gatewayId, Long taskId, Object data) {
+        if (Objects.isNull(data)){
+            this.customEvent(taskId, null);
+        }
+        JSONObject jsonObject = JSONObject.parseObject(data.toString());
+        List<Long> failureIds = new ArrayList<>(jsonObject.entrySet().size());
+        for (Map.Entry<String, Object> entry : jsonObject.entrySet()){
+            List<String> channelOriginIds = JSONArray.parseArray(entry.getValue().toString()).toList(String.class);
+            Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, entry.getKey());
+            if (deviceInfoOp.isEmpty()){
+                continue;
+            }
+            DeviceInfo deviceInfo = deviceInfoOp.get();
+            failureIds.addAll(channelMapper.selectIdsByDeviceIdAndOriginIds(deviceInfo.getId(), channelOriginIds));
+        }
+        this.customEvent(taskId, failureIds);
     }
 
     private void alarmMsgNotification(Long gatewayId, Object data) {
