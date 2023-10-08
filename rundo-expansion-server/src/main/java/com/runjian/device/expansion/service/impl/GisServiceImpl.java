@@ -40,8 +40,16 @@ public class GisServiceImpl implements IGisService {
 
         if(ObjectUtils.isEmpty(req.getId())){
             //添加
+            LambdaQueryWrapper<GisConfig> gisConfigLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            gisConfigLambdaQueryWrapper.eq(GisConfig::getDictId,req.getDictId());
+            gisConfigLambdaQueryWrapper.last("limit 1");
+            GisConfig gisConfigDb = gisConfigMapper.selectOne(gisConfigLambdaQueryWrapper);
+            if(ObjectUtils.isEmpty(gisConfigDb)){
+                gisConfigMapper.insert(gisConfig);
+            }else {
+                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR,"请勿重复添加同一类型的地图");
+            }
 
-            gisConfigMapper.insert(gisConfig);
         }else {
             //编辑
             gisConfigMapper.updateById(gisConfig);
