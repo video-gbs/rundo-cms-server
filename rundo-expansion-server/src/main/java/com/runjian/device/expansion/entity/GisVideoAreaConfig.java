@@ -17,6 +17,13 @@ public class GisVideoAreaConfig {
   private Double longitude;
   private Double latitude;
   private Double height;
+
+  private double heading;
+
+  private double pitch;
+
+  private double roll;
+
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
   private Long deleted;

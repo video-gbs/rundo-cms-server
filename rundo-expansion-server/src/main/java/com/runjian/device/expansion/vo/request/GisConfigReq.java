@@ -31,6 +31,15 @@ public class GisConfigReq {
   @NotNull(message = "高度不得为null")
   private double height;
 
+  @ApiModelProperty("偏航角")
+  private double heading;
+
+  @ApiModelProperty("俯仰角")
+  private double pitch;
+
+  @ApiModelProperty("翻滚角")
+  private double roll;
+
   @ApiModelProperty("地图加载地址")
   @NotNull(message = "地图加载地址不得为null")
   private String url;

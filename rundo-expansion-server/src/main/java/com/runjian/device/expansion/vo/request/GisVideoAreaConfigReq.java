@@ -39,4 +39,17 @@ public class GisVideoAreaConfigReq {
   @NotNull(message = "高度不得为null")
   private double height;
 
+  @ApiModelProperty("偏航角")
+  @NotNull(message = "偏航角不得为null")
+  private double heading;
+
+  @ApiModelProperty("俯仰角")
+  @NotNull(message = "偏航角不得为null")
+  private double pitch;
+
+  @ApiModelProperty("翻滚角")
+  @NotNull(message = "偏航角不得为null")
+  private double roll;
+
+
 }
