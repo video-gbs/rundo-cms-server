@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: utils-timer
+  profiles:
+    active: ${PROFILES_ACTIVE:local}

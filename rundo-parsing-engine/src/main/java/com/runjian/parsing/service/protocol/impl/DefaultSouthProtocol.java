@@ -3,6 +3,7 @@ package com.runjian.parsing.service.protocol.impl;
 import com.alibaba.fastjson2.JSONObject;
 import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.dao.DeviceMapper;
+import com.runjian.parsing.feign.AlarmManageApi;
 import com.runjian.parsing.feign.DeviceControlApi;
 import com.runjian.parsing.service.common.GatewayTaskService;
 import com.runjian.parsing.service.protocol.AbstractSouthProtocol;
@@ -19,8 +20,8 @@ import org.springframework.transaction.TransactionDefinition;
 @Service
 public class DefaultSouthProtocol extends AbstractSouthProtocol {
 
-    public DefaultSouthProtocol(GatewayTaskService gatewayTaskService, DeviceMapper deviceMapper, ChannelMapper channelMapper, DeviceControlApi deviceControlApi, RedissonClient redissonClient, DataSourceTransactionManager dataSourceTransactionManager, TransactionDefinition transactionDefinition) {
-        super(gatewayTaskService, deviceMapper, channelMapper, deviceControlApi, redissonClient, dataSourceTransactionManager, transactionDefinition);
+    public DefaultSouthProtocol(GatewayTaskService gatewayTaskService, DeviceMapper deviceMapper, ChannelMapper channelMapper, DeviceControlApi deviceControlApi, AlarmManageApi alarmManageApi, RedissonClient redissonClient, DataSourceTransactionManager dataSourceTransactionManager, TransactionDefinition transactionDefinition) {
+        super(gatewayTaskService, deviceMapper, channelMapper, deviceControlApi, alarmManageApi, redissonClient, dataSourceTransactionManager, transactionDefinition);
     }
 
     @Override

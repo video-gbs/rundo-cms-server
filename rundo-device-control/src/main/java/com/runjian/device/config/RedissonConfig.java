@@ -12,7 +12,9 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 
 /**
- * @author chenjialing
+ * redisson 配置
+ * @author Miracle
+ * @date 2023/8/7 17:32
  */
 @Configuration
 public class RedissonConfig {

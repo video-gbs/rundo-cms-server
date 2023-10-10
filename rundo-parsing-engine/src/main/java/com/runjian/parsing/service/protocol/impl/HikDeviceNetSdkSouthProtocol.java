@@ -6,6 +6,7 @@ import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.StandardName;
 import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.dao.DeviceMapper;
+import com.runjian.parsing.feign.AlarmManageApi;
 import com.runjian.parsing.feign.DeviceControlApi;
 import com.runjian.parsing.service.common.GatewayTaskService;
 import com.runjian.parsing.service.protocol.AbstractSouthProtocol;
@@ -33,8 +34,8 @@ public class HikDeviceNetSdkSouthProtocol extends AbstractSouthProtocol {
 
     private final static String CHANNEL_NAME = "channelName";
 
-    public HikDeviceNetSdkSouthProtocol(GatewayTaskService gatewayTaskService, DeviceMapper deviceMapper, ChannelMapper channelMapper, DeviceControlApi deviceControlApi, RedissonClient redissonClient, DataSourceTransactionManager dataSourceTransactionManager, TransactionDefinition transactionDefinition) {
-        super(gatewayTaskService, deviceMapper, channelMapper, deviceControlApi, redissonClient, dataSourceTransactionManager, transactionDefinition);
+    public HikDeviceNetSdkSouthProtocol(GatewayTaskService gatewayTaskService, DeviceMapper deviceMapper, ChannelMapper channelMapper, DeviceControlApi deviceControlApi, AlarmManageApi alarmManageApi, RedissonClient redissonClient, DataSourceTransactionManager dataSourceTransactionManager, TransactionDefinition transactionDefinition) {
+        super(gatewayTaskService, deviceMapper, channelMapper, deviceControlApi, alarmManageApi, redissonClient, dataSourceTransactionManager, transactionDefinition);
     }
 
 

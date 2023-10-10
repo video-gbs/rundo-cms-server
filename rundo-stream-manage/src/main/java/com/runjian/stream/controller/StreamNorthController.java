@@ -57,6 +57,28 @@ public class StreamNorthController {
     }
 
     /**
+     * 下载录像
+     * @param req 录像下载请求体
+     * @return 流id
+     */
+    @PostMapping("/download/video")
+    public CommonResponse<String> applyStreamId(@RequestBody PostRecordDownloadReq req){
+        validatorService.validateRequest(req);
+        return CommonResponse.success(streamNorthService.downloadRecord(req.getChannelId(), req.getStreamType(), req.getEnableAudio(), req.getPlayType(), req.getStartTime(), req.getEndTime(), req.getUploadId(), req.getUploadUrl()));
+    }
+
+    /**
+     * 下载图片
+     * @param req 图片下载请求体
+     * @return 流id
+     */
+    @PostMapping("/download/image")
+    public CommonResponse<String> applyStreamId(@RequestBody PostImageDownloadReq req){
+        validatorService.validateRequest(req);
+        return CommonResponse.success(streamNorthService.downloadImage(req.getChannelId(), req.getStreamType(), req.getPlayType(), req.getTime(), req.getUploadId(), req.getUploadUrl()));
+    }
+
+    /**
      * 停止播放
      * @param req
      * @return

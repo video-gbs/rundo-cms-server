@@ -1,5 +1,7 @@
 package com.runjian.parsing.service.protocol;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.IdType;
 import com.runjian.common.constant.MsgType;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 默认协议
@@ -45,10 +48,16 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
             case CHANNEL_DELETE_HARD:
                 channelDelete(mainId, response, msgType);
                 return;
+            case CHANNEL_DEFENSES_DEPLOY:
+            case CHANNEL_DEFENSES_WITHDRAW:
+                channelDefensesDeploy(mainId, msgType, dataMap, response);
+                return;
             default:
                 customEvent(mainId, idType, msgType.getMsg(), dataMap, response);
         }
     }
+
+
 
     @Override
     public void customEvent(Long mainId, IdType idType, String msgType, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
@@ -71,6 +80,19 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
                 gatewayTaskService.sendMsgToGateway(mainId, deviceId, channelId, msgType, gatewayConvertDto, response);
                 break;
         }
+    }
+
+    private void channelDefensesDeploy(Long gatewayId, MsgType msgType, Map<String, Object> dataMap, DeferredResult<CommonResponse<?>> response) {
+        Map<Long, String> deviceOriginIdMap = deviceMapper.selectByIds(dataMap.keySet().stream().map(Long::valueOf).collect(Collectors.toList())).stream().collect(Collectors.toMap(DeviceInfo::getId, DeviceInfo::getOriginId));
+        Map<String, Object> convertDataMap = new HashMap<>(dataMap.size());
+        for (Map.Entry<String, Object> entry : dataMap.entrySet()){
+            if (entry.getValue() instanceof List){
+                JSONArray jsonArray = JSONArray.parseArray(entry.getValue().toString());
+                List<Long> channelIdList = jsonArray.toJavaList(Long.class);
+                convertDataMap.put(deviceOriginIdMap.get(Long.parseLong(entry.getKey())), channelMapper.selectOriginIdByIds(channelIdList));
+            }
+        }
+        this.customEvent(gatewayId, IdType.GATEWAY, msgType.getMsg(), convertDataMap, response);
     }
 
     public void deviceDelete(Long deviceId, DeferredResult<CommonResponse<?>> response, MsgType msgType) {
