@@ -106,6 +106,8 @@ server:
     no-request-timeout: 60000
     buffer-size: 32768
     direct-buffers: true
+  servlet:
+    context-path: /alarm
 
 
 mybatis:
