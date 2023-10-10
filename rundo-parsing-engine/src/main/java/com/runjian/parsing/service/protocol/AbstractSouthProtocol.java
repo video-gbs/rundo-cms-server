@@ -48,9 +48,9 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
 
     protected final DeviceControlApi deviceControlApi;
 
-    protected final RedissonClient redissonClient;
-
     protected final AlarmManageApi alarmManageApi;
+
+    protected final RedissonClient redissonClient;
 
     protected final DataSourceTransactionManager dataSourceTransactionManager;
 
