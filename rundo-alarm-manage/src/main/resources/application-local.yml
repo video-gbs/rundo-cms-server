@@ -107,7 +107,7 @@ server:
     buffer-size: 32768
     direct-buffers: true
   servlet:
-    context-path: /alarm
+    context-path: /api/alarm-manage
 
 
 mybatis:

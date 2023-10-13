@@ -59,7 +59,7 @@ public interface DeviceMapper {
             " <if test=\"signState != null\" >  AND de.sign_state = #{signState} </if> " +
             " <if test=\"deviceName != null\" >  AND dt.name LIKE CONCAT('%', #{deviceName}, '%')  </if> " +
             " <if test=\"ip != null\" >  AND dt.ip LIKE CONCAT('%', #{ip}, '%')  </if> " +
-            " ORDER BY de.create_time desc " +
+            " ORDER BY de.online_state desc, de.create_time desc  " +
             " </script> "})
     List<GetDevicePageRsp> selectByPage( Integer signState, String deviceName, String ip);
 
