@@ -20,8 +20,11 @@ public interface TemplateInfoMapper {
 
     String TEMPLATE_TABLE_NAME = "rundo_template";
 
-    @Select(" SELECT * FROM " + TEMPLATE_TABLE_NAME +
-            " WHERE template_name LIKE CONCAT('%', #{templateName}, '%') ")
+    @Select(" <script> " +
+            " SELECT * FROM " + TEMPLATE_TABLE_NAME +
+            " WHERE 1=1 " +
+            " <if test=\"template_name != null\" >  AND template_name LIKE CONCAT('%', #{templateName}, '%') </if> " +
+            " </script> ")
     List<GetTemplateInfoRsp> selectByTemplateNameLike(String templateName);
 
     @Select(" SELECT * FROM " + TEMPLATE_TABLE_NAME +
@@ -30,6 +33,7 @@ public interface TemplateInfoMapper {
 
     @Insert(" INSERT INTO " + TEMPLATE_TABLE_NAME + "(template_name, update_time, create_time) values " +
             " (#{templateName}, #{updateTime}, #{createTime}) " )
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(TemplateInfo templateInfo);
 
     @Select(" SELECT * FROM " + TEMPLATE_TABLE_NAME +

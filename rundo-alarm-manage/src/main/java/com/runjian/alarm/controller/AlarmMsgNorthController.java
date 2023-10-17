@@ -34,10 +34,10 @@ public class AlarmMsgNorthController {
      */
     @GetMapping("/page")
     public CommonResponse<PageInfo<GetAlarmMsgRsp>> getAlarmMsgPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
-                                                                    String alarmType,
+                                                                    String alarmCode,
                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmStartTime,
                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmEndTime){
-        return CommonResponse.success(alarmMsgNorthService.getAlarmMsgByPage(page, num, alarmType, alarmStartTime, alarmEndTime));
+        return CommonResponse.success(alarmMsgNorthService.getAlarmMsgByPage(page, num, alarmCode, alarmStartTime, alarmEndTime));
     }
 
     /**

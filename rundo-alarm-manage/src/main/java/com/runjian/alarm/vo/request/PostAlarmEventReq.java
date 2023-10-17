@@ -39,7 +39,6 @@ public class PostAlarmEventReq {
     /**
      * 事件描述
      */
-    @NotBlank(message = "事件描述不能为空")
     @Size(max = 250, message = "事件描述长度不能超过250")
     private String eventDesc;
 }

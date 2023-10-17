@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Miracle
@@ -23,10 +22,10 @@ public class AlarmMsgNorthServiceImpl implements AlarmMsgNorthService {
     private final AlarmMsgInfoMapper alarmMsgInfoMapper;
 
     @Override
-    public PageInfo<GetAlarmMsgRsp> getAlarmMsgByPage(int page, int num, String alarmType, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime) {
+    public PageInfo<GetAlarmMsgRsp> getAlarmMsgByPage(int page, int num, String alarmCode, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime) {
         PageHelper.startPage(page, num);
 
-        return new PageInfo<>(alarmMsgInfoMapper.selectByAlarmTypeAndAlarmTime(alarmType, alarmStartTime, alarmEndTime));
+        return new PageInfo<>(alarmMsgInfoMapper.selectByAlarmCodeAndAlarmTime(alarmCode, alarmStartTime, alarmEndTime));
     }
 
     @Override

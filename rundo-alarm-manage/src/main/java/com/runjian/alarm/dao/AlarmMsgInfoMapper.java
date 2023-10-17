@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * @author Miracle
@@ -23,11 +22,11 @@ public interface AlarmMsgInfoMapper {
     @Select(" <script> " +
             " SELECT * FROM " + ALARM_MSG_TABLE_NAME +
             " WHERE 1=1 " +
-            " <if test=\"alarmType != null\" > AND alarm_type = #{alarmType} </if>" +
+            " <if test=\"alarmCode != null\" > AND alarm_code = #{alarmCode} </if>" +
             " <if test=\"alarmStartTime != null\" > AND alarm_time &gt;= #{alarmStartTime} </if>" +
             " <if test=\"alarmEndTime != null\" > AND alarm_time &lt;= #{alarmEndTime} </if>" +
             " </script> ")
-    List<GetAlarmMsgRsp> selectByAlarmTypeAndAlarmTime(String alarmType, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime);
+    List<GetAlarmMsgRsp> selectByAlarmCodeAndAlarmTime(String alarmCode, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime);
 
     @Insert(" INSERT INTO " + ALARM_MSG_TABLE_NAME + " (channel_id, alarm_code, alarm_level, alarm_type, alarm_start_time, alarm_end_time, alarm_desc, alarm_state, alarm_interval, " +
             " video_url, video_length, video_audio_state, video_stream_id, " +

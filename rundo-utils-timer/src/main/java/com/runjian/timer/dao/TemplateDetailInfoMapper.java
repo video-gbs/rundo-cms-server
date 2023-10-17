@@ -32,7 +32,7 @@ public interface TemplateDetailInfoMapper {
 
     @Insert({" <script> " +
             " INSERT INTO " + TEMPLATE_DETAIL_TABLE_NAME + "(template_id, date_type, start_time, end_time, is_next_day, enable_timer, update_time, create_time) values " +
-            " <foreach collection='saveList' item='item' separator=','>(#{item.templateId}, #{item.dateType}, #{item.startTime}, #{item.endTime}, #{item.isNextDay}, #{item.enableTimer}, #{item.updateTime}, #{item.createTime})</foreach> " +
+            " <foreach collection='templateDetailInfoList' item='item' separator=','>(#{item.templateId}, #{item.dateType}, #{item.startTime}, #{item.endTime}, #{item.isNextDay}, #{item.enableTimer}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>"})
     void batchSave(List<TemplateDetailInfo> templateDetailInfoList);
 

@@ -20,7 +20,7 @@ public class TimeUtils {
      */
     public static boolean validTimeRange(Set<TimePeriodDto> timePeriodDtoList){
         // 判断数据是否为空
-        if (timePeriodDtoList.isEmpty()){
+        if (Objects.isNull(timePeriodDtoList) || timePeriodDtoList.isEmpty()){
             return false;
         }
         HashMap<Integer, List<TimePeriodDto>> typePlanTimeMap = new HashMap<>();

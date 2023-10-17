@@ -19,10 +19,12 @@ public interface AlarmEventMapper {
 
     String ALARM_EVENT_TABLE_NAME = "rundo_alarm_event";
 
-    @Select(" SELECT * FROM " + ALARM_EVENT_TABLE_NAME +
+    @Select(" <script> " +
+            " SELECT * FROM " + ALARM_EVENT_TABLE_NAME +
             " WHERE 1=1 " +
             " <if test=\"eventName != null\" > AND event_name = #{eventName} </if> " +
-            " <if test=\"eventCode != null\" > AND event_code = #{eventCode} </if> ")
+            " <if test=\"eventCode != null\" > AND event_code = #{eventCode} </if> " +
+            " </script> ")
     List<GetAlarmEventRsp> selectAlarmEventByPage(String eventName, String eventCode);
 
     @Select(" SELECT * FROM " + ALARM_EVENT_TABLE_NAME +
