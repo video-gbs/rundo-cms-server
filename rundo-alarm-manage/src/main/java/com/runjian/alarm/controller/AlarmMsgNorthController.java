@@ -27,7 +27,7 @@ public class AlarmMsgNorthController {
      * 分页获取告警信息
      * @param page 页码
      * @param num 每页数据
-     * @param alarmType 告警类型
+     * @param alarmCode 告警类型
      * @param alarmStartTime 告警开始时间
      * @param alarmEndTime 告警结束时间
      * @return
