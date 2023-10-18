@@ -35,9 +35,9 @@ public interface AlarmManageApi {
      */
     @GetMapping("/msg/north/page")
     CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> getAlarmMsgPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
-                                                                        String alarmCode,
-                                                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmStartTime,
-                                                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmEndTime);
+                                                                        @RequestParam(defaultValue = "1", required = false) String alarmCode,
+                                                                        @RequestParam(required = false) LocalDateTime alarmStartTime,
+                                                                        @RequestParam(required = false) LocalDateTime alarmEndTime);
 
     /**
      * 获取预案下的设备布撤防状态
