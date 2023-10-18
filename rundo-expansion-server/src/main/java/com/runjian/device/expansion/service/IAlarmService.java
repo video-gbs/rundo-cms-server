@@ -1,8 +1,10 @@
 package com.runjian.device.expansion.service;
 
+import com.runjian.device.expansion.vo.feign.response.PageListResp;
 import com.runjian.device.expansion.vo.response.GetAlarmDeployChannelRsp;
 import com.runjian.device.expansion.vo.response.GetAlarmMsgChannelRsp;
 import com.runjian.device.expansion.vo.response.GetAlarmSchemeChannelRsp;
+import com.runjian.device.expansion.vo.response.PageResp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,14 +19,14 @@ public interface IAlarmService {
      * 获取预案通道
      * @param page 第几页
      * @param num 每页数据量
-     * @param resourceId 资源节点id
-     * @param isIncludeChild 是否包含下级组织
+     * @param videoAreaId 资源节点id
+     * @param includeEquipment 是否包含下级组织
      * @param channelName 通道名称
      * @param deviceName 设备名称
      * @param onlineState 在线状态
      * @return
      */
-    List<GetAlarmSchemeChannelRsp> getAlarmSchemeChannel(int page, int num, Long resourceId, Integer isIncludeChild, String channelName, String deviceName, Integer onlineState);
+    PageResp<GetAlarmSchemeChannelRsp> getAlarmSchemeChannel(int page, int num, Long videoAreaId, Integer includeEquipment, String channelName, String deviceName, Integer onlineState);
 
     /**
      * 获取预案下布防的通道
@@ -33,7 +35,7 @@ public interface IAlarmService {
      * @param schemeId 预案id
      * @return
      */
-    List<GetAlarmDeployChannelRsp> getAlarmDeployChannel(int page, int num, Long schemeId);
+    PageListResp<GetAlarmDeployChannelRsp> getAlarmDeployChannel(int page, int num, Long schemeId);
 
     /**
      * 获取告警信息
@@ -44,5 +46,5 @@ public interface IAlarmService {
      * @param endTime 结束时间
      * @return
      */
-    List<GetAlarmMsgChannelRsp> getAlarmMsgChannel(int page, int num, String eventCode, LocalDateTime startTime, LocalDateTime endTime);
+    PageListResp<GetAlarmMsgChannelRsp> getAlarmMsgChannel(int page, int num, String eventCode, LocalDateTime startTime, LocalDateTime endTime);
 }

@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -50,7 +51,11 @@ public class TemplateServiceImpl implements TemplateService {
         List<Long> templateIds = getTemplateInfoRspList.stream().map(GetTemplateInfoRsp::getId).collect(Collectors.toList());
         Map<Long, List<TemplateDetailInfo>> templateDetailMap = templateDetailInfoMapper.selectByTemplateIds(templateIds).stream().collect(Collectors.groupingBy(TemplateDetailInfo::getTemplateId, Collectors.toList()));
         for (GetTemplateInfoRsp getTemplateInfoRsp : getTemplateInfoRspList){
-            List<TimePeriodDto> timePeriodDtoList = templateDetailMap.get(getTemplateInfoRsp.getId()).stream().map(TimePeriodDto::fromTemplateDetailInfo).collect(Collectors.toList());
+            List<TemplateDetailInfo> templateDetailInfos = templateDetailMap.get(getTemplateInfoRsp.getId());
+            if (ObjectUtils.isEmpty(templateDetailInfos)){
+                continue;
+            }
+            List<TimePeriodDto> timePeriodDtoList = templateDetailInfos.stream().map(TimePeriodDto::fromTemplateDetailInfo).collect(Collectors.toList());
             getTemplateInfoRsp.setTimePeriodDtoList(timePeriodDtoList);
             Set<Integer> dateTypeSet = timePeriodDtoList.stream().map(TimePeriodDto::getDateType).collect(Collectors.toSet());
             getTemplateInfoRsp.setDateTypeStrList(dateTypeSet.stream().map(DateType::getMsgByCode).collect(Collectors.toList()));

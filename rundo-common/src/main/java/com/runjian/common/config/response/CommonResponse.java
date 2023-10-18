@@ -53,7 +53,7 @@ public class CommonResponse<T> implements Serializable {
      */
     public void ifErrorThrowException(BusinessErrorEnums businessErrorEnums){
         if (isError()){
-            throw new BusinessException(businessErrorEnums, msg);
+            throw new BusinessException(businessErrorEnums, String.format("%s:%s", msg, data));
         }
     }
 

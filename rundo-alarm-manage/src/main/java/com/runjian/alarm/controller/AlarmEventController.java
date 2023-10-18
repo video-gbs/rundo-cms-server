@@ -6,6 +6,7 @@ import com.runjian.alarm.vo.request.PostAlarmEventReq;
 import com.runjian.alarm.vo.request.PutAlarmEventReq;
 import com.runjian.alarm.vo.response.GetAlarmEventNameRsp;
 import com.runjian.alarm.vo.response.GetAlarmEventRsp;
+import com.runjian.common.aspect.annotation.BlankStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,6 @@ public class AlarmEventController {
 
     /**
      * 分页获取事件
-     *
      * @param page      页码
      * @param num       每页数量
      * @param eventName 事件名称
@@ -38,6 +38,7 @@ public class AlarmEventController {
      * @return
      */
     @GetMapping("/page")
+    @BlankStringValid
     public CommonResponse<PageInfo<GetAlarmEventRsp>> getAlarmEventPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") Integer num,
                                                                         String eventName, String eventCode) {
         return CommonResponse.success(alarmEventService.getAlarmEventByPage(page, num, eventName, eventCode));

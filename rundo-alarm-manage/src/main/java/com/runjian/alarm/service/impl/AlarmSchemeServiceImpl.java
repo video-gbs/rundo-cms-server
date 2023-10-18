@@ -48,6 +48,9 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
     public PageInfo<GetAlarmSchemePageRsp> getAlarmSchemeByPage(int page, int num, String schemeName, Integer disabled, LocalDateTime createStartTime, LocalDateTime createEndTime) {
         PageHelper.startPage(page, num);
         Map<Long, GetAlarmSchemePageRsp> getAlarmSchemePageRspMap = alarmSchemeInfoMapper.selectByPage(schemeName, disabled, createStartTime, createEndTime).stream().collect(Collectors.toMap(GetAlarmSchemePageRsp::getId, getAlarmSchemePageRsp -> getAlarmSchemePageRsp));
+        if (getAlarmSchemePageRspMap.isEmpty()){
+            return new PageInfo<>();
+        }
         Map<Long, List<GetAlarmSchemeEventNameRsp>> getAlarmSchemeEventNameRsp = alarmSchemeEventRelMapper.selectEventNameBySchemeIds(getAlarmSchemePageRspMap.keySet()).stream().collect(Collectors.groupingBy(GetAlarmSchemeEventNameRsp::getSchemeId, Collectors.toList()));
         for (Map.Entry<Long, GetAlarmSchemePageRsp> entry : getAlarmSchemePageRspMap.entrySet()) {
             List<GetAlarmSchemeEventNameRsp> alarmSchemeEventNameRspList = getAlarmSchemeEventNameRsp.get(entry.getKey());
@@ -63,6 +66,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "告警预案不存在，请刷新重试");
         }
         List<Long> channelIdList = alarmSchemeChannelRelMapper.selectChannelIdBySchemeId(id);
+
         List<GetAlarmSchemeEventRsp> alarmSchemeEventRspList = alarmSchemeEventRelMapper.selectRspBySchemeId(id);
         GetAlarmSchemeRsp getAlarmSchemeRsp = getAlarmSchemeRspOp.get();
         getAlarmSchemeRsp.setChannelIdList(channelIdList);

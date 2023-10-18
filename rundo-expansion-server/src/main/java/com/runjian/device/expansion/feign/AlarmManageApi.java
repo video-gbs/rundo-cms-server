@@ -3,6 +3,8 @@ package com.runjian.device.expansion.feign;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.AlarmManageApiFallbackFactory;
 import com.runjian.device.expansion.feign.fallback.StreamManageApiFallbackFactory;
+import com.runjian.device.expansion.vo.feign.response.GetAlarmChannelRsp;
+import com.runjian.device.expansion.vo.feign.response.PageListResp;
 import com.runjian.device.expansion.vo.response.GetAlarmDeployChannelRsp;
 import com.runjian.device.expansion.vo.response.GetAlarmMsgChannelRsp;
 import com.runjian.device.expansion.vo.response.GetAlarmSchemeChannelRsp;
@@ -32,10 +34,10 @@ public interface AlarmManageApi {
      * @return
      */
     @GetMapping("/msg/north/page")
-    CommonResponse<PageInfo<GetAlarmMsgChannelRsp>> getAlarmMsgPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
-                                                                    String alarmCode,
-                                                                    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmStartTime,
-                                                                    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmEndTime);
+    CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> getAlarmMsgPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
+                                                                        String alarmCode,
+                                                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmStartTime,
+                                                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmEndTime);
 
     /**
      * 获取预案下的设备布撤防状态
@@ -45,7 +47,7 @@ public interface AlarmManageApi {
      * @return
      */
     @GetMapping("/scheme/channel/deploy/page")
-    CommonResponse<PageInfo<GetAlarmDeployChannelRsp>> getChannelDeploy(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Long schemeId);
+    CommonResponse<PageListResp<GetAlarmDeployChannelRsp>> getChannelDeploy(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Long schemeId);
 
     /**
      * 获取通道绑定的告警预案
@@ -53,5 +55,5 @@ public interface AlarmManageApi {
      * @return
      */
     @GetMapping("/scheme/channel")
-    CommonResponse<List<GetAlarmSchemeChannelRsp>> getAlarmChannel(@RequestParam Set<Long> channelIds);
+    CommonResponse<List<GetAlarmChannelRsp>> getAlarmChannel(@RequestParam Set<Long> channelIds);
 }
