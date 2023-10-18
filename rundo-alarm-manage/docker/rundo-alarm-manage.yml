@@ -1,0 +1,29 @@
+version: '3'
+services:
+  device-control:
+    image: xard-harbor.runjian.com:20443/hyy-rundo-gms/rundo-alarm-manage:${version}
+    container_name: alarm-manage
+    restart: on-failure
+    ports:
+      - 8094:8094
+    volumes:
+      - ./logs/:/opt/alarm-manage/logs/
+    environment:
+      TZ: Asia/Shanghai
+      SERVER_PORT: 8094
+      PROFILES_ACTIVE: test
+      NACOS_SERVER: 192.168.0.84:8848
+      NACOS_NAMESPACE: test
+      NACOS_USERNAME: nacos
+      NACOS_GROUP: DEFAULT_GROUP
+      NACOS_PASSWORD: rundo@nacos*2023
+    logging:
+      options:
+        max-size: '12m'
+        max-file: '10'
+    networks:
+      - proxynet
+networks:
+  proxynet:
+    external:
+      name: rundo_network
