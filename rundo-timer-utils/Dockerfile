@@ -9,7 +9,7 @@ ENV LC_ALL zh_CN.UTF-8
 RUN apt update && apt install -y language-pack-zh-hans vim
 RUN mkdir -pv /opt/timer-utils/logs/
 COPY target/*.jar /opt/timer-utils
-WORKDIR /opt/alarm-manage
+WORKDIR /opt/timer-utils
 
 
 

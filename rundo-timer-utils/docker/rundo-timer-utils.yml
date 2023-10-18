@@ -10,7 +10,7 @@ services:
       - ./logs/:/opt/timer-utils/logs/
     environment:
       TZ: Asia/Shanghai
-      SERVER_PORT: 8094
+      SERVER_PORT: 8093
       PROFILES_ACTIVE: test
       NACOS_SERVER: 192.168.0.84:8848
       NACOS_NAMESPACE: test
