@@ -23,6 +23,7 @@ import com.runjian.device.expansion.vo.feign.request.PutChannelSignSuccessReq;
 import com.runjian.device.expansion.vo.feign.response.*;
 import com.runjian.device.expansion.vo.request.*;
 import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
+import com.runjian.device.expansion.vo.response.DeviceChannelExpansionPlayResp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
@@ -336,7 +337,7 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
     }
 
     @Override
-    public List<DeviceChannelExpansion> playList(Long videoAreaId) {
+    public List<DeviceChannelExpansionPlayResp> playList(Long videoAreaId) {
         //获取全部的资源信息
         CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId,false);
         if(catalogueResourceRsp.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
@@ -358,7 +359,27 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         queryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
         queryWrapper.orderByDesc(DeviceChannelExpansion::getCreatedAt);
         queryWrapper.orderByDesc(DeviceChannelExpansion::getOnlineState);
-        return deviceChannelExpansionMapper.selectList(queryWrapper);
+        List<DeviceChannelExpansion> deviceChannelExpansions = deviceChannelExpansionMapper.selectList(queryWrapper);
+        ArrayList<DeviceChannelExpansionPlayResp> PlayRespsList = new ArrayList<>();
+
+        if(!ObjectUtils.isEmpty(deviceChannelExpansions)){
+            for (DeviceChannelExpansion deviceChannelExpansion: deviceChannelExpansions){
+                for(GetCatalogueResourceRsp resourceOne : channelList){
+                    long valueLong = Long.parseLong(resourceOne.getResourceValue());
+                    if(valueLong == deviceChannelExpansion.getId()){
+                        DeviceChannelExpansionPlayResp deviceChannelExpansionPlayResp = new DeviceChannelExpansionPlayResp();
+                        BeanUtil.copyProperties(deviceChannelExpansion,deviceChannelExpansionPlayResp);
+                        deviceChannelExpansionPlayResp.setChannelId(valueLong);
+                        deviceChannelExpansionPlayResp.setId(resourceOne.getResourceId());
+                        PlayRespsList.add(deviceChannelExpansionPlayResp);
+                    }
+                }
+            }
+        }
+
+
+
+        return PlayRespsList;
     }
 
     @Override

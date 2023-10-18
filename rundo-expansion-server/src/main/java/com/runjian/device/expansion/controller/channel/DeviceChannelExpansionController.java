@@ -9,10 +9,7 @@ import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
 import com.runjian.device.expansion.vo.feign.response.VideoRecordRsp;
 import com.runjian.device.expansion.vo.request.*;
-import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
-import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
-import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
-import com.runjian.device.expansion.vo.response.PageResp;
+import com.runjian.device.expansion.vo.response.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -109,7 +106,7 @@ public class DeviceChannelExpansionController {
     @GetMapping(value = "/playList", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("直播--播放列表")
     @ChannelStatusPoint
-    public CommonResponse<List<DeviceChannelExpansion>> playList(@RequestParam Long videoAreaId) {
+    public CommonResponse<List<DeviceChannelExpansionPlayResp>> playList(@RequestParam Long videoAreaId) {
 
         return CommonResponse.success(deviceChannelExpansionService.playList(videoAreaId));
     }
@@ -117,7 +114,7 @@ public class DeviceChannelExpansionController {
     @GetMapping(value = "/playBackList", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("回放--播放列表")
     @ChannelStatusPoint
-    public CommonResponse<List<DeviceChannelExpansion>> playBackList(@RequestParam Long videoAreaId) {
+    public CommonResponse<List<DeviceChannelExpansionPlayResp>> playBackList(@RequestParam Long videoAreaId) {
 
         return CommonResponse.success(deviceChannelExpansionService.playList(videoAreaId));
     }
