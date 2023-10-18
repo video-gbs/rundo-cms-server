@@ -107,7 +107,6 @@ server:
     buffer-size: 32768
     direct-buffers: true
 
-
 mybatis:
   configuration:
     mapUnderscoreToCamelCase: true

@@ -46,11 +46,13 @@ public class AlarmEventController {
 
     /**
      * 获取事件名称
+     * @param eventName 事件名称
      * @return
      */
     @GetMapping("/data/name")
-    public CommonResponse<List<GetAlarmEventNameRsp>> getAlarmEventName() {
-        return CommonResponse.success(alarmEventService.getAlarmEventName());
+    @BlankStringValid
+    public CommonResponse<List<GetAlarmEventNameRsp>> getAlarmEventName(String eventName) {
+        return CommonResponse.success(alarmEventService.getAlarmEventName(eventName));
     }
 
     /**
