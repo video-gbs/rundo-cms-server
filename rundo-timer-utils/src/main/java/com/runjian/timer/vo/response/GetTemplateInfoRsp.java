@@ -1,5 +1,6 @@
 package com.runjian.timer.vo.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.runjian.timer.vo.dto.TimePeriodDto;
 import lombok.Data;
 
@@ -25,11 +26,18 @@ public class GetTemplateInfoRsp {
     private String templateName;
 
     /**
+     * 时间类型
+     */
+    private List<String> dateTypeStrList;
+
+    /**
      * 时间段
      */
     private List<TimePeriodDto> timePeriodDtoList;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 }

@@ -41,8 +41,8 @@ public interface TemplateUseInfoMapper {
             " WHERE id = #{id} " )
     void deleteById(Long id);
 
-    @Delete(" <script> " +
-            " DELETE FROM " + TEMPLATE_USE_TABLE_NAME +
+    @Select(" <script> " +
+            " SELECT * FROM " + TEMPLATE_USE_TABLE_NAME +
             " WHERE template_id IN " +
             " <foreach collection='templateIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script>")

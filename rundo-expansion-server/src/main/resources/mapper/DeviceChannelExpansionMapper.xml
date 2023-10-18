@@ -35,4 +35,30 @@
 
 
     </select>
+
+	<select id="listAlarmPage" resultType="com.runjian.device.expansion.vo.response.GetAlarmSchemeChannelRsp">
+		SELECT
+		t1.*,
+		t2.name as device_name
+		FROM
+		`rundo_device_channel_expansion` t1
+		left join
+		rundo_device_expansion t2 on t1.device_expansion_id=t2.id
+		WHERE
+		t1.deleted = 0 and t1.id in
+		<foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+
+		<if test="channelName != null and channelName !=''">
+			and t1.channel_name like concat('%',#{channelName},'%')
+		</if>
+		<if test="deviceName != null and deviceName !=''">
+			and t2.device_name like concat('%',#{deviceName},'%')
+		</if>
+		<if test="onlineState != null">
+			and t1.online_state = #{onlineState}
+		</if>
+		order by t1.created_at,t1.online_state Desc
+	</select>
 </mapper>

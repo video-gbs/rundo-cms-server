@@ -9,6 +9,7 @@ import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.vo.request.DeviceChannelExpansionListReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
+import com.runjian.device.expansion.vo.response.GetAlarmSchemeChannelRsp;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -30,4 +31,14 @@ public interface DeviceChannelExpansionMapper extends BaseMapper<DeviceChannelEx
      */
     Page<DeviceChannelExpansionResp> listPage(Page<DeviceChannelExpansion> page, DeviceChannelExpansionListReq deviceChannelExpansionListReq, List<Long> idList);
 
+    /**
+     * 告警分页查询
+     * @param page
+     * @param idList
+     * @param channelName
+     * @param deviceName
+     * @param onlineState
+     * @return
+     */
+    Page<GetAlarmSchemeChannelRsp> listAlarmPage(Page<DeviceChannelExpansion> page, List<Long> idList, String channelName, String deviceName, Integer onlineState);
 }

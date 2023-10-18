@@ -22,7 +22,7 @@
         <module>rundo-stream-manage</module>
         <module>rundo-expansion-server</module>
         <module>rundo-foreign-server</module>
-        <module>rundo-utils-timer</module>
+        <module>rundo-timer-utils</module>
         <module>rundo-alarm-manage</module>
     </modules>
     <properties>

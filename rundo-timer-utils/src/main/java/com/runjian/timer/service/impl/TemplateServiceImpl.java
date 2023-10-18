@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.constant.CommonEnum;
+import com.runjian.timer.constant.DateType;
 import com.runjian.timer.dao.TemplateDetailInfoMapper;
 import com.runjian.timer.dao.TemplateInfoMapper;
 import com.runjian.timer.dao.TemplateUseInfoMapper;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -49,7 +51,14 @@ public class TemplateServiceImpl implements TemplateService {
         List<Long> templateIds = getTemplateInfoRspList.stream().map(GetTemplateInfoRsp::getId).collect(Collectors.toList());
         Map<Long, List<TemplateDetailInfo>> templateDetailMap = templateDetailInfoMapper.selectByTemplateIds(templateIds).stream().collect(Collectors.groupingBy(TemplateDetailInfo::getTemplateId, Collectors.toList()));
         for (GetTemplateInfoRsp getTemplateInfoRsp : getTemplateInfoRspList){
-            getTemplateInfoRsp.setTimePeriodDtoList(templateDetailMap.get(getTemplateInfoRsp.getId()).stream().map(TimePeriodDto::fromTemplateDetailInfo).collect(Collectors.toList()));
+            List<TemplateDetailInfo> templateDetailInfos = templateDetailMap.get(getTemplateInfoRsp.getId());
+            if (ObjectUtils.isEmpty(templateDetailInfos)){
+                continue;
+            }
+            List<TimePeriodDto> timePeriodDtoList = templateDetailInfos.stream().map(TimePeriodDto::fromTemplateDetailInfo).collect(Collectors.toList());
+            getTemplateInfoRsp.setTimePeriodDtoList(timePeriodDtoList);
+            Set<Integer> dateTypeSet = timePeriodDtoList.stream().map(TimePeriodDto::getDateType).collect(Collectors.toSet());
+            getTemplateInfoRsp.setDateTypeStrList(dateTypeSet.stream().map(DateType::getMsgByCode).collect(Collectors.toList()));
         }
         return new PageInfo<>(getTemplateInfoRspList);
     }
@@ -78,6 +87,7 @@ public class TemplateServiceImpl implements TemplateService {
                 templateDetailInfo.setTemplateId(templateInfo.getId());
                 templateDetailInfo.setCreateTime(nowTime);
                 templateDetailInfo.setUpdateTime(nowTime);
+                templateDetailInfo.setEnableTimer(CommonEnum.DISABLE.getCode());
             }
             templateDetailInfoMapper.batchSave(templateDetailInfoList);
         }
@@ -106,6 +116,7 @@ public class TemplateServiceImpl implements TemplateService {
         // 保存新的模板明细信息
         for (TemplateDetailInfo templateDetailInfo : templateDetailInfoList) {
             templateDetailInfo.setTemplateId(templateInfo.getId());
+            templateDetailInfo.setEnableTimer(CommonEnum.DISABLE.getCode());
             templateDetailInfo.setCreateTime(nowTime);
             templateDetailInfo.setUpdateTime(nowTime);
         }
