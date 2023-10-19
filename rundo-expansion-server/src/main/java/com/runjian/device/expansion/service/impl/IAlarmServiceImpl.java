@@ -49,20 +49,28 @@ public class IAlarmServiceImpl implements IAlarmService {
         List<GetCatalogueResourceRsp> channelList = catalogueResourceRsp.getData();
         if(ObjectUtils.isEmpty(channelList)){
             //数据不存在直接返回
+            log.warn("catalogueResourceRsp无数据");
             return new PageResp<>();
         }
         List<Long> channelIds = channelList.stream().map(getCatalogueResourceRsp -> Long.parseLong(getCatalogueResourceRsp.getResourceValue())).collect(Collectors.toList());
 
         Page<GetAlarmSchemeChannelRsp> channelExpansionPage = deviceChannelExpansionMapper.listAlarmPage(new Page<>(page, num),channelIds, channelName, deviceName, onlineState);
-
+        if(ObjectUtils.isEmpty(channelExpansionPage.getRecords())){
+            log.warn("channelExpansionPage无数据");
+            return new PageResp<>();
+        }
         CommonResponse<List<GetAlarmChannelRsp>> response = alarmManageApi.getAlarmChannel(new HashSet<>(channelIds));
         catalogueResourceRsp.ifErrorThrowException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
         if (ObjectUtils.isEmpty(response.getData())){
+            log.warn("response无数据");
             return new PageResp<>();
         }
         Map<Long, GetAlarmChannelRsp> getAlarmSchemeChannelRspMap = response.getData().stream().collect(Collectors.toMap(GetAlarmChannelRsp::getChannelId, getAlarmChannelRsp -> getAlarmChannelRsp));
         for (GetAlarmSchemeChannelRsp getAlarmSchemeChannelRsp : channelExpansionPage.getRecords()){
             GetAlarmChannelRsp getAlarmChannelRsp = getAlarmSchemeChannelRspMap.get(getAlarmSchemeChannelRsp.getChannelId());
+            if (Objects.isNull(getAlarmChannelRsp)){
+                continue;
+            }
             getAlarmSchemeChannelRsp.setSchemeId(getAlarmChannelRsp.getSchemeId());
             getAlarmSchemeChannelRsp.setSchemeName(getAlarmChannelRsp.getSchemeName());
         }
