@@ -21,12 +21,12 @@ public interface AlarmMsgInfoMapper {
 
     @Select(" <script> " +
             " SELECT * FROM " + ALARM_MSG_TABLE_NAME +
-            " WHERE 1=1 " +
+            " WHERE channel_id = #{channelId} " +
             " <if test=\"alarmCode != null\" > AND alarm_code = #{alarmCode} </if>" +
             " <if test=\"alarmStartTime != null\" > AND alarm_time &gt;= #{alarmStartTime} </if>" +
             " <if test=\"alarmEndTime != null\" > AND alarm_time &lt;= #{alarmEndTime} </if>" +
             " </script> ")
-    List<GetAlarmMsgRsp> selectByAlarmCodeAndAlarmTime(String alarmCode, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime);
+    List<GetAlarmMsgRsp> selectByAlarmCodeAndAlarmTime(Long channelId, String alarmCode, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime);
 
     @Insert(" INSERT INTO " + ALARM_MSG_TABLE_NAME + " (channel_id, alarm_code, alarm_level, alarm_type, alarm_start_time, alarm_end_time, alarm_desc, alarm_state, alarm_interval, " +
             " video_url, video_length, video_audio_state, video_stream_id, " +

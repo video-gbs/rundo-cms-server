@@ -22,10 +22,10 @@ public class AlarmMsgNorthServiceImpl implements AlarmMsgNorthService {
     private final AlarmMsgInfoMapper alarmMsgInfoMapper;
 
     @Override
-    public PageInfo<GetAlarmMsgRsp> getAlarmMsgByPage(int page, int num, String alarmCode, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime) {
+    public PageInfo<GetAlarmMsgRsp> getAlarmMsgByPage(int page, int num, Long channelId, String alarmCode, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime) {
         PageHelper.startPage(page, num);
 
-        return new PageInfo<>(alarmMsgInfoMapper.selectByAlarmCodeAndAlarmTime(alarmCode, alarmStartTime, alarmEndTime));
+        return new PageInfo<>(alarmMsgInfoMapper.selectByAlarmCodeAndAlarmTime(channelId, alarmCode, alarmStartTime, alarmEndTime));
     }
 
     @Override

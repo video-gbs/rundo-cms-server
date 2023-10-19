@@ -51,7 +51,7 @@ public class AlarmManageApiFallbackFactory implements FallbackFactory<AlarmManag
         final CommonResponse<?> finalFailure = failure;
         return new AlarmManageApi() {
             @Override
-            public CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> getAlarmMsgPage(int page, int num, String alarmCode, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime) {
+            public CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> getAlarmMsgPage(int page, int num, Long channelId, String alarmCode, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"告警服务","告警消息获取失败", cause.getMessage(), cause);
                 return (CommonResponse<PageListResp<GetAlarmMsgChannelRsp>>)finalFailure;
             }

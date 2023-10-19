@@ -96,8 +96,8 @@ public class IAlarmServiceImpl implements IAlarmService {
     }
 
     @Override
-    public PageListResp<GetAlarmMsgChannelRsp> getAlarmMsgChannel(int page, int num, String eventCode, LocalDateTime startTime, LocalDateTime endTime) {
-        CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> response = alarmManageApi.getAlarmMsgPage(page, num, eventCode, startTime, endTime);
+    public PageListResp<GetAlarmMsgChannelRsp> getAlarmMsgChannel(int page, int num, Long channelId, String eventCode, LocalDateTime startTime, LocalDateTime endTime) {
+        CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> response = alarmManageApi.getAlarmMsgPage(page, num, channelId, eventCode, startTime, endTime);
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         if (Objects.isNull(response.getData())){
             return new PageListResp<>();
