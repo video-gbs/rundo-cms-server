@@ -49,7 +49,7 @@ public class PutAlarmSchemeReq {
     /**
      * 告警预案时间数组
      */
-    @NotNull(message = "告警预案时间数组不能为空")
+    @NotNull(message = "告警预案事件数组不能为空")
     @Size(min = 1, max = 999999999, message = "通道id数组不正确")
     private List<PostOrPutAlarmSchemeEventReq> alarmSchemeEventReqList;
 

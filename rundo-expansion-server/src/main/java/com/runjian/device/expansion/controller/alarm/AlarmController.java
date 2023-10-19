@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/alarm")
+@RequestMapping("/expansion/alarm")
 public class AlarmController {
 
     private final IAlarmService alarmService;
