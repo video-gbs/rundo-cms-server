@@ -39,7 +39,7 @@ public class AlarmController {
      * 获取通道列表
      * @return
      */
-    @GetMapping("/videoAreaList")
+    @GetMapping("/channel/tree")
     public CommonResponse<Object> videoAreaList(){
         return deviceChannelExpansionService.videoAreaList(resourceKey);
     }
