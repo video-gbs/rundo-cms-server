@@ -43,20 +43,16 @@ public class IAlarmServiceImpl implements IAlarmService {
 
     @Override
     public PageResp<GetAlarmSchemeChannelRsp> getAlarmSchemeChannel(int page, int num, Long videoAreaId, Integer includeEquipment, String channelName, String deviceName, Integer onlineState) {
-        //获取安防通道资源
         CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId, CommonEnum.getBoolean(includeEquipment));
         catalogueResourceRsp.ifErrorThrowException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
         List<GetCatalogueResourceRsp> channelList = catalogueResourceRsp.getData();
         if(ObjectUtils.isEmpty(channelList)){
-            //数据不存在直接返回
-            log.warn("catalogueResourceRsp无数据");
             return new PageResp<>();
         }
         List<Long> channelIds = channelList.stream().map(getCatalogueResourceRsp -> Long.parseLong(getCatalogueResourceRsp.getResourceValue())).collect(Collectors.toList());
 
         Page<GetAlarmSchemeChannelRsp> channelExpansionPage = deviceChannelExpansionMapper.listAlarmPage(new Page<>(page, num),channelIds, channelName, deviceName, onlineState);
         if(ObjectUtils.isEmpty(channelExpansionPage.getRecords())){
-            log.warn("channelExpansionPage无数据");
             return new PageResp<>();
         }
         CommonResponse<List<GetAlarmChannelRsp>> response = alarmManageApi.getAlarmChannel(new HashSet<>(channelIds));
