@@ -21,7 +21,8 @@ public interface AlarmMsgInfoMapper {
 
     @Select(" <script> " +
             " SELECT * FROM " + ALARM_MSG_TABLE_NAME +
-            " WHERE channel_id = #{channelId} " +
+            " WHERE 1=1 " +
+            " <if test=\"channelId != null\" > AND channel_id = #{channelId} </if>" +
             " <if test=\"alarmCode != null\" > AND alarm_code = #{alarmCode} </if>" +
             " <if test=\"alarmStartTime != null\" > AND alarm_time &gt;= #{alarmStartTime} </if>" +
             " <if test=\"alarmEndTime != null\" > AND alarm_time &lt;= #{alarmEndTime} </if>" +

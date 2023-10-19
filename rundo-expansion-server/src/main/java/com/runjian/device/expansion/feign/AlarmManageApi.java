@@ -32,8 +32,8 @@ public interface AlarmManageApi {
      */
     @GetMapping("/msg/north/page")
     CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> getAlarmMsgPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
-                                                                        @RequestParam Long channelId,
-                                                                        @RequestParam(defaultValue = "1", required = false) String alarmCode,
+                                                                        @RequestParam(required = false) Long channelId,
+                                                                        @RequestParam(required = false) String alarmCode,
                                                                         @RequestParam(required = false) LocalDateTime alarmStartTime,
                                                                         @RequestParam(required = false) LocalDateTime alarmEndTime);
 
