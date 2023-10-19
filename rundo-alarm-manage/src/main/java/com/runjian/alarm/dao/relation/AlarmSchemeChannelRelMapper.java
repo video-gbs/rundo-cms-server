@@ -27,7 +27,7 @@ public interface AlarmSchemeChannelRelMapper {
 
     @Select(" <script> " +
             " SELECT asct.channel_id, ast.scheme_name, ast.id AS schemeId FROM " + AlarmSchemeInfoMapper.ALARM_SCHEME_TABLE_NAME + " ast " +
-            " LEFT JOIN " + ALARM_SCHEME_CHANNEL_TABLE_NAME + " asct ON ast.id = asct.template_id " +
+            " LEFT JOIN " + ALARM_SCHEME_CHANNEL_TABLE_NAME + " asct ON ast.id = asct.scheme_id " +
             " WHERE asct.channel_id IN " +
             " <foreach collection='channelIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
