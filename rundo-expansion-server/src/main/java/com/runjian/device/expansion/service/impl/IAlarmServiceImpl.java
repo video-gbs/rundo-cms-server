@@ -61,19 +61,18 @@ public class IAlarmServiceImpl implements IAlarmService {
         }
         CommonResponse<List<GetAlarmChannelRsp>> response = alarmManageApi.getAlarmChannel(new HashSet<>(channelIds));
         catalogueResourceRsp.ifErrorThrowException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
-        if (ObjectUtils.isEmpty(response.getData())){
-            log.warn("response无数据");
-            return new PageResp<>();
-        }
-        Map<Long, GetAlarmChannelRsp> getAlarmSchemeChannelRspMap = response.getData().stream().collect(Collectors.toMap(GetAlarmChannelRsp::getChannelId, getAlarmChannelRsp -> getAlarmChannelRsp));
-        for (GetAlarmSchemeChannelRsp getAlarmSchemeChannelRsp : channelExpansionPage.getRecords()){
-            GetAlarmChannelRsp getAlarmChannelRsp = getAlarmSchemeChannelRspMap.get(getAlarmSchemeChannelRsp.getChannelId());
-            if (Objects.isNull(getAlarmChannelRsp)){
-                continue;
+        if (!ObjectUtils.isEmpty(response.getData())){
+            Map<Long, GetAlarmChannelRsp> getAlarmSchemeChannelRspMap = response.getData().stream().collect(Collectors.toMap(GetAlarmChannelRsp::getChannelId, getAlarmChannelRsp -> getAlarmChannelRsp));
+            for (GetAlarmSchemeChannelRsp getAlarmSchemeChannelRsp : channelExpansionPage.getRecords()){
+                GetAlarmChannelRsp getAlarmChannelRsp = getAlarmSchemeChannelRspMap.get(getAlarmSchemeChannelRsp.getChannelId());
+                if (Objects.isNull(getAlarmChannelRsp)){
+                    continue;
+                }
+                getAlarmSchemeChannelRsp.setSchemeId(getAlarmChannelRsp.getSchemeId());
+                getAlarmSchemeChannelRsp.setSchemeName(getAlarmChannelRsp.getSchemeName());
             }
-            getAlarmSchemeChannelRsp.setSchemeId(getAlarmChannelRsp.getSchemeId());
-            getAlarmSchemeChannelRsp.setSchemeName(getAlarmChannelRsp.getSchemeName());
         }
+
         PageResp<GetAlarmSchemeChannelRsp> getAlarmSchemeChannelRspPageResp = new PageResp<>();
         BeanUtils.copyProperties(channelExpansionPage, getAlarmSchemeChannelRspPageResp);
         return getAlarmSchemeChannelRspPageResp;
