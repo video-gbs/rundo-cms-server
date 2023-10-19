@@ -9,6 +9,7 @@ import com.runjian.device.expansion.entity.DeviceExpansion;
 import com.runjian.device.expansion.vo.request.DeviceChannelExpansionListReq;
 import com.runjian.device.expansion.vo.request.DeviceExpansionListReq;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
+import com.runjian.device.expansion.vo.response.GetAlarmDeviceChannelRsp;
 import com.runjian.device.expansion.vo.response.GetAlarmSchemeChannelRsp;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,6 +18,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 通道信息表
@@ -41,4 +43,11 @@ public interface DeviceChannelExpansionMapper extends BaseMapper<DeviceChannelEx
      * @return
      */
     Page<GetAlarmSchemeChannelRsp> listAlarmPage(Page<DeviceChannelExpansion> page, List<Long> idList, String channelName, String deviceName, Integer onlineState);
+
+    /**
+     * 告警信息查询
+     * @param channelIdList 通道id
+     * @return
+     */
+    List<GetAlarmDeviceChannelRsp> listAlarmList(Set<Long> channelIdList);
 }

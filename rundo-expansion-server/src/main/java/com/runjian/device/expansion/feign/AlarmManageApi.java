@@ -2,14 +2,11 @@ package com.runjian.device.expansion.feign;
 
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.feign.fallback.AlarmManageApiFallbackFactory;
-import com.runjian.device.expansion.feign.fallback.StreamManageApiFallbackFactory;
 import com.runjian.device.expansion.vo.feign.response.GetAlarmChannelRsp;
 import com.runjian.device.expansion.vo.feign.response.PageListResp;
 import com.runjian.device.expansion.vo.response.GetAlarmDeployChannelRsp;
 import com.runjian.device.expansion.vo.response.GetAlarmMsgChannelRsp;
-import com.runjian.device.expansion.vo.response.GetAlarmSchemeChannelRsp;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
