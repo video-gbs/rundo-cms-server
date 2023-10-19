@@ -43,9 +43,9 @@ public class PostAlarmSchemeReq {
      */
     @NotNull(message = "告警预案时间数组不能为空")
     @Size(min = 1, max = 999999999, message = "通道id数组不正确")
-    private List<PostOrPutAlarmSchemeEventReq> alarmSchemeEventReqList;
+    private List<PostAlarmSchemeEventReq> alarmSchemeEventReqList;
 
     public List<AlarmSchemeEventRel> getAlarmSchemeEventRelList() {
-        return alarmSchemeEventReqList.stream().map(PostOrPutAlarmSchemeEventReq::toAlarmSchemeEventRel).collect(Collectors.toList());
+        return alarmSchemeEventReqList.stream().map(PostAlarmSchemeEventReq::toAlarmSchemeEventRel).collect(Collectors.toList());
     }
 }

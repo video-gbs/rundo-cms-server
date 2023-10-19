@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
  * @date 2023/9/19 11:04
  */
 @Data
-public class PostOrPutAlarmSchemeEventReq {
+public class PutAlarmSchemeEventReq {
 
     /**
      * 预案id
