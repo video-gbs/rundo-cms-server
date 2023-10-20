@@ -23,11 +23,6 @@ public class GetAlarmMsgRsp {
     private Long channelId;
 
     /**
-     * 告警编码
-     */
-    private String alarmCode;
-
-    /**
      * 告警等级
      */
     private String alarmLevel;
