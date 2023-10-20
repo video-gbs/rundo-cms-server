@@ -99,15 +99,19 @@ public class IAlarmServiceImpl implements IAlarmService {
     public PageListResp<GetAlarmMsgChannelRsp> getAlarmMsgChannel(int page, int num, Long channelId, String eventCode, LocalDateTime startTime, LocalDateTime endTime) {
         CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> response = alarmManageApi.getAlarmMsgPage(page, num, channelId, eventCode, startTime, endTime);
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+        log.warn("response:{}", response.getData());
         if (Objects.isNull(response.getData())){
+
             return new PageListResp<>();
         }
         PageListResp<GetAlarmMsgChannelRsp> dataPage = response.getData();
         List<GetAlarmMsgChannelRsp> dataList = dataPage.getList();
+        log.warn("dataList:{}", dataList);
         if (Objects.isNull(dataList) || dataList.isEmpty()){
             return new PageListResp<>();
         }
         Map<Long, GetAlarmMsgChannelRsp> dataMap = dataList.stream().collect(Collectors.toMap(GetAlarmMsgChannelRsp::getChannelId, getAlarmMsgChannelRsp -> getAlarmMsgChannelRsp));
+        log.warn("dataMap:{}", dataMap);
         List<GetAlarmDeviceChannelRsp> deviceChannelRspList = deviceChannelExpansionMapper.listAlarmList(dataMap.keySet());
         for (GetAlarmDeviceChannelRsp getAlarmDeviceChannelRsp : deviceChannelRspList){
             GetAlarmMsgChannelRsp getAlarmMsgChannelRsp = dataMap.get(getAlarmDeviceChannelRsp.getId());
