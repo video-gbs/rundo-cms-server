@@ -10,6 +10,7 @@ import com.runjian.alarm.vo.response.GetAlarmChannelDeployRsp;
 import com.runjian.alarm.vo.response.GetAlarmChannelRsp;
 import com.runjian.alarm.vo.response.GetAlarmSchemePageRsp;
 import com.runjian.alarm.vo.response.GetAlarmSchemeRsp;
+import com.runjian.common.aspect.annotation.BlankStringValid;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,7 @@ public class AlarmSchemeController {
      * @return
      */
     @GetMapping("/page")
+    @BlankStringValid
     public CommonResponse<PageInfo<GetAlarmSchemePageRsp>> getAlarmSchemePage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "1") int num,
                                                                               String schemeName, Integer disabled,
                                                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime createStartTime,
