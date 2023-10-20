@@ -35,7 +35,7 @@ public interface AlarmSchemeChannelRelMapper {
 
     @Insert(" <script> " +
             " INSERT INTO " + ALARM_SCHEME_CHANNEL_TABLE_NAME + " (scheme_id, channel_id, create_time, update_time) values " +
-            " <foreach collection='channelIds' item='item' separator=','>(#{schemeId}, #{item}, #{now_time}, #{now_time})</foreach> " +
+            " <foreach collection='channelIds' item='item' separator=','>(#{schemeId}, #{item}, #{nowTime}, #{nowTime})</foreach> " +
             " </script>")
     void batchSaveBySchemeId(Long schemeId, Set<Long> channelIds, LocalDateTime nowTime);
 
