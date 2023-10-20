@@ -17,13 +17,6 @@ import javax.validation.constraints.Size;
 public class PutAlarmSchemeEventReq {
 
     /**
-     * 预案id
-     */
-    @NotNull(message = "预案id不能为空")
-    @Range(min = 1, max = 999999999, message = "预案id不正确")
-    private Long schemeId;
-
-    /**
      * 事件编码
      */
     @NotBlank(message = "事件编码不能为空")
@@ -72,9 +65,4 @@ public class PutAlarmSchemeEventReq {
     @Range(min = 0, max = 1, message = "是否开启图片截图不正确")
     private Integer enablePhoto;
 
-    public AlarmSchemeEventRel toAlarmSchemeEventRel(){
-        AlarmSchemeEventRel alarmSchemeEventRel = new AlarmSchemeEventRel();
-        BeanUtils.copyProperties(this, alarmSchemeEventRel);
-        return alarmSchemeEventRel;
-    }
 }

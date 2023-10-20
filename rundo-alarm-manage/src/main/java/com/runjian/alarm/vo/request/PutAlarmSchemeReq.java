@@ -3,6 +3,7 @@ package com.runjian.alarm.vo.request;
 import com.runjian.alarm.entity.relation.AlarmSchemeEventRel;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.beans.BeanUtils;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -54,6 +55,11 @@ public class PutAlarmSchemeReq {
     private List<PutAlarmSchemeEventReq> alarmSchemeEventReqList;
 
     public List<AlarmSchemeEventRel> getAlarmSchemeEventRelList() {
-        return alarmSchemeEventReqList.stream().map(PutAlarmSchemeEventReq::toAlarmSchemeEventRel).collect(Collectors.toList());
+        return alarmSchemeEventReqList.stream().map(putAlarmSchemeEventReq -> {
+            AlarmSchemeEventRel alarmSchemeEventRel = new AlarmSchemeEventRel();
+            BeanUtils.copyProperties(this, alarmSchemeEventRel);
+            alarmSchemeEventRel.setSchemeId(this.id);
+            return alarmSchemeEventRel;
+        }).collect(Collectors.toList());
     }
 }
