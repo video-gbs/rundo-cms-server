@@ -30,8 +30,9 @@ public interface AlarmSchemeEventRelMapper {
             " </script> ")
     List<GetAlarmSchemeEventNameRsp> selectEventNameBySchemeIds(Set<Long> schemeIds);
 
-    @Select(" SELECT * FROM " + ALARM_SCHEME_EVENT_TABLE_NAME +
-            " WHERE scheme_id = #{schemeId}")
+    @Select(" SELECT ace.*,ae.event_name FROM " + ALARM_SCHEME_EVENT_TABLE_NAME + " ace " +
+            " LEFT JOIN " + AlarmEventMapper.ALARM_EVENT_TABLE_NAME + " ae  ON ae.event_code = ace.event_code " +
+            " WHERE ace.scheme_id = #{schemeId}")
     List<GetAlarmSchemeEventRsp> selectRspBySchemeId(Long schemeId);
 
     @Insert(" <script> " +
