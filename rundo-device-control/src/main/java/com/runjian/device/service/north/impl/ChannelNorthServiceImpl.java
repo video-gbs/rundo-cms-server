@@ -423,7 +423,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             try {
                 CommonResponse<?> response = parsingEngineApi.customEvent(deviceControlReq);
                 if (response.isError()) {
-                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "设备布防与撤防失败", String.format("请求体%s", deviceControlReq), String.format("%s:%s", response.getMsg(), response.getData().toString()));
+                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "设备布防与撤防失败", String.format("请求体%s", deviceControlReq), String.format("%s:%s", response.getMsg(), response.getData()));
                     failureChannelSet.addAll(channelIds);
                 }
                 if (Objects.nonNull(response.getData())){
