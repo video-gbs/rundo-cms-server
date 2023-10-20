@@ -24,7 +24,7 @@ public interface AlarmSchemeEventRelMapper {
 
     @Select(" <script> " +
             " SELECT ace.scheme_id, ae.event_name FROM " + ALARM_SCHEME_EVENT_TABLE_NAME + " ace " +
-            " LEFT JOIN " + AlarmEventMapper.ALARM_EVENT_TABLE_NAME + " ae  ON ae.evnet_code = ace.event_code " +
+            " LEFT JOIN " + AlarmEventMapper.ALARM_EVENT_TABLE_NAME + " ae  ON ae.event_code = ace.event_code " +
             " WHERE ace.scheme_id IN " +
             " <foreach collection='schemeIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
