@@ -166,9 +166,15 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
                 updateSchemeChannelRelList.add(alarmSchemeChannelRel);
             }
         }
-        alarmSchemeChannelRelMapper.batchSave(newSchemeChannelRelList);
-        alarmSchemeChannelRelMapper.batchUpdate(updateSchemeChannelRelList);
-        alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
+        if (!newSchemeChannelRelList.isEmpty()){
+            alarmSchemeChannelRelMapper.batchSave(newSchemeChannelRelList);
+        }
+        if (!updateSchemeChannelRelList.isEmpty()){
+            alarmSchemeChannelRelMapper.batchUpdate(updateSchemeChannelRelList);
+        }
+        if (!alarmSchemeChannelRelMap.values().isEmpty()){
+            alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
+        }
 
         // 更新事件信息
         Set<String> existEventCodes = alarmSchemeEventRelMapper.selectEventCodeBySchemeId(id);
@@ -183,9 +189,15 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
                 updateEventList.add(alarmSchemeEventRel);
             }
         }
-        alarmSchemeEventRelMapper.batchDeleteBySchemeIdAndEventCodes(id, deleteEventCodeList);
-        alarmSchemeEventRelMapper.batchUpdate(updateEventList);
-        alarmSchemeEventRelMapper.batchSave(new ArrayList<>(newEventMap.values()));
+        if (!deleteEventCodeList.isEmpty()){
+            alarmSchemeEventRelMapper.batchDeleteBySchemeIdAndEventCodes(id, deleteEventCodeList);
+        }
+        if (!updateEventList.isEmpty()){
+            alarmSchemeEventRelMapper.batchUpdate(updateEventList);
+        }
+        if (!newEventMap.values().isEmpty()){
+            alarmSchemeEventRelMapper.batchSave(new ArrayList<>(newEventMap.values()));
+        }
 
         if (channelIds.isEmpty()) {
             return;
