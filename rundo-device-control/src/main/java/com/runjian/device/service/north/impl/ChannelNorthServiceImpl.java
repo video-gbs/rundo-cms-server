@@ -396,8 +396,10 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     @Override
     public Set<Long> channelDeployAndWithdrawDefenses(List<Long> channelIdList, Boolean isDeploy) {
-        Map<Long, List<Long>> deviceChannelIdMap = channelMapper.selectByIds(channelIdList).stream().collect(Collectors.groupingBy(ChannelInfo::getDeviceId, Collectors.mapping(ChannelInfo::getId, Collectors.toList())));
-        Map<Long, List<Long>> gatewayDeviceIdMap = deviceMapper.selectByIds(deviceChannelIdMap.keySet()).stream().collect(Collectors.groupingBy(DeviceInfo::getGatewayId, Collectors.mapping(DeviceInfo::getId, Collectors.toList())));
+        Map<Long, List<Long>> deviceChannelIdMap = channelMapper.selectByIds(channelIdList)
+                .stream().collect(Collectors.groupingBy(ChannelInfo::getDeviceId, Collectors.mapping(ChannelInfo::getId, Collectors.toList())));
+        Map<Long, List<Long>> gatewayDeviceIdMap = deviceMapper.selectByIds(deviceChannelIdMap.keySet())
+                .stream().collect(Collectors.groupingBy(DeviceInfo::getGatewayId, Collectors.mapping(DeviceInfo::getId, Collectors.toList())));
         MsgType msgType =  isDeploy ? MsgType.CHANNEL_DEFENSES_DEPLOY : MsgType.CHANNEL_DEFENSES_WITHDRAW;
         Set<Long> failureChannelSet = new HashSet<>(channelIdList.size());
         for (Map.Entry<Long, List<Long>> entry : gatewayDeviceIdMap.entrySet()){

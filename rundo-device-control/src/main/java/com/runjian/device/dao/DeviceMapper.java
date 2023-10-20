@@ -85,11 +85,11 @@ public interface DeviceMapper {
             " </script> ")
     void batchUpdateOnlineState(List<DeviceInfo> deviceInfoList);
 
-    @Select(value = {" <script> " +
+    @Select(" <script> " +
             " SELECT * FROM " + DEVICE_TABLE_NAME +
-            " WHERE id IN" +
+            " WHERE id IN " +
             " <foreach collection='deviceIds'  item='item'  open='(' separator=',' close=')' > #{item} </foreach> " +
-            " </script> "})
+            " </script> ")
     List<DeviceInfo> selectByIds(Set<Long> deviceIds);
 
     @Insert({" <script> " +
