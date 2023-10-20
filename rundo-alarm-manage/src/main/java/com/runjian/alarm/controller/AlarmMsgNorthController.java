@@ -47,7 +47,7 @@ public class AlarmMsgNorthController {
      * @return
      */
     @DeleteMapping("/delete")
-    public CommonResponse<?> deleteAlarmMsg(@RequestParam("ids") List<Long> idList){
+    public CommonResponse<?> deleteAlarmMsg(@RequestParam List<Long> idList){
         alarmMsgNorthService.deleteAlarmMsg(idList);
         return CommonResponse.success();
     }
