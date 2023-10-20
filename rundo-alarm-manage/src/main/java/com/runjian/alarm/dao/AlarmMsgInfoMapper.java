@@ -94,7 +94,7 @@ public interface AlarmMsgInfoMapper {
     @Delete(" <script> " +
             " DELETE FROM " + ALARM_MSG_TABLE_NAME +
             " WHERE id IN " +
-            " <foreach collection='ids' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " <foreach collection='idList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
     void deleteByIdList(List<Long> idList);
 }
