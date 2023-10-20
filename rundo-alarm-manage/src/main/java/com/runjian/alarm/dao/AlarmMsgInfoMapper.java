@@ -26,6 +26,7 @@ public interface AlarmMsgInfoMapper {
             " <if test=\"alarmCode != null\" > AND alarm_code = #{alarmCode} </if>" +
             " <if test=\"alarmStartTime != null\" > AND alarm_time &gt;= #{alarmStartTime} </if>" +
             " <if test=\"alarmEndTime != null\" > AND alarm_time &lt;= #{alarmEndTime} </if>" +
+            " ORDER BY alarm_start_time DESC" +
             " </script> ")
     List<GetAlarmMsgRsp> selectByAlarmCodeAndAlarmTime(Long channelId, String alarmCode, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime);
 

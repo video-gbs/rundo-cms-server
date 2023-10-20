@@ -18,6 +18,7 @@ import com.runjian.device.expansion.vo.feign.response.PageListResp;
 import com.runjian.device.expansion.vo.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.PropertySource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -68,7 +69,6 @@ public class IAlarmServiceImpl implements IAlarmService {
                 getAlarmSchemeChannelRsp.setSchemeName(getAlarmChannelRsp.getSchemeName());
             }
         }
-
         PageResp<GetAlarmSchemeChannelRsp> getAlarmSchemeChannelRspPageResp = new PageResp<>();
         BeanUtils.copyProperties(channelExpansionPage, getAlarmSchemeChannelRspPageResp);
         return getAlarmSchemeChannelRspPageResp;
@@ -115,6 +115,7 @@ public class IAlarmServiceImpl implements IAlarmService {
             getAlarmMsgChannelRsp.setDeviceName(getAlarmDeviceChannelRsp.getDeviceName());
         }
         dataPage.setList(new ArrayList<>(dataMap.values()));
+        dataPage.getList().sort(Comparator.comparing(GetAlarmMsgChannelRsp::getAlarmTime, Comparator.reverseOrder()));
         return dataPage;
     }
 }
