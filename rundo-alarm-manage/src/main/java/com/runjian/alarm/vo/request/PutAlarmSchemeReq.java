@@ -57,7 +57,7 @@ public class PutAlarmSchemeReq {
     public List<AlarmSchemeEventRel> getAlarmSchemeEventRelList() {
         return alarmSchemeEventReqList.stream().map(putAlarmSchemeEventReq -> {
             AlarmSchemeEventRel alarmSchemeEventRel = new AlarmSchemeEventRel();
-            BeanUtils.copyProperties(this, alarmSchemeEventRel);
+            BeanUtils.copyProperties(putAlarmSchemeEventReq, alarmSchemeEventRel);
             alarmSchemeEventRel.setSchemeId(this.id);
             return alarmSchemeEventRel;
         }).collect(Collectors.toList());
