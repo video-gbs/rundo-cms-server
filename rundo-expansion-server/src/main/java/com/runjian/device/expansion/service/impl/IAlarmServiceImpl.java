@@ -99,27 +99,23 @@ public class IAlarmServiceImpl implements IAlarmService {
     public PageListResp<GetAlarmMsgChannelRsp> getAlarmMsgChannel(int page, int num, Long channelId, String eventCode, LocalDateTime startTime, LocalDateTime endTime) {
         CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> response = alarmManageApi.getAlarmMsgPage(page, num, channelId, eventCode, startTime, endTime);
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
-        log.warn("response:{}", response.getData());
         if (Objects.isNull(response.getData())){
 
             return new PageListResp<>();
         }
         PageListResp<GetAlarmMsgChannelRsp> dataPage = response.getData();
         List<GetAlarmMsgChannelRsp> dataList = dataPage.getList();
-        log.warn("dataList:{}", dataList);
         if (Objects.isNull(dataList) || dataList.isEmpty()){
             return new PageListResp<>();
         }
-        Map<Long, GetAlarmMsgChannelRsp> dataMap = dataList.stream().collect(Collectors.toMap(GetAlarmMsgChannelRsp::getChannelId, getAlarmMsgChannelRsp -> getAlarmMsgChannelRsp));
-        log.warn("dataMap:{}", dataMap);
-        List<GetAlarmDeviceChannelRsp> deviceChannelRspList = deviceChannelExpansionMapper.listAlarmList(dataMap.keySet());
-        for (GetAlarmDeviceChannelRsp getAlarmDeviceChannelRsp : deviceChannelRspList){
-            GetAlarmMsgChannelRsp getAlarmMsgChannelRsp = dataMap.get(getAlarmDeviceChannelRsp.getId());
+        Set<Long> channelIds = dataList.stream().map(GetAlarmMsgChannelRsp::getChannelId).collect(Collectors.toSet());
+        Map<Long, GetAlarmDeviceChannelRsp> deviceChannelRspMap = deviceChannelExpansionMapper.listAlarmList(channelIds).stream().collect(Collectors.toMap(GetAlarmDeviceChannelRsp::getId, getAlarmDeviceChannelRsp -> getAlarmDeviceChannelRsp));
+        for (GetAlarmMsgChannelRsp getAlarmMsgChannelRsp : dataList){
+            GetAlarmDeviceChannelRsp getAlarmDeviceChannelRsp = deviceChannelRspMap.get(getAlarmMsgChannelRsp.getChannelId());
             getAlarmMsgChannelRsp.setChannelName(getAlarmDeviceChannelRsp.getChannelName());
             getAlarmMsgChannelRsp.setDeviceName(getAlarmDeviceChannelRsp.getDeviceName());
         }
-        dataPage.setList(new ArrayList<>(dataMap.values()));
-        dataPage.getList().sort(Comparator.comparing(GetAlarmMsgChannelRsp::getAlarmTime, Comparator.reverseOrder()));
+        dataPage.setList(dataList);
         return dataPage;
     }
 }
