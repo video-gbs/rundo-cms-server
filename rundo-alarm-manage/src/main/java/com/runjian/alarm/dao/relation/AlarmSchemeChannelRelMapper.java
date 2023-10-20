@@ -21,7 +21,7 @@ public interface AlarmSchemeChannelRelMapper {
 
     String ALARM_SCHEME_CHANNEL_TABLE_NAME = "rundo_alarm_scheme_channel";
 
-    @Select(" SELECT id FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+    @Select(" SELECT channel_id FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
             " WHERE scheme_id = #{schemeId} ")
     List<Long> selectChannelIdBySchemeId(Long schemeId);
 

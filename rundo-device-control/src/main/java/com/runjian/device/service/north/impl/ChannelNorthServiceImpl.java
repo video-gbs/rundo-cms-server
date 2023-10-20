@@ -397,16 +397,16 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
     @Override
     public Set<Long> channelDeployAndWithdrawDefenses(List<Long> channelIdList, Boolean isDeploy) {
         List<ChannelInfo> channelInfoList = channelMapper.selectByIds(channelIdList);
-        log.warn("云台控制北向服务，通道ID集合[{}]", channelIdList);
-        if (channelIdList.isEmpty()){
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("未找到通道ID集合[%s]", channelIdList));
+        log.warn("云台控制北向服务，通道集合[{}]", channelInfoList);
+        if (channelInfoList.isEmpty()){
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("未找到通道集合[%s]", channelIdList));
         }
         Map<Long, List<Long>> deviceChannelIdMap = channelInfoList
                 .stream().collect(Collectors.groupingBy(ChannelInfo::getDeviceId, Collectors.mapping(ChannelInfo::getId, Collectors.toList())));
         List<DeviceInfo> deviceInfoList = deviceMapper.selectByIds(deviceChannelIdMap.keySet());
-        log.warn("云台控制北向服务，设备ID集合[{}]", deviceInfoList);
+        log.warn("云台控制北向服务，设备集合[{}]", deviceInfoList);
         if (deviceInfoList.isEmpty()){
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("未找到设备ID集合[%s]", deviceInfoList));
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("未找到设备集合[%s]", deviceInfoList));
         }
         Map<Long, List<Long>> gatewayDeviceIdMap = deviceInfoList
                 .stream().collect(Collectors.groupingBy(DeviceInfo::getGatewayId, Collectors.mapping(DeviceInfo::getId, Collectors.toList())));
