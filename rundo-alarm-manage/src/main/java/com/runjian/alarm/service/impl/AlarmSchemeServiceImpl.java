@@ -178,9 +178,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
 
         // 更新事件信息
         Set<String> existEventCodes = alarmSchemeEventRelMapper.selectEventCodeBySchemeId(id);
-        log.warn("alarmSchemeEventRelList:{}", alarmSchemeEventRelList);
         Map<String, AlarmSchemeEventRel> newEventMap = alarmSchemeEventRelList.stream().collect(Collectors.toMap(AlarmSchemeEventRel::getEventCode, alarmSchemeEventRel -> alarmSchemeEventRel));
-        log.warn("1newEventMap:{}", newEventMap);
         List<String> deleteEventCodeList = new ArrayList<>(existEventCodes.size());
         List<AlarmSchemeEventRel> updateEventList = new ArrayList<>(newEventMap.size());
         for (String eventCode : existEventCodes) {
@@ -198,7 +196,6 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             alarmSchemeEventRelMapper.batchUpdate(updateEventList);
         }
         if (!newEventMap.values().isEmpty()){
-            log.warn("2newEventMap:{}", newEventMap);
             alarmSchemeEventRelMapper.batchSave(new ArrayList<>(newEventMap.values()));
         }
 

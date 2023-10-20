@@ -89,6 +89,7 @@ public class AlarmController {
      * @return
      */
     @GetMapping("/msg/channel")
+    @BlankStringValid
     public CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> getAlarmMsgChannel(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Long channelId, String eventCode, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime startTime, @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime endTime){
         return CommonResponse.success(alarmService.getAlarmMsgChannel(page, num, channelId, eventCode, startTime, endTime));
     }
