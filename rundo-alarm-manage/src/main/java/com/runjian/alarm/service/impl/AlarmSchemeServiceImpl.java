@@ -222,24 +222,6 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         List<Long> schemeIds = alarmSchemeInfoList.stream().map(AlarmSchemeInfo::getId).collect(Collectors.toList());
         alarmSchemeEventRelMapper.deleteBySchemeIds(schemeIds);
         alarmSchemeInfoMapper.deleteByIds(schemeIds);
-
-//        Optional<AlarmSchemeInfo> alarmSchemeInfoOp = alarmSchemeInfoMapper.selectLockById(id);
-//        if (alarmSchemeInfoOp.isEmpty()) {
-//            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "告警预案不存在");
-//        }
-//        AlarmSchemeInfo alarmSchemeInfo = alarmSchemeInfoOp.get();
-//
-//        if (!CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())) {
-//            List<Long> channelIds = alarmSchemeChannelRelMapper.selectChannelIdBySchemeId(id);
-//            if (channelIds.isEmpty()) {
-//                return;
-//            }
-//            defense(channelIds, true);
-//            alarmSchemeChannelRelMapper.deleteBySchemeId(id);
-//        }
-//
-//        alarmSchemeEventRelMapper.deleteBySchemeId(id);
-//        alarmSchemeInfoMapper.deleteById(id);
     }
 
     @Override

@@ -64,16 +64,12 @@ public interface AlarmSchemeChannelRelMapper {
 
     @Update(" <script> " +
             " UPDATE " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
-            " SET update_time = #{item.updateTime}  " +
-            " , deploy_state = #{item.deployState} " +
+            " SET update_time = #{nowTime}  " +
+            " , deploy_state = #{deployState} " +
             " WHERE id IN " +
             " <foreach collection='channelIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
     void batchUpdateDeployState(List<Long> channelIds, Integer deployState, LocalDateTime nowTime);
-
-    @Delete(" DELETE FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
-            " WHERE scheme_id = #{schemeId} ")
-    void deleteBySchemeId(Long schemeId);
 
     @Delete(" <script> " +
             " DELETE FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
