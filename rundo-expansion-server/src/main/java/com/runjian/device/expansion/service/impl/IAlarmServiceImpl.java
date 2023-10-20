@@ -100,7 +100,6 @@ public class IAlarmServiceImpl implements IAlarmService {
         CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> response = alarmManageApi.getAlarmMsgPage(page, num, channelId, eventCode, startTime, endTime);
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         if (Objects.isNull(response.getData())){
-
             return new PageListResp<>();
         }
         PageListResp<GetAlarmMsgChannelRsp> dataPage = response.getData();

@@ -46,8 +46,8 @@ public interface DeviceChannelExpansionMapper extends BaseMapper<DeviceChannelEx
 
     /**
      * 告警信息查询
-     * @param channelIdList 通道id
+     * @param idList 通道id
      * @return
      */
-    List<GetAlarmDeviceChannelRsp> listAlarmList(Set<Long> channelIdList);
+    List<GetAlarmDeviceChannelRsp> listAlarmList(Set<Long> idList);
 }
