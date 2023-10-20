@@ -1,5 +1,6 @@
 package com.runjian.alarm.dao.relation;
 
+import com.runjian.alarm.dao.AlarmEventMapper;
 import com.runjian.alarm.entity.relation.AlarmSchemeEventRel;
 import com.runjian.alarm.vo.response.GetAlarmSchemeEventNameRsp;
 import com.runjian.alarm.vo.response.GetAlarmSchemeEventRsp;
@@ -22,8 +23,9 @@ public interface AlarmSchemeEventRelMapper {
     String ALARM_SCHEME_EVENT_TABLE_NAME = "rundo_alarm_scheme_event";
 
     @Select(" <script> " +
-            " SELECT scheme_id, event_name FROM " + ALARM_SCHEME_EVENT_TABLE_NAME +
-            " WHERE scheme_id IN " +
+            " SELECT ace.scheme_id, ae.event_name FROM " + ALARM_SCHEME_EVENT_TABLE_NAME + " ace " +
+            " LEFT JOIN " + AlarmEventMapper.ALARM_EVENT_TABLE_NAME + " ae  ON ae.evnet_code = ace.event_code " +
+            " WHERE ace.scheme_id IN " +
             " <foreach collection='schemeIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
     List<GetAlarmSchemeEventNameRsp> selectEventNameBySchemeIds(Set<Long> schemeIds);
