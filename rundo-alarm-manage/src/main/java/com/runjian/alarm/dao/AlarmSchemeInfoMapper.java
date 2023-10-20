@@ -42,7 +42,7 @@ public interface AlarmSchemeInfoMapper {
 
     @Insert(" INSERT INTO " + ALARM_SCHEME_TABLE_NAME + "(scheme_name, template_id, disabled, update_time, create_time) values " +
             " (#{schemeName}, #{templateId}, #{disabled}, #{updateTime}, #{createTime}) " )
-    @Options(useGeneratedKeys = true, keyProperty = "channelInfoList.id", keyColumn = "id")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(AlarmSchemeInfo alarmSchemeInfo);
 
     @Select(" SELECT * FROM " + ALARM_SCHEME_TABLE_NAME +
