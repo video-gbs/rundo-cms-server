@@ -34,7 +34,7 @@ public interface AlarmSchemeEventRelMapper {
 
     @Insert(" <script> " +
             " INSERT INTO " + ALARM_SCHEME_EVENT_TABLE_NAME + " (scheme_id, event_code, event_level, event_interval, enable_video, video_length, video_has_audio, enable_photo, update_time, create_time) values " +
-            " <foreach collection='channelIds' item='item' separator=','>(#{schemeId}, #{item.eventCode}, #{item.eventLevel}, #{item.eventInterval}, #{item.enableVideo}, #{item.videoLength}, #{item.videoHasAudio}, #{item.enablePhoto}, #{nowTime}, #{nowTime})</foreach> " +
+            " <foreach collection='alarmSchemeEventRelList' item='item' separator=','>(#{schemeId}, #{item.eventCode}, #{item.eventLevel}, #{item.eventInterval}, #{item.enableVideo}, #{item.videoLength}, #{item.videoHasAudio}, #{item.enablePhoto}, #{nowTime}, #{nowTime})</foreach> " +
             " </script>")
     void batchSaveBySchemeId(Long schemeId, List<AlarmSchemeEventRel> alarmSchemeEventRelList, LocalDateTime nowTime);
 
