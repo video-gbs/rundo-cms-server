@@ -196,6 +196,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             alarmSchemeEventRelMapper.batchUpdate(updateEventList);
         }
         if (!newEventMap.values().isEmpty()){
+            log.warn("newEventMap:{}", newEventMap);
             alarmSchemeEventRelMapper.batchSave(new ArrayList<>(newEventMap.values()));
         }
 
