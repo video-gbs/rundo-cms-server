@@ -45,7 +45,7 @@ public interface AlarmManageApi {
      * @return
      */
     @GetMapping("/scheme/channel/deploy/page")
-    CommonResponse<PageListResp<GetAlarmDeployChannelRsp>> getChannelDeploy(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Long schemeId);
+    CommonResponse<PageListResp<GetAlarmDeployChannelRsp>> getChannelDeploy(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, @RequestParam(required = false) Long schemeId);
 
     /**
      * 获取通道绑定的告警预案
