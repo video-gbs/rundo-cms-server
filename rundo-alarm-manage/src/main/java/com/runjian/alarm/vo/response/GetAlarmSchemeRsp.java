@@ -1,5 +1,6 @@
 package com.runjian.alarm.vo.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.runjian.alarm.entity.relation.AlarmSchemeEventRel;
 import lombok.Data;
 
@@ -44,8 +45,9 @@ public class GetAlarmSchemeRsp {
      */
     private Integer disabled;
 
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime updateTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 }
