@@ -10,6 +10,7 @@ import com.runjian.alarm.entity.AlarmSchemeInfo;
 import com.runjian.alarm.entity.relation.AlarmSchemeChannelRel;
 import com.runjian.alarm.entity.relation.AlarmSchemeEventRel;
 import com.runjian.alarm.feign.DeviceControlApi;
+import com.runjian.alarm.feign.TimerUtilsApi;
 import com.runjian.alarm.service.AlarmSchemeService;
 import com.runjian.alarm.vo.request.PutDefenseReq;
 import com.runjian.alarm.vo.response.*;
@@ -43,6 +44,8 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
     private final AlarmSchemeChannelRelMapper alarmSchemeChannelRelMapper;
 
     private final DeviceControlApi deviceControlApi;
+
+    private final TimerUtilsApi timerUtilsApi;
 
     @Override
     public PageInfo<GetAlarmSchemePageRsp> getAlarmSchemeByPage(int page, int num, String schemeName, Integer disabled, LocalDateTime createStartTime, LocalDateTime createEndTime) {
@@ -200,22 +203,43 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteAlarmScheme(Long id) {
-        Optional<AlarmSchemeInfo> alarmSchemeInfoOp = alarmSchemeInfoMapper.selectLockById(id);
-        if (alarmSchemeInfoOp.isEmpty()) {
-            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "告警预案不存在");
-        }
-        AlarmSchemeInfo alarmSchemeInfo = alarmSchemeInfoOp.get();
-        if (!CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())) {
-            List<Long> channelIds = alarmSchemeChannelRelMapper.selectChannelIdBySchemeId(id);
-            if (channelIds.isEmpty()) {
-                return;
+    public void deleteAlarmScheme(Set<Long> ids) {
+        List<AlarmSchemeInfo> alarmSchemeInfoList = alarmSchemeInfoMapper.selectLockByIds(ids);
+
+        List<Long> deploySchemeIds = new ArrayList<>(alarmSchemeInfoList.size());
+        for (AlarmSchemeInfo alarmSchemeInfo : alarmSchemeInfoList){
+            if (!CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())) {
+                deploySchemeIds.add(alarmSchemeInfo.getId());
             }
-            defense(channelIds, true);
-            alarmSchemeChannelRelMapper.deleteBySchemeId(id);
         }
-        alarmSchemeEventRelMapper.deleteBySchemeId(id);
-        alarmSchemeInfoMapper.deleteById(id);
+        if(!deploySchemeIds.isEmpty()){
+            List<Long> channelIds = alarmSchemeChannelRelMapper.selectChannelIdBySchemeIds(deploySchemeIds);
+            if (!channelIds.isEmpty()) {
+                defense(channelIds, true);
+                alarmSchemeChannelRelMapper.deleteBySchemeIds(deploySchemeIds);
+            }
+        }
+        List<Long> schemeIds = alarmSchemeInfoList.stream().map(AlarmSchemeInfo::getId).collect(Collectors.toList());
+        alarmSchemeEventRelMapper.deleteBySchemeIds(schemeIds);
+        alarmSchemeInfoMapper.deleteByIds(schemeIds);
+
+//        Optional<AlarmSchemeInfo> alarmSchemeInfoOp = alarmSchemeInfoMapper.selectLockById(id);
+//        if (alarmSchemeInfoOp.isEmpty()) {
+//            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "告警预案不存在");
+//        }
+//        AlarmSchemeInfo alarmSchemeInfo = alarmSchemeInfoOp.get();
+//
+//        if (!CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())) {
+//            List<Long> channelIds = alarmSchemeChannelRelMapper.selectChannelIdBySchemeId(id);
+//            if (channelIds.isEmpty()) {
+//                return;
+//            }
+//            defense(channelIds, true);
+//            alarmSchemeChannelRelMapper.deleteBySchemeId(id);
+//        }
+//
+//        alarmSchemeEventRelMapper.deleteBySchemeId(id);
+//        alarmSchemeInfoMapper.deleteById(id);
     }
 
     @Override

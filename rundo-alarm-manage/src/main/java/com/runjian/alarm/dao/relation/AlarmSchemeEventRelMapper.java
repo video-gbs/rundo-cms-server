@@ -81,4 +81,11 @@ public interface AlarmSchemeEventRelMapper {
             " WHERE scheme_id = #{schemeId} " +
             " AND event_code = #{eventCode} ")
     Optional<AlarmSchemeEventRel> selectBySchemeIdAndEventCode(Long schemeId, String eventCode);
+
+    @Delete(" <script> " +
+            " DELETE FROM " + ALARM_SCHEME_EVENT_TABLE_NAME +
+            " WHERE scheme_id IN " +
+            " <foreach collection='schemeIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void deleteBySchemeIds(List<Long> schemeIds);
 }

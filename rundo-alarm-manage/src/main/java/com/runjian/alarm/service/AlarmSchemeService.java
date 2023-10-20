@@ -71,9 +71,9 @@ public interface AlarmSchemeService {
 
     /**
      * 删除告警预案
-     * @param id 预案id
+     * @param ids 预案id数组
      */
-    void deleteAlarmScheme(Long id);
+    void deleteAlarmScheme(Set<Long> ids);
 
     /**
      * 获取预案下的设备布撤防状态

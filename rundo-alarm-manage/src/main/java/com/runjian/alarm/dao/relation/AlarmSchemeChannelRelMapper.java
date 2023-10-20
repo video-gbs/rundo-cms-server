@@ -85,4 +85,19 @@ public interface AlarmSchemeChannelRelMapper {
     @Select(" SELECT * FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
             " WHERE scheme_id = #{schemeId} ")
     List<GetAlarmChannelDeployRsp> selectBySchemeId(Long schemeId);
+
+    @Select(" <script> " +
+            " SELECT channel_id FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+            " WHERE scheme_id IN " +
+            " <foreach collection='schemeIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    List<Long> selectChannelIdBySchemeIds(List<Long> schemeIds);
+
+    @Delete(" <script> " +
+            " DELETE FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+            " WHERE scheme_id IN " +
+            " <foreach collection='schemeIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void deleteBySchemeIds(List<Long> schemeIds);
+
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -49,21 +50,17 @@ public interface AlarmSchemeInfoMapper {
             " WHERE id = #{id} FOR UPDATE")
     Optional<AlarmSchemeInfo> selectLockById(Long id);
 
-    @Update(" <script> " +
-            " UPDATE " + ALARM_SCHEME_TABLE_NAME +
+    @Update(" UPDATE " + ALARM_SCHEME_TABLE_NAME +
             " SET update_time = #{updateTime}  " +
             " , disabled = #{disabled} " +
-            " WHERE id = #{id} " +
-            " </script> ")
+            " WHERE id = #{id} " )
     void updateDisabled(AlarmSchemeInfo alarmSchemeInfo);
 
-    @Update(" <script> " +
-            " UPDATE " + ALARM_SCHEME_TABLE_NAME +
+    @Update(" UPDATE " + ALARM_SCHEME_TABLE_NAME +
             " SET update_time = #{updateTime}  " +
             " , scheme_name = #{schemeName}" +
             " ,  template_id = #{templateId}" +
-            " WHERE id = #{id} " +
-            " </script> ")
+            " WHERE id = #{id} ")
     void update(AlarmSchemeInfo alarmSchemeInfo);
 
     @Delete(" DELETE FROM " + ALARM_SCHEME_TABLE_NAME +
@@ -74,4 +71,19 @@ public interface AlarmSchemeInfoMapper {
             " LEFT JOIN " + AlarmSchemeChannelRelMapper.ALARM_SCHEME_CHANNEL_TABLE_NAME + " asct ON ast.id = asct.template_id " +
             " WHERE asct.channel_id = #{channelId} ")
     Optional<AlarmSchemeInfo> selectByChannelId(Long channelId);
+
+    @Select(" <script> " +
+            " SELECT * FROM " + ALARM_SCHEME_TABLE_NAME +
+            " WHERE id IN " +
+            " <foreach collection='ids' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " FOR UPDATE "+
+            " </script> ")
+    List<AlarmSchemeInfo> selectLockByIds(Set<Long> ids);
+
+    @Delete(" <script> " +
+            " DELETE FROM " + ALARM_SCHEME_TABLE_NAME +
+            " WHERE id IN " +
+            " <foreach collection='ids' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void deleteByIds(List<Long> ids);
 }

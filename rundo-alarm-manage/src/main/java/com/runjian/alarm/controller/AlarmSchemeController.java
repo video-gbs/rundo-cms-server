@@ -119,8 +119,8 @@ public class AlarmSchemeController {
      * @return
      */
     @DeleteMapping("/delete")
-    public CommonResponse<?> deleteScheme(@RequestParam Long id) {
-        alarmSchemeService.deleteAlarmScheme(id);
+    public CommonResponse<?> deleteScheme(@RequestParam Set<Long> ids) {
+        alarmSchemeService.deleteAlarmScheme(ids);
         return CommonResponse.success();
     }
 
