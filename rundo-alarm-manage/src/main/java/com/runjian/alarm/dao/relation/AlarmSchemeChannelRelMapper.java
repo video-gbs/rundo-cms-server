@@ -34,8 +34,8 @@ public interface AlarmSchemeChannelRelMapper {
     List<GetAlarmChannelRsp> selectSchemeNameByChannelIds(Set<Long> channelIds);
 
     @Insert(" <script> " +
-            " INSERT INTO " + ALARM_SCHEME_CHANNEL_TABLE_NAME + "(schemeId, channelId, create_time, update_time) values " +
-            " <foreach collection='channelIds' item='item' separator=','>(#{schemeId}, #{item}, #{nowTime}, #{nowTime})</foreach> " +
+            " INSERT INTO " + ALARM_SCHEME_CHANNEL_TABLE_NAME + " (scheme_id, channel_id, create_time, update_time) values " +
+            " <foreach collection='channelIds' item='item' separator=','>(#{schemeId}, #{item}, #{now_time}, #{now_time})</foreach> " +
             " </script>")
     void batchSaveBySchemeId(Long schemeId, Set<Long> channelIds, LocalDateTime nowTime);
 
@@ -47,8 +47,8 @@ public interface AlarmSchemeChannelRelMapper {
     List<AlarmSchemeChannelRel> selectByChannelIds(Set<Long> channelIds);
 
     @Insert({" <script> " +
-            " INSERT INTO " + ALARM_SCHEME_CHANNEL_TABLE_NAME + "(schemeId, channelId, create_time) values " +
-            " <foreach collection='alarmSchemeChannelRelList' item='item' separator=','>(#{item.scheme_id}, #{item.channel_id}, #{item.createTime})</foreach> " +
+            " INSERT INTO " + ALARM_SCHEME_CHANNEL_TABLE_NAME + " (scheme_id, channel_id, create_time) values " +
+            " <foreach collection='alarmSchemeChannelRelList' item='item' separator=','>(#{item.schemeId}, #{item.channelId}, #{item.createTime})</foreach> " +
             " </script>"})
     void batchSave(List<AlarmSchemeChannelRel> alarmSchemeChannelRelList);
 
