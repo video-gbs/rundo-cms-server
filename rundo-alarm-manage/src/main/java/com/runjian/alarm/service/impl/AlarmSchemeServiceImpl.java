@@ -202,17 +202,23 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             alarmSchemeEventRelMapper.batchSave(new ArrayList<>(newEventMap.values()));
         }
 
-        if (channelIds.isEmpty()) {
-            return;
-        }
         if (CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())) {
-            channelIds.addAll(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()));
-            defense(new ArrayList<>(channelIds), false);
+            if (!alarmSchemeChannelRelMap.values().isEmpty()){
+                channelIds.addAll(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()));
+            }
+            if (!channelIds.isEmpty()){
+                defense(new ArrayList<>(channelIds), false);
+            }
+
         } else {
             // 撤防删除的设备
-            defense(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false);
+            if (!alarmSchemeChannelRelMap.values().isEmpty()){
+                defense(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false);
+            }
             // 布防新增的设备
-            defense(new ArrayList<>(channelIds), true);
+            if (!channelIds.isEmpty()){
+                defense(new ArrayList<>(channelIds), true);
+            }
         }
     }
 
