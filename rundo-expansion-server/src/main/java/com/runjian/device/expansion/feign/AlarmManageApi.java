@@ -7,6 +7,7 @@ import com.runjian.device.expansion.vo.feign.response.PageListResp;
 import com.runjian.device.expansion.vo.response.GetAlarmDeployChannelRsp;
 import com.runjian.device.expansion.vo.response.GetAlarmMsgChannelRsp;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -34,8 +35,8 @@ public interface AlarmManageApi {
     CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> getAlarmMsgPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
                                                                         @RequestParam(required = false) Long channelId,
                                                                         @RequestParam(required = false) String alarmCode,
-                                                                        @RequestParam(required = false) LocalDateTime alarmStartTime,
-                                                                        @RequestParam(required = false) LocalDateTime alarmEndTime);
+                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmStartTime,
+                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmEndTime);
 
     /**
      * 获取预案下的设备布撤防状态
