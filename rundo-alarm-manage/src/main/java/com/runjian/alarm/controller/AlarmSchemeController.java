@@ -142,7 +142,7 @@ public class AlarmSchemeController {
      * @return
      */
     @PutMapping("/channel/defense")
-    public CommonResponse<?> updateChannelDeploy(PutChannelDeployReq req){
+    public CommonResponse<?> updateChannelDeploy(@RequestBody PutChannelDeployReq req){
         validatorService.validateRequest(req);
         alarmSchemeService.defense(new ArrayList<>(req.getChannelIds()), true);
         return CommonResponse.success();
