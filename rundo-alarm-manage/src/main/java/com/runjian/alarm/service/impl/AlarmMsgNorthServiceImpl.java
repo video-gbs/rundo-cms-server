@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.runjian.alarm.dao.AlarmMsgInfoMapper;
 import com.runjian.alarm.service.AlarmMsgNorthService;
 import com.runjian.alarm.vo.response.GetAlarmMsgRsp;
+import com.runjian.common.aspect.annotation.BlankStringValid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +23,9 @@ public class AlarmMsgNorthServiceImpl implements AlarmMsgNorthService {
     private final AlarmMsgInfoMapper alarmMsgInfoMapper;
 
     @Override
+    @BlankStringValid
     public PageInfo<GetAlarmMsgRsp> getAlarmMsgByPage(int page, int num, Long channelId, String alarmCode, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime) {
         PageHelper.startPage(page, num);
-
         return new PageInfo<>(alarmMsgInfoMapper.selectByAlarmCodeAndAlarmTime(channelId, alarmCode, alarmStartTime, alarmEndTime));
     }
 
