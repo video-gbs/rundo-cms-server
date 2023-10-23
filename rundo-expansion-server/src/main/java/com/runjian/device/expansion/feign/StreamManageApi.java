@@ -169,4 +169,12 @@ public interface StreamManageApi {
     @PostMapping("/gateway-dispatch/north/dispatch/unbinding")
     public CommonResponse<?> dispatchUnBindingGateway(@RequestBody PostDispatchBindingGatewayReq req);
 
+    /**
+     * webrtc接口
+     * @param webRtcAudioReq
+     * @return
+     */
+    @PostMapping(value = "/stream/north/webrtc/audio",produces = MediaType.APPLICATION_JSON_VALUE)
+    CommonResponse<StreamInfo> webrtcAudio(@RequestBody WebRtcAudioReq webRtcAudioReq);
+
 }
