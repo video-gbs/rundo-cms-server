@@ -12,10 +12,14 @@ import lombok.Getter;
 public enum PlayType {
 
     LIVE(1, "LIVE"),
-    CUSTOM_LIVE(5, "CUSTOM_LIVE"),
+
     RECORD(2, "RECORD"),
     ALARM(3, "ALARM"),
-    DOWNLOAD(4, "DOWNLOAD");
+    DOWNLOAD(4, "DOWNLOAD"),
+
+    CUSTOM_LIVE(5, "CUSTOM_LIVE"),
+    AUDIO_LIVE(6, "AUDIO_LIVE"),
+    ;
 
     private final Integer code;
     private final String msg;

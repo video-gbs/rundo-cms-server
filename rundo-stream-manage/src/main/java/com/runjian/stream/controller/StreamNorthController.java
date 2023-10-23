@@ -7,6 +7,7 @@ import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.request.*;
 import com.runjian.stream.vo.response.PostVideoPlayRsp;
+import com.runjian.stream.vo.response.PostWebRtcAudioReq;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.SpringQueryMap;
@@ -76,6 +77,17 @@ public class StreamNorthController {
     public CommonResponse<String> applyStreamId(@RequestBody PostImageDownloadReq req){
         validatorService.validateRequest(req);
         return CommonResponse.success(streamNorthService.downloadImage(req.getChannelId(), req.getStreamType(), req.getPlayType(), req.getTime(), req.getUploadId(), req.getUploadUrl()));
+    }
+
+    /**
+     * webRTC音频传输录制
+     * @param req webRTC音频传输录制请求体
+     * @return 音频流推送地址
+     */
+    @PostMapping("/webrtc/audio")
+    public CommonResponse<String> webRTCAudio(@RequestBody PostWebRtcAudioReq req){
+        validatorService.validateRequest(req);
+        return CommonResponse.success(streamNorthService.webRtcAudio(req.getChannelId(), req.getRecordState(), req.getAutoCloseState()));
     }
 
     /**

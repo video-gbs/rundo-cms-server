@@ -83,6 +83,15 @@ public interface StreamNorthService {
     String downloadImage(Long channelId, Integer streamMode, Integer playType, LocalDateTime time, String uploadId, String uploadUrl);
 
     /**
+     * webRTC推送音频
+     * @param channelId 通道id
+     * @param recordState 是否开启录播
+     * @param autoCloseState 是否自动关闭
+     * @return
+     */
+    String webRtcAudio(Long channelId, Integer recordState, Integer autoCloseState);
+
+    /**
      * 停止播放
      * @param streamId 通道id
      */

@@ -47,6 +47,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
 
     private final DeviceControlApi deviceControlApi;
 
+
     @Override
     public PostVideoPlayRsp customLive(Long dispatchId, Long code, String protocol, Integer transferMode, String port, String ip, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState) {
         String streamId = PlayType.CUSTOM_LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + code;
@@ -136,13 +137,24 @@ public class StreamNorthServiceImpl implements StreamNorthService {
 
         StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamId, msgType, 15000L);
         streamManageDto.put(StandardName.CHANNEL_ID, channelId);
-        streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
-        streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
-        streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
         streamManageDto.put(StandardName.STREAM_MEDIA_URL, dispatchInfo.getUrl());
-        streamManageDto.put(StandardName.STREAM_MODE, streamMode);
         streamManageDto.put(StandardName.GATEWAY_PROTOCOL, gatewayInfo.getProtocol());
-        streamManageDto.put(StandardName.STREAM_BIT_STREAM_ID, bitStreamId);
+        if (Objects.nonNull(enableAudio)){
+            streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
+        }
+        if (Objects.nonNull(ssrcCheck)){
+            streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
+        }
+        if (Objects.nonNull(recordState)){
+            streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
+        }
+        if (Objects.nonNull(streamMode)){
+            streamManageDto.put(StandardName.STREAM_MODE, streamMode);
+        }
+        if (Objects.nonNull(bitStreamId)){
+            streamManageDto.put(StandardName.STREAM_BIT_STREAM_ID, bitStreamId);
+        }
+
         return streamManageDto;
     }
 
@@ -195,6 +207,32 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         }
         streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
         return streamId;
+    }
+
+    @Override
+    public String webRtcAudio(Long channelId, Integer recordState, Integer autoCloseState) {
+        String streamId = PlayType.AUDIO_LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + channelId;
+        RLock lock = redissonClient.getLock(MarkConstant.REDIS_STREAM_LIVE_PLAY_LOCK + streamId);
+        if (lock.tryLock()){
+            try{
+                Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
+                if (streamInfoOp.isPresent()){
+                    throw new BusinessException(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, "当前通道的音频流已被占用，请稍后重试");
+                }
+                StreamManageDto streamManageDto = getStreamManageDto(channelId, MsgType.STREAM_WEBRTC_AUDIO, streamId, PlayType.AUDIO_LIVE.getCode(), null, null, null, recordState, autoCloseState, null);
+                CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
+                if (commonResponse.isError()){
+                    streamMapper.deleteByStreamId(streamId);
+                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向接口服务", "WebRTC音频流生成失败", commonResponse.getMsg(), commonResponse.getData());
+                    throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, String.format("%s:%s", commonResponse.getMsg(), commonResponse.getData()));
+                }
+                streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
+                return commonResponse.getData().toString();
+            }finally {
+                lock.unlock();
+            }
+        }
+        throw new BusinessException(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, "当前通道的音频流已被占用，请稍后重试");
     }
 
     private  StreamInfo saveStream(Long gatewayId, Long channelId, Long dispatchId, Integer playType, Integer recordState, Integer autoCloseState, String streamId) {
