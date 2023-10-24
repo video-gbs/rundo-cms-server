@@ -149,9 +149,9 @@ public class StreamManageApiFallbackFactory implements FallbackFactory<StreamMan
             }
 
             @Override
-            public CommonResponse<StreamInfo> webrtcAudio(WebRtcAudioReq webRtcAudioReq) {
+            public CommonResponse<String> webrtcAudio(WebRtcAudioReq webRtcAudioReq) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--dispatchUnBindingGateway操作失败",webRtcAudioReq, throwable);
-                return (CommonResponse<StreamInfo>) finalFailure;
+                return (CommonResponse<String>) finalFailure;
             }
         };
     }

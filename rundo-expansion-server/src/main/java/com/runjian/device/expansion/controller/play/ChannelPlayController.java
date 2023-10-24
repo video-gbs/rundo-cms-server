@@ -139,7 +139,7 @@ public class ChannelPlayController {
 
     @PostMapping(value = "/webrtcAudio",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation("直播接口")
-    public CommonResponse<StreamInfo>  webrtcAudio(@RequestBody PlayReq request) {
+    public CommonResponse<String>  webrtcAudio(@RequestBody PlayReq request) {
         validatorService.validateRequest(request);
 
         return playService.webrtcAudio(request);
