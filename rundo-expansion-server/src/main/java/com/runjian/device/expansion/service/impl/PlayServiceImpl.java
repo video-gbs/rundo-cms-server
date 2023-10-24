@@ -67,7 +67,7 @@ public class PlayServiceImpl implements IPlayService {
         WebRtcAudioReq webRtcAudioReq = new WebRtcAudioReq();
         webRtcAudioReq.setChannelId(Long.valueOf(playReq.getChannelId()));
         webRtcAudioReq.setRecordState(0);
-        webRtcAudioReq.setAutoCloseState(0);
+        webRtcAudioReq.setAutoCloseState(1);
         CommonResponse<String> commonResponse = streamManageApi.webrtcAudio(webRtcAudioReq);
         if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
