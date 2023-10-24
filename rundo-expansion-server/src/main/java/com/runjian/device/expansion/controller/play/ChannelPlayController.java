@@ -142,6 +142,6 @@ public class ChannelPlayController {
     public CommonResponse<StreamInfo>  webrtcAudio(@RequestBody PlayReq request) {
         validatorService.validateRequest(request);
 
-        return playService.play(request);
+        return playService.webrtcAudio(request);
     }
 }
