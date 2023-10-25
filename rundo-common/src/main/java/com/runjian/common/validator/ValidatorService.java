@@ -51,7 +51,7 @@ public class ValidatorService implements InitializingBean {
             ValidationResult validate = validate(request, matchData);
             log.warn("请求:{};请求参数校验结果:{}", request, validate);
             if (validate.isHasErrors()) {
-                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, validate.getErrMsg());
+                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, validate.toString());
             }
         }
     }
