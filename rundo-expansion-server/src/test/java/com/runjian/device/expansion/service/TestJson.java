@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.device.expansion.entity.ChannelPresetLists;
 import com.runjian.device.expansion.entity.DeviceChannelExpansion;
+import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.response.ChannelPresetListsResp;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -64,5 +65,20 @@ public class TestJson {
         deviceExpansion.setVideoAreaId(1L);;
 
         System.out.println(deviceExpansion.toString());
+    }
+
+    @Test
+    public void testStreamDto(){
+        String aa = "{\n" +
+                "      \"playProtocalType\": 0,\n" +
+                "      \"streamId\": null,\n" +
+                "      \"rtc\": \"https://xard-gbs-test.runjian.com:2280/index/api/webrtc?app=live&stream=AUDIO_LIVE_185&type=push\",\n" +
+                "      \"rtcs\": null\n" +
+                "      \n" +
+                "}";
+        StreamInfo streamInfo = JSONObject.parseObject(aa, StreamInfo.class);
+
+
+        System.out.println(streamInfo.toString());
     }
 }
