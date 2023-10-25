@@ -3,6 +3,7 @@ package com.runjian.common.validator;
 
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.util.Set;
  * @author Miracle
  * @date 2019/7/10 21:53
  */
-
+@Slf4j
 @Service
 public class ValidatorService implements InitializingBean {
 
@@ -45,23 +46,14 @@ public class ValidatorService implements InitializingBean {
         }
         // 判断是否是集合
         if (request instanceof Collection) {
-            validateRequestList((Collection<Object>) request);
+            validateRequestListByMatchData((Collection<Object>) request, null);
+        }else {
+            ValidationResult validate = validate(request, matchData);
+            log.warn("请求:{};请求参数校验结果:{}", request, validate);
+            if (validate.isHasErrors()) {
+                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, validate.getErrMsg());
+            }
         }
-        ValidationResult validate = validate(request, matchData);
-        if (validate.isHasErrors()) {
-            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, validate.getErrMsg());
-        }
-    }
-
-
-    /**
-     * 通用数组校验
-     *
-     * @param requestList
-     * @throws BusinessException
-     */
-    public void validateRequestList(Collection<Object> requestList) throws BusinessException {
-        validateRequestListByMatchData(requestList, null);
     }
 
     /**
