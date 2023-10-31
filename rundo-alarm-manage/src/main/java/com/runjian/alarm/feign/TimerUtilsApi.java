@@ -1,10 +1,11 @@
 package com.runjian.alarm.feign;
 
 import com.runjian.alarm.feign.fallback.TimerUtilsFallback;
+import com.runjian.alarm.vo.feign.PostUseTemplateReq;
+import com.runjian.alarm.vo.feign.PutUnUseTemplateReq;
 import com.runjian.common.config.response.CommonResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -23,4 +24,20 @@ public interface TimerUtilsApi {
      */
     @GetMapping("/check/time-in")
     CommonResponse<Boolean> checkTime(@RequestParam Long templateId, @RequestParam LocalDateTime time);
+
+    /**
+     * 使用模板
+     * @param req 使用模板请求体
+     * @return
+     */
+    @PostMapping("/check/use")
+    CommonResponse<?> useTemplate(@RequestBody PostUseTemplateReq req);
+
+    /**
+     * 解除模板使用
+     * @param req 解除使用模板请求体
+     * @return
+     */
+    @PutMapping("/check/unuse")
+    CommonResponse<?> unUseTemplate(@RequestBody PutUnUseTemplateReq req);
 }

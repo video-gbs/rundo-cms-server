@@ -12,6 +12,8 @@ import com.runjian.alarm.entity.relation.AlarmSchemeEventRel;
 import com.runjian.alarm.feign.DeviceControlApi;
 import com.runjian.alarm.feign.TimerUtilsApi;
 import com.runjian.alarm.service.AlarmSchemeService;
+import com.runjian.alarm.vo.feign.PostUseTemplateReq;
+import com.runjian.alarm.vo.feign.PutUnUseTemplateReq;
 import com.runjian.alarm.vo.request.PutDefenseReq;
 import com.runjian.alarm.vo.response.*;
 import com.runjian.common.config.exception.BusinessErrorEnums;
@@ -126,6 +128,8 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
 
         alarmSchemeEventRelMapper.batchSaveBySchemeId(alarmSchemeInfo.getId(), alarmSchemeEventRelList, nowTime);
 
+        timerUtilsApi.useTemplate(new PostUseTemplateReq(templateId, "alarm-manage", String.valueOf(alarmSchemeInfo.getId()), 0));
+
     }
 
     @Override
@@ -168,7 +172,11 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             }
             alarmSchemeInfo.setSchemeName(schemeName);
         }
-        alarmSchemeInfo.setTemplateId(templateId);
+        if (!Objects.equals(alarmSchemeInfo.getTemplateId(), templateId)){
+            alarmSchemeInfo.setTemplateId(templateId);
+            timerUtilsApi.useTemplate(new PostUseTemplateReq(templateId, "alarm-manage", String.valueOf(alarmSchemeInfo.getId()), 0));
+        }
+
         alarmSchemeInfo.setUpdateTime(nowTime);
         // 更新预案
         alarmSchemeInfoMapper.update(alarmSchemeInfo);
@@ -241,6 +249,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
                 defense(new ArrayList<>(channelIds), true);
             }
         }
+
     }
 
     @Override
@@ -253,7 +262,9 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             if (!CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())) {
                 deploySchemeIds.add(alarmSchemeInfo.getId());
             }
+            timerUtilsApi.unUseTemplate(new PutUnUseTemplateReq("alarm-manage", String.valueOf(alarmSchemeInfo.getId())));
         }
+
         if(!deploySchemeIds.isEmpty()){
             List<Long> channelIds = alarmSchemeChannelRelMapper.selectChannelIdBySchemeIds(deploySchemeIds);
             if (!channelIds.isEmpty()) {
@@ -264,6 +275,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         List<Long> schemeIds = alarmSchemeInfoList.stream().map(AlarmSchemeInfo::getId).collect(Collectors.toList());
         alarmSchemeEventRelMapper.deleteBySchemeIds(schemeIds);
         alarmSchemeInfoMapper.deleteByIds(schemeIds);
+
     }
 
     @Override
