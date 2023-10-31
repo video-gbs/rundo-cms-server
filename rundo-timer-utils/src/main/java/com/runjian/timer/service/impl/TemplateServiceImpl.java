@@ -128,6 +128,7 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void useTemplate(Long templateId, String serviceName, String serviceUseMark, Integer enableTimer) {
         if (templateInfoMapper.selectById(templateId).isEmpty()){
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("模板'%s'不存在", templateId));
@@ -172,6 +173,7 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void unUseTemplate(String serviceName, String serviceUseMark) {
         Optional<TemplateUseInfo> templateUseInfoOptional = templateUseInfoMapper.selectByServiceNameAndServiceUseMark(serviceName, serviceUseMark);
         if (templateUseInfoOptional.isPresent()){

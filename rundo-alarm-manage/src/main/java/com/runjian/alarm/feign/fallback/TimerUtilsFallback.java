@@ -1,6 +1,8 @@
 package com.runjian.alarm.feign.fallback;
 
 import com.runjian.alarm.feign.TimerUtilsApi;
+import com.runjian.alarm.vo.feign.PostUseTemplateReq;
+import com.runjian.alarm.vo.feign.PutUnUseTemplateReq;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
@@ -22,7 +24,19 @@ public class TimerUtilsFallback implements FallbackFactory<TimerUtilsApi> {
         return new TimerUtilsApi() {
             @Override
             public CommonResponse<Boolean> checkTime(Long templateId, LocalDateTime time) {
-                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流媒体管理接口调用服务", "接口调用失败", cause.getMessage(), String.format("templateId:%s,time:%s", templateId, time));
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "时间模板工具接口调用服务", "接口调用失败", cause.getMessage(), String.format("templateId:%s,time:%s", templateId, time));
+                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
+            }
+
+            @Override
+            public CommonResponse<?> useTemplate(PostUseTemplateReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "时间模板工具接口调用服务", "接口调用失败", cause.getMessage(), req);
+                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
+            }
+
+            @Override
+            public CommonResponse<?> unUseTemplate(PutUnUseTemplateReq req) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "时间模板工具接口调用服务", "接口调用失败", cause.getMessage(), req);
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
         };
