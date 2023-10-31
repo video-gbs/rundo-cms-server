@@ -418,7 +418,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             for (Long deviceId : entry.getValue()){
                 List<Long> deviceChannelIdList = deviceChannelIdMap.get(deviceId);
                 channelIds.addAll(deviceChannelIdList);
-                deviceControlReq.putData(String.valueOf(deviceId), channelIdList);
+                deviceControlReq.putData(String.valueOf(deviceId), deviceChannelIdList);
             }
             try {
                 CommonResponse<?> response = parsingEngineApi.customEvent(deviceControlReq);
