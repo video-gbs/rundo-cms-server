@@ -26,6 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +50,26 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
     private final DeviceControlApi deviceControlApi;
 
     private final TimerUtilsApi timerUtilsApi;
+
+    private final ThreadPoolExecutor defenseThreadPool = new ThreadPoolExecutor(
+            1,
+            2,
+            10,
+            TimeUnit.SECONDS,
+            new ArrayBlockingQueue<>(30), r -> {
+        Thread t = new Thread(r);
+        t.setName("defense-thread");
+        // 判断是否是守护线程，如果是关闭
+        if (t.isDaemon()) {
+            t.setDaemon(false);
+        }
+        // 判断是否是正常优先级，如果不是调整会正常优先级
+        if (Thread.NORM_PRIORITY != t.getPriority()) {
+            t.setPriority(Thread.NORM_PRIORITY);
+        }
+        return t;
+    },
+            new ThreadPoolExecutor.DiscardPolicy());
 
     @Override
     public PageInfo<GetAlarmSchemePageRsp> getAlarmSchemeByPage(int page, int num, String schemeName, Integer disabled, LocalDateTime createStartTime, LocalDateTime createEndTime) {
@@ -250,16 +274,18 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
 
     @Override
     public void defense(List<Long> channelIdList, boolean isDeploy){
-        CommonResponse<Set<Long>> commonResponse = deviceControlApi.defense(new PutDefenseReq(channelIdList, isDeploy));
-        if (commonResponse.isError()){
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "告警预案服务", isDeploy ? "发送布防失败" : "发送撤防失败", String.format("%s:%s", commonResponse.getMsg(), commonResponse.getData()), channelIdList);
-            return;
-        }
-        Set<Long> channelIds = commonResponse.getData();
-        if (Objects.isNull(channelIds) || channelIds.isEmpty()){
-            return;
-        }
-        channelIdList.removeAll(channelIds);
-        alarmSchemeChannelRelMapper.batchUpdateDeployState(channelIdList, isDeploy ? 1 : 0, LocalDateTime.now());
+        defenseThreadPool.execute( () -> {
+            CommonResponse<Set<Long>> commonResponse = deviceControlApi.defense(new PutDefenseReq(channelIdList, isDeploy));
+            if (commonResponse.isError()){
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "告警预案服务", isDeploy ? "发送布防失败" : "发送撤防失败", String.format("%s:%s", commonResponse.getMsg(), commonResponse.getData()), channelIdList);
+                return;
+            }
+            Set<Long> channelIds = commonResponse.getData();
+            if (Objects.isNull(channelIds) || channelIds.isEmpty()){
+                return;
+            }
+            channelIdList.removeAll(channelIds);
+            alarmSchemeChannelRelMapper.batchUpdateDeployState(channelIdList, isDeploy ? 1 : 0, LocalDateTime.now());
+        });
     }
 }
