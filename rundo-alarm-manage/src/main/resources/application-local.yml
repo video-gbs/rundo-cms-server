@@ -127,8 +127,8 @@ feign:
   client:
     config:
       default:
-        connect-timeout: 15000
-        read-timeout: 15000
+        connect-timeout: 18000
+        read-timeout: 18000
         logger-level: basic
 
 alarm:

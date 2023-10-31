@@ -1,5 +1,6 @@
 package com.runjian.alarm.feign;
 
+import com.runjian.alarm.feign.fallback.TimerUtilsFallback;
 import com.runjian.common.config.response.CommonResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
  * @author Miracle
  * @date 2023/9/8 10:02
  */
-@FeignClient(value = "timer-utils", decode404 = true)
+@FeignClient(value = "timer-utils", fallbackFactory = TimerUtilsFallback.class, decode404 = true)
 public interface TimerUtilsApi {
 
     /**

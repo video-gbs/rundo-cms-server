@@ -1,5 +1,6 @@
 package com.runjian.alarm.feign;
 
+import com.runjian.alarm.feign.fallback.DeviceControlFallback;
 import com.runjian.alarm.vo.request.PutDefenseReq;
 import com.runjian.common.config.response.CommonResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Set;
 
-@FeignClient(value = "device-control", decode404 = true)
+@FeignClient(value = "device-control", fallbackFactory = DeviceControlFallback.class, decode404 = true)
 public interface DeviceControlApi {
 
     /**
