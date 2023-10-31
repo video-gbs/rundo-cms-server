@@ -1,6 +1,10 @@
 package com.runjian.alarm.vo.request;
 
 import com.runjian.alarm.entity.relation.AlarmSchemeEventRel;
+import com.runjian.common.config.exception.BusinessException;
+import com.runjian.common.constant.CommonEnum;
+import com.runjian.common.validator.ValidationResult;
+import com.runjian.common.validator.ValidatorFunction;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.BeanUtils;
@@ -8,13 +12,14 @@ import org.springframework.beans.BeanUtils;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 /**
  * @author Miracle
  * @date 2023/9/19 11:04
  */
 @Data
-public class PostAlarmSchemeEventReq {
+public class PostAlarmSchemeEventReq implements ValidatorFunction {
 
     /**
      * 事件编码
@@ -47,14 +52,12 @@ public class PostAlarmSchemeEventReq {
     /**
      * 录像时间 单位：秒 15、30、60
      */
-    @NotNull(message = "录像时间不能为空")
     @Range(min = 15, max = 60, message = "录像时间不正确")
     private Integer videoLength;
 
     /**
      * 视频是否有音频
      */
-    @NotNull(message = "视频是否有音频不能为空")
     @Range(min = 0, max = 1, message = "视频是否有音频不正确")
     private Integer videoHasAudio;
 
@@ -69,5 +72,19 @@ public class PostAlarmSchemeEventReq {
         AlarmSchemeEventRel alarmSchemeEventRel = new AlarmSchemeEventRel();
         BeanUtils.copyProperties(this, alarmSchemeEventRel);
         return alarmSchemeEventRel;
+    }
+
+    @Override
+    public void validEvent(ValidationResult result, Object data, Object matchData) throws BusinessException {
+        if (CommonEnum.getBoolean(enableVideo)){
+            if(Objects.isNull(videoLength)){
+                result.setHasErrors(true);
+                result.getErrorMsgMap().put("videoLength", "录像时间不能为空");
+            }
+            if(Objects.isNull(videoHasAudio)){
+                result.setHasErrors(true);
+                result.getErrorMsgMap().put("videoLength", "视频是否有音频不能为空");
+            }
+        }
     }
 }
