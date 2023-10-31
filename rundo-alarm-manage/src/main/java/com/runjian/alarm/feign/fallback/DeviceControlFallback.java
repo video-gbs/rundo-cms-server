@@ -7,6 +7,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
@@ -15,6 +16,7 @@ import java.util.Set;
  * @date 2023/10/31 10:44
  */
 @Slf4j
+@Component
 public class DeviceControlFallback implements FallbackFactory<DeviceControlApi> {
     @Override
     public DeviceControlApi create(Throwable cause) {

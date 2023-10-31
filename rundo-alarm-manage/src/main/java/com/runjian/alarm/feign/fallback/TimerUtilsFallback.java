@@ -6,6 +6,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
  * @date 2023/10/31 10:46
  */
 @Slf4j
+@Component
 public class TimerUtilsFallback implements FallbackFactory<TimerUtilsApi> {
     @Override
     public TimerUtilsApi create(Throwable cause) {

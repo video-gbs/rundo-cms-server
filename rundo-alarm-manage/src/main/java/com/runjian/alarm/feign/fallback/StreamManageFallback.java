@@ -9,12 +9,14 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FallbackFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Miracle
  * @date 2023/10/31 10:45
  */
 @Slf4j
+@Component
 public class StreamManageFallback implements FallbackFactory<StreamManageApi> {
     @Override
     public StreamManageApi create(Throwable cause) {
