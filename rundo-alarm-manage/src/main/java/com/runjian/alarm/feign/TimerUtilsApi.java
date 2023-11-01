@@ -5,6 +5,7 @@ import com.runjian.alarm.vo.feign.PostUseTemplateReq;
 import com.runjian.alarm.vo.feign.PutUnUseTemplateReq;
 import com.runjian.common.config.response.CommonResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public interface TimerUtilsApi {
      * @return
      */
     @GetMapping("/check/time-in")
-    CommonResponse<Boolean> checkTime(@RequestParam Long templateId, @RequestParam LocalDateTime time);
+    CommonResponse<Boolean> checkTime(@RequestParam Long templateId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime time);
 
     /**
      * 使用模板

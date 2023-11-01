@@ -12,6 +12,7 @@ import com.runjian.timer.vo.request.PostUseTemplateReq;
 import com.runjian.timer.vo.request.PutTemplateReq;
 import com.runjian.timer.vo.response.GetTemplateInfoRsp;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,7 +46,7 @@ public class TemplateController {
     @IllegalStringValid
     public CommonResponse<PageInfo<GetTemplateInfoRsp>> getTemplatePage(@RequestParam(defaultValue = "1") int page,
                                                                         @RequestParam(defaultValue = "10") int num,
-                                                                        String templateName){
+                                                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") String templateName){
         return CommonResponse.success(templateService.getTemplatePage(page, num, templateName));
     }
 
