@@ -23,7 +23,7 @@ public interface TimerUtilsApi {
      * @param time 时间
      * @return
      */
-    @GetMapping("/check/time-in")
+    @GetMapping("/template/check/time-in")
     CommonResponse<Boolean> checkTime(@RequestParam Long templateId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") String time);
 
     /**
@@ -31,7 +31,7 @@ public interface TimerUtilsApi {
      * @param req 使用模板请求体
      * @return
      */
-    @PostMapping("/check/use")
+    @PostMapping("/template/use")
     CommonResponse<?> useTemplate(@RequestBody PostUseTemplateReq req);
 
     /**
@@ -39,6 +39,6 @@ public interface TimerUtilsApi {
      * @param req 解除使用模板请求体
      * @return
      */
-    @PutMapping("/check/unuse")
+    @PutMapping("/template/unuse")
     CommonResponse<?> unUseTemplate(@RequestBody PutUnUseTemplateReq req);
 }
