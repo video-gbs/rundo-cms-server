@@ -16,6 +16,7 @@ import com.runjian.alarm.utils.RedisLockUtil;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.constant.CommonConstant;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.MarkConstant;
@@ -90,12 +91,12 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                     }
                     CommonResponse<Boolean> response;
                     try{
-                        response = timerUtilsApi.checkTime(alarmSchemeInfo.getTemplateId(), eventTime);
+                        response = timerUtilsApi.checkTime(alarmSchemeInfo.getTemplateId(), DateUtils.DATE_TIME_FORMATTER.format(eventTime));
                         if (response.isError() || Objects.isNull(response.getData())){
                             log.error(LogTemplate.ERROR_LOG_TEMPLATE, "告警信息南向服务", "时间校验异常", response);
                             redisLockUtil.unLock(lockKey, lockValue);
+                            return;
                         }
-                        log.warn("response:{}", response);
                         if (!response.getData()){
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;

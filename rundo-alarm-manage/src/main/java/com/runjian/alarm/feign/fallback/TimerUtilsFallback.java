@@ -23,7 +23,7 @@ public class TimerUtilsFallback implements FallbackFactory<TimerUtilsApi> {
     public TimerUtilsApi create(Throwable cause) {
         return new TimerUtilsApi() {
             @Override
-            public CommonResponse<Boolean> checkTime(Long templateId, LocalDateTime time) {
+            public CommonResponse<Boolean> checkTime(Long templateId, String time) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "时间模板工具接口调用服务", "接口调用失败", cause.getMessage(), String.format("templateId:%s,time:%s", templateId, time));
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
