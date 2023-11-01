@@ -23,6 +23,7 @@ import com.runjian.common.constant.MarkConstant;
 import com.runjian.common.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,7 +74,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
 
         switch (eventMsgType){
             case COMPOUND_START:
-                if (redisLockUtil.lock(lockKey,  lockValue, DEFAULT_SINGLE_MSG_END, TimeUnit.SECONDS, 1)) {
+                if (redisLockUtil.lock(lockKey, lockValue, DEFAULT_SINGLE_MSG_END, TimeUnit.SECONDS, 1)) {
                     Optional<AlarmSchemeInfo> alarmSchemeInfoOp = alarmSchemeInfoMapper.selectByChannelId(channelId);
                     if (alarmSchemeInfoOp.isEmpty()){
                         redisLockUtil.unLock(lockKey, lockValue);
@@ -160,7 +161,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 return;
             case COMPOUND_END:
                 String alarmMsgInfoId2 = redisTemplate.opsForValue().get(lockKey);
-                if (Objects.isNull(alarmMsgInfoId2)){
+                if (Objects.isNull(alarmMsgInfoId2) || !StringUtils.isNumeric(alarmMsgInfoId2)){
                     return;
                 }
                 Optional<AlarmMsgInfo> alarmMsgInfoOp2 = alarmMsgInfoMapper.selectById(Long.valueOf(alarmMsgInfoId2));
