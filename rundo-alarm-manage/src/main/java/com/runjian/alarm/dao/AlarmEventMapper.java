@@ -59,7 +59,7 @@ public interface AlarmEventMapper {
     void deleteById(Long id);
 
     @Select(" <script> " +
-            " SELECT id, event_name, event_sort FROM " + ALARM_EVENT_TABLE_NAME +
+            " SELECT id, event_name, event_sort, event_code FROM " + ALARM_EVENT_TABLE_NAME +
             " <if test=\"eventName != null\" > WHERE event_name LIKE CONCAT('%', #{eventName}, '%') </if> " +
             " </script> ")
     List<GetAlarmEventNameRsp> selectEventName(String eventName);

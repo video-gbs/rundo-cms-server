@@ -15,6 +15,11 @@ public class GetAlarmSchemeEventRsp {
     private Long id;
 
     /**
+     * 事件编码
+     */
+    private String eventCode;
+
+    /**
      * 事件名称
      */
     private String eventName;

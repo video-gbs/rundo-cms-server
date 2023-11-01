@@ -20,6 +20,11 @@ public class GetAlarmEventNameRsp {
     private String eventName;
 
     /**
+     * 事件编码
+     */
+    private String eventCode;
+
+    /**
      * 事件排序
      */
     private Integer eventSort;
