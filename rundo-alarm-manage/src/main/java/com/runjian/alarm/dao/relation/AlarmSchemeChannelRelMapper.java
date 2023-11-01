@@ -66,7 +66,7 @@ public interface AlarmSchemeChannelRelMapper {
             " UPDATE " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
             " SET update_time = #{nowTime}  " +
             " , deploy_state = #{deployState} " +
-            " WHERE id IN " +
+            " WHERE channel_id IN " +
             " <foreach collection='channelIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
     void batchUpdateDeployState(List<Long> channelIds, Integer deployState, LocalDateTime nowTime);
