@@ -125,6 +125,11 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                     alarmMsgInfo.setAlarmInterval(alarmSchemeEventRel.getEventInterval());
                     alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventRel.getVideoLength()));
 
+                    // 判断是否开启截图
+                    if (CommonEnum.getBoolean(alarmSchemeEventRel.getEnablePhoto())){
+                        alarmMsgInfo.setImageState(AlarmFileState.WAITING.getCode());
+                    }
+
                     // 判断是否开启视频录制
                     if (CommonEnum.getBoolean(alarmSchemeEventRel.getEnableVideo())){
                         alarmMsgInfo.setVideoLength(alarmSchemeEventRel.getVideoLength());
@@ -144,10 +149,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
                         redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval(), TimeUnit.SECONDS);
                     }
-                    // 判断是否开启截图
-                    if (CommonEnum.getBoolean(alarmSchemeEventRel.getEnablePhoto())){
-                        alarmMsgInfo.setImageState(AlarmFileState.WAITING.getCode());
-                    }
+
                     alarmMsgInfoMapper.save(alarmMsgInfo);
                 }
                 return;
