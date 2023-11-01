@@ -31,7 +31,7 @@ public interface AlarmMsgInfoMapper {
     List<GetAlarmMsgRsp> selectByAlarmCodeAndAlarmTime(Long channelId, String alarmCode, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime);
 
     @Insert(" INSERT INTO " + ALARM_MSG_TABLE_NAME + " (channel_id, alarm_code, alarm_level, alarm_type, alarm_start_time, alarm_end_time, alarm_desc, alarm_state, alarm_interval, " +
-            " video_url, video_length, video_audio_state, video_stream_id, " +
+            " video_url, video_length, video_state, video_stream_id, " +
             "image_state, image_url, update_time, create_time) values " +
             " (#{channelId}, #{alarmCode}, #{alarmLevel}, #{alarmType}, #{alarmStartTime}, #{alarmEndTime}, #{alarmDesc}, #{alarmState}, #{alarmInterval}," +
             " #{videoUrl}, #{videoLength}, #{videoAudioState}, #{videoStreamId}, " +
