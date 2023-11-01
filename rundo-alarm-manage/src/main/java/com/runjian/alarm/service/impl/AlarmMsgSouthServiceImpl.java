@@ -71,37 +71,38 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
         String lockValue = Thread.currentThread().getName();
         // 缓存过滤
         EventMsgType eventMsgType = EventMsgType.getByCode(eventMsgTypeCode);
-        log.warn("接收到告警信息 -> 通道Id:{}, 事件编码:{}, 事件类型:{}, 事件描述:{}, 事件时间:{}", channelId, eventCode, eventMsgType, eventDesc, eventTime);
+        log.warn(LogTemplate.PROCESS_LOG_TEMPLATE, "告警信息南向服务", "接收到告警信息 -> 通道Id:{}, 事件编码:{}, 事件类型:{}, 事件描述:{}, 事件时间:{}", channelId, eventCode, eventMsgType, eventDesc, eventTime);
         switch (eventMsgType){
             case COMPOUND_START:
                 if (redisLockUtil.lock(lockKey, lockValue, DEFAULT_SINGLE_MSG_END, TimeUnit.SECONDS, 1)) {
                     Optional<AlarmSchemeInfo> alarmSchemeInfoOp = alarmSchemeInfoMapper.selectByChannelId(channelId);
                     if (alarmSchemeInfoOp.isEmpty()){
-                        log.warn("无效的告警信息，通道id：{} 未绑定告警预案", channelId);
+                        log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "无效的告警信息，通道id：{} 未绑定告警预案", channelId);
                         redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
                     AlarmSchemeInfo alarmSchemeInfo = alarmSchemeInfoOp.get();
                     if (CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())){
-                        log.warn("无效的告警信息，告警预案{} 已禁用", alarmSchemeInfo.getId());
+                        log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "无效的告警信息，告警预案{} 已禁用", alarmSchemeInfo.getId());
                         redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
                     Optional<AlarmSchemeEventRel> alarmSchemeEventRelOp = alarmSchemeEventRelMapper.selectBySchemeIdAndEventCode(alarmSchemeInfo.getId(), eventCode);
                     if (alarmSchemeEventRelOp.isEmpty()){
-                        log.warn("无效的告警信息，告警预案不关联当前事件:{}", eventCode);
+
+                        log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "无效的告警信息，告警预案不关联当前事件:{}", eventCode);
                         redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
                     try{
                         CommonResponse<String> response = timerUtilsApi.checkTime(alarmSchemeInfo.getTemplateId(), DateUtils.DATE_TIME_FORMATTER.format(eventTime));
-                        log.warn("response:{}", response);
                         if (response.isError() || Objects.isNull(response.getData())){
                             log.error(LogTemplate.ERROR_LOG_TEMPLATE, "告警信息南向服务", "时间校验异常", response);
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
                         }
-                        if (Objects.equals("false", response.getData())){
+
+                        if (Boolean.parseBoolean(response.getData())){
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
                         }
@@ -141,6 +142,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         }
                     }else {
                         alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
+                        redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval(), TimeUnit.SECONDS);
                     }
                     // 判断是否开启截图
                     if (CommonEnum.getBoolean(alarmSchemeEventRel.getEnablePhoto())){
