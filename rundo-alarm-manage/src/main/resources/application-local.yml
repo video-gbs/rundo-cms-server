@@ -159,6 +159,6 @@ resilience4j:
 alarm:
   file:
     store:
-      path: D:\uploadTest
+      path: /opt/alarm-manage/uploadData
     upload:
       url: http://172.20.0.80:8084/msg/south/receive

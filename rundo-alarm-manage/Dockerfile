@@ -8,7 +8,8 @@ EXPOSE 8094/tcp
 ENV LC_ALL zh_CN.UTF-8
 RUN apt update && apt install -y language-pack-zh-hans vim
 RUN mkdir -pv /opt/alarm-manage/logs/
-COPY target/*.jar /opt/alarm-manage
+RUN mkdir -pv /opt/alarm-manage/logs/
+COPY target/*.jar /opt/alarm-manage/uploadData
 WORKDIR /opt/alarm-manage
 
 

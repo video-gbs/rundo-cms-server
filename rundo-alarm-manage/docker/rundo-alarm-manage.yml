@@ -8,6 +8,7 @@ services:
       - 8094:8094
     volumes:
       - ./logs/:/opt/alarm-manage/logs/
+      - ./uploadData/:/opt/alarm-manage/uploadData/
     environment:
       TZ: Asia/Shanghai
       SERVER_PORT: 8094
