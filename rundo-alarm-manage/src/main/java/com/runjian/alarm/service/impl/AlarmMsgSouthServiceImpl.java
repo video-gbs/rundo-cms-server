@@ -90,15 +90,14 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
-                    CommonResponse<String> response;
                     try{
-                        response = timerUtilsApi.checkTime(alarmSchemeInfo.getTemplateId(), DateUtils.DATE_TIME_FORMATTER.format(eventTime));
+                        CommonResponse<String> response = timerUtilsApi.checkTime(alarmSchemeInfo.getTemplateId(), DateUtils.DATE_TIME_FORMATTER.format(eventTime));
+                        log.warn("response:{}", response);
                         if (response.isError() || Objects.isNull(response.getData())){
                             log.error(LogTemplate.ERROR_LOG_TEMPLATE, "告警信息南向服务", "时间校验异常", response);
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
                         }
-                        log.warn("response:{}", response);
                         if (Objects.equals("true", response.getData())){
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
