@@ -68,7 +68,7 @@ public interface AlarmSchemeInfoMapper {
     void deleteById(Long id);
 
     @Select(" SELECT ast.* FROM " + ALARM_SCHEME_TABLE_NAME + " ast " +
-            " LEFT JOIN " + AlarmSchemeChannelRelMapper.ALARM_SCHEME_CHANNEL_TABLE_NAME + " asct ON ast.id = asct.template_id " +
+            " LEFT JOIN " + AlarmSchemeChannelRelMapper.ALARM_SCHEME_CHANNEL_TABLE_NAME + " asct ON ast.id = asct.scheme_id " +
             " WHERE asct.channel_id = #{channelId} ")
     Optional<AlarmSchemeInfo> selectByChannelId(Long channelId);
 
