@@ -24,7 +24,7 @@ public interface TimerUtilsApi {
      * @return
      */
     @GetMapping("/template/check/time-in")
-    CommonResponse<Boolean> checkTime(@RequestParam Long templateId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") String time);
+    CommonResponse<String> checkTime(@RequestParam Long templateId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") String time);
 
     /**
      * 使用模板

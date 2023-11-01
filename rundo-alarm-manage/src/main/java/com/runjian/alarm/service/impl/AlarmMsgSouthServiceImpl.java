@@ -90,7 +90,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
-                    CommonResponse<Boolean> response;
+                    CommonResponse<String> response;
                     try{
                         response = timerUtilsApi.checkTime(alarmSchemeInfo.getTemplateId(), DateUtils.DATE_TIME_FORMATTER.format(eventTime));
                         if (response.isError() || Objects.isNull(response.getData())){
@@ -98,7 +98,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
                         }
-                        if (!response.getData()){
+                        if (Objects.equals("true", response.getData())){
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
                         }
