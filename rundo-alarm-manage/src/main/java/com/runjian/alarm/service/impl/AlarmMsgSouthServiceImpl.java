@@ -71,7 +71,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
         String lockValue = Thread.currentThread().getName();
         // 缓存过滤
         EventMsgType eventMsgType = EventMsgType.getByCode(eventMsgTypeCode);
-        log.warn(LogTemplate.PROCESS_LOG_TEMPLATE, "告警信息南向服务", "接收到告警信息 -> 通道Id:{}, 事件编码:{}, 事件类型:{}, 事件描述:{}, 事件时间:{}", channelId, eventCode, eventMsgType, eventDesc, eventTime);
+        log.warn(LogTemplate.PROCESS_LOG_TEMPLATE, "告警信息南向服务", String.format("接收到告警信息 -> 通道Id:%s, 事件编码:%s, 事件类型:%s, 事件描述:%s, 事件时间:%s", channelId, eventCode, eventMsgType, eventDesc, eventTime));
         switch (eventMsgType){
             case COMPOUND_START:
                 if (redisLockUtil.lock(lockKey, lockValue, DEFAULT_SINGLE_MSG_END, TimeUnit.SECONDS, 1)) {

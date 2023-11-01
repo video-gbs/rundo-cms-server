@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -295,11 +296,12 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             }
             log.error(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警预案服务", isDeploy ? "发送布防返回" : "发送撤防返回", String.format("%s:%s", commonResponse.getMsg(), commonResponse.getData()));
             Set<Long> channelIds = commonResponse.getData();
-            if (Objects.isNull(channelIds) || channelIds.isEmpty()){
-                return;
+            if (!CollectionUtils.isEmpty(channelIds)){
+                channelIdList.removeAll(channelIds);
             }
-            channelIdList.removeAll(channelIds);
-            alarmSchemeChannelRelMapper.batchUpdateDeployState(channelIdList, isDeploy ? 1 : 0, LocalDateTime.now());
+            if (!channelIdList.isEmpty()){
+                alarmSchemeChannelRelMapper.batchUpdateDeployState(channelIdList, isDeploy ? 1 : 0, LocalDateTime.now());
+            }
         });
     }
 }
