@@ -77,19 +77,19 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 if (redisLockUtil.lock(lockKey, lockValue, DEFAULT_SINGLE_MSG_END, TimeUnit.SECONDS, 1)) {
                     Optional<AlarmSchemeInfo> alarmSchemeInfoOp = alarmSchemeInfoMapper.selectByChannelId(channelId);
                     if (alarmSchemeInfoOp.isEmpty()){
-                        log.warn("无效的告警信息，告警预案不存在");
+                        log.warn("无效的告警信息，通道id：{} 未绑定告警预案", channelId);
                         redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
                     AlarmSchemeInfo alarmSchemeInfo = alarmSchemeInfoOp.get();
                     if (CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())){
-                        log.warn("无效的告警信息，告警预案已禁用");
+                        log.warn("无效的告警信息，告警预案{} 已禁用", alarmSchemeInfo.getId());
                         redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
                     Optional<AlarmSchemeEventRel> alarmSchemeEventRelOp = alarmSchemeEventRelMapper.selectBySchemeIdAndEventCode(alarmSchemeInfo.getId(), eventCode);
                     if (alarmSchemeEventRelOp.isEmpty()){
-                        log.warn("无效的告警信息，告警预案不关联当前事件");
+                        log.warn("无效的告警信息，告警预案不关联当前事件:{}", eventCode);
                         redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
