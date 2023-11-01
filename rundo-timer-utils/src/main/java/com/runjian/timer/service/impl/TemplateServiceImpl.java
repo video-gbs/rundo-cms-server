@@ -65,6 +65,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public Boolean checkTime(Long templateId, LocalDateTime time) {
+        log.warn("templateId:{},time:{}", templateId, time);
         return templateDetailInfoMapper.selectByTemplateIdAndDateTypeAndTimeIn(templateId, time.getDayOfWeek().getValue(), time).isPresent();
     }
 
