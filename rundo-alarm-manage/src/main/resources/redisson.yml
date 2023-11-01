@@ -16,7 +16,7 @@ singleServerConfig:
   # 单个连接最大订阅数量
   subscriptionsPerConnection: 5
   # 客户端名称
-  clientName: stream-manage
+  clientName: alarm-manage
   #  # 节点地址
   address: redis://127.0.0.1:6379
   # 发布和订阅连接的最小空闲连接数
