@@ -95,6 +95,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                             log.error(LogTemplate.ERROR_LOG_TEMPLATE, "告警信息南向服务", "时间校验异常", response);
                             redisLockUtil.unLock(lockKey, lockValue);
                         }
+                        log.warn("response:{}", response);
                         if (!response.getData()){
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
