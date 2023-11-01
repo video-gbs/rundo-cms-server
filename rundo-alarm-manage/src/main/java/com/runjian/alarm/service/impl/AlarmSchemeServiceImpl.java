@@ -293,6 +293,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "告警预案服务", isDeploy ? "发送布防失败" : "发送撤防失败", String.format("%s:%s", commonResponse.getMsg(), commonResponse.getData()), channelIdList);
                 return;
             }
+            log.error(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警预案服务", isDeploy ? "发送布防返回" : "发送撤防返回", String.format("%s:%s", commonResponse.getMsg(), commonResponse.getData()));
             Set<Long> channelIds = commonResponse.getData();
             if (Objects.isNull(channelIds) || channelIds.isEmpty()){
                 return;
