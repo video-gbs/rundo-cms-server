@@ -53,8 +53,7 @@ public interface TemplateDetailInfoMapper {
             " SELECT *  FROM " + TEMPLATE_DETAIL_TABLE_NAME +
             " WHERE template_id = #{templateId} " +
             " AND date_type = #{dateType} " +
-            " AND start_time &lt;= #{time} AND #{time} &lt;= end_time"  +
-            " <foreach collection='templateIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " AND start_time &lt;= #{time} AND end_time &gt;= #{time} "  +
             " </script> ")
     Optional<TemplateDetailInfo> selectByTemplateIdAndDateTypeAndTimeIn(Long templateId, Integer dateType, LocalDateTime time);
 }

@@ -46,7 +46,7 @@ public class TemplateController {
     @IllegalStringValid
     public CommonResponse<PageInfo<GetTemplateInfoRsp>> getTemplatePage(@RequestParam(defaultValue = "1") int page,
                                                                         @RequestParam(defaultValue = "10") int num,
-                                                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") String templateName){
+                                                                         String templateName){
         return CommonResponse.success(templateService.getTemplatePage(page, num, templateName));
     }
 
@@ -57,7 +57,7 @@ public class TemplateController {
      * @return
      */
     @GetMapping("/check/time-in")
-    public CommonResponse<Boolean> checkTime(@RequestParam Long templateId, @RequestParam LocalDateTime time){
+    public CommonResponse<Boolean> checkTime(@RequestParam Long templateId, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime time){
         return CommonResponse.success(templateService.checkTime(templateId, time));
     }
 
