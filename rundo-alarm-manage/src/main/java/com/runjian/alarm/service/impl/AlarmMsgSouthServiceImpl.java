@@ -98,6 +98,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
                         }
+                        log.warn("response:{}", response);
                         if (Objects.equals("true", response.getData())){
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
