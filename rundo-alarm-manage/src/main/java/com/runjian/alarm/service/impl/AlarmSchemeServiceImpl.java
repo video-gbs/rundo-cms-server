@@ -55,7 +55,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
 
     private final ThreadPoolExecutor defenseThreadPool = new ThreadPoolExecutor(
             1,
-            2,
+            5,
             10,
             TimeUnit.SECONDS,
             new ArrayBlockingQueue<>(30), r -> {
@@ -287,6 +287,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
     @Override
     public void defense(List<Long> channelIdList, boolean isDeploy){
         defenseThreadPool.execute( () -> {
+            log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警预案服务", isDeploy ? "发送布防" : "发送撤防", channelIdList);
             CommonResponse<Set<Long>> commonResponse = deviceControlApi.defense(new PutDefenseReq(channelIdList, isDeploy));
             if (commonResponse.isError()){
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "告警预案服务", isDeploy ? "发送布防失败" : "发送撤防失败", String.format("%s:%s", commonResponse.getMsg(), commonResponse.getData()), channelIdList);
