@@ -96,4 +96,12 @@ public interface AlarmSchemeChannelRelMapper {
             " </script> ")
     void deleteBySchemeIds(List<Long> schemeIds);
 
+    @Update(" <script> " +
+            " UPDATE " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+            " SET update_time = #{nowTime}  " +
+            " , scheme_id = #{schemeId} " +
+            " WHERE channel_id IN " +
+            " <foreach collection='channelIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    void batchUpdateSchemeId(Long schemeId, List<Long> channelIds, LocalDateTime nowTime);
 }

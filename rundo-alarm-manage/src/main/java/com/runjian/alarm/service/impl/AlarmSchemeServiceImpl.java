@@ -125,7 +125,15 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         alarmSchemeInfo.setDisabled(CommonEnum.DISABLE.getCode());
         alarmSchemeInfoMapper.save(alarmSchemeInfo);
 
-        alarmSchemeChannelRelMapper.batchSaveBySchemeId(alarmSchemeInfo.getId(), channelIds, nowTime);
+        if (!channelIds.isEmpty()){
+            List<AlarmSchemeChannelRel> alarmSchemeChannelRelList = alarmSchemeChannelRelMapper.selectByChannelIds(channelIds);
+            if (!CollectionUtils.isEmpty(alarmSchemeChannelRelList)) {
+                List<Long> existChannelIds = alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList());
+                alarmSchemeChannelRelMapper.batchUpdateSchemeId(alarmSchemeInfo.getId(), existChannelIds, nowTime);
+                existChannelIds.forEach(channelIds::remove);
+            }
+            alarmSchemeChannelRelMapper.batchSaveBySchemeId(alarmSchemeInfo.getId(), channelIds, nowTime);
+        }
 
         alarmSchemeEventRelMapper.batchSaveBySchemeId(alarmSchemeInfo.getId(), alarmSchemeEventRelList, nowTime);
 
@@ -183,30 +191,32 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         alarmSchemeInfoMapper.update(alarmSchemeInfo);
 
         // 更新通道
-        Map<Long, AlarmSchemeChannelRel> alarmSchemeChannelRelMap = alarmSchemeChannelRelMapper.selectByChannelIds(channelIds).stream().collect(Collectors.toMap(AlarmSchemeChannelRel::getChannelId, alarmSchemeChannelRel -> alarmSchemeChannelRel));
-        List<AlarmSchemeChannelRel> newSchemeChannelRelList = new ArrayList<>(channelIds.size());
-        List<AlarmSchemeChannelRel> updateSchemeChannelRelList = new ArrayList<>(alarmSchemeChannelRelMap.size());
-        for (Long channelId : channelIds) {
-            AlarmSchemeChannelRel alarmSchemeChannelRel = alarmSchemeChannelRelMap.remove(channelId);
-            if (Objects.isNull(alarmSchemeChannelRel)) {
-                alarmSchemeChannelRel = new AlarmSchemeChannelRel();
-                alarmSchemeChannelRel.setChannelId(channelId);
-                alarmSchemeChannelRel.setSchemeId(id);
-                alarmSchemeChannelRel.setCreateTime(nowTime);
-                newSchemeChannelRelList.add(alarmSchemeChannelRel);
-            } else {
-                alarmSchemeChannelRel.setCreateTime(nowTime);
-                updateSchemeChannelRelList.add(alarmSchemeChannelRel);
+        if (!channelIds.isEmpty()){
+            Map<Long, AlarmSchemeChannelRel> alarmSchemeChannelRelMap = alarmSchemeChannelRelMapper.selectByChannelIds(channelIds).stream().collect(Collectors.toMap(AlarmSchemeChannelRel::getChannelId, alarmSchemeChannelRel -> alarmSchemeChannelRel));
+            List<AlarmSchemeChannelRel> newSchemeChannelRelList = new ArrayList<>(channelIds.size());
+            List<AlarmSchemeChannelRel> updateSchemeChannelRelList = new ArrayList<>(alarmSchemeChannelRelMap.size());
+            for (Long channelId : channelIds) {
+                AlarmSchemeChannelRel alarmSchemeChannelRel = alarmSchemeChannelRelMap.remove(channelId);
+                if (Objects.isNull(alarmSchemeChannelRel)) {
+                    alarmSchemeChannelRel = new AlarmSchemeChannelRel();
+                    alarmSchemeChannelRel.setChannelId(channelId);
+                    alarmSchemeChannelRel.setSchemeId(id);
+                    alarmSchemeChannelRel.setCreateTime(nowTime);
+                    newSchemeChannelRelList.add(alarmSchemeChannelRel);
+                } else {
+                    alarmSchemeChannelRel.setCreateTime(nowTime);
+                    updateSchemeChannelRelList.add(alarmSchemeChannelRel);
+                }
             }
-        }
-        if (!newSchemeChannelRelList.isEmpty()){
-            alarmSchemeChannelRelMapper.batchSave(newSchemeChannelRelList);
-        }
-        if (!updateSchemeChannelRelList.isEmpty()){
-            alarmSchemeChannelRelMapper.batchUpdate(updateSchemeChannelRelList);
-        }
-        if (!alarmSchemeChannelRelMap.values().isEmpty()){
-            alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
+            if (!newSchemeChannelRelList.isEmpty()){
+                alarmSchemeChannelRelMapper.batchSave(newSchemeChannelRelList);
+            }
+            if (!updateSchemeChannelRelList.isEmpty()){
+                alarmSchemeChannelRelMapper.batchUpdate(updateSchemeChannelRelList);
+            }
+            if (!alarmSchemeChannelRelMap.values().isEmpty()){
+                alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
+            }
         }
 
         // 更新事件信息
