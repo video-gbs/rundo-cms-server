@@ -35,17 +35,4 @@ public class AlarmMsgSouthController {
         return CommonResponse.success();
     }
 
-    /**
-     * 上传告警数据
-     * @param alarmMsgId 告警信息id
-     * @param alarmDataType 告警数据类型
-     * @param file 文件
-     * @return
-     */
-    @PostMapping("/upload")
-    public CommonResponse<?> uploadAlarmMsg(@RequestParam Long alarmMsgId, @RequestParam Integer alarmDataType, @RequestPart MultipartFile file){
-        alarmMsgSouthService.saveAlarmFile(alarmMsgId, alarmDataType, file);
-        return CommonResponse.success();
-    }
-
 }
