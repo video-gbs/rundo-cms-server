@@ -64,7 +64,7 @@ public class AlarmController {
      */
     @GetMapping("/scheme/channel")
     @BlankStringValid
-    public CommonResponse<PageResp<GetAlarmSchemeChannelRsp>> getAlarmSchemeChannel(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Long videoAreaId, Integer includeEquipment, String channelName, String deviceName, Integer onlineState, @RequestParam(required = false) Set<Long> priChannelIds) {
+    public CommonResponse<PageResp<GetAlarmSchemeChannelRsp>> getAlarmSchemeChannel(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Long videoAreaId, Integer includeEquipment, String channelName, String deviceName, Integer onlineState, Set<Long> priChannelIds) {
         return CommonResponse.success(alarmService.getAlarmSchemeChannel(page, num, videoAreaId, includeEquipment, channelName, deviceName, onlineState, priChannelIds));
     }
 
