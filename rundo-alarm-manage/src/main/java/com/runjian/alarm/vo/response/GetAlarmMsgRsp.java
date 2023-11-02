@@ -62,4 +62,14 @@ public class GetAlarmMsgRsp {
      * 错误描述
      */
     private String videoErrorMsg;
+
+    /**
+     * 图片状态
+     */
+    private Integer imageState;
+
+    /**
+     * 图片url
+     */
+    private String imageUrl;
 }
