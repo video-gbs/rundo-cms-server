@@ -115,7 +115,6 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                     AlarmMsgInfo alarmMsgInfo = new AlarmMsgInfo();
                     alarmMsgInfo.setChannelId(channelId);
                     alarmMsgInfo.setAlarmLevel(alarmSchemeEventRel.getEventLevel());
-                    alarmMsgInfo.setAlarmType(alarmSchemeEventRel.getEventCode());
                     alarmMsgInfo.setAlarmStartTime(eventTime);
                     alarmMsgInfo.setAlarmDesc(eventDesc);
                     alarmMsgInfo.setAlarmCode(eventCode);

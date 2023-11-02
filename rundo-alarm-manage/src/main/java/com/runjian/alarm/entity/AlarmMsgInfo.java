@@ -33,11 +33,6 @@ public class AlarmMsgInfo {
     private Integer alarmLevel;
 
     /**
-     * 告警类型
-     */
-    private String alarmType;
-
-    /**
      * 告警开始时间
      */
     private LocalDateTime alarmStartTime;

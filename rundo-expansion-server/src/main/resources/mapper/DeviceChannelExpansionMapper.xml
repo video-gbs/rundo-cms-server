@@ -68,7 +68,7 @@
 			<foreach collection="priorityChannelIds" item="id" index="index" open="(" close=")" separator=",">
 				#{id}
 			</foreach>
-			then 1 else 0 end,
+			then 0 else 1 end,
 			t1.online_state
 			desc
 		</if>
