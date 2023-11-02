@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.PropertySource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
@@ -51,7 +52,9 @@ public class IAlarmServiceImpl implements IAlarmService {
             return new PageResp<>();
         }
         List<Long> channelIds = channelList.stream().map(getCatalogueResourceRsp -> Long.parseLong(getCatalogueResourceRsp.getResourceValue())).collect(Collectors.toList());
-
+        if (CollectionUtils.isEmpty(priorityChannelIds)){
+            priorityChannelIds = null;
+        }
         Page<GetAlarmSchemeChannelRsp> channelExpansionPage = deviceChannelExpansionMapper.listAlarmPage(new Page<>(page, num),channelIds, channelName, deviceName, onlineState, priorityChannelIds);
         if(ObjectUtils.isEmpty(channelExpansionPage.getRecords())){
             return new PageResp<>();
