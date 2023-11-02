@@ -43,7 +43,7 @@ public class IAlarmServiceImpl implements IAlarmService {
     private final AuthRbacServerApi authRbacServerApi;
 
     @Override
-    public PageResp<GetAlarmSchemeChannelRsp> getAlarmSchemeChannel(int page, int num, Long videoAreaId, Integer includeEquipment, String channelName, String deviceName, Integer onlineState) {
+    public PageResp<GetAlarmSchemeChannelRsp> getAlarmSchemeChannel(int page, int num, Long videoAreaId, Integer includeEquipment, String channelName, String deviceName, Integer onlineState, Set<Long> priorityChannelIds) {
         CommonResponse<List<GetCatalogueResourceRsp>> catalogueResourceRsp = authRbacServerApi.getCatalogueResourceRsp(videoAreaId, CommonEnum.getBoolean(includeEquipment));
         catalogueResourceRsp.ifErrorThrowException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR);
         List<GetCatalogueResourceRsp> channelList = catalogueResourceRsp.getData();
@@ -52,7 +52,7 @@ public class IAlarmServiceImpl implements IAlarmService {
         }
         List<Long> channelIds = channelList.stream().map(getCatalogueResourceRsp -> Long.parseLong(getCatalogueResourceRsp.getResourceValue())).collect(Collectors.toList());
 
-        Page<GetAlarmSchemeChannelRsp> channelExpansionPage = deviceChannelExpansionMapper.listAlarmPage(new Page<>(page, num),channelIds, channelName, deviceName, onlineState);
+        Page<GetAlarmSchemeChannelRsp> channelExpansionPage = deviceChannelExpansionMapper.listAlarmPage(new Page<>(page, num),channelIds, channelName, deviceName, onlineState, priorityChannelIds);
         if(ObjectUtils.isEmpty(channelExpansionPage.getRecords())){
             return new PageResp<>();
         }

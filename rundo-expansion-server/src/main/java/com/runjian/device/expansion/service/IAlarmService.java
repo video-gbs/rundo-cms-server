@@ -8,6 +8,7 @@ import com.runjian.device.expansion.vo.response.PageResp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -24,9 +25,10 @@ public interface IAlarmService {
      * @param channelName 通道名称
      * @param deviceName 设备名称
      * @param onlineState 在线状态
+     * @param priorityChannelIds 优先级通道id
      * @return
      */
-    PageResp<GetAlarmSchemeChannelRsp> getAlarmSchemeChannel(int page, int num, Long videoAreaId, Integer includeEquipment, String channelName, String deviceName, Integer onlineState);
+    PageResp<GetAlarmSchemeChannelRsp> getAlarmSchemeChannel(int page, int num, Long videoAreaId, Integer includeEquipment, String channelName, String deviceName, Integer onlineState, Set<Long> priorityChannelIds);
 
     /**
      * 获取预案下布防的通道

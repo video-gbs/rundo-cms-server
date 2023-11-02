@@ -62,7 +62,20 @@
 		<if test="onlineState != null">
 			and t1.online_state = #{onlineState}
 		</if>
-		order by t1.created_at,t1.online_state Desc
+		<if test="priChannelIds != null">
+			order by
+			case when t1.id IN
+			<foreach collection="priorityChannelIds" item="id" index="index" open="(" close=")" separator=",">
+				#{id}
+			</foreach>
+			then 1 else 0 end,
+			t1.online_state
+			desc
+		</if>
+		<if test="priChannelIds = null">
+			order by t1.online_state Desc
+		</if>
+
 	</select>
 
 	<select id="listAlarmList" resultType="com.runjian.device.expansion.vo.response.GetAlarmDeviceChannelRsp">

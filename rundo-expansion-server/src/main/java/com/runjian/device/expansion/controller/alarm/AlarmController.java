@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 告警扩展信息接口
@@ -63,8 +64,8 @@ public class AlarmController {
      */
     @GetMapping("/scheme/channel")
     @BlankStringValid
-    public CommonResponse<PageResp<GetAlarmSchemeChannelRsp>> getAlarmSchemeChannel(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Long videoAreaId, Integer includeEquipment, String channelName, String deviceName, Integer onlineState) {
-        return CommonResponse.success(alarmService.getAlarmSchemeChannel(page, num, videoAreaId, includeEquipment, channelName, deviceName, onlineState));
+    public CommonResponse<PageResp<GetAlarmSchemeChannelRsp>> getAlarmSchemeChannel(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Long videoAreaId, Integer includeEquipment, String channelName, String deviceName, Integer onlineState, @RequestParam(required = false) Set<Long> priChannelIds) {
+        return CommonResponse.success(alarmService.getAlarmSchemeChannel(page, num, videoAreaId, includeEquipment, channelName, deviceName, onlineState, priChannelIds));
     }
 
     /**

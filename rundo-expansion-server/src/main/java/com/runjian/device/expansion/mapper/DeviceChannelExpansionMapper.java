@@ -42,7 +42,7 @@ public interface DeviceChannelExpansionMapper extends BaseMapper<DeviceChannelEx
      * @param onlineState
      * @return
      */
-    Page<GetAlarmSchemeChannelRsp> listAlarmPage(Page<DeviceChannelExpansion> page, List<Long> idList, String channelName, String deviceName, Integer onlineState);
+    Page<GetAlarmSchemeChannelRsp> listAlarmPage(Page<DeviceChannelExpansion> page, List<Long> idList, String channelName, String deviceName, Integer onlineState, Set<Long> priorityChannelIds);
 
     /**
      * 告警信息查询
