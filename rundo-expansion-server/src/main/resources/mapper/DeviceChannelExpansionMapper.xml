@@ -62,7 +62,7 @@
 		<if test="onlineState != null">
 			and t1.online_state = #{onlineState}
 		</if>
-		<if test="priChannelIds != null">
+		<if test="priorityChannelIds != null">
 			order by
 			case when t1.id IN
 			<foreach collection="priorityChannelIds" item="id" index="index" open="(" close=")" separator=",">
@@ -72,7 +72,7 @@
 			t1.online_state
 			desc
 		</if>
-		<if test="priChannelIds = null">
+		<if test="priorityChannelIds = null">
 			order by t1.online_state Desc
 		</if>
 
