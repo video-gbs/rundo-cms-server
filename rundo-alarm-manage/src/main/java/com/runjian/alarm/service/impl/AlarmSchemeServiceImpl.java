@@ -132,7 +132,9 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
                 alarmSchemeChannelRelMapper.batchUpdateSchemeId(alarmSchemeInfo.getId(), existChannelIds, nowTime);
                 existChannelIds.forEach(channelIds::remove);
             }
-            alarmSchemeChannelRelMapper.batchSaveBySchemeId(alarmSchemeInfo.getId(), channelIds, nowTime);
+            if (!channelIds.isEmpty()){
+                alarmSchemeChannelRelMapper.batchSaveBySchemeId(alarmSchemeInfo.getId(), channelIds, nowTime);
+            }
         }
 
         alarmSchemeEventRelMapper.batchSaveBySchemeId(alarmSchemeInfo.getId(), alarmSchemeEventRelList, nowTime);
