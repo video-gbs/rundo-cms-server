@@ -46,6 +46,14 @@ public interface AlarmSchemeChannelRelMapper {
             " </script> ")
     List<AlarmSchemeChannelRel> selectByChannelIds(Set<Long> channelIds);
 
+    @Select(" <script> " +
+            " SELECT * FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
+            " WHERE schemeId = #{schemeId} " +
+            " OR channel_id IN " +
+            " <foreach collection='channelIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    List<AlarmSchemeChannelRel> selectBySchemeIdOrChannelIds(Long schemeId, Set<Long> channelIds);
+
     @Insert({" <script> " +
             " INSERT INTO " + ALARM_SCHEME_CHANNEL_TABLE_NAME + " (scheme_id, channel_id, create_time) values " +
             " <foreach collection='alarmSchemeChannelRelList' item='item' separator=','>(#{item.schemeId}, #{item.channelId}, #{item.createTime})</foreach> " +

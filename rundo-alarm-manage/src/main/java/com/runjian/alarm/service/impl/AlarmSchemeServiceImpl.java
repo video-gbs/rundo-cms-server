@@ -190,34 +190,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         // 更新预案
         alarmSchemeInfoMapper.update(alarmSchemeInfo);
 
-        // 更新通道
-        if (!channelIds.isEmpty()){
-            Map<Long, AlarmSchemeChannelRel> alarmSchemeChannelRelMap = alarmSchemeChannelRelMapper.selectByChannelIds(channelIds).stream().collect(Collectors.toMap(AlarmSchemeChannelRel::getChannelId, alarmSchemeChannelRel -> alarmSchemeChannelRel));
-            List<AlarmSchemeChannelRel> newSchemeChannelRelList = new ArrayList<>(channelIds.size());
-            List<AlarmSchemeChannelRel> updateSchemeChannelRelList = new ArrayList<>(alarmSchemeChannelRelMap.size());
-            for (Long channelId : channelIds) {
-                AlarmSchemeChannelRel alarmSchemeChannelRel = alarmSchemeChannelRelMap.remove(channelId);
-                if (Objects.isNull(alarmSchemeChannelRel)) {
-                    alarmSchemeChannelRel = new AlarmSchemeChannelRel();
-                    alarmSchemeChannelRel.setChannelId(channelId);
-                    alarmSchemeChannelRel.setSchemeId(id);
-                    alarmSchemeChannelRel.setCreateTime(nowTime);
-                    newSchemeChannelRelList.add(alarmSchemeChannelRel);
-                } else {
-                    alarmSchemeChannelRel.setCreateTime(nowTime);
-                    updateSchemeChannelRelList.add(alarmSchemeChannelRel);
-                }
-            }
-            if (!newSchemeChannelRelList.isEmpty()){
-                alarmSchemeChannelRelMapper.batchSave(newSchemeChannelRelList);
-            }
-            if (!updateSchemeChannelRelList.isEmpty()){
-                alarmSchemeChannelRelMapper.batchUpdate(updateSchemeChannelRelList);
-            }
-            if (!alarmSchemeChannelRelMap.values().isEmpty()){
-                alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
-            }
-        }
+
 
         // 更新事件信息
         Set<String> existEventCodes = alarmSchemeEventRelMapper.selectEventCodeBySchemeId(id);
@@ -242,24 +215,55 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             alarmSchemeEventRelMapper.batchSave(new ArrayList<>(newEventMap.values()));
         }
 
-        if (CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())) {
-            if (!alarmSchemeChannelRelMap.values().isEmpty()){
-                channelIds.addAll(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()));
+        // 更新通道
+        if (!channelIds.isEmpty()){
+            Map<Long, AlarmSchemeChannelRel> alarmSchemeChannelRelMap = alarmSchemeChannelRelMapper.selectBySchemeIdOrChannelIds(alarmSchemeInfo.getId(), channelIds).stream().collect(Collectors.toMap(AlarmSchemeChannelRel::getChannelId, alarmSchemeChannelRel -> alarmSchemeChannelRel));
+            List<AlarmSchemeChannelRel> newSchemeChannelRelList = new ArrayList<>(channelIds.size());
+            List<AlarmSchemeChannelRel> updateSchemeChannelRelList = new ArrayList<>(alarmSchemeChannelRelMap.size());
+            for (Long channelId : channelIds) {
+                AlarmSchemeChannelRel alarmSchemeChannelRel = alarmSchemeChannelRelMap.remove(channelId);
+                if (Objects.isNull(alarmSchemeChannelRel)) {
+                    alarmSchemeChannelRel = new AlarmSchemeChannelRel();
+                    alarmSchemeChannelRel.setChannelId(channelId);
+                    alarmSchemeChannelRel.setSchemeId(id);
+                    alarmSchemeChannelRel.setCreateTime(nowTime);
+                    newSchemeChannelRelList.add(alarmSchemeChannelRel);
+                } else {
+                    alarmSchemeChannelRel.setCreateTime(nowTime);
+                    updateSchemeChannelRelList.add(alarmSchemeChannelRel);
+                }
             }
-            if (!channelIds.isEmpty()){
+            if (!newSchemeChannelRelList.isEmpty()){
+                alarmSchemeChannelRelMapper.batchSave(newSchemeChannelRelList);
+            }
+            if (!updateSchemeChannelRelList.isEmpty()){
+                alarmSchemeChannelRelMapper.batchUpdate(updateSchemeChannelRelList);
+            }
+            if (!alarmSchemeChannelRelMap.values().isEmpty()){
+                alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
+            }
+            if (CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())) {
+                if (!alarmSchemeChannelRelMap.values().isEmpty()){
+                    channelIds.addAll(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()));
+                }
                 defense(new ArrayList<>(channelIds), false);
-            }
-
-        } else {
-            // 撤防删除的设备
-            if (!alarmSchemeChannelRelMap.values().isEmpty()){
-                defense(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false);
-            }
-            // 布防新增的设备
-            if (!channelIds.isEmpty()){
+            } else {
+                // 撤防删除的设备
+                if (!alarmSchemeChannelRelMap.values().isEmpty()){
+                    defense(alarmSchemeChannelRelMap.values().stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false);
+                }
+                // 布防新增的设备
                 defense(new ArrayList<>(channelIds), true);
             }
+        } else {
+            List<GetAlarmChannelDeployRsp> getAlarmChannelDeployRsps = alarmSchemeChannelRelMapper.selectBySchemeId(alarmSchemeInfo.getId());
+            if (CollectionUtils.isEmpty(getAlarmChannelDeployRsps)){
+                return;
+            }
+            defense(new ArrayList<>(getAlarmChannelDeployRsps.stream().map(GetAlarmChannelDeployRsp::getChannelId).collect(Collectors.toList())), false);
         }
+
+
 
     }
 
