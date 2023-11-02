@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
+ * 告警开放接口
  * @author Miracle
  * @date 2023/11/2 17:52
  */
