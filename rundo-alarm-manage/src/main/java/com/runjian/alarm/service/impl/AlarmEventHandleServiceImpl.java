@@ -213,7 +213,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
         AlarmMsgInfo alarmMsgInfo = alarmMsgInfoOp.get();
         switch (AlarmFileType.getByCode(alarmFileType)){
             case VIDEO:
-                if (!Objects.equals(alarmMsgInfo.getVideoAudioState(), AlarmFileState.ERROR.getCode())){
+                if (!Objects.equals(alarmMsgInfo.getVideoState(), AlarmFileState.ERROR.getCode())){
                     throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "视频状态非异常，无法恢复");
                 }
                 alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
