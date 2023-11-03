@@ -25,14 +25,11 @@ public enum PlayType {
     private final String msg;
 
     public static String getMsgByCode(int code){
-        if (code == LIVE.code){
-            return LIVE.msg;
-        } else if (code == RECORD.code) {
-            return RECORD.msg;
-        } else if (code == DOWNLOAD.code) {
-            return DOWNLOAD.msg;
-        } else {
-            return null;
+        for (PlayType playType : PlayType.values()) {
+            if (playType.getCode().equals(code)){
+                return playType.getMsg();
+            }
         }
+        return null;
     }
 }
