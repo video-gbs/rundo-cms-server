@@ -101,7 +101,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                             return;
                         }
 
-                        if (response.getData()){
+                        if (!response.getData()){
                             log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "该告警不在时间内", String.format("通道id:%s 告警预案id:%s 事件编码:%s 告警时间:%s", channelId, alarmSchemeInfo.getId(), eventCode, eventTime));
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
