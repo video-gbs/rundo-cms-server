@@ -48,7 +48,7 @@ public interface AlarmSchemeChannelRelMapper {
 
     @Select(" <script> " +
             " SELECT * FROM " + ALARM_SCHEME_CHANNEL_TABLE_NAME +
-            " WHERE schemeId = #{schemeId} " +
+            " WHERE scheme_id = #{schemeId} " +
             " OR channel_id IN " +
             " <foreach collection='channelIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
