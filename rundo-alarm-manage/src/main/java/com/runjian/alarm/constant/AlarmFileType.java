@@ -11,9 +11,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AlarmFileType {
 
-    UNKNOWN(0, "UNKNOWN"),
-    IMAGE(1, "IMAGE"),
-    VIDEO(2, "VIDEO");
+    UNKNOWN(0, "unknown"),
+    IMAGE(1, "image"),
+    VIDEO(2, "video");
 
     private final Integer code;
 
