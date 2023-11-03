@@ -161,6 +161,8 @@ resilience4j:
 alarm:
   file:
     store:
-      path: /opt/alarm-manage/uploadData
+      path: /opt/alarm-manage/uploadData/alarm
     upload:
       url: http://172.20.0.80:8084/msg/south/receive
+    nginx:
+      url: https://xard-gbs-test.runjian.com:8080/uploadData/alarm

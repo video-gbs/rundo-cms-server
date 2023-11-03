@@ -215,22 +215,25 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
 
         Path filePath;
         AlarmFileType fileType = AlarmFileType.getByCode(alarmFileType);
-        String dir = alarmProperties.getFileStorePath() + MarkConstant.MARK_SPLIT_SLASH + alarmMsgInfo.getChannelId() + MarkConstant.MARK_SPLIT_SLASH + alarmMsgInfo.getId() + MarkConstant.MARK_SPLIT_SLASH + fileType.getMsg();
+        String baseDir = MarkConstant.MARK_SPLIT_SLASH + alarmMsgInfo.getChannelId() + MarkConstant.MARK_SPLIT_SLASH + alarmMsgInfo.getId() + MarkConstant.MARK_SPLIT_SLASH + fileType.getMsg();
+        String dir = alarmProperties.getFileStorePath() + baseDir;
         switch (fileType){
             case IMAGE:
                 if (Objects.equals(AlarmFileState.GENERATING.getCode(), alarmMsgInfo.getVideoState())){
                     redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId(), String.format("%s-%s", fileType.getMsg(), alarmMsgInfo.getId()));
                 }
-                filePath = Paths.get(dir, DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "jpg" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1)));
-                alarmMsgInfo.setImageUrl(filePath.toString());
+                String imageFileName = DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "jpg" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
+                filePath = Paths.get(dir, imageFileName);
+                alarmMsgInfo.setImageUrl(alarmProperties.getNginxUrl() + baseDir + imageFileName);
                 alarmMsgInfo.setVideoState(AlarmFileState.SUCCESS.getCode());
                 break;
             case VIDEO:
                 if (Objects.equals(AlarmFileState.GENERATING.getCode(), alarmMsgInfo.getImageState())){
                     redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId(), String.format("%s-%s", fileType.getMsg(), alarmMsgInfo.getId()));
                 }
-                filePath = Paths.get(dir, DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "mp4" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1)));
-                alarmMsgInfo.setVideoUrl(filePath.toString());
+                String videoFileName = DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "mp4" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
+                filePath = Paths.get(dir, videoFileName);
+                alarmMsgInfo.setVideoUrl(alarmProperties.getNginxUrl() + baseDir + videoFileName);
                 alarmMsgInfo.setImageState(AlarmFileState.SUCCESS.getCode());
                 break;
             default:

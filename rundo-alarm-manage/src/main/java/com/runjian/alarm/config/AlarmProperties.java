@@ -12,10 +12,12 @@ import org.springframework.stereotype.Component;
 @Data
 public class AlarmProperties {
 
-
     @Value("${alarm.file.store.path}")
     private String fileStorePath;
 
     @Value("${alarm.file.upload.url}")
     private String uploadUrl;
+
+    @Value("${alarm.file.nginx.url}")
+    private String nginxUrl;
 }
