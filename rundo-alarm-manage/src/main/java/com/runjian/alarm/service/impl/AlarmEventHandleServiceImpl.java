@@ -60,7 +60,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
 
     private final AlarmProperties alarmProperties;
 
-    private final static long DELAY_VIDEO_TIME_SECOND = -30;
+    private final static long DELAY_VIDEO_TIME_SECOND = -60;
 
     private final static long DEFAULT_OUT_TIME_SECOND = 60;
 
@@ -114,7 +114,6 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                 alarmMsgInfo.setUpdateTime(nowTime);
                 PostRecordDownloadReq postRecordDownloadReq = getPostRecordDownloadReq(alarmMsgInfo);
                 try{
-                    log.info(LogTemplate.PROCESS_LOG_TEMPLATE, "视频报警处理", postRecordDownloadReq);
                     CommonResponse<String> response = streamManageApi.applyStreamId(postRecordDownloadReq);
                     if(response.isError()){
                         String errorData = String.format("%s:%s", response.getMsg(), response.getData());
