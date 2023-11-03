@@ -94,14 +94,14 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         return;
                     }
                     try{
-                        CommonResponse<String> response = timerUtilsApi.checkTime(alarmSchemeInfo.getTemplateId(), DateUtils.DATE_TIME_FORMATTER.format(eventTime));
+                        CommonResponse<Boolean> response = timerUtilsApi.checkTime(alarmSchemeInfo.getTemplateId(), DateUtils.DATE_TIME_FORMATTER.format(eventTime));
                         if (response.isError() || Objects.isNull(response.getData())){
                             log.error(LogTemplate.ERROR_LOG_TEMPLATE, "告警信息南向服务", "时间校验异常", response);
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
                         }
 
-                        if (Boolean.parseBoolean(response.getData())){
+                        if (response.getData()){
                             log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "该告警不在时间内", String.format("通道id:%s 告警预案id:%s 事件编码:%s 告警时间:%s", channelId, alarmSchemeInfo.getId(), eventCode, eventTime));
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
