@@ -156,6 +156,8 @@ resilience4j:
         recordExceptions: #异常名单
           - java.lang.Exception
 
+
+
 alarm:
   file:
     store:
