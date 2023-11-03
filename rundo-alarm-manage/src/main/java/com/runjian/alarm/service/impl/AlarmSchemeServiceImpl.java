@@ -2,6 +2,7 @@ package com.runjian.alarm.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.runjian.alarm.dao.AlarmEventMapper;
 import com.runjian.alarm.dao.AlarmSchemeInfoMapper;
 import com.runjian.alarm.dao.relation.AlarmSchemeChannelRelMapper;
 import com.runjian.alarm.dao.relation.AlarmSchemeEventRelMapper;
@@ -49,6 +50,8 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
     private final AlarmSchemeEventRelMapper alarmSchemeEventRelMapper;
 
     private final AlarmSchemeChannelRelMapper alarmSchemeChannelRelMapper;
+
+    private final AlarmEventMapper alarmEventMapper;
 
     private final DeviceControlApi deviceControlApi;
 
@@ -115,6 +118,11 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         Optional<AlarmEventInfo> alarmEventInfoOp = alarmSchemeInfoMapper.selectBySchemeName(schemeName);
         if (alarmEventInfoOp.isPresent()) {
             throw new BusinessException(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, "该告警预案名称已存在，请重新输入");
+        }
+        Set<String> eventCodes = alarmSchemeEventRelList.stream().map(AlarmSchemeEventRel::getEventCode).collect(Collectors.toSet());
+        List<AlarmEventInfo> alarmEventInfoList = alarmEventMapper.selectByEventCodes(eventCodes);
+        if (!Objects.equals(alarmEventInfoList.size(), eventCodes.size())){
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "存在非法事件编码");
         }
         LocalDateTime nowTime = LocalDateTime.now();
         AlarmSchemeInfo alarmSchemeInfo = new AlarmSchemeInfo();
@@ -183,6 +191,11 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             }
             alarmSchemeInfo.setSchemeName(schemeName);
         }
+        Map<String, AlarmSchemeEventRel> newEventMap = alarmSchemeEventRelList.stream().collect(Collectors.toMap(AlarmSchemeEventRel::getEventCode, alarmSchemeEventRel -> alarmSchemeEventRel));
+        List<AlarmEventInfo> alarmEventInfoList = alarmEventMapper.selectByEventCodes(newEventMap.keySet());
+        if (!Objects.equals(alarmEventInfoList.size(), newEventMap.keySet().size())){
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "存在非法事件编码");
+        }
         if (!Objects.equals(alarmSchemeInfo.getTemplateId(), templateId)){
             alarmSchemeInfo.setTemplateId(templateId);
             timerUtilsApi.useTemplate(new PostUseTemplateReq(templateId, "alarm-manage", String.valueOf(alarmSchemeInfo.getId()), 0));
@@ -195,8 +208,9 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
 
 
         // 更新事件信息
+
         Set<String> existEventCodes = alarmSchemeEventRelMapper.selectEventCodeBySchemeId(id);
-        Map<String, AlarmSchemeEventRel> newEventMap = alarmSchemeEventRelList.stream().collect(Collectors.toMap(AlarmSchemeEventRel::getEventCode, alarmSchemeEventRel -> alarmSchemeEventRel));
+
         List<String> deleteEventCodeList = new ArrayList<>(existEventCodes.size());
         List<AlarmSchemeEventRel> updateEventList = new ArrayList<>(newEventMap.size());
         for (String eventCode : existEventCodes) {

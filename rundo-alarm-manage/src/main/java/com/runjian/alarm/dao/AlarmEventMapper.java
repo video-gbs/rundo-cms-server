@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -63,4 +64,11 @@ public interface AlarmEventMapper {
             " <if test=\"eventName != null\" > WHERE event_name LIKE CONCAT('%', #{eventName}, '%') </if> " +
             " </script> ")
     List<GetAlarmEventNameRsp> selectEventName(String eventName);
+
+    @Select(" <script> " +
+            " SELECT * FROM " + ALARM_EVENT_TABLE_NAME +
+            " WHERE event_code IN " +
+            " <foreach collection='eventCodes' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    List<AlarmEventInfo> selectByEventCodes(Set<String> eventCodes);
 }
