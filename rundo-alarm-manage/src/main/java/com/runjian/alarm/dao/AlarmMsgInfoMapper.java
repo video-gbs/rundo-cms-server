@@ -77,8 +77,8 @@ public interface AlarmMsgInfoMapper {
     void batchUpdate(List<AlarmMsgInfo> alarmMsgInfoList);
 
     @Select(" SELECT * FROM " + ALARM_MSG_TABLE_NAME +
-            " WHERE video_state = #{alarmFileState} OR " +
-            " image_state = #{alarmFileState} ")
+            " WHERE video_state = #{alarmFileState} " +
+            " AND alarm_end_time &lt;= #{nowTime} ")
     List<AlarmMsgInfo> selectByVideoStateAndAlarmEndTime(Integer alarmFileState, LocalDateTime nowTime);
 
     @Select(" SELECT * FROM " + ALARM_MSG_TABLE_NAME +
@@ -87,8 +87,9 @@ public interface AlarmMsgInfoMapper {
     List<AlarmMsgInfo> selectByVideoStateOrImageState(Integer alarmFileState);
 
     @Select(" SELECT * FROM " + ALARM_MSG_TABLE_NAME +
-            " WHERE image_state = #{alarmFileState} ")
-    List<AlarmMsgInfo> selectByImageState(Integer alarmFileState);
+            " WHERE image_state = #{alarmFileState} " +
+            " AND alarm_start_time &lt;= #{nowTime} ")
+    List<AlarmMsgInfo> selectByImageState(Integer alarmFileState, LocalDateTime nowTime);
 
 
     @Delete(" <script> " +
