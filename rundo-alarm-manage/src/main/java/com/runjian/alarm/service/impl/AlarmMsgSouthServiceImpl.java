@@ -224,7 +224,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 }
                 String imageFileName = DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "jpg" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
                 filePath = Paths.get(dir, imageFileName);
-                alarmMsgInfo.setImageUrl(alarmProperties.getNginxUrl() + baseDir + imageFileName);
+                alarmMsgInfo.setImageUrl(alarmProperties.getNginxUrl() + baseDir + MarkConstant.MARK_SPLIT_SLASH + imageFileName);
                 alarmMsgInfo.setVideoState(AlarmFileState.SUCCESS.getCode());
                 break;
             case VIDEO:
@@ -233,7 +233,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 }
                 String videoFileName = DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "mp4" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
                 filePath = Paths.get(dir, videoFileName);
-                alarmMsgInfo.setVideoUrl(alarmProperties.getNginxUrl() + baseDir + videoFileName);
+                alarmMsgInfo.setVideoUrl(alarmProperties.getNginxUrl() + baseDir + MarkConstant.MARK_SPLIT_SLASH + videoFileName);
                 alarmMsgInfo.setImageState(AlarmFileState.SUCCESS.getCode());
                 break;
             default:
