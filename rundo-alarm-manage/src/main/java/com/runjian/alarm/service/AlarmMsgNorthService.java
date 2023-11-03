@@ -32,4 +32,5 @@ public interface AlarmMsgNorthService {
     void deleteAlarmMsg(List<Long> idList);
 
 
+
 }

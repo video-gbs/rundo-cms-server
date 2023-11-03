@@ -39,7 +39,7 @@ public interface AlarmMsgInfoMapper {
     void save(AlarmMsgInfo alarmMsgInfo);
 
     @Select(" SELECT * FROM " + ALARM_MSG_TABLE_NAME +
-            " WHERE id = #{id} ")
+            " WHERE id = #{id} FOR UPDATE ")
     Optional<AlarmMsgInfo> selectById(Long alarmMsgId);
 
     @Update(" <script> " +

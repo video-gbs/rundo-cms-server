@@ -13,6 +13,8 @@ import com.runjian.alarm.service.AlarmEventHandleService;
 import com.runjian.alarm.utils.RedisLockUtil;
 import com.runjian.alarm.vo.request.PostImageDownloadReq;
 import com.runjian.alarm.vo.request.PostRecordDownloadReq;
+import com.runjian.common.config.exception.BusinessErrorEnums;
+import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
@@ -25,12 +27,14 @@ import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -197,6 +201,34 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                 }
             }
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void recoverAlarmFileHandle(Long alarmMsgId, Integer alarmFileType) {
+        Optional<AlarmMsgInfo> alarmMsgInfoOp = alarmMsgInfoMapper.selectById(alarmMsgId);
+        if (alarmMsgInfoOp.isEmpty()) {
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "告警信息不存在");
+        }
+        AlarmMsgInfo alarmMsgInfo = alarmMsgInfoOp.get();
+        switch (AlarmFileType.getByCode(alarmFileType)){
+            case VIDEO:
+                if (!Objects.equals(alarmMsgInfo.getVideoAudioState(), AlarmFileState.ERROR.getCode())){
+                    throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "视频状态非异常，无法恢复");
+                }
+                alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
+                break;
+            case IMAGE:
+                if (!Objects.equals(alarmMsgInfo.getImageState(), AlarmFileState.ERROR.getCode())){
+                    throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "图片状态非异常，无法恢复");
+                }
+                alarmMsgInfo.setImageState(AlarmFileState.WAITING.getCode());
+                break;
+            default:
+                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "告警文件类型不正确");
+        }
+        alarmMsgInfo.setUpdateTime(LocalDateTime.now());
+        alarmMsgInfoMapper.save(alarmMsgInfo);
     }
 
     private PostRecordDownloadReq getPostRecordDownloadReq(AlarmMsgInfo alarmMsgInfo) {

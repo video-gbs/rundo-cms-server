@@ -27,4 +27,11 @@ public interface AlarmEventHandleService {
      */
     void alarmEventCheck();
 
+    /**
+     * 恢复任务
+     * @param alarmMsgId 告警消息id
+     * @param alarmFileType 告警文件类型
+     */
+    void recoverAlarmFileHandle(Long alarmMsgId, Integer alarmFileType);
+
 }
