@@ -114,6 +114,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                 alarmMsgInfo.setUpdateTime(nowTime);
                 PostRecordDownloadReq postRecordDownloadReq = getPostRecordDownloadReq(alarmMsgInfo);
                 try{
+                    log.info(LogTemplate.PROCESS_LOG_TEMPLATE, "视频报警处理", postRecordDownloadReq);
                     CommonResponse<String> response = streamManageApi.applyStreamId(postRecordDownloadReq);
                     if(response.isError()){
                         String errorData = String.format("%s:%s", response.getMsg(), response.getData());
