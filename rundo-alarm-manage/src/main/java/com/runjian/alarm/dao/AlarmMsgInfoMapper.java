@@ -89,7 +89,7 @@ public interface AlarmMsgInfoMapper {
     @Select(" SELECT * FROM " + ALARM_MSG_TABLE_NAME +
             " WHERE image_state = #{alarmFileState} " +
             " AND alarm_start_time &lt;= #{nowTime} ")
-    List<AlarmMsgInfo> selectByImageState(Integer alarmFileState, LocalDateTime nowTime);
+    List<AlarmMsgInfo> selectByImageStateAndAlarmEndTime(Integer alarmFileState, LocalDateTime nowTime);
 
 
     @Delete(" <script> " +
