@@ -228,7 +228,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 String imageFileName = DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "jpg" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
                 filePath = Paths.get(dir, imageFileName);
                 alarmMsgInfo.setImageUrl(alarmProperties.getNginxUrl() + baseDir + MarkConstant.MARK_SPLIT_SLASH + imageFileName);
-                alarmMsgInfo.setVideoState(AlarmFileState.SUCCESS.getCode());
+                alarmMsgInfo.setImageState(AlarmFileState.SUCCESS.getCode());
                 break;
             case VIDEO:
                 if (Objects.equals(AlarmFileState.GENERATING.getCode(), alarmMsgInfo.getImageState())){
@@ -237,7 +237,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 String videoFileName = DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "mp4" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
                 filePath = Paths.get(dir, videoFileName);
                 alarmMsgInfo.setVideoUrl(alarmProperties.getNginxUrl() + baseDir + MarkConstant.MARK_SPLIT_SLASH + videoFileName);
-                alarmMsgInfo.setImageState(AlarmFileState.SUCCESS.getCode());
+                alarmMsgInfo.setVideoState(AlarmFileState.SUCCESS.getCode());
                 break;
             default:
                 return;
@@ -254,7 +254,6 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
         LocalDateTime nowTime = LocalDateTime.now();
         try {
             Files.write(filePath, file.getBytes());
-            alarmMsgInfo.setUpdateTime(nowTime);
         } catch (IOException ex) {
             AlarmMsgErrorRel alarmMsgErrorRel = new AlarmMsgErrorRel();
             alarmMsgErrorRel.setAlarmMsgId(alarmMsgInfo.getId());
@@ -273,6 +272,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
             log.error(LogTemplate.ERROR_LOG_TEMPLATE, "告警信息南向服务", "文件写入本地失败", ex);
             throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, ex.getMessage());
         }finally {
+            alarmMsgInfo.setUpdateTime(nowTime);
             alarmMsgInfoMapper.update(alarmMsgInfo);
         }
     }
