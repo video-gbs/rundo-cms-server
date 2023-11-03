@@ -176,7 +176,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
 
     @Override
     public String downloadRecord(Long channelId, Integer streamMode, Boolean enableAudio, Integer playType, LocalDateTime startTime, LocalDateTime endTime, String uploadId, String uploadUrl) {
-        log.info(LogTemplate.PROCESS_LOG_TEMPLATE, "视频报警处理", playType);
+        log.info(LogTemplate.PROCESS_LOG_TEMPLATE, "视频报警处理", PlayType.getMsgByCode(playType));
         String streamId = PlayType.getMsgByCode(playType) + MarkConstant.MARK_SPLIT_SYMBOL + channelId + MarkConstant.MARK_SPLIT_SYMBOL + System.currentTimeMillis() + new Random().nextInt(100);
         StreamManageDto streamManageDto = getStreamManageDto(channelId, MsgType.STREAM_RECORD_DOWNLOAD, streamId, playType, streamMode, enableAudio, Boolean.TRUE, CommonEnum.ENABLE.getCode(), CommonEnum.DISABLE.getCode(), null);
         streamManageDto.put(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
