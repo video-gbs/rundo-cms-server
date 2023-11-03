@@ -89,7 +89,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                     }
                     Optional<AlarmSchemeEventRel> alarmSchemeEventRelOp = alarmSchemeEventRelMapper.selectBySchemeIdAndEventCode(alarmSchemeInfo.getId(), eventCode);
                     if (alarmSchemeEventRelOp.isEmpty()){
-                        log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "无效的告警信息，告警预案不关联当前事件:{}", String.format("通道id:%s 告警预案id:%s 事件编码:%s", channelId, alarmSchemeInfo.getId(), eventCode));
+                        log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "无效的告警信息，告警预案不关联当前事件", String.format("通道id:%s 告警预案id:%s 事件编码:%s", channelId, alarmSchemeInfo.getId(), eventCode));
                         redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
@@ -102,6 +102,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         }
 
                         if (Boolean.parseBoolean(response.getData())){
+                            log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "该告警不在时间内", String.format("通道id:%s 告警预案id:%s 事件编码:%s 告警时间:%s", channelId, alarmSchemeInfo.getId(), eventCode, eventTime));
                             redisLockUtil.unLock(lockKey, lockValue);
                             return;
                         }
@@ -149,6 +150,8 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                     }
 
                     alarmMsgInfoMapper.save(alarmMsgInfo);
+                }else {
+                    log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "告警消息聚合", String.format("通道Id:%s, 事件编码:%s, 事件类型:%s, 事件描述:%s, 事件时间:%s", channelId, eventCode, eventMsgType, eventDesc, eventTime));
                 }
                 return;
             case COMPOUND_HEARTBEAT:
