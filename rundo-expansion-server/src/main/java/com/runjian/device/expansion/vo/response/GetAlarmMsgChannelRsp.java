@@ -43,11 +43,6 @@ public class GetAlarmMsgChannelRsp {
     private String alarmLevel;
 
     /**
-     * 告警类型
-     */
-    private String alarmType;
-
-    /**
      * 告警时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
