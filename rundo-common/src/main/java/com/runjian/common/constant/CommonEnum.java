@@ -3,6 +3,8 @@ package com.runjian.common.constant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Objects;
+
 /**
  * @author Miracle
  * @date 2022/4/20 14:21
