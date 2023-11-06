@@ -71,14 +71,14 @@ public class TimeUtils {
         LocalTime endTime = LocalTime.of(23,59,59);
         List<TimePeriodDto> timePeriodStartAndEndList = timePeriodList.stream().filter(timePeriodDto -> timePeriodDto.getStartTime().equals(startTime) || timePeriodDto.getEndTime().equals(endTime)).collect(Collectors.toList());
         Map<Integer, TimePeriodDto> nextDayMap = new HashMap<>(7);
-        log.warn("timePeriodStartAndEndList:{}", timePeriodStartAndEndList);
         for (TimePeriodDto timePeriodDto : timePeriodStartAndEndList){
             if (timePeriodDto.getStartTime().equals(startTime)){
                 if (timePeriodDto.getDateType() == 1){
                     nextDayMap.put(timePeriodDto.getDateType(), null);
                 } else if (nextDayMap.containsKey(timePeriodDto.getDateType() - 1)){
-                    log.warn("timePeriodDto.getDateType", timePeriodDto.getDateType() - 1);
-                    nextDayMap.get(timePeriodDto.getDateType() - 1).setIsNextDay(CommonEnum.ENABLE.getCode());
+                    if (Objects.nonNull(nextDayMap.get(timePeriodDto.getDateType() - 1))){
+                        nextDayMap.get(timePeriodDto.getDateType() - 1).setIsNextDay(CommonEnum.ENABLE.getCode());
+                    }
                 }
             }
             if (timePeriodDto.getEndTime().equals(endTime)){
