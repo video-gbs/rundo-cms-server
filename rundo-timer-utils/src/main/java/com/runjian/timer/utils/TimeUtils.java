@@ -2,6 +2,7 @@ package com.runjian.timer.utils;
 
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.timer.vo.dto.TimePeriodDto;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
  * @author Miracle
  * @date 2023/9/5 10:48
  */
+@Slf4j
 public class TimeUtils {
 
     /**
@@ -69,11 +71,13 @@ public class TimeUtils {
         LocalTime endTime = LocalTime.of(23,59,59);
         List<TimePeriodDto> timePeriodStartAndEndList = timePeriodList.stream().filter(timePeriodDto -> timePeriodDto.getStartTime().equals(startTime) || timePeriodDto.getEndTime().equals(endTime)).collect(Collectors.toList());
         Map<Integer, TimePeriodDto> nextDayMap = new HashMap<>(7);
+        log.warn("timePeriodStartAndEndList:{}", timePeriodStartAndEndList);
         for (TimePeriodDto timePeriodDto : timePeriodStartAndEndList){
             if (timePeriodDto.getStartTime().equals(startTime)){
                 if (timePeriodDto.getDateType() == 1){
                     nextDayMap.put(timePeriodDto.getDateType(), null);
                 } else if (nextDayMap.containsKey(timePeriodDto.getDateType() - 1)){
+                    log.warn("timePeriodDto.getDateType", timePeriodDto.getDateType() - 1);
                     nextDayMap.get(timePeriodDto.getDateType() - 1).setIsNextDay(CommonEnum.ENABLE.getCode());
                 }
             }
