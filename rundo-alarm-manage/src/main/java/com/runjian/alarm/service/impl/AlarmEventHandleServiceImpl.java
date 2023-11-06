@@ -140,7 +140,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
     }
 
     @Override
-    //@Scheduled(fixedDelay = 3000)
+    @Scheduled(fixedDelay = 3000)
     public void alarmImageEventStart() {
         LocalDateTime nowTime = LocalDateTime.now();
         List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByImageStateAndAlarmEndTime(AlarmFileState.WAITING.getCode(), nowTime.plusSeconds(DELAY_VIDEO_TIME_SECOND));
