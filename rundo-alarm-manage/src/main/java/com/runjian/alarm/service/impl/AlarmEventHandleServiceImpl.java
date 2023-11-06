@@ -104,14 +104,16 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
         // 视频报警处理
         LocalDateTime nowTime = LocalDateTime.now();
         List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByVideoStateAndAlarmEndTime(AlarmFileState.WAITING.getCode(), nowTime.plusSeconds(DELAY_VIDEO_TIME_SECOND));
+        log.warn("alarmVideoEventStart:{}", alarmMsgInfoList);
         if (alarmMsgInfoList.isEmpty()) {
-            log.warn("alarmVideoEventStart: no alarmMsgInfoList");
+
             return;
         }
         for (AlarmMsgInfo alarmMsgInfo : alarmMsgInfoList) {
             String lockKey = MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId();
             Duration duration = Duration.between(alarmMsgInfo.getAlarmStartTime(), alarmMsgInfo.getAlarmEndTime());
             if (redisLockUtil.lock(lockKey, String.format("%s-%s", AlarmFileType.VIDEO.getMsg(), alarmMsgInfo.getId()), duration.getSeconds() + DEFAULT_OUT_TIME_SECOND, TimeUnit.SECONDS, 1)){
+                log.warn("alarmMsgInfo:{}", alarmMsgInfo);
                 alarmMsgInfo.setUpdateTime(nowTime);
                 PostRecordDownloadReq postRecordDownloadReq = getPostRecordDownloadReq(alarmMsgInfo);
                 try{
@@ -138,10 +140,10 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
     }
 
     @Override
-    @Scheduled(fixedDelay = 3000)
+    //@Scheduled(fixedDelay = 3000)
     public void alarmImageEventStart() {
         LocalDateTime nowTime = LocalDateTime.now();
-        List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByImageStateAndAlarmEndTime(AlarmFileState.WAITING.getCode(), nowTime.plusSeconds(-DELAY_VIDEO_TIME_SECOND));
+        List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByImageStateAndAlarmEndTime(AlarmFileState.WAITING.getCode(), nowTime.plusSeconds(DELAY_VIDEO_TIME_SECOND));
         if (alarmMsgInfoList.isEmpty()) {
             return;
         }
@@ -202,6 +204,16 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                 }
             }
         }
+    }
+
+    @Override
+    public void alarmEventWaitOutTime() {
+//        LocalDateTime nowTime = LocalDateTime.now();
+//        List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByVideoStateOrImageStateAndCreateTime(AlarmFileState.WAITING.getCode(), nowTime.plusHours(1));
+//        if (alarmMsgInfoList.isEmpty()) {
+//            return;
+//        }
+
     }
 
     @Override
