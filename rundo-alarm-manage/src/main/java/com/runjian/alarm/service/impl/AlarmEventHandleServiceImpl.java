@@ -105,6 +105,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
         LocalDateTime nowTime = LocalDateTime.now();
         List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByVideoStateAndAlarmEndTime(AlarmFileState.WAITING.getCode(), nowTime.plusSeconds(DELAY_VIDEO_TIME_SECOND));
         if (alarmMsgInfoList.isEmpty()) {
+            log.warn("alarmVideoEventStart: no alarmMsgInfoList");
             return;
         }
         for (AlarmMsgInfo alarmMsgInfo : alarmMsgInfoList) {
