@@ -29,9 +29,8 @@ public interface AlarmEventMapper {
     List<GetAlarmEventRsp> selectAlarmEventByPage(String eventName, String eventCode);
 
     @Select(" SELECT * FROM " + ALARM_EVENT_TABLE_NAME +
-            " WHERE event_name = #{eventName} " +
-            " OR event_code = #{eventCode} ")
-    List<AlarmEventInfo> selectByEventNameOrEventCode(String eventName, String eventCode);
+            " WHERE event_code = #{eventCode} ")
+    List<AlarmEventInfo> selectByEventCode(String eventCode);
 
     @Insert(" INSERT INTO " + ALARM_EVENT_TABLE_NAME + "(event_name, event_code, event_sort, event_desc, update_time, create_time) values " +
             " (#{eventName}, #{eventCode}, #{eventSort}, #{eventDesc}, #{updateTime}, #{createTime}) " )

@@ -53,9 +53,9 @@ public class AlarmEventServiceImpl implements AlarmEventService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void addAlarmEvent(String eventName, String eventCode, Integer eventSort, String eventDesc) {
-        List<AlarmEventInfo> alarmEventInfoOptional = alarmEventMapper.selectByEventNameOrEventCode(eventName, eventCode);
+        List<AlarmEventInfo> alarmEventInfoOptional = alarmEventMapper.selectByEventCode(eventCode);
         if (!alarmEventInfoOptional.isEmpty()) {
-            throw new BusinessException(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, "事件名称或者事件编码重复，请重新填写");
+            throw new BusinessException(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, "事件编码重复，请重新填写");
         }
         LocalDateTime nowTime = LocalDateTime.now();
         alarmEventMapper.save(new AlarmEventInfo(null, eventName, eventCode, eventSort, eventDesc, nowTime, nowTime));
