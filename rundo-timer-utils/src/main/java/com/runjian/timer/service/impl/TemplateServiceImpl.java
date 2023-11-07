@@ -134,6 +134,7 @@ public class TemplateServiceImpl implements TemplateService {
         if (templateInfoMapper.selectById(templateId).isEmpty()){
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("模板'%s'不存在", templateId));
         }
+        log.warn("调用使用模板方法，templateId={},serviceName={},serviceUseMark={},enableTimer={}", templateId, serviceName, serviceUseMark, enableTimer);
         Optional<TemplateUseInfo> templateUseInfoOptional = templateUseInfoMapper.selectByServiceNameAndServiceUseMark(serviceName, serviceUseMark);
         TemplateUseInfo templateUseInfo = templateUseInfoOptional.orElse(new TemplateUseInfo());
         LocalDateTime nowTime = LocalDateTime.now();
