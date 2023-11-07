@@ -13,6 +13,7 @@ import com.runjian.alarm.entity.relation.AlarmSchemeEventRel;
 import com.runjian.alarm.feign.TimerUtilsApi;
 import com.runjian.alarm.service.AlarmMsgSouthService;
 import com.runjian.alarm.utils.RedisLockUtil;
+import com.runjian.alarm.vo.dto.AlarmSchemeEventDto;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
@@ -87,8 +88,8 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         redisLockUtil.unLock(lockKey, lockValue);
                         return;
                     }
-                    Optional<AlarmSchemeEventRel> alarmSchemeEventRelOp = alarmSchemeEventRelMapper.selectBySchemeIdAndEventCode(alarmSchemeInfo.getId(), eventCode);
-                    if (alarmSchemeEventRelOp.isEmpty()){
+                    Optional<AlarmSchemeEventDto> alarmSchemeEventDtoOp = alarmSchemeEventRelMapper.selectBySchemeIdAndEventCode(alarmSchemeInfo.getId(), eventCode);
+                    if (alarmSchemeEventDtoOp.isEmpty()){
                         log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "无效的告警信息，告警预案不关联当前事件", String.format("通道id:%s 告警预案id:%s 事件编码:%s", channelId, alarmSchemeInfo.getId(), eventCode));
                         redisLockUtil.unLock(lockKey, lockValue);
                         return;
@@ -112,29 +113,29 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         return;
                     }
                     LocalDateTime nowTime = LocalDateTime.now();
-                    AlarmSchemeEventRel alarmSchemeEventRel = alarmSchemeEventRelOp.get();
+                    AlarmSchemeEventDto alarmSchemeEventDto = alarmSchemeEventDtoOp.get();
                     AlarmMsgInfo alarmMsgInfo = new AlarmMsgInfo();
                     alarmMsgInfo.setChannelId(channelId);
-                    alarmMsgInfo.setAlarmLevel(alarmSchemeEventRel.getEventLevel());
+                    alarmMsgInfo.setAlarmLevel(alarmSchemeEventDto.getEventLevel());
                     alarmMsgInfo.setAlarmStartTime(eventTime);
-                    alarmMsgInfo.setAlarmDesc(eventDesc);
+                    alarmMsgInfo.setAlarmDesc(alarmSchemeEventDto.getEventName());
                     alarmMsgInfo.setAlarmCode(eventCode);
                     alarmMsgInfo.setCreateTime(nowTime);
                     alarmMsgInfo.setUpdateTime(nowTime);
-                    alarmMsgInfo.setAlarmInterval(alarmSchemeEventRel.getEventInterval());
-                    alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventRel.getVideoLength()));
+                    alarmMsgInfo.setAlarmInterval(alarmSchemeEventDto.getEventInterval());
+                    alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventDto.getVideoLength()));
 
                     // 判断是否开启截图
-                    if (CommonEnum.getBoolean(alarmSchemeEventRel.getEnablePhoto())){
+                    if (CommonEnum.getBoolean(alarmSchemeEventDto.getEnablePhoto())){
                         alarmMsgInfo.setImageState(AlarmFileState.WAITING.getCode());
                     }
 
                     // 判断是否开启视频录制
-                    if (CommonEnum.getBoolean(alarmSchemeEventRel.getEnableVideo())){
-                        alarmMsgInfo.setVideoLength(alarmSchemeEventRel.getVideoLength());
-                        alarmMsgInfo.setVideoAudioState(alarmSchemeEventRel.getVideoHasAudio());
+                    if (CommonEnum.getBoolean(alarmSchemeEventDto.getEnableVideo())){
+                        alarmMsgInfo.setVideoLength(alarmSchemeEventDto.getVideoLength());
+                        alarmMsgInfo.setVideoAudioState(alarmSchemeEventDto.getVideoHasAudio());
                         // 判断是否是直到事件结束的录制时间
-                        if (Objects.equals(alarmSchemeEventRel.getVideoLength(), 0)){
+                        if (Objects.equals(alarmSchemeEventDto.getVideoLength(), 0)){
                             alarmMsgInfo.setAlarmState(AlarmState.UNDERWAY.getCode());
                             alarmMsgInfo.setVideoState(AlarmFileState.INIT.getCode());
                             // 设置30s超时时间
@@ -142,7 +143,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         } else {
                             alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
                             alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
-                            redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval() + alarmSchemeEventRel.getVideoLength(), TimeUnit.SECONDS);
+                            redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval() + alarmSchemeEventDto.getVideoLength(), TimeUnit.SECONDS);
                         }
                     }else {
                         alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());

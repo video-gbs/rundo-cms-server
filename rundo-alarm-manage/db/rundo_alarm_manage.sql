@@ -1,4 +1,4 @@
-create table if not exists rundo_alarm_event
+create table rundo_alarm_event
 (
     id          bigint auto_increment
         primary key,
@@ -14,14 +14,13 @@ create table if not exists rundo_alarm_event
         unique (event_name)
 );
 
-create table if not exists rundo_alarm_msg
+create table rundo_alarm_msg
 (
     id               bigint auto_increment
         primary key,
     channel_id       bigint       not null,
     alarm_code       varchar(100) not null,
     alarm_level      tinyint      not null,
-    alarm_type       varchar(50)  not null,
     alarm_start_time datetime     not null,
     alarm_end_time   datetime     null,
     alarm_state      tinyint      not null,
@@ -31,14 +30,13 @@ create table if not exists rundo_alarm_msg
     video_state      tinyint      null,
     video_length     int          null,
     video_stream_id  varchar(100) null,
-    video_error_msg  varchar(250) null,
     image_url        varchar(500) null,
     image_state      tinyint      null,
     create_time      datetime     null,
     update_time      datetime     null
 );
 
-create table if not exists rundo_alarm_msg_error
+create table rundo_alarm_msg_error
 (
     id              bigint auto_increment
         primary key,
@@ -48,7 +46,7 @@ create table if not exists rundo_alarm_msg_error
     create_time     datetime     not null
 );
 
-create table if not exists rundo_alarm_scheme
+create table rundo_alarm_scheme
 (
     id          bigint auto_increment
         primary key,
@@ -61,7 +59,7 @@ create table if not exists rundo_alarm_scheme
         unique (scheme_name)
 );
 
-create table if not exists rundo_alarm_scheme_channel
+create table rundo_alarm_scheme_channel
 (
     id           bigint auto_increment
         primary key,
@@ -74,20 +72,20 @@ create table if not exists rundo_alarm_scheme_channel
         unique (channel_id)
 );
 
-create table if not exists rundo_alarm_scheme_event
+create table rundo_alarm_scheme_event
 (
-    id             bigint auto_increment
+    id              bigint auto_increment
         primary key,
-    scheme_id      bigint       not null,
-    event_code     varchar(100) not null,
-    event_level    int          not null,
-    event_interval int          not null,
-    enable_video   tinyint      not null,
-    enable_photo   tinyint      not null,
-    video_length   int          null,
-    videoHasAudio  tinyint      null,
-    update_time    datetime     null,
-    create_time    datetime     null,
+    scheme_id       bigint       not null,
+    event_code      varchar(100) not null,
+    event_level     int          not null,
+    event_interval  int          not null,
+    enable_video    tinyint      not null,
+    enable_photo    tinyint      not null,
+    video_length    int          null,
+    video_has_audio tinyint      null,
+    update_time     datetime     null,
+    create_time     datetime     null,
     constraint uni_scheme_event_id
         unique (scheme_id)
 );

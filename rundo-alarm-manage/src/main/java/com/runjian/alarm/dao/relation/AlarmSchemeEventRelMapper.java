@@ -2,6 +2,7 @@ package com.runjian.alarm.dao.relation;
 
 import com.runjian.alarm.dao.AlarmEventMapper;
 import com.runjian.alarm.entity.relation.AlarmSchemeEventRel;
+import com.runjian.alarm.vo.dto.AlarmSchemeEventDto;
 import com.runjian.alarm.vo.response.GetAlarmSchemeEventNameRsp;
 import com.runjian.alarm.vo.response.GetAlarmSchemeEventRsp;
 import org.apache.ibatis.annotations.*;
@@ -78,10 +79,11 @@ public interface AlarmSchemeEventRelMapper {
             " WHERE scheme_id = #{schemeId} ")
     void deleteBySchemeId(Long schemeId);
 
-    @Select(" SELECT * FROM " + ALARM_SCHEME_EVENT_TABLE_NAME +
-            " WHERE scheme_id = #{schemeId} " +
-            " AND event_code = #{eventCode} ")
-    Optional<AlarmSchemeEventRel> selectBySchemeIdAndEventCode(Long schemeId, String eventCode);
+    @Select(" SELECT ase.*, ae.evnet_name FROM " + ALARM_SCHEME_EVENT_TABLE_NAME + " ase " +
+            " LEFT JOIN " + AlarmEventMapper.ALARM_EVENT_TABLE_NAME + " ae ON ae.event_code = ase.event_code " +
+            " WHERE ase.scheme_id = #{schemeId} " +
+            " AND ase.event_code = #{eventCode} ")
+    Optional<AlarmSchemeEventDto> selectBySchemeIdAndEventCode(Long schemeId, String eventCode);
 
     @Delete(" <script> " +
             " DELETE FROM " + ALARM_SCHEME_EVENT_TABLE_NAME +
