@@ -26,7 +26,13 @@ public interface AlarmEventService {
      * 获取事件名称
      * @return
      */
-    List<GetAlarmEventNameRsp> getAlarmEventName(String eventName);
+    List<GetAlarmEventNameRsp> getAlarmEvent(String eventName);
+
+    /**
+     * 获取事件名称
+     * @return
+     */
+    List<GetAlarmEventNameRsp> getAlarmEventName();
 
     /**
      * 添加事件

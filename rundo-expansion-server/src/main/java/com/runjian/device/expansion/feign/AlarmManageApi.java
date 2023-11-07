@@ -26,7 +26,7 @@ public interface AlarmManageApi {
      * 分页获取告警信息
      * @param page 页码
      * @param num 每页数据
-     * @param alarmCode 告警类型
+     * @param alarmDesc 告警描述
      * @param alarmStartTime 告警开始时间
      * @param alarmEndTime 告警结束时间
      * @return
@@ -34,7 +34,7 @@ public interface AlarmManageApi {
     @GetMapping("/msg/north/page")
     CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> getAlarmMsgPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num,
                                                                         @RequestParam(required = false) Long channelId,
-                                                                        @RequestParam(required = false) String alarmCode,
+                                                                        @RequestParam(required = false) String alarmDesc,
                                                                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmStartTime,
                                                                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmEndTime);
 

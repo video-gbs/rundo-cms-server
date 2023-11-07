@@ -38,8 +38,15 @@ public class AlarmEventServiceImpl implements AlarmEventService {
     }
 
     @Override
-    public List<GetAlarmEventNameRsp> getAlarmEventName(String eventName) {
+    public List<GetAlarmEventNameRsp> getAlarmEvent(String eventName) {
         List<GetAlarmEventNameRsp> getAlarmEventNameRspList = alarmEventMapper.selectEventName(eventName);
+        getAlarmEventNameRspList.sort(Comparator.comparing(GetAlarmEventNameRsp::getEventSort));
+        return getAlarmEventNameRspList;
+    }
+
+    @Override
+    public List<GetAlarmEventNameRsp> getAlarmEventName() {
+        List<GetAlarmEventNameRsp> getAlarmEventNameRspList = alarmEventMapper.selectEventName();
         getAlarmEventNameRspList.sort(Comparator.comparing(GetAlarmEventNameRsp::getEventSort));
         return getAlarmEventNameRspList;
     }
@@ -62,13 +69,8 @@ public class AlarmEventServiceImpl implements AlarmEventService {
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, "没有找到对应的事件");
         }
         AlarmEventInfo alarmEventInfo = alarmEventInfoOptional.get();
-        if (!Objects.equals(eventName, alarmEventInfo.getEventName())){
-            if (alarmEventMapper.selectByEventName(eventName).isPresent()){
-                throw new BusinessException(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, "事件名称重复，请重新填写");
-            }
-            alarmEventInfo.setEventName(eventName);
-        }
         LocalDateTime nowTime = LocalDateTime.now();
+        alarmEventInfo.setEventName(eventName);
         alarmEventInfo.setUpdateTime(nowTime);
         alarmEventInfo.setEventSort(eventSort);
         alarmEventInfo.setEventDesc(eventDesc);

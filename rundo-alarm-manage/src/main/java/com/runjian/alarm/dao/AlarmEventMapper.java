@@ -66,6 +66,12 @@ public interface AlarmEventMapper {
     List<GetAlarmEventNameRsp> selectEventName(String eventName);
 
     @Select(" <script> " +
+            " SELECT id, event_name, event_sort, event_code FROM " + ALARM_EVENT_TABLE_NAME +
+            " GROUP BY event_name " +
+            " </script> ")
+    List<GetAlarmEventNameRsp> selectEventName();
+
+    @Select(" <script> " +
             " SELECT * FROM " + ALARM_EVENT_TABLE_NAME +
             " WHERE event_code IN " +
             " <foreach collection='eventCodes' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
