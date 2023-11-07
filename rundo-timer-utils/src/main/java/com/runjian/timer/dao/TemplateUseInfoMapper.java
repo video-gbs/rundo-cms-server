@@ -28,12 +28,12 @@ public interface TemplateUseInfoMapper {
             " WHERE id = #{id} ")
     void update(TemplateUseInfo templateUseInfo);
 
-    @Insert(" INSERT INTO " + TEMPLATE_USE_TABLE_NAME + "(template_id, servic_name, service_use_mark, enable_timer, is_init_timer, update_time, create_time) values " +
+    @Insert(" INSERT INTO " + TEMPLATE_USE_TABLE_NAME + "(template_id, service_name, service_use_mark, enable_timer, is_init_timer, update_time, create_time) values " +
             " (#{templateId}, #{serviceName}, #{serviceUseMark}, #{enableTimer}, #{isInitTimer}, #{updateTime}, #{createTime}) " )
     void save(TemplateUseInfo templateUseInfo);
 
     @Select(" SELECT * FROM " + TEMPLATE_USE_TABLE_NAME +
-            " WHERE servic_name = #{serviceName} " +
+            " WHERE service_name = #{serviceName} " +
             " AND service_use_mark = #{serviceUseMark} ")
     Optional<TemplateUseInfo> selectByServiceNameAndServiceUseMark(String serviceName, String serviceUseMark);
 
