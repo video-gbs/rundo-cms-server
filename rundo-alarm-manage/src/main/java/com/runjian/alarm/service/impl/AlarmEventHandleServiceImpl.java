@@ -239,7 +239,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                 throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "告警文件类型不正确");
         }
         alarmMsgInfo.setUpdateTime(LocalDateTime.now());
-        alarmMsgInfoMapper.save(alarmMsgInfo);
+        alarmMsgInfoMapper.update(alarmMsgInfo);
     }
 
     private PostRecordDownloadReq getPostRecordDownloadReq(AlarmMsgInfo alarmMsgInfo) {
