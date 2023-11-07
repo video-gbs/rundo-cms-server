@@ -20,7 +20,7 @@ public interface TemplateUseInfoMapper {
 
     @Update(" UPDATE " + TEMPLATE_USE_TABLE_NAME +
             " SET update_time = #{updateTime}  " +
-            " , servic_name = #{serviceName} " +
+            " , service_name = #{serviceName} " +
             " , service_use_mark = #{serviceUseMark} " +
             " , enable_timer = #{enableTimer} " +
             " , is_init_timer = #{isInitTimer} " +
