@@ -61,10 +61,10 @@ public interface AlarmEventMapper {
     List<GetAlarmEventNameRsp> selectAllByEventName(String eventName);
 
     @Select(" <script> " +
-            " SELECT id, event_name, event_sort, event_code FROM " + ALARM_EVENT_TABLE_NAME +
+            " SELECT event_name FROM " + ALARM_EVENT_TABLE_NAME +
             " GROUP BY event_name " +
             " </script> ")
-    List<GetAlarmEventNameRsp> selectEventName();
+    List<String> selectEventName();
 
     @Select(" <script> " +
             " SELECT * FROM " + ALARM_EVENT_TABLE_NAME +

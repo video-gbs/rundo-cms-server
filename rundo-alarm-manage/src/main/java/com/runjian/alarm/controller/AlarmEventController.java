@@ -51,7 +51,7 @@ public class AlarmEventController {
      */
     @GetMapping("/data/name")
     @BlankStringValid
-    public CommonResponse<List<GetAlarmEventNameRsp>> getAlarmEventName() {
+    public CommonResponse<List<String>> getAlarmEventName() {
         return CommonResponse.success(alarmEventService.getAlarmEventName());
     }
 

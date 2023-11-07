@@ -44,10 +44,8 @@ public class AlarmEventServiceImpl implements AlarmEventService {
     }
 
     @Override
-    public List<GetAlarmEventNameRsp> getAlarmEventName() {
-        List<GetAlarmEventNameRsp> getAlarmEventNameRspList = alarmEventMapper.selectEventName();
-        getAlarmEventNameRspList.sort(Comparator.comparing(GetAlarmEventNameRsp::getEventSort));
-        return getAlarmEventNameRspList;
+    public List<String> getAlarmEventName() {
+        return alarmEventMapper.selectEventName();
     }
 
     @Override

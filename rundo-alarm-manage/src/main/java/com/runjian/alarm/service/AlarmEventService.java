@@ -32,7 +32,7 @@ public interface AlarmEventService {
      * 获取事件名称
      * @return
      */
-    List<GetAlarmEventNameRsp> getAlarmEventName();
+    List<String> getAlarmEventName();
 
     /**
      * 添加事件
