@@ -34,7 +34,7 @@ public class PostAlarmSchemeReq {
     /**
      * 通道id数组
      */
-    @Size(min = 1, max = 999999999, message = "通道id数组不正确")
+    @Size(max = 999999999, message = "通道id数组不正确")
     private Set<Long> channelIds;
 
     /**
