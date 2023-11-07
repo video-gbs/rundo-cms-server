@@ -58,7 +58,7 @@ public interface AlarmSchemeEventRelMapper {
             " , video_length = #{item.videoLength} " +
             " , video_has_audio = #{item.videoHasAudio} " +
             " , enable_photo = #{item.enablePhoto} " +
-            " WHERE id = #{item.eventCode} "+
+            " WHERE event_code = #{item.eventCode} "+
             " </foreach> " +
             " </script> ")
     void batchUpdate(List<AlarmSchemeEventRel> alarmSchemeEventRelList);
