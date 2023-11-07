@@ -164,6 +164,7 @@ public class TemplateServiceImpl implements TemplateService {
             templateUseInfo.setEnableTimer(enableTimer);
             templateUseInfo.setCreateTime(nowTime);
             templateUseInfo.setUpdateTime(nowTime);
+            templateUseInfo.setIsInitTimer(CommonEnum.DISABLE.getCode());
             templateUseInfoMapper.save(templateUseInfo);
 //            if (Objects.equals(enableTimer, CommonEnum.ENABLE.getCode())){
 //                // todo 启用定时器，判断是否第一次初始化定时器
