@@ -195,7 +195,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     @Override
     public String downloadImage(Long channelId, Integer streamMode, Integer playType, LocalDateTime time, String uploadId, String uploadUrl) {
         String streamId = PlayType.getMsgByCode(playType) + MarkConstant.MARK_SPLIT_SYMBOL + channelId + MarkConstant.MARK_SPLIT_SYMBOL + System.currentTimeMillis() + new Random().nextInt(100);
-        StreamManageDto streamManageDto = getStreamManageDto(channelId, MsgType.STREAM_PICTURE_DOWNLOAD, streamId, playType, streamMode, Boolean.FALSE, Boolean.TRUE, CommonEnum.ENABLE.getCode(), CommonEnum.DISABLE.getCode(), null);
+        StreamManageDto streamManageDto = getStreamManageDto(channelId, MsgType.STREAM_PICTURE_DOWNLOAD, streamId, playType, streamMode, Boolean.FALSE, Boolean.TRUE, CommonEnum.DISABLE.getCode(), CommonEnum.DISABLE.getCode(), null);
         streamManageDto.put(StandardName.COM_TIME, DateUtils.DATE_TIME_FORMATTER.format(time));
         streamManageDto.put(StandardName.DOWNLOAD_UPLOAD_ID, uploadId);
         streamManageDto.put(StandardName.DOWNLOAD_UPLOAD_URL, uploadUrl);
