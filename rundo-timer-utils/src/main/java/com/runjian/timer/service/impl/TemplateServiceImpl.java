@@ -139,13 +139,8 @@ public class TemplateServiceImpl implements TemplateService {
         TemplateUseInfo templateUseInfo = templateUseInfoOptional.orElse(new TemplateUseInfo());
         LocalDateTime nowTime = LocalDateTime.now();
         if (templateUseInfoOptional.isPresent()){
-            boolean isUpdate = false;
-            if (!Objects.equals(templateUseInfo.getTemplateId(), templateId)){
-                isUpdate = true;
-                templateUseInfo.setTemplateId(templateId);
-            }
+            templateUseInfo.setTemplateId(templateId);
             if (!Objects.equals(templateUseInfo.getEnableTimer(), enableTimer)){
-                isUpdate = true;
                 templateUseInfo.setEnableTimer(enableTimer);
 //                if (Objects.equals(enableTimer, CommonEnum.ENABLE.getCode())){
 //                    // todo 启用定时器，判断是否第一次初始化定时器
@@ -153,10 +148,8 @@ public class TemplateServiceImpl implements TemplateService {
 //                    // todo 关闭定时器
 //                }
             }
-            if (isUpdate){
-                templateUseInfo.setUpdateTime(nowTime);
-                templateUseInfoMapper.update(templateUseInfo);
-            }
+            templateUseInfo.setUpdateTime(nowTime);
+            templateUseInfoMapper.update(templateUseInfo);
         }else {
             templateUseInfo.setTemplateId(templateId);
             templateUseInfo.setServiceName(serviceName);
