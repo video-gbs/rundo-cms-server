@@ -79,7 +79,7 @@ public interface AlarmSchemeEventRelMapper {
             " WHERE scheme_id = #{schemeId} ")
     void deleteBySchemeId(Long schemeId);
 
-    @Select(" SELECT ase.*, ae.evnet_name FROM " + ALARM_SCHEME_EVENT_TABLE_NAME + " ase " +
+    @Select(" SELECT ase.*, ae.event_name FROM " + ALARM_SCHEME_EVENT_TABLE_NAME + " ase " +
             " LEFT JOIN " + AlarmEventMapper.ALARM_EVENT_TABLE_NAME + " ae ON ae.event_code = ase.event_code " +
             " WHERE ase.scheme_id = #{schemeId} " +
             " AND ase.event_code = #{eventCode} ")
