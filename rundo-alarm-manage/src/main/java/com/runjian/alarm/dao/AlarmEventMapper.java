@@ -41,10 +41,6 @@ public interface AlarmEventMapper {
             " WHERE id = #{id}")
     Optional<AlarmEventInfo> selectById(Long id);
 
-    @Select(" SELECT * FROM " + ALARM_EVENT_TABLE_NAME +
-            " WHERE event_name = #{eventName}")
-    Optional<AlarmEventInfo> selectByEventName(String eventName);
-
     @Update(" <script> " +
             " UPDATE " + ALARM_EVENT_TABLE_NAME +
             " SET update_time = #{updateTime}  " +
@@ -63,7 +59,7 @@ public interface AlarmEventMapper {
             " SELECT id, event_name, event_sort, event_code FROM " + ALARM_EVENT_TABLE_NAME +
             " <if test=\"eventName != null\" > WHERE event_name LIKE CONCAT('%', #{eventName}, '%') </if> " +
             " </script> ")
-    List<GetAlarmEventNameRsp> selectEventName(String eventName);
+    List<GetAlarmEventNameRsp> selectAllByEventName(String eventName);
 
     @Select(" <script> " +
             " SELECT id, event_name, event_sort, event_code FROM " + ALARM_EVENT_TABLE_NAME +
