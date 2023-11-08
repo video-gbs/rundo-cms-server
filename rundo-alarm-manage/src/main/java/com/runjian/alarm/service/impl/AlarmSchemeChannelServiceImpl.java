@@ -11,6 +11,7 @@ import com.runjian.alarm.vo.feign.PostMessageSubReq;
 import com.runjian.alarm.vo.feign.PostMessageSubRsp;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
+import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.SignState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,10 +50,13 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
     private final AlarmSchemeService alarmSchemeService;
 
     @Override
-    @PostConstruct
     public void init() {
-        CommonResponse<List<PostMessageSubRsp>> commonResponse = deviceControlApi.subMsg(new PostMessageSubReq("alarm-manage", Set.of("channelAddOrDelete")));
-        commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+        PostMessageSubReq postMessageSubReq = new PostMessageSubReq("alarm-manage", Set.of("channelAddOrDelete"));
+        CommonResponse<List<PostMessageSubRsp>> commonResponse = deviceControlApi.subMsg(postMessageSubReq);
+        if (commonResponse.isError()){
+            log.error(LogTemplate.ERROR_LOG_TEMPLATE, "设备控制接口调用服务", "订阅消息失败", postMessageSubReq);
+            return;
+        }
         messageSubRspMap = commonResponse.getData().stream().collect(Collectors.toMap(PostMessageSubRsp::getMsgType, postMessageSubRsp -> postMessageSubRsp));
     }
 
