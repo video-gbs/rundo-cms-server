@@ -20,6 +20,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -41,13 +42,14 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
 
     private final StringRedisTemplate redisTemplate;
 
-    private Map<String, PostMessageSubRsp> messageSubRspMap;
+    private Map<String, PostMessageSubRsp> messageSubRspMap = new HashMap<>();
 
     private final AlarmSchemeChannelRelMapper alarmSchemeChannelRelMapper;
 
     private final AlarmSchemeService alarmSchemeService;
 
     @Override
+    @PostConstruct
     public void init() {
         CommonResponse<List<PostMessageSubRsp>> commonResponse = deviceControlApi.subMsg(new PostMessageSubReq("alarm-manage", Set.of("channelAddOrDelete")));
         commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);

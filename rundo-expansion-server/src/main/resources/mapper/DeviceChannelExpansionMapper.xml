@@ -57,7 +57,7 @@
 			and t1.channel_name like concat('%',#{channelName},'%')
 		</if>
 		<if test="deviceName != null and deviceName !=''">
-			and t2.device_name like concat('%',#{deviceName},'%')
+			and t2.name like concat('%',#{deviceName},'%')
 		</if>
 		<if test="onlineState != null">
 			and t1.online_state = #{onlineState}

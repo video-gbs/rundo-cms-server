@@ -29,7 +29,8 @@ public interface AlarmSchemeInfoMapper {
             " <if test=\"schemeName != null\" > AND scheme_name = #{schemeName} </if>" +
             " <if test=\"disabled != null\" > AND disabled = #{disabled} </if>" +
             " <if test=\"createStartTime != null\" > AND create_time &gt;= #{createStartTime} </if>" +
-            " <if test=\"createEndTime != null\" > AND create_time &lt;= #{createEndTime} </if>" +
+            " <if test=\"createEndTime != null\" > AND create_time &lt;= #{createEndTime} </if> " +
+            " ORDER BY update_time DESC " +
             " </script> ")
     List<GetAlarmSchemePageRsp> selectByPage(String schemeName, Integer disabled, LocalDateTime createStartTime, LocalDateTime createEndTime);
 
