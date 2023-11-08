@@ -24,6 +24,7 @@ public interface TemplateInfoMapper {
             " SELECT * FROM " + TEMPLATE_TABLE_NAME +
             " WHERE 1=1 " +
             " <if test=\"template_name != null\" >  AND template_name LIKE CONCAT('%', #{templateName}, '%') </if> " +
+            " ORDER BY update_time desc " +
             " </script> ")
     List<GetTemplateInfoRsp> selectByTemplateNameLike(String templateName);
 
