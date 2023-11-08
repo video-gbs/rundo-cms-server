@@ -10,7 +10,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.*;
 import com.runjian.common.utils.DateUtils;
 import com.runjian.device.constant.DetailType;
-import com.runjian.device.constant.SignState;
+import com.runjian.common.constant.SignState;
 import com.runjian.device.constant.SubMsgType;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DetailMapper;
@@ -33,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 通道北向服务

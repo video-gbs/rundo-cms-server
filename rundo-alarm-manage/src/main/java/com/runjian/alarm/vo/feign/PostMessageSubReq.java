@@ -1,6 +1,8 @@
 package com.runjian.alarm.vo.feign;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -13,6 +15,8 @@ import java.util.Set;
  * @date 2023/5/16 15:19
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostMessageSubReq {
 
     /**
