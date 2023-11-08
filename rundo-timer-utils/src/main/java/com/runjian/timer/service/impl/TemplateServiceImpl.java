@@ -121,7 +121,10 @@ public class TemplateServiceImpl implements TemplateService {
             templateDetailInfo.setCreateTime(nowTime);
             templateDetailInfo.setUpdateTime(nowTime);
         }
-        templateDetailInfoMapper.batchSave(templateDetailInfoList);
+        if (!templateDetailInfoList.isEmpty()){
+            templateDetailInfoMapper.batchSave(templateDetailInfoList);
+        }
+
 
         // todo 重置定时器
         // List<TemplateUseInfo> templateUseInfoList = templateUseInfoMapper.selectByTemplateIdAndEnableTimer(templateId, CommonEnum.ENABLE.getCode());
