@@ -65,6 +65,9 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
         LocalDateTime nowTime = LocalDateTime.now();
         if (redisLockUtil.lock(channelAddOrDelete.getMsgLock(), nowTime.toString(), 5, TimeUnit.SECONDS, 1)){
             Map<Object, Object> entries = redisTemplate.opsForHash().entries(channelAddOrDelete.getMsgHandle());
+            if (entries.isEmpty()){
+                return;
+            }
             Set<Long> deleteChannelIds = new HashSet<>();
             for (Map.Entry<Object, Object> entry : entries.entrySet()){
                 JSONObject jsonObject = JSONObject.parseObject(entry.getValue().toString());
