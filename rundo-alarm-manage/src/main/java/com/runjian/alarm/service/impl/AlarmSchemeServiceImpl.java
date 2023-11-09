@@ -89,7 +89,9 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             List<GetAlarmSchemeEventNameRsp> alarmSchemeEventNameRspList = getAlarmSchemeEventNameRsp.get(entry.getKey());
             entry.getValue().setEventNameList(alarmSchemeEventNameRspList.stream().map(GetAlarmSchemeEventNameRsp::getEventName).collect(Collectors.toList()));
         }
-        return new PageInfo<>(new ArrayList<>(getAlarmSchemePageRspMap.values()));
+        ArrayList<GetAlarmSchemePageRsp> getAlarmSchemePageRspList = new ArrayList<>(getAlarmSchemePageRspMap.values());
+        getAlarmSchemePageRspList.sort(Comparator.comparing(GetAlarmSchemePageRsp::getUpdateTime));
+        return new PageInfo<>(getAlarmSchemePageRspList);
     }
 
     @Override
