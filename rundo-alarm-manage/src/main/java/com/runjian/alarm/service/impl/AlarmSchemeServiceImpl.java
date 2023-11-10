@@ -280,6 +280,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
             if (CollectionUtils.isEmpty(getAlarmChannelDeployRsps)){
                 return;
             }
+            alarmSchemeChannelRelMapper.deleteBySchemeIds(Collections.singletonList(alarmSchemeInfo.getId()));
             defense(new ArrayList<>(getAlarmChannelDeployRsps.stream().map(GetAlarmChannelDeployRsp::getChannelId).collect(Collectors.toList())), false);
         }
 
