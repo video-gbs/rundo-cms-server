@@ -43,6 +43,8 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
 
     private final StringRedisTemplate redisTemplate;
 
+    private final RedissonClient redissonClient;
+
     private Map<String, PostMessageSubRsp> messageSubRspMap = new HashMap<>();
 
     private final AlarmSchemeChannelRelMapper alarmSchemeChannelRelMapper;
@@ -68,29 +70,29 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
             init();
             return;
         }
-        LocalDateTime nowTime = LocalDateTime.now();
-            if (redisLockUtil.lock(channelAddOrDelete.getMsgLock(), nowTime.toString(), 5, TimeUnit.SECONDS, 1)){
-                try{
-                    Map<Object, Object> entries = redisTemplate.opsForHash().entries(channelAddOrDelete.getMsgHandle());
-                    if (entries.isEmpty()){
-                        return;
-                    }
-                    Set<Long> deleteChannelIds = new HashSet<>();
-                    for (Map.Entry<Object, Object> entry : entries.entrySet()){
-                        JSONObject jsonObject = JSONObject.parseObject(entry.getValue().toString());
-                        Integer signState = jsonObject.getInteger("signState");
-                        if (Objects.equals(signState, SignState.DELETED.getCode())){
-                            deleteChannelIds.add(Long.parseLong(entry.getKey().toString()));
-                        }
-                    }
-                    List<AlarmSchemeChannelRel> alarmSchemeChannelRelList = alarmSchemeChannelRelMapper.selectByChannelIds(deleteChannelIds);
-                    if (!alarmSchemeChannelRelList.isEmpty()){
-                        alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
-                        alarmSchemeService.defense(alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false);
-                    }
-                } finally {
-                    redisLockUtil.unLock(channelAddOrDelete.getMsgLock());
+        RLock rLock = redissonClient.getLock(channelAddOrDelete.getMsgLock());
+        if (rLock.tryLock()){
+            try{
+                Map<Object, Object> entries = redisTemplate.opsForHash().entries(channelAddOrDelete.getMsgHandle());
+                if (entries.isEmpty()){
+                    return;
                 }
+                Set<Long> deleteChannelIds = new HashSet<>();
+                for (Map.Entry<Object, Object> entry : entries.entrySet()){
+                    JSONObject jsonObject = JSONObject.parseObject(entry.getValue().toString());
+                    Integer signState = jsonObject.getInteger("signState");
+                    if (Objects.equals(signState, SignState.DELETED.getCode())){
+                        deleteChannelIds.add(Long.parseLong(entry.getKey().toString()));
+                    }
+                }
+                List<AlarmSchemeChannelRel> alarmSchemeChannelRelList = alarmSchemeChannelRelMapper.selectByChannelIds(deleteChannelIds);
+                if (!alarmSchemeChannelRelList.isEmpty()){
+                    alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
+                    alarmSchemeService.defense(alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false);
+                }
+            } finally {
+                rLock.unlock();
             }
+        }
     }
 }
