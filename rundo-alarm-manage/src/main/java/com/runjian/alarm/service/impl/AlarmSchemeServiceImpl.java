@@ -68,7 +68,7 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         // 判断是否是守护线程，如果是关闭
         if (t.isDaemon()) {
             t.setDaemon(false);
-        }
+        };
         // 判断是否是正常优先级，如果不是调整会正常优先级
         if (Thread.NORM_PRIORITY != t.getPriority()) {
             t.setPriority(Thread.NORM_PRIORITY);
@@ -245,9 +245,11 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
                     alarmSchemeChannelRel.setChannelId(channelId);
                     alarmSchemeChannelRel.setSchemeId(id);
                     alarmSchemeChannelRel.setCreateTime(nowTime);
+                    alarmSchemeChannelRel.setUpdateTime(nowTime);
                     newSchemeChannelRelList.add(alarmSchemeChannelRel);
                 } else {
-                    alarmSchemeChannelRel.setCreateTime(nowTime);
+                    alarmSchemeChannelRel.setSchemeId(id);
+                    alarmSchemeChannelRel.setUpdateTime(nowTime);
                     updateSchemeChannelRelList.add(alarmSchemeChannelRel);
                 }
             }
