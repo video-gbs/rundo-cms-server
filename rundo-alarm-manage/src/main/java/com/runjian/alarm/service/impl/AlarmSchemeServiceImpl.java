@@ -80,7 +80,9 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
     @Override
     public PageInfo<GetAlarmSchemePageRsp> getAlarmSchemeByPage(int page, int num, String schemeName, Integer disabled, LocalDateTime createStartTime, LocalDateTime createEndTime) {
         PageHelper.startPage(page, num);
-        Map<Long, GetAlarmSchemePageRsp> getAlarmSchemePageRspMap = alarmSchemeInfoMapper.selectByPage(schemeName, disabled, createStartTime, createEndTime).stream().collect(Collectors.toMap(GetAlarmSchemePageRsp::getId, getAlarmSchemePageRsp -> getAlarmSchemePageRsp));
+
+        PageInfo<GetAlarmSchemePageRsp> responsePage = new PageInfo<>(alarmSchemeInfoMapper.selectByPage(schemeName, disabled, createStartTime, createEndTime));
+        Map<Long, GetAlarmSchemePageRsp> getAlarmSchemePageRspMap = responsePage.getList().stream().collect(Collectors.toMap(GetAlarmSchemePageRsp::getId, getAlarmSchemePageRsp -> getAlarmSchemePageRsp));
         if (getAlarmSchemePageRspMap.isEmpty()){
             return new PageInfo<>();
         }
@@ -91,7 +93,8 @@ public class AlarmSchemeServiceImpl implements AlarmSchemeService {
         }
         ArrayList<GetAlarmSchemePageRsp> getAlarmSchemePageRspList = new ArrayList<>(getAlarmSchemePageRspMap.values());
         getAlarmSchemePageRspList.sort(Comparator.comparing(GetAlarmSchemePageRsp::getUpdateTime).reversed());
-        return new PageInfo<>(getAlarmSchemePageRspList);
+        responsePage.setList(getAlarmSchemePageRspList);
+        return responsePage;
     }
 
     @Override
