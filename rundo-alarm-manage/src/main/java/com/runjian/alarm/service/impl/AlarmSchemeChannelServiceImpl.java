@@ -102,4 +102,13 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
             }
         }
     }
+
+    public static void main(String[] args) {
+
+        JSONObject jsonObject = JSONObject.parseObject("{\"channelType\":6,\"createTime\":\"2023-11-10 14:54:58\",\"deviceId\":20081,\"id\":201,\"onlineState\":1,\"signState\":0,\"updateTime\":\"2023-11-10 17:16:10.537534\"}");
+        Integer signState = jsonObject.getInteger("signState");
+        System.out.println(signState);
+    }
 }
+
+
