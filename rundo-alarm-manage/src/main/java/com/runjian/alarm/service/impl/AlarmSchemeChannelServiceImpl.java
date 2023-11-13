@@ -18,12 +18,14 @@ import com.runjian.common.constant.SignState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
+import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -75,13 +77,14 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
         RLock rLock = redissonClient.getLock(channelAddOrDelete.getMsgLock());
         if (rLock.tryLock()){
             try{
-                Map<Object, Object> entries = redisTemplate.opsForHash().entries(channelAddOrDelete.getMsgHandle());
+                RMap<Object, Object> rmap = redissonClient.getMap(channelAddOrDelete.getMsgHandle());
+                Set<Map.Entry<Object, Object>> entries = rmap.entrySet();
                 if (entries.isEmpty()){
                     return;
                 }
                 Set<Long> deleteChannelIds = new HashSet<>();
                 log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "预案通道处理服务", "接收到添加或删除通道消息", entries);
-                for (Map.Entry<Object, Object> entry : entries.entrySet()){
+                for (Map.Entry<Object, Object> entry : entries){
                     //String jsonOb = StringEscapeUtils.unescapeJava(entry.getValue().toString());
                     log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "预案通道处理服务", "异常消息解读", entry.getValue().toString());
                     System.out.println(entry.getValue().toString());
@@ -96,7 +99,7 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
                     alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
                     alarmSchemeService.defense(alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false);
                 }
-                redisTemplate.opsForHash().delete(channelAddOrDelete.getMsgHandle());
+                rmap.delete();
             } finally {
 
                 rLock.unlock();
@@ -105,8 +108,9 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
     }
 
     public static void main(String[] args) {
-
-        JSONObject jsonObject = JSONObject.parseObject("{\"channelType\":6,\"createTime\":\"2023-11-10 14:54:58\",\"deviceId\":20081,\"id\":201,\"onlineState\":1,\"signState\":0,\"updateTime\":\"2023-11-10 17:16:10.537534\"}");
+        String jsonString = "{\"channelType\":6,\"createTime\":\"2023-11-10 14:54:58\",\"deviceId\":20081,\"id\":201,\"onlineState\":1,\"signState\":0,\"updateTime\":\"2023-11-10 17:16:10.537534\"}";
+        String jsonOb = StringEscapeUtils.unescapeJava(jsonString);
+        JSONObject jsonObject = JSONObject.parseObject(jsonOb);
         Integer signState = jsonObject.getInteger("signState");
         System.out.println(signState);
     }
