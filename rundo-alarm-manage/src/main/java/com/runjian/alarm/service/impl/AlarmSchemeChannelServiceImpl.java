@@ -82,7 +82,7 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
                 Set<Long> deleteChannelIds = new HashSet<>();
                 log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "预案通道处理服务", "接收到添加或删除通道消息", entries);
                 for (Map.Entry<Object, Object> entry : entries.entrySet()){
-                    String jsonOb = StringEscapeUtils.escapeJava(entry.getValue().toString());
+                    String jsonOb = StringEscapeUtils.unescapeJava(entry.getValue().toString());
                     log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "预案通道处理服务", "异常消息解读", jsonOb);
                     JSONObject jsonObject = JSONObject.parseObject(jsonOb);
                     Integer signState = jsonObject.getInteger("signState");
