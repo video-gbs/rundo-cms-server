@@ -123,7 +123,12 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                     alarmMsgInfo.setCreateTime(nowTime);
                     alarmMsgInfo.setUpdateTime(nowTime);
                     alarmMsgInfo.setAlarmInterval(alarmSchemeEventDto.getEventInterval());
-                    alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventDto.getVideoLength()));
+                    if (Objects.isNull(alarmSchemeEventDto.getVideoLength())){
+                        alarmMsgInfo.setAlarmStartTime(eventTime);
+                    }else {
+                        alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventDto.getVideoLength()));
+                    }
+
 
                     // 判断是否开启截图
                     if (CommonEnum.getBoolean(alarmSchemeEventDto.getEnablePhoto())){
