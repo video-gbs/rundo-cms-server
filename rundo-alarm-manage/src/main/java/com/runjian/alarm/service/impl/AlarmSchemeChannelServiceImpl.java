@@ -85,35 +85,26 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
                 Set<Long> deleteChannelIds = new HashSet<>();
                 log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "预案通道处理服务", "接收到添加或删除通道消息", entries);
                 for (Map.Entry<Object, Object> entry : entries){
-                    //String jsonOb = StringEscapeUtils.unescapeJava(entry.getValue().toString());
-                    log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "预案通道处理服务", "异常消息解读", entry.getValue().toString());
-                    System.out.println(entry.getValue().toString());
                     JSONObject jsonObject = JSONObject.parseObject(entry.getValue().toString());
                     Integer signState = jsonObject.getInteger("signState");
                     if (Objects.equals(signState, SignState.DELETED.getCode())){
                         deleteChannelIds.add(Long.parseLong(entry.getKey().toString()));
                     }
                 }
-                List<AlarmSchemeChannelRel> alarmSchemeChannelRelList = alarmSchemeChannelRelMapper.selectByChannelIds(deleteChannelIds);
-                if (!alarmSchemeChannelRelList.isEmpty()){
-                    alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
-                    alarmSchemeService.defense(alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false);
+                if (!deleteChannelIds.isEmpty()){
+                    List<AlarmSchemeChannelRel> alarmSchemeChannelRelList = alarmSchemeChannelRelMapper.selectByChannelIds(deleteChannelIds);
+                    if (!alarmSchemeChannelRelList.isEmpty()){
+                        alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
+                        alarmSchemeService.defense(alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false);
+                    }
                 }
                 rmap.delete();
             } finally {
-
                 rLock.unlock();
             }
         }
     }
 
-    public static void main(String[] args) {
-        String jsonString = "{\"channelType\":6,\"createTime\":\"2023-11-10 14:54:58\",\"deviceId\":20081,\"id\":201,\"onlineState\":1,\"signState\":0,\"updateTime\":\"2023-11-10 17:16:10.537534\"}";
-        String jsonOb = StringEscapeUtils.unescapeJava(jsonString);
-        JSONObject jsonObject = JSONObject.parseObject(jsonOb);
-        Integer signState = jsonObject.getInteger("signState");
-        System.out.println(signState);
-    }
 }
 
 
