@@ -158,7 +158,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
             case COMPOUND_HEARTBEAT:
                 // 延迟锁过期
                 String alarmMsgInfoId1 = redisTemplate.opsForValue().get(lockKey);
-                if (Objects.isNull(alarmMsgInfoId1)){
+                if (Objects.isNull(alarmMsgInfoId1) || !StringUtils.isNumeric(alarmMsgInfoId1)){
                     return;
                 }
                 Optional<AlarmMsgInfo> alarmMsgInfoOp1 = alarmMsgInfoMapper.selectById(Long.valueOf(alarmMsgInfoId1));
