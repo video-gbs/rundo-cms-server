@@ -84,7 +84,7 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
                 for (Map.Entry<Object, Object> entry : entries.entrySet()){
                     String jsonOb = StringEscapeUtils.unescapeJava(entry.getValue().toString());
                     log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "预案通道处理服务", "异常消息解读", jsonOb);
-                    JSONObject jsonObject = JSONObject.parseObject(jsonOb);
+                    JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(jsonOb));
                     Integer signState = jsonObject.getInteger("signState");
                     if (Objects.equals(signState, SignState.DELETED.getCode())){
                         deleteChannelIds.add(Long.parseLong(entry.getKey().toString()));
