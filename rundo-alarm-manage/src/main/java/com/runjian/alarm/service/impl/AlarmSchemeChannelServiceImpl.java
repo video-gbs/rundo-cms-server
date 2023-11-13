@@ -2,6 +2,7 @@ package com.runjian.alarm.service.impl;
 
 import cn.hutool.log.Log;
 import com.alibaba.fastjson2.JSONObject;
+import com.github.javaparser.utils.StringEscapeUtils;
 import com.runjian.alarm.dao.relation.AlarmSchemeChannelRelMapper;
 import com.runjian.alarm.entity.relation.AlarmSchemeChannelRel;
 import com.runjian.alarm.feign.DeviceControlApi;
@@ -81,8 +82,9 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
                 Set<Long> deleteChannelIds = new HashSet<>();
                 log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "预案通道处理服务", "接收到添加或删除通道消息", entries);
                 for (Map.Entry<Object, Object> entry : entries.entrySet()){
-                    log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "预案通道处理服务", "异常消息解读", JSONObject.toJSONString(entry.getValue()));
-                    JSONObject jsonObject = JSONObject.parseObject(JSONObject.toJSONString(entry.getValue()));
+                    String jsonOb = StringEscapeUtils.escapeJava(entry.getValue().toString());
+                    log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "预案通道处理服务", "异常消息解读", jsonOb);
+                    JSONObject jsonObject = JSONObject.parseObject(jsonOb);
                     Integer signState = jsonObject.getInteger("signState");
                     if (Objects.equals(signState, SignState.DELETED.getCode())){
                         deleteChannelIds.add(Long.parseLong(entry.getKey().toString()));
