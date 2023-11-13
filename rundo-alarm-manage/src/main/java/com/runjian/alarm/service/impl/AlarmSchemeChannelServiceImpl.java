@@ -95,7 +95,9 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
                     alarmSchemeChannelRelMapper.batchDelete(alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getId).collect(Collectors.toList()));
                     alarmSchemeService.defense(alarmSchemeChannelRelList.stream().map(AlarmSchemeChannelRel::getChannelId).collect(Collectors.toList()), false);
                 }
+                redisTemplate.opsForHash().delete(channelAddOrDelete.getMsgHandle());
             } finally {
+
                 rLock.unlock();
             }
         }
