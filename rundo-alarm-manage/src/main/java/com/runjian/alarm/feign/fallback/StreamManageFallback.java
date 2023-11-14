@@ -2,8 +2,10 @@ package com.runjian.alarm.feign.fallback;
 
 import com.runjian.alarm.feign.DeviceControlApi;
 import com.runjian.alarm.feign.StreamManageApi;
+import com.runjian.alarm.vo.feign.PostChannelPlayReq;
 import com.runjian.alarm.vo.request.PostImageDownloadReq;
 import com.runjian.alarm.vo.request.PostRecordDownloadReq;
+import com.runjian.alarm.vo.response.GetStreamInfoRsp;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.LogTemplate;
@@ -30,6 +32,12 @@ public class StreamManageFallback implements FallbackFactory<StreamManageApi> {
             @Override
             public CommonResponse<String> applyStreamId(PostImageDownloadReq req) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流媒体管理接口调用服务", "接口调用失败", cause.getMessage(), req);
+                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
+            }
+
+            @Override
+            public CommonResponse<GetStreamInfoRsp> play(PostChannelPlayReq channelPlayReq) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流媒体管理接口调用服务", "接口调用失败", cause.getMessage(), channelPlayReq);
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
         };

@@ -5,6 +5,7 @@ import com.runjian.alarm.service.AlarmEventHandleService;
 import com.runjian.alarm.service.AlarmMsgNorthService;
 import com.runjian.alarm.vo.request.PutRecoverAlarmMsgReq;
 import com.runjian.alarm.vo.response.GetAlarmMsgRsp;
+import com.runjian.alarm.vo.response.GetStreamInfoRsp;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.validator.ValidatorService;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +58,16 @@ public class AlarmMsgNorthController {
     public CommonResponse<?> deleteAlarmMsg(@RequestParam List<Long> idList){
         alarmMsgNorthService.deleteAlarmMsg(idList);
         return CommonResponse.success();
+    }
+
+    /**
+     * 进行直播观看
+     * @param channelId 通道id
+     * @return
+     */
+    @GetMapping("/live")
+    public CommonResponse<GetStreamInfoRsp> getStreamInfo(@RequestParam Long channelId){
+        return CommonResponse.success(alarmMsgNorthService.channelPlay(channelId));
     }
 
     /**

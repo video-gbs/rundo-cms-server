@@ -1,11 +1,16 @@
 package com.runjian.alarm.service;
 
 import com.github.pagehelper.PageInfo;
+import com.runjian.alarm.vo.feign.PostChannelPlayReq;
 import com.runjian.alarm.vo.response.GetAlarmMsgRsp;
+import com.runjian.alarm.vo.response.GetStreamInfoRsp;
+import com.runjian.common.config.response.CommonResponse;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 告警信息北向接口
@@ -24,6 +29,13 @@ public interface AlarmMsgNorthService {
      * @return
      */
     PageInfo<GetAlarmMsgRsp> getAlarmMsgByPage(int page, int num, Long channelId, String alarmType, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime);
+
+    /**
+     * 点播接口
+     * @param channelId 通道id
+     * @return
+     */
+    GetStreamInfoRsp channelPlay(Long channelId);
 
     /**
      * 删除告警信息
