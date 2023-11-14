@@ -84,7 +84,7 @@ public class AlarmController {
      * 获取告警信息
      * @param page 第几页
      * @param num 每页数据量
-     * @param eventCode 事件编码
+     * @param alarmDesc 事件描述
      * @param startTime 开始时间
      * @param endTime 结束时间
      * @return

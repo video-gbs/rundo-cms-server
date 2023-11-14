@@ -26,7 +26,7 @@ public interface AlarmSchemeInfoMapper {
     @Select(" <script> " +
             " SELECT * FROM " + ALARM_SCHEME_TABLE_NAME +
             " WHERE 1=1 " +
-            " <if test=\"schemeName != null\" > AND scheme_name = #{schemeName} </if>" +
+            " <if test=\"schemeName != null\" > AND scheme_name LIKE CONCAT('%', #{schemeName}, '%') </if>" +
             " <if test=\"disabled != null\" > AND disabled = #{disabled} </if>" +
             " <if test=\"createStartTime != null\" > AND create_time &gt;= #{createStartTime} </if>" +
             " <if test=\"createEndTime != null\" > AND create_time &lt;= #{createEndTime} </if> " +
