@@ -10,7 +10,7 @@ import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.*;
 import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
-import com.runjian.device.constant.SignState;
+import com.runjian.common.constant.SignState;
 import com.runjian.device.constant.SubMsgType;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;

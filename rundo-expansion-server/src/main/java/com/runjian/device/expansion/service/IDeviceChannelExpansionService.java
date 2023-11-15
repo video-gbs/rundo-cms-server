@@ -8,10 +8,7 @@ import com.runjian.device.expansion.vo.feign.response.ChannelSyncRsp;
 import com.runjian.device.expansion.vo.feign.response.GetResourceTreeRsp;
 import com.runjian.device.expansion.vo.feign.response.VideoRecordRsp;
 import com.runjian.device.expansion.vo.request.*;
-import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
-import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
-import com.runjian.device.expansion.vo.response.DeviceExpansionResp;
-import com.runjian.device.expansion.vo.response.PageResp;
+import com.runjian.device.expansion.vo.response.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -95,7 +92,7 @@ public interface IDeviceChannelExpansionService extends IService<DeviceChannelEx
      * @param videoAreaId
      * @return
      */
-    List<DeviceChannelExpansion> playList(Long videoAreaId);
+    List<DeviceChannelExpansionPlayResp> playList(Long videoAreaId);
 
     /**
      * 获取录像列表

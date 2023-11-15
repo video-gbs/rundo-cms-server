@@ -135,4 +135,13 @@ public class ChannelPlayController {
     public CommonResponse<Object> playBackVideoAreaList(){
         return deviceChannelExpansionService.videoAreaList(resourceKey);
     }
+
+
+    @PostMapping(value = "/webrtcAudio",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation("直播接口")
+    public CommonResponse<String>  webrtcAudio(@RequestBody PlayReq request) {
+        validatorService.validateRequest(request);
+
+        return playService.webrtcAudio(request);
+    }
 }

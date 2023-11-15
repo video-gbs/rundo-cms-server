@@ -224,6 +224,11 @@ public class StandardName {
     public static final String COM_END_TIME = "endTime";
 
     /**
+     * 时间
+     */
+    public static final String COM_TIME = "time";
+
+    /**
      * 标准在线状态名称
      */
     public static final String COM_ONLINE_STATE = "onlineState";
@@ -259,9 +264,6 @@ public class StandardName {
      */
     public static final String COM_RESULT = "result";
 
-
-    public static final String CHANNEL_ID_LIST = "channelIdList";
-
     /**
      * 网关协议
      */
@@ -271,4 +273,16 @@ public class StandardName {
      * 码流id
      */
     public static final String STREAM_BIT_STREAM_ID = "bitStreamId";
+
+    /**
+     * 下载标志id
+     */
+    public static final String DOWNLOAD_UPLOAD_ID = "uploadId";
+
+    /**
+     * 下载后上传url
+     */
+    public static final String DOWNLOAD_UPLOAD_URL = "uploadUrl";
+
+
 }

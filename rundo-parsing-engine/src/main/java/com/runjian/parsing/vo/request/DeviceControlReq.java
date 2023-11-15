@@ -37,7 +37,7 @@ public class DeviceControlReq {
     /**
      * 过期时间
      */
-    private Long outTime = 10L;
+    private Long outTime = 10000L;
 
     /**
      * 数据集合

@@ -6,6 +6,8 @@ import com.runjian.device.expansion.vo.request.GisConfigReq;
 import com.runjian.device.expansion.vo.request.GisConfigStatusReq;
 import com.runjian.device.expansion.vo.request.GisVideoAreaConfigReq;
 
+import java.util.List;
+
 /**
  * @author chenjialing
  */
@@ -16,6 +18,8 @@ public interface IGisService {
      * @param req
      */
     void save(GisConfigReq req);
+
+    List<GisConfig> list();
 
     /**
      * 状态修改
@@ -29,7 +33,7 @@ public interface IGisService {
     GisConfig findOneStatusOn();
 
 
-    void gisConfigVideoAreaSave(GisVideoAreaConfigReq req);
+    Long gisConfigVideoAreaSave(GisVideoAreaConfigReq req);
 
     /**
      * 查询节点相关的gis配置

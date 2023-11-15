@@ -12,23 +12,24 @@ import lombok.Getter;
 public enum PlayType {
 
     LIVE(1, "LIVE"),
-    CUSTOM_LIVE(5, "CUSTOM_LIVE"),
+
     RECORD(2, "RECORD"),
     ALARM(3, "ALARM"),
-    DOWNLOAD(4, "DOWNLOAD");
+    DOWNLOAD(4, "DOWNLOAD"),
 
-    private Integer code;
-    private String msg;
+    CUSTOM_LIVE(5, "CUSTOM_LIVE"),
+    AUDIO_LIVE(6, "AUDIO_LIVE"),
+    ;
+
+    private final Integer code;
+    private final String msg;
 
     public static String getMsgByCode(int code){
-        if (code == LIVE.code){
-            return LIVE.msg;
-        } else if (code == RECORD.code) {
-            return RECORD.msg;
-        } else if (code == DOWNLOAD.code) {
-            return DOWNLOAD.msg;
-        } else {
-            return null;
+        for (PlayType playType : PlayType.values()) {
+            if (playType.getCode().equals(code)){
+                return playType.getMsg();
+            }
         }
+        return null;
     }
 }

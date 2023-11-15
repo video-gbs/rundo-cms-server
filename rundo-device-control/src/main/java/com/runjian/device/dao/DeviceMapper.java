@@ -59,7 +59,7 @@ public interface DeviceMapper {
             " <if test=\"signState != null\" >  AND de.sign_state = #{signState} </if> " +
             " <if test=\"deviceName != null\" >  AND dt.name LIKE CONCAT('%', #{deviceName}, '%')  </if> " +
             " <if test=\"ip != null\" >  AND dt.ip LIKE CONCAT('%', #{ip}, '%')  </if> " +
-            " ORDER BY de.create_time desc " +
+            " ORDER BY de.online_state desc, de.create_time desc  " +
             " </script> "})
     List<GetDevicePageRsp> selectByPage( Integer signState, String deviceName, String ip);
 
@@ -85,11 +85,11 @@ public interface DeviceMapper {
             " </script> ")
     void batchUpdateOnlineState(List<DeviceInfo> deviceInfoList);
 
-    @Select(value = {" <script> " +
+    @Select(" <script> " +
             " SELECT * FROM " + DEVICE_TABLE_NAME +
-            " WHERE id IN" +
+            " WHERE id IN " +
             " <foreach collection='deviceIds'  item='item'  open='(' separator=',' close=')' > #{item} </foreach> " +
-            " </script> "})
+            " </script> ")
     List<DeviceInfo> selectByIds(Set<Long> deviceIds);
 
     @Insert({" <script> " +

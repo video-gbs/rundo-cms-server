@@ -14,18 +14,14 @@ import com.runjian.stream.entity.StreamInfo;
 import com.runjian.stream.feign.DeviceControlApi;
 import com.runjian.stream.feign.ParsingEngineApi;
 import com.runjian.stream.service.common.DataBaseService;
-import com.runjian.stream.service.common.StreamBaseService;
 import com.runjian.stream.service.north.StreamNorthService;
 import com.runjian.stream.vo.StreamManageDto;
 import com.runjian.stream.vo.response.GetGatewayRsp;
-import com.runjian.stream.vo.response.PostApplyStreamRsp;
 import com.runjian.stream.vo.response.PostVideoPlayRsp;
 import lombok.RequiredArgsConstructor;
-import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -50,6 +46,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     private final RedissonClient redissonClient;
 
     private final DeviceControlApi deviceControlApi;
+
 
     @Override
     public PostVideoPlayRsp customLive(Long dispatchId, Long code, String protocol, Integer transferMode, String port, String ip, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState) {
@@ -140,13 +137,24 @@ public class StreamNorthServiceImpl implements StreamNorthService {
 
         StreamManageDto streamManageDto = new StreamManageDto(dispatchInfo.getId(), streamId, msgType, 15000L);
         streamManageDto.put(StandardName.CHANNEL_ID, channelId);
-        streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
-        streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
-        streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
         streamManageDto.put(StandardName.STREAM_MEDIA_URL, dispatchInfo.getUrl());
-        streamManageDto.put(StandardName.STREAM_MODE, streamMode);
         streamManageDto.put(StandardName.GATEWAY_PROTOCOL, gatewayInfo.getProtocol());
-        streamManageDto.put(StandardName.STREAM_BIT_STREAM_ID, bitStreamId);
+        if (Objects.nonNull(enableAudio)){
+            streamManageDto.put(StandardName.STREAM_ENABLE_AUDIO, enableAudio);
+        }
+        if (Objects.nonNull(ssrcCheck)){
+            streamManageDto.put(StandardName.STREAM_SSRC_CHECK, ssrcCheck);
+        }
+        if (Objects.nonNull(recordState)){
+            streamManageDto.put(StandardName.STREAM_RECORD_STATE, recordState);
+        }
+        if (Objects.nonNull(streamMode)){
+            streamManageDto.put(StandardName.STREAM_MODE, streamMode);
+        }
+        if (Objects.nonNull(bitStreamId)){
+            streamManageDto.put(StandardName.STREAM_BIT_STREAM_ID, bitStreamId);
+        }
+
         return streamManageDto;
     }
 
@@ -164,6 +172,67 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         }
         streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
         return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()), PostVideoPlayRsp.class);
+    }
+
+    @Override
+    public String downloadRecord(Long channelId, Integer streamMode, Boolean enableAudio, Integer playType, LocalDateTime startTime, LocalDateTime endTime, String uploadId, String uploadUrl) {
+        String streamId = PlayType.getMsgByCode(playType) + MarkConstant.MARK_SPLIT_SYMBOL + channelId + MarkConstant.MARK_SPLIT_SYMBOL + System.currentTimeMillis() + new Random().nextInt(100);
+        StreamManageDto streamManageDto = getStreamManageDto(channelId, MsgType.STREAM_RECORD_DOWNLOAD, streamId, playType, streamMode, enableAudio, Boolean.TRUE, CommonEnum.ENABLE.getCode(), CommonEnum.DISABLE.getCode(), null);
+        streamManageDto.put(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
+        streamManageDto.put(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
+        streamManageDto.put(StandardName.DOWNLOAD_UPLOAD_ID, uploadId);
+        streamManageDto.put(StandardName.DOWNLOAD_UPLOAD_URL, uploadUrl);
+        CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
+        if (commonResponse.isError()){
+            streamMapper.deleteByStreamId(streamId);
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向接口服务", "下载录像失败", commonResponse.getMsg(), commonResponse.getData());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+        streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
+        return streamId;
+    }
+
+    @Override
+    public String downloadImage(Long channelId, Integer streamMode, Integer playType, LocalDateTime time, String uploadId, String uploadUrl) {
+        String streamId = PlayType.getMsgByCode(playType) + MarkConstant.MARK_SPLIT_SYMBOL + channelId + MarkConstant.MARK_SPLIT_SYMBOL + System.currentTimeMillis() + new Random().nextInt(100);
+        StreamManageDto streamManageDto = getStreamManageDto(channelId, MsgType.STREAM_PICTURE_DOWNLOAD, streamId, playType, streamMode, Boolean.FALSE, Boolean.TRUE, CommonEnum.DISABLE.getCode(), CommonEnum.DISABLE.getCode(), null);
+        streamManageDto.put(StandardName.COM_TIME, DateUtils.DATE_TIME_FORMATTER.format(time));
+        streamManageDto.put(StandardName.DOWNLOAD_UPLOAD_ID, uploadId);
+        streamManageDto.put(StandardName.DOWNLOAD_UPLOAD_URL, uploadUrl);
+        CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
+        if (commonResponse.isError()){
+            streamMapper.deleteByStreamId(streamId);
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向接口服务", "下载图片失败", commonResponse.getMsg(), commonResponse.getData());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+        streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
+        return streamId;
+    }
+
+    @Override
+    public String webRtcAudio(Long channelId, Integer recordState, Integer autoCloseState) {
+        String streamId = PlayType.AUDIO_LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + channelId;
+        RLock lock = redissonClient.getLock(MarkConstant.REDIS_STREAM_LIVE_PLAY_LOCK + streamId);
+        if (lock.tryLock()){
+            try{
+                Optional<StreamInfo> streamInfoOp = streamMapper.selectByStreamId(streamId);
+                if (streamInfoOp.isPresent()){
+                    throw new BusinessException(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, "当前通道的音频流已被占用，请稍后重试");
+                }
+                StreamManageDto streamManageDto = getStreamManageDto(channelId, MsgType.STREAM_WEBRTC_AUDIO, streamId, PlayType.AUDIO_LIVE.getCode(), null, null, null, recordState, autoCloseState, null);
+                CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
+                if (commonResponse.isError()){
+                    streamMapper.deleteByStreamId(streamId);
+                    log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向接口服务", "WebRTC音频流生成失败", commonResponse.getMsg(), commonResponse.getData());
+                    throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, String.format("%s:%s", commonResponse.getMsg(), commonResponse.getData()));
+                }
+                streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
+                return commonResponse.getData().toString();
+            }finally {
+                lock.unlock();
+            }
+        }
+        throw new BusinessException(BusinessErrorEnums.VALID_OBJECT_IS_EXIST, "当前通道的音频流已被占用，请稍后重试");
     }
 
     private  StreamInfo saveStream(Long gatewayId, Long channelId, Long dispatchId, Integer playType, Integer recordState, Integer autoCloseState, String streamId) {

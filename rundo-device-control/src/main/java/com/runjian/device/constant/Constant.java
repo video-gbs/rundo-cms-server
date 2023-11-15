@@ -30,6 +30,6 @@ public class Constant {
                 }
                 return t;
             },
-            (r, executor) -> System.err.println("拒绝策略" + r)
+            new ThreadPoolExecutor.AbortPolicy()
     );
 }

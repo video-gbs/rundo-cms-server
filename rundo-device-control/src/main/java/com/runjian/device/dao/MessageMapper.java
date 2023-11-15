@@ -21,11 +21,21 @@ public interface MessageMapper {
             " WHERE msg_handle = #{msgHandle} ")
     Optional<MessageInfo> selectByMsgHandle(String msgHandle);
 
-    @Insert({" <script> " +
+    @Insert(" <script> " +
             " INSERT INTO " + MESSAGE_TABLE_NAME + "(service_name, msg_type, msg_handle, msg_lock, create_time) values " +
             " <foreach collection='saveList' item='item' separator=','>(#{item.serviceName}, #{item.msgType}, #{item.msgHandle}, #{item.msgLock}, #{item.createTime})</foreach> " +
-            " </script>"})
+            " </script> ")
     void batchSave(List<MessageInfo> saveList);
+
+    @Update(" <script> " +
+            " <foreach collection='updateList' item='item' separator=';'> " +
+            " UPDATE " + MESSAGE_TABLE_NAME +
+            " SET update_time = #{updateTime}  " +
+            " , online_state = #{onlineState} " +
+            " WHERE id = #{item.id} "+
+            " </foreach> " +
+            " </script> ")
+    void batchUpdate(List<MessageInfo> updateList);
 
     @Delete(" <script> " +
             " DELETE FROM " + MESSAGE_TABLE_NAME +

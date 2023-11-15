@@ -28,6 +28,7 @@ public class DateUtils {
 
     public static final DateTimeFormatter DATE_TIME_T_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).withZone(ZoneId.systemDefault());
 
+    public static final DateTimeFormatter DATE_TIME_FILE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss", Locale.getDefault()).withZone(ZoneId.systemDefault());
     /**
      * 缺省的时间戳格式
      */
