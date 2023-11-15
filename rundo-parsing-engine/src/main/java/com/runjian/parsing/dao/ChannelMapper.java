@@ -48,4 +48,18 @@ public interface ChannelMapper {
     @Delete(" DELETE FROM " + CHANNEL_TABLE_NAME +
             " WHERE id = #{channelId} ")
     void deleteById(Long channelId);
+
+    @Select(" <script> " +
+            " SELECT origin_id FROM " + CHANNEL_TABLE_NAME +
+            " WHERE id IN " +
+            " <foreach collection='channelIdList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    List<String> selectOriginIdByIds(List<Long> channelIdList);
+
+    @Select(" <script>" +
+            " SELECT * FROM " + CHANNEL_TABLE_NAME +
+            " WHERE device_id = #{deviceId} AND origin_id IN " +
+            " <foreach collection='channelOriginIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script>")
+    List<Long> selectIdsByDeviceIdAndOriginIds(Long id, List<String> channelOriginIds);
 }

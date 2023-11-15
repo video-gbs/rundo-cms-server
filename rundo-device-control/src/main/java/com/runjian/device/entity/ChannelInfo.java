@@ -1,5 +1,6 @@
 package com.runjian.device.entity;
 
+import com.runjian.common.constant.SignState;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ public class ChannelInfo {
     private Long deviceId;
 
     /**
-     * 注册状态 0-已注册 1-待注册 2-待添加 {@link com.runjian.device.constant.SignState}
+     * 注册状态 0-已注册 1-待注册 2-待添加 {@link SignState}
      */
     private Integer signState;
 

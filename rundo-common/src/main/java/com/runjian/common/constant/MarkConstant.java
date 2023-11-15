@@ -31,6 +31,8 @@ public class MarkConstant {
 
     public static final String MARK_SPLIT_RAIL = "-";
 
+    public static final String MARK_SPLIT_SLASH = "/";
+
     /*********************************解析引擎redis字段占用*******************************************/
 
     public static final String REDIS_DEVICE_BATCH_SIGN_IN_LOCK = "DEVICE_BATCH_SIGN_IN_LOCK:";
@@ -56,5 +58,8 @@ public class MarkConstant {
     public static final String MARK_FEIGN_RESP_CODE = "code";
 
 
-
+    public static final String REDIS_ALARM_UNDERWAY_LOCK_KEY = "ALARM_UNDERWAY_LOCK_KEY";
+    public static final String REDIS_ALARM_MSG_EVENT_LOCK = "ALARM_MSG_EVENT_LOCK:";
+    public static final String REDIS_ALARM_MSG_EVENT_CHECK_LOCK = "ALARM_MSG_EVENT_CHECK_LOCK:";
+    public static final String REDIS_ALARM_MSG_LOCK = "ALARM_MSG_LOCK:";
 }

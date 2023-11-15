@@ -32,4 +32,11 @@ public interface IPlayService {
      * @return
      */
     CommonResponse<?> stopPlay(PutStreamOperationReq req);
+
+    /**
+     * webrtc推流
+     * @param playReq
+     * @return
+     */
+    CommonResponse<String> webrtcAudio(PlayReq playReq);
 }

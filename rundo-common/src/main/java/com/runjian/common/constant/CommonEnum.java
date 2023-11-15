@@ -3,6 +3,8 @@ package com.runjian.common.constant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Objects;
+
 /**
  * @author Miracle
  * @date 2022/4/20 14:21
@@ -13,12 +15,12 @@ public enum CommonEnum {
 
     DISABLE(0, "禁用"),
     ENABLE(1, "启用"),
-
-
-
-
     ;
-    private Integer code;
+    private final Integer code;
 
-    private String msg;
+    private final String msg;
+
+    public static Boolean getBoolean(Integer code){
+        return !code.equals(DISABLE.getCode());
+    }
 }

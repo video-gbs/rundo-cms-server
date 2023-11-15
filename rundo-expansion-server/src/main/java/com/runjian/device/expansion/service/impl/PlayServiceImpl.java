@@ -11,6 +11,7 @@ import com.runjian.device.expansion.service.IPlayService;
 import com.runjian.device.expansion.vo.feign.request.PlayBackFeignReq;
 import com.runjian.device.expansion.vo.feign.request.PlayFeignReq;
 import com.runjian.device.expansion.vo.feign.request.PutStreamOperationReq;
+import com.runjian.device.expansion.vo.feign.request.WebRtcAudioReq;
 import com.runjian.device.expansion.vo.feign.response.StreamInfo;
 import com.runjian.device.expansion.vo.request.PlayBackReq;
 import com.runjian.device.expansion.vo.request.PlayReq;
@@ -55,6 +56,19 @@ public class PlayServiceImpl implements IPlayService {
     @Override
     public CommonResponse<?> stopPlay(PutStreamOperationReq req) {
         CommonResponse<?> commonResponse = streamManageApi.stopPlay(req);
+        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
+        }
+        return commonResponse;
+    }
+
+    @Override
+    public CommonResponse<String> webrtcAudio(PlayReq playReq) {
+        WebRtcAudioReq webRtcAudioReq = new WebRtcAudioReq();
+        webRtcAudioReq.setChannelId(Long.valueOf(playReq.getChannelId()));
+        webRtcAudioReq.setRecordState(0);
+        webRtcAudioReq.setAutoCloseState(1);
+        CommonResponse<String> commonResponse = streamManageApi.webrtcAudio(webRtcAudioReq);
         if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
         }

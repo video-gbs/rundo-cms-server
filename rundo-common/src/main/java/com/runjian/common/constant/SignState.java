@@ -1,4 +1,4 @@
-package com.runjian.device.constant;
+package com.runjian.common.constant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

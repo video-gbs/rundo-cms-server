@@ -16,6 +16,7 @@ import com.runjian.parsing.dao.DeviceMapper;
 import com.runjian.parsing.entity.ChannelInfo;
 import com.runjian.parsing.entity.DeviceInfo;
 import com.runjian.parsing.entity.GatewayTaskInfo;
+import com.runjian.parsing.feign.AlarmManageApi;
 import com.runjian.parsing.feign.DeviceControlApi;
 import com.runjian.parsing.service.common.GatewayTaskService;
 import com.runjian.parsing.vo.CommonMqDto;
@@ -47,6 +48,8 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
 
     protected final DeviceControlApi deviceControlApi;
 
+    protected final AlarmManageApi alarmManageApi;
+
     protected final RedissonClient redissonClient;
 
     protected final DataSourceTransactionManager dataSourceTransactionManager;
@@ -68,6 +71,9 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             case DEVICE_TOTAL_SYNC:
                 deviceBatchSignIn(gatewayId, data);
                 return;
+            case ALARM_MSG_NOTIFICATION:
+                alarmMsgNotification(gatewayId, data);
+                return;
             case DEVICE_SYNC:
                 deviceSync(taskId, data);
                 return;
@@ -83,11 +89,67 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             case CHANNEL_DELETE_HARD:
                 channelDeleteSoft(taskId, data);
                 return;
+            case CHANNEL_DEFENSES_DEPLOY:
+            case CHANNEL_DEFENSES_WITHDRAW:
+                channelDefensesDeploy(gatewayId, taskId, data);
+                return;
             default:
                 customEvent(taskId, data);
         }
     }
 
+    private void channelDefensesDeploy(Long gatewayId, Long taskId, Object data) {
+        if (Objects.isNull(data)){
+            this.customEvent(taskId, null);
+        }
+        JSONObject jsonObject = JSONObject.parseObject(data.toString());
+        List<Long> failureIds = new ArrayList<>(jsonObject.entrySet().size());
+        for (Map.Entry<String, Object> entry : jsonObject.entrySet()){
+            List<String> channelOriginIds = JSONArray.parseArray(entry.getValue().toString()).toList(String.class);
+            Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, entry.getKey());
+            if (deviceInfoOp.isEmpty()){
+                continue;
+            }
+            DeviceInfo deviceInfo = deviceInfoOp.get();
+            failureIds.addAll(channelMapper.selectIdsByDeviceIdAndOriginIds(deviceInfo.getId(), channelOriginIds));
+        }
+        this.customEvent(taskId, failureIds);
+    }
+
+    private void alarmMsgNotification(Long gatewayId, Object data) {
+        if (Objects.isNull(data)){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "data为空");
+        }
+        JSONObject jsonObject = JSONObject.parseObject(data.toString());
+        String deviceOriginId = jsonObject.getString(StandardName.DEVICE_ID);
+        if (Objects.isNull(deviceOriginId)){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关南向信息处理服务", "告警信息接收异常", "缺少设备id", data);
+            return;
+        }
+        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
+        if (deviceInfoOp.isEmpty()){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关南向信息处理服务", "告警信息接收异常", "不存在的设备", data);
+            return;
+        }
+        String channelOriginId = jsonObject.getString(StandardName.CHANNEL_ID);
+        if (Objects.isNull(channelOriginId)){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关南向信息处理服务", "告警信息接收异常", "缺少通道id", data);
+            return;
+        }
+        Long deviceId = deviceInfoOp.get().getId();
+        Optional<ChannelInfo> channelInfoOp = channelMapper.selectByDeviceIdAndOriginId(deviceId, channelOriginId);
+        if (channelInfoOp.isEmpty()){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关南向信息处理服务", "告警信息接收异常", "不存在的通道", data);
+            return;
+        }
+        jsonObject.put(StandardName.DEVICE_ID, deviceId);
+        jsonObject.put(StandardName.CHANNEL_ID, channelInfoOp.get().getId());
+        CommonResponse<?> commonResponse = alarmManageApi.receiveAlarmMsg(jsonObject);
+        if (commonResponse.isError()) {
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关南向信息处理服务","告警信息发送异常", commonResponse.getMsg(), jsonObject);
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+    }
 
 
     @Override

@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.util.List;
+
 /**
  * gis地图服务控制
  * @author chenjialing
@@ -38,12 +40,25 @@ public class GisServiceImpl implements IGisService {
 
         if(ObjectUtils.isEmpty(req.getId())){
             //添加
+            LambdaQueryWrapper<GisConfig> gisConfigLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            gisConfigLambdaQueryWrapper.eq(GisConfig::getDictId,req.getDictId());
+            gisConfigLambdaQueryWrapper.last("limit 1");
+            GisConfig gisConfigDb = gisConfigMapper.selectOne(gisConfigLambdaQueryWrapper);
+            if(ObjectUtils.isEmpty(gisConfigDb)){
+                gisConfigMapper.insert(gisConfig);
+            }else {
+                throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR,"请勿重复添加同一类型的地图");
+            }
 
-            gisConfigMapper.insert(gisConfig);
         }else {
             //编辑
             gisConfigMapper.updateById(gisConfig);
         }
+    }
+
+    @Override
+    public List<GisConfig> list() {
+        return gisConfigMapper.selectList(null);
     }
 
     @Override
@@ -77,27 +92,32 @@ public class GisServiceImpl implements IGisService {
     }
 
     @Override
-    public void gisConfigVideoAreaSave(GisVideoAreaConfigReq req) {
+    public Long gisConfigVideoAreaSave(GisVideoAreaConfigReq req) {
         GisVideoAreaConfig gisVideoAreaConfig = new GisVideoAreaConfig();
         BeanUtil.copyProperties(req,gisVideoAreaConfig);
         if(ObjectUtils.isEmpty(req.getId())){
-            gisVideoAreaConfigMapper.insert(gisVideoAreaConfig);
+            LambdaQueryWrapper<GisVideoAreaConfig> gisConfigLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            gisConfigLambdaQueryWrapper.eq(GisVideoAreaConfig::getGisConfigId,req.getGisConfigId());
+            gisConfigLambdaQueryWrapper.eq(GisVideoAreaConfig::getVideoAreaId,req.getVideoAreaId());
+
+            GisVideoAreaConfig gisVideoAreaConfigDb = gisVideoAreaConfigMapper.selectOne(gisConfigLambdaQueryWrapper);
+            if(!ObjectUtils.isEmpty(gisVideoAreaConfigDb)){
+                throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION,"该安放区域已配置了地图节点，请进行编辑");
+            }else {
+                gisVideoAreaConfigMapper.insert(gisVideoAreaConfig);
+            }
 
         }else {
             gisVideoAreaConfigMapper.updateById(gisVideoAreaConfig);
 
         }
+        return gisVideoAreaConfig.getId();
 
     }
 
     @Override
     public GisVideoAreaConfig findVideoAreaOne(Long videoAreaId) {
 
-        GisVideoAreaConfig gisVideoAreaConfig = gisVideoAreaConfigMapper.listPage(videoAreaId);
-        if(ObjectUtils.isEmpty(gisVideoAreaConfig)){
-            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR,"该节点暂未配置gis地图配置，或则未开启gis配置启用");
-        }
-
-        return gisVideoAreaConfig;
+        return gisVideoAreaConfigMapper.listPage(videoAreaId);
     }
 }

@@ -48,7 +48,7 @@ public class MessageNorthServiceImpl implements MessageNorthService {
             }
             postMessageSubRspList.add(new PostMessageSubRsp(msgType, msgHandle, messageInfo.getMsgLock()));
         }
-        if (messageInfoList.size() > 0){
+        if (!messageInfoList.isEmpty()){
             messageMapper.batchSave(messageInfoList);
         }
         return postMessageSubRspList;
@@ -58,7 +58,7 @@ public class MessageNorthServiceImpl implements MessageNorthService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void cancelSubMsg(Set<String> msgHandles) {
-        if (msgHandles.size() == 0){
+        if (msgHandles.isEmpty()){
             return;
         }
         List<Long> messageInfoIdList = new ArrayList<>(msgHandles.size());

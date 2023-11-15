@@ -5,7 +5,7 @@ import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
-import com.runjian.device.constant.SignState;
+import com.runjian.common.constant.SignState;
 import com.runjian.device.constant.SubMsgType;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DeviceMapper;

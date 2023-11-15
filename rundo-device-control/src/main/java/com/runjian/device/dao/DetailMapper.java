@@ -26,7 +26,7 @@ public interface DetailMapper {
     void save(DetailInfo detailInfo);
 
     @Select(" SELECT * FROM " + DETAIL_TABLE_NAME +
-            " WHERE dc_id = #{dcId} AND type = #{type} ")
+            " WHERE dc_id = #{dcId} AND type = #{type} for update")
     Optional<DetailInfo> selectByDcIdAndType(Long dcId, Integer type);
 
     @Update(" <script> " +

@@ -147,6 +147,12 @@ public class StreamManageApiFallbackFactory implements FallbackFactory<StreamMan
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--dispatchUnBindingGateway操作失败",req, throwable);
                 return finalFailure;
             }
+
+            @Override
+            public CommonResponse<String> webrtcAudio(WebRtcAudioReq webRtcAudioReq) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"中心调度服务","feign--dispatchUnBindingGateway操作失败",webRtcAudioReq, throwable);
+                return (CommonResponse<String>) finalFailure;
+            }
         };
     }
 }
