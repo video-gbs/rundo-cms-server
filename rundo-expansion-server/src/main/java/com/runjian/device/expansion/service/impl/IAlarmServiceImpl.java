@@ -105,7 +105,7 @@ public class IAlarmServiceImpl implements IAlarmService {
         if (Objects.isNull(response.getData())){
             return new PageListResp<>();
         }
-
+        log.warn("response:{}", response);
         PageListResp<GetAlarmMsgChannelRsp> dataPage = response.getData();
         List<GetAlarmMsgChannelRsp> dataList = dataPage.getList();
         if (Objects.isNull(dataList) || dataList.isEmpty()){
