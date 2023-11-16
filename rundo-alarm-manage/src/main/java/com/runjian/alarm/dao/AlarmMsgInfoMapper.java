@@ -45,7 +45,6 @@ public interface AlarmMsgInfoMapper {
     @Update(" <script> " +
             " UPDATE " + ALARM_MSG_TABLE_NAME +
             " SET update_time = #{updateTime}  " +
-            " , alarm_state = #{alarmState} " +
             " , alarm_end_time = #{alarmEndTime} " +
             " , video_url = #{videoUrl} " +
             " , video_state = #{videoState} " +
