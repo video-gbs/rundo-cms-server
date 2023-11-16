@@ -83,7 +83,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                     String lockKey = alarmMsgInfo.getAlarmCode() + MarkConstant.MARK_SPLIT_SEMICOLON + alarmMsgInfo.getChannelId();
                     String data = redisTemplate.opsForValue().get(lockKey);
                     log.warn("underway data:{} msgId:{}", data, alarmMsgInfo.getId());
-                    if (Objects.isNull(data) || Objects.equals(data, String.valueOf(alarmMsgInfo.getId()))) {
+                    if (Objects.equals(data, String.valueOf(alarmMsgInfo.getId()))) {
                         return;
                     }
                     alarmMsgInfo.setUpdateTime(nowTime);
