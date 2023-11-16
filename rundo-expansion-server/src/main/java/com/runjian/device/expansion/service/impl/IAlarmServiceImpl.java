@@ -105,7 +105,6 @@ public class IAlarmServiceImpl implements IAlarmService {
         if (Objects.isNull(response.getData())){
             return new PageListResp<>();
         }
-        log.warn("response:{}", response);
         PageListResp<GetAlarmMsgChannelRsp> dataPage = response.getData();
         List<GetAlarmMsgChannelRsp> dataList = dataPage.getList();
         if (Objects.isNull(dataList) || dataList.isEmpty()){
@@ -115,6 +114,9 @@ public class IAlarmServiceImpl implements IAlarmService {
         Map<Long, GetAlarmDeviceChannelRsp> deviceChannelRspMap = deviceChannelExpansionMapper.listAlarmList(channelIds).stream().collect(Collectors.toMap(GetAlarmDeviceChannelRsp::getId, getAlarmDeviceChannelRsp -> getAlarmDeviceChannelRsp));
         for (GetAlarmMsgChannelRsp getAlarmMsgChannelRsp : dataList){
             GetAlarmDeviceChannelRsp getAlarmDeviceChannelRsp = deviceChannelRspMap.get(getAlarmMsgChannelRsp.getChannelId());
+            if (Objects.isNull(getAlarmDeviceChannelRsp)){
+                continue;
+            }
             getAlarmMsgChannelRsp.setChannelName(getAlarmDeviceChannelRsp.getChannelName());
             getAlarmMsgChannelRsp.setDeviceName(getAlarmDeviceChannelRsp.getDeviceName());
         }
