@@ -141,17 +141,17 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         alarmMsgInfo.setVideoAudioState(alarmSchemeEventDto.getVideoHasAudio());
                         // 判断是否是直到事件结束的录制时间
                         if (Objects.equals(alarmSchemeEventDto.getVideoLength(), 0)){
-                            alarmMsgInfo.setAlarmState(AlarmState.UNDERWAY.getCode());
+
                             alarmMsgInfo.setVideoState(AlarmFileState.INIT.getCode());
                             // 设置30s超时时间
                             redisTemplate.opsForValue().set(lockKey, String.valueOf(alarmMsgInfo.getId()), 30, TimeUnit.SECONDS);
                         } else {
-                            alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
+
                             alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
                             redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval() + alarmSchemeEventDto.getVideoLength(), TimeUnit.SECONDS);
                         }
                     }else {
-                        alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
+
                         redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval(), TimeUnit.SECONDS);
                     }
 
@@ -188,21 +188,16 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 }
                 AlarmMsgInfo alarmMsgInfo2 = alarmMsgInfoOp2.get();
                 // 判断事件是否被提前结束了，提前结束也直接返回
-                if (Objects.equals(AlarmState.SUCCESS.getCode(), alarmMsgInfo2.getAlarmState())){
+                if (!Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo2.getVideoState())){
                     return;
                 }
-                // 设置告警状态为成功
-                alarmMsgInfo2.setAlarmState(AlarmState.SUCCESS.getCode());
+                alarmMsgInfo2.setVideoState(AlarmFileState.WAITING.getCode());
                 alarmMsgInfo2.setUpdateTime(LocalDateTime.now());
                 LocalDateTime minEndTime = alarmMsgInfo2.getAlarmStartTime().plusSeconds(15);
                 if(minEndTime.isAfter(eventTime)){
                     alarmMsgInfo2.setAlarmEndTime(minEndTime);
                 }else {
                     alarmMsgInfo2.setAlarmEndTime(eventTime);
-                }
-                // 判断录像状态是否是初始化
-                if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo2.getVideoState())){
-                    alarmMsgInfo2.setVideoState(AlarmFileState.WAITING.getCode());
                 }
                 alarmMsgInfoMapper.update(alarmMsgInfo2);
                 // 设置下次间隔时间

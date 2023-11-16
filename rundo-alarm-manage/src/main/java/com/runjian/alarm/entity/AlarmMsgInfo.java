@@ -48,11 +48,6 @@ public class AlarmMsgInfo {
     private String alarmDesc;
 
     /**
-     * 告警状态 0->进行中 1->已完成
-     */
-    private Integer alarmState;
-
-    /**
      * 告警间隔时间
      */
     private Integer alarmInterval;

@@ -74,7 +74,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
         RLock rLock = redissonClient.getLock(MarkConstant.REDIS_ALARM_UNDERWAY_LOCK_KEY);
         if (rLock.tryLock()) {
             try {
-                List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByAlarmState(AlarmState.UNDERWAY.getCode());
+                List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByVideoState(AlarmFileState.INIT.getCode());
                 if (alarmMsgInfoList.isEmpty()) {
                     return;
                 }
@@ -86,7 +86,6 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                     if (Objects.isNull(data) || Objects.equals(data, String.valueOf(alarmMsgInfo.getId()))) {
                         return;
                     }
-                    alarmMsgInfo.setAlarmState(AlarmState.SUCCESS.getCode());
                     alarmMsgInfo.setUpdateTime(nowTime);
                     if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo.getVideoState())) {
                         alarmMsgInfo.setAlarmEndTime(nowTime);
@@ -107,7 +106,6 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
         LocalDateTime nowTime = LocalDateTime.now();
         List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByVideoStateAndAlarmEndTime(AlarmFileState.WAITING.getCode(), nowTime.plusSeconds(DELAY_VIDEO_TIME_SECOND));
         if (alarmMsgInfoList.isEmpty()) {
-
             return;
         }
         for (AlarmMsgInfo alarmMsgInfo : alarmMsgInfoList) {

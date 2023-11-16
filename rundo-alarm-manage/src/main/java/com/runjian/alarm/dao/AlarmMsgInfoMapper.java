@@ -30,10 +30,10 @@ public interface AlarmMsgInfoMapper {
             " </script> ")
     List<GetAlarmMsgRsp> selectByAlarmDescAndAlarmTime(Long channelId, String alarmDesc, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime);
 
-    @Insert(" INSERT INTO " + ALARM_MSG_TABLE_NAME + " (channel_id, alarm_code, alarm_level, alarm_start_time, alarm_end_time, alarm_desc, alarm_state, alarm_interval, " +
+    @Insert(" INSERT INTO " + ALARM_MSG_TABLE_NAME + " (channel_id, alarm_code, alarm_level, alarm_start_time, alarm_end_time, alarm_desc, alarm_interval, " +
             " video_url, video_length, video_state, video_stream_id, " +
             "image_state, image_url, update_time, create_time) values " +
-            " (#{channelId}, #{alarmCode}, #{alarmLevel}, #{alarmStartTime}, #{alarmEndTime}, #{alarmDesc}, #{alarmState}, #{alarmInterval}," +
+            " (#{channelId}, #{alarmCode}, #{alarmLevel}, #{alarmStartTime}, #{alarmEndTime}, #{alarmDesc}, #{alarmInterval}," +
             " #{videoUrl}, #{videoLength}, #{videoAudioState}, #{videoStreamId}, " +
             " #{imageState}, #{imageUrl}, #{updateTime}, #{createTime}) ")
     void save(AlarmMsgInfo alarmMsgInfo);
@@ -56,15 +56,10 @@ public interface AlarmMsgInfoMapper {
             " </script> ")
     void update(AlarmMsgInfo alarmMsgInfo);
 
-    @Select(" SELECT * FROM " + ALARM_MSG_TABLE_NAME +
-            " WHERE alarm_state = #{alarmState} ")
-    List<AlarmMsgInfo> selectByAlarmState(Integer alarmState);
-
     @Update(" <script> " +
             " <foreach collection='alarmMsgInfoList' item='item' separator=';'> " +
             " UPDATE " + ALARM_MSG_TABLE_NAME +
             " SET update_time = #{item.updateTime}  " +
-            " , alarm_state = #{item.alarmState} " +
             " , alarm_end_time = #{item.alarmEndTime} " +
             " , video_url = #{item.videoUrl} " +
             " , video_state = #{item.videoState} " +
@@ -102,4 +97,10 @@ public interface AlarmMsgInfoMapper {
             " <foreach collection='idList' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             " </script> ")
     void deleteByIdList(List<Long> idList);
+
+    @Select(" <script> " +
+            " SELECT * FROM " + ALARM_MSG_TABLE_NAME +
+            " WHERE video_state = #{alarmFileState} " +
+            " </script> ")
+    List<AlarmMsgInfo> selectByVideoState(Integer alarmFileState);
 }
