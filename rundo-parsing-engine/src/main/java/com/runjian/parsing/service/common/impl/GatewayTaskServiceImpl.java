@@ -15,6 +15,7 @@ import com.runjian.parsing.service.common.GatewayTaskService;
 import com.runjian.parsing.vo.CommonMqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
 
     private final MqDefaultProperties mqDefaultProperties;
 
+    private final RedissonClient redissonClient;
 
     private static final String OUT_TIME = "OUT_TIME";
 
@@ -59,7 +61,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
             gatewayTaskInfo.setUpdateTime(LocalDateTime.now());
             gatewayTaskInfo.setDetail(OUT_TIME);
         }
-        if (gatewayTaskInfoList.size() > 0){
+        if (!gatewayTaskInfoList.isEmpty()){
             gatewayTaskMapper.updateAll(gatewayTaskInfoList);
         }
     }
