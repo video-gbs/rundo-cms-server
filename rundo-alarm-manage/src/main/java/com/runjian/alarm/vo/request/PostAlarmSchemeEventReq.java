@@ -52,7 +52,7 @@ public class PostAlarmSchemeEventReq implements ValidatorFunction {
     /**
      * 录像时间 单位：秒 15、30、60
      */
-    @Range(min = 15, max = 60, message = "录像时间不正确")
+    @Range(min = 0, max = 60, message = "录像时间不正确")
     private Integer videoLength;
 
     /**
