@@ -74,9 +74,9 @@ public class VideoAreaResourceController {
     @ApiOperation("安防通道删除")
     public CommonResponse<?> delete(@RequestParam String resourceKey,@RequestParam String resourceValue) {
         CommonResponse<?> commonResponse = authRbacServerApi.deleteByResourceValue(resourceKey,resourceValue);
-        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
-        }
+//        if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+//            throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, commonResponse.getMsg());
+//        }
         return commonResponse;
     }
 
