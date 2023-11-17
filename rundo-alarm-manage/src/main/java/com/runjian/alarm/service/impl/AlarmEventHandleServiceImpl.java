@@ -244,7 +244,9 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
     private PostRecordDownloadReq getPostRecordDownloadReq(AlarmMsgInfo alarmMsgInfo) {
         PostRecordDownloadReq postRecordDownloadReq = new PostRecordDownloadReq();
         postRecordDownloadReq.setChannelId(alarmMsgInfo.getChannelId());
-        postRecordDownloadReq.setEnableAudio(CommonEnum.getBoolean(alarmMsgInfo.getVideoAudioState()));
+        if (Objects.nonNull(alarmMsgInfo.getVideoAudioState())){
+            postRecordDownloadReq.setEnableAudio(CommonEnum.getBoolean(alarmMsgInfo.getVideoAudioState()));
+        }
         postRecordDownloadReq.setStreamType(2);
         postRecordDownloadReq.setPlayType(PlayType.ALARM.getCode());
         postRecordDownloadReq.setStartTime(alarmMsgInfo.getAlarmStartTime().plusSeconds(-5));
