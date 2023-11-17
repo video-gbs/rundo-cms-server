@@ -181,7 +181,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "data为空");
         }
         JSONObject jsonObject = deviceSignInConvert(JSONObject.parseObject(data.toString()));
-        DeviceInfo deviceInfo = saveDeviceInfo(jsonObject, gatewayId);
+        DeviceInfo deviceInfo = saveDeviceInfo(jsonObject.getString(StandardName.ORIGIN_ID), gatewayId);
         jsonObject.put(StandardName.DEVICE_ID, deviceInfo.getId());
         jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
         CommonResponse<?> commonResponse = deviceControlApi.deviceSignIn(jsonObject);
@@ -210,7 +210,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             lock.lock(15, TimeUnit.SECONDS);
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = deviceBatchSignInConvert(jsonArray.getJSONObject(i));
-                DeviceInfo deviceInfo = saveDeviceInfo(jsonObject, gatewayId);
+                DeviceInfo deviceInfo = saveDeviceInfo(jsonObject.getString(StandardName.ORIGIN_ID), gatewayId);
                 jsonObject.put(StandardName.DEVICE_ID, deviceInfo.getId());
                 jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
             }
@@ -258,17 +258,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             return;
         }
         GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
-        String deviceOriginId = data.toString();
-        LocalDateTime nowTime = LocalDateTime.now();
-        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayTaskInfo.getGatewayId(), deviceOriginId);
-        DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
-        if (deviceInfoOp.isEmpty()){
-            deviceInfo.setOriginId(deviceOriginId);
-            deviceInfo.setGatewayId(gatewayTaskInfo.getGatewayId());
-            deviceInfo.setCreateTime(nowTime);
-            deviceInfo.setUpdateTime(nowTime);
-            deviceMapper.save(deviceInfo);
-        }
+        DeviceInfo deviceInfo = saveDeviceInfo(data.toString(), gatewayTaskInfo.getGatewayId());
         customEvent(taskId, deviceInfo.getId());
     }
 
@@ -392,19 +382,25 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      * @param gatewayId
      * @return
      */
-    protected DeviceInfo saveDeviceInfo(JSONObject jsonObject, Long gatewayId) {
-        String deviceOriginId = jsonObject.getString(StandardName.ORIGIN_ID);
-        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
-        DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
-        if (deviceInfoOp.isEmpty()) {
-            LocalDateTime nowTime = LocalDateTime.now();
-            deviceInfo.setOriginId(deviceOriginId);
-            deviceInfo.setGatewayId(gatewayId);
-            deviceInfo.setUpdateTime(nowTime);
-            deviceInfo.setCreateTime(nowTime);
-            deviceMapper.save(deviceInfo);
+    protected DeviceInfo saveDeviceInfo(String deviceOriginId, Long gatewayId) {
+        TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+        try{
+            Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
+            DeviceInfo deviceInfo = deviceInfoOp.orElseGet(DeviceInfo::new);
+            if (deviceInfoOp.isEmpty()) {
+                LocalDateTime nowTime = LocalDateTime.now();
+                deviceInfo.setOriginId(deviceOriginId);
+                deviceInfo.setGatewayId(gatewayId);
+                deviceInfo.setUpdateTime(nowTime);
+                deviceInfo.setCreateTime(nowTime);
+                deviceMapper.save(deviceInfo);
+            }
+            dataSourceTransactionManager.commit(transactionStatus);
+            return deviceInfo;
+        } catch (Exception ex){
+            dataSourceTransactionManager.rollback(transactionStatus);
+            throw ex;
         }
-        return deviceInfo;
     }
 
     /**
