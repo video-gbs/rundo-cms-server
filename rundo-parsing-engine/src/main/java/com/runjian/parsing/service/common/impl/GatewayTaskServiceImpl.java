@@ -110,7 +110,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         gatewayTaskInfo.setDeviceId(deviceId);
         gatewayTaskInfo.setChannelId(channelId);
         gatewayTaskInfo.setMqId(mqId);
-        gatewayTaskInfo.setMsgType(msgType);0
+        gatewayTaskInfo.setMsgType(msgType);
 
         gatewayTaskInfo.setState(taskState.getCode());
         gatewayTaskMapper.save(gatewayTaskInfo);
