@@ -123,12 +123,6 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                     alarmMsgInfo.setCreateTime(nowTime);
                     alarmMsgInfo.setUpdateTime(nowTime);
                     alarmMsgInfo.setAlarmInterval(alarmSchemeEventDto.getEventInterval());
-                    if (Objects.isNull(alarmSchemeEventDto.getVideoLength())){
-                        alarmMsgInfo.setAlarmStartTime(eventTime);
-                    }else {
-                        alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventDto.getVideoLength()));
-                    }
-
 
                     // 判断是否开启截图
                     if (CommonEnum.getBoolean(alarmSchemeEventDto.getEnablePhoto())){
@@ -146,7 +140,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                             // 设置30s超时时间
                             redisTemplate.opsForValue().set(lockKey, String.valueOf(alarmMsgInfo.getId()), 30, TimeUnit.SECONDS);
                         } else {
-
+                            alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventDto.getVideoLength()));
                             alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
                             redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval() + alarmSchemeEventDto.getVideoLength(), TimeUnit.SECONDS);
                         }
