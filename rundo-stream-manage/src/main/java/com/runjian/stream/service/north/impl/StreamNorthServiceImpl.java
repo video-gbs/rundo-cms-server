@@ -210,7 +210,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     }
 
     @Override
-    public String webRtcAudio(Long channelId, Integer recordState, Integer autoCloseState) {
+    public PostVideoPlayRsp webRtcAudio(Long channelId, Integer recordState, Integer autoCloseState) {
         String streamId = PlayType.AUDIO_LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + channelId;
         RLock lock = redissonClient.getLock(MarkConstant.REDIS_STREAM_LIVE_PLAY_LOCK + streamId);
         if (lock.tryLock()){
@@ -227,7 +227,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
                     throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, String.format("%s:%s", commonResponse.getMsg(), commonResponse.getData()));
                 }
                 streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
-                return commonResponse.getData().toString();
+                return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()), PostVideoPlayRsp.class);
             }finally {
                 lock.unlock();
             }

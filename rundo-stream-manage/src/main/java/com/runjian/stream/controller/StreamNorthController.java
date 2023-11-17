@@ -85,7 +85,7 @@ public class StreamNorthController {
      * @return 音频流推送地址
      */
     @PostMapping("/webrtc/audio")
-    public CommonResponse<String> webRTCAudio(@RequestBody PostWebRtcAudioReq req){
+    public CommonResponse<PostVideoPlayRsp> webRTCAudio(@RequestBody PostWebRtcAudioReq req){
         validatorService.validateRequest(req);
         return CommonResponse.success(streamNorthService.webRtcAudio(req.getChannelId(), req.getRecordState(), req.getAutoCloseState()));
     }

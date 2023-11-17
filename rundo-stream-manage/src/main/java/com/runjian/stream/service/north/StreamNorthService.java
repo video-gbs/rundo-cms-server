@@ -89,7 +89,7 @@ public interface StreamNorthService {
      * @param autoCloseState 是否自动关闭
      * @return
      */
-    String webRtcAudio(Long channelId, Integer recordState, Integer autoCloseState);
+    PostVideoPlayRsp webRtcAudio(Long channelId, Integer recordState, Integer autoCloseState);
 
     /**
      * 停止播放
