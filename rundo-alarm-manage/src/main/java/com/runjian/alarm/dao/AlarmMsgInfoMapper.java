@@ -34,7 +34,7 @@ public interface AlarmMsgInfoMapper {
             " video_url, video_length, video_state, video_audio_state, video_stream_id, " +
             "image_state, image_url, update_time, create_time) values " +
             " (#{channelId}, #{alarmCode}, #{alarmLevel}, #{alarmStartTime}, #{alarmEndTime}, #{alarmDesc}, #{alarmInterval}," +
-            " #{videoUrl}, #{videoLength}, #{video_state}, #{videoAudioState}, #{videoStreamId}, " +
+            " #{videoUrl}, #{videoLength}, #{videoState}, #{videoAudioState}, #{videoStreamId}, " +
             " #{imageState}, #{imageUrl}, #{updateTime}, #{createTime}) ")
     void save(AlarmMsgInfo alarmMsgInfo);
 
