@@ -34,7 +34,7 @@ public interface DeviceMapper {
 
     @Select(" <script>" +
             " SELECT * FROM " + DEVICE_TABLE_NAME +
-            " WHERE gateway_id = #{gatewayId} AND origin_id = #{originId} " +
+            " WHERE gateway_id = #{gatewayId} AND origin_id = #{originId}  FOR UPDATE" +
             " </script>")
     Optional<DeviceInfo> selectByGatewayIdAndOriginId(Long gatewayId, String originId);
 
