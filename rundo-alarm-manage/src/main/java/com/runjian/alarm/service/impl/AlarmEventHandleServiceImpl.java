@@ -91,6 +91,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                         alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
                     }
                 }
+                log.error(LogTemplate.ERROR_LOG_TEMPLATE, "告警事件处理服务", "定时检测持续中的告警", alarmMsgInfoList);
                 alarmMsgInfoMapper.batchUpdate(alarmMsgInfoList);
             } finally {
                 rLock.unlock();
