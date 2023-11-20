@@ -87,7 +87,7 @@
 		left join
 		rundo_device_expansion t2 on t1.device_expansion_id=t2.id
 		WHERE
-		t1.deleted = 0 and t1.id in
+		t1.id in
 		<foreach collection="idList" item="id" index="index" open="(" close=")" separator=",">
 			#{id}
 		</foreach>
