@@ -80,7 +80,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                 }
                 LocalDateTime nowTime = LocalDateTime.now();
                 for (AlarmMsgInfo alarmMsgInfo : alarmMsgInfoList) {
-                    String lockKey = alarmMsgInfo.getAlarmCode() + MarkConstant.MARK_SPLIT_SEMICOLON + alarmMsgInfo.getChannelId();
+                    String lockKey = MarkConstant.REDIS_ALARM_MSG_LOCK + alarmMsgInfo.getAlarmCode() + MarkConstant.MARK_SPLIT_SEMICOLON + alarmMsgInfo.getChannelId();
                     String data = redisTemplate.opsForValue().get(lockKey);
                     if (Objects.equals(data, String.valueOf(alarmMsgInfo.getId()))) {
                         return;
