@@ -87,7 +87,9 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                     }
                     alarmMsgInfo.setUpdateTime(nowTime);
                     if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo.getVideoState())) {
-                        alarmMsgInfo.setAlarmEndTime(nowTime);
+                        if(Objects.isNull(alarmMsgInfo.getAlarmEndTime())){
+                            alarmMsgInfo.setAlarmEndTime(nowTime);
+                        }
                         alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
                     }
                 }

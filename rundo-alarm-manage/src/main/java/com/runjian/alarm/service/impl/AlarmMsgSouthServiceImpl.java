@@ -164,12 +164,14 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 if (alarmMsgInfoOp1.isEmpty()){
                     return;
                 }
-                LocalDateTime nowTime = LocalDateTime.now();
                 AlarmMsgInfo alarmMsgInfo1 = alarmMsgInfoOp1.get();
-                alarmMsgInfo1.setUpdateTime(nowTime);
-                alarmMsgInfo1.setAlarmEndTime(nowTime);
-                alarmMsgInfoMapper.update(alarmMsgInfo1);
-                redisTemplate.expire(lockKey, 30, TimeUnit.SECONDS);
+                if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo1.getVideoState())) {
+                    LocalDateTime nowTime = LocalDateTime.now();
+                    alarmMsgInfo1.setUpdateTime(nowTime);
+                    alarmMsgInfo1.setAlarmEndTime(eventTime);
+                    alarmMsgInfoMapper.update(alarmMsgInfo1);
+                    redisTemplate.expire(lockKey, 30, TimeUnit.SECONDS);
+                }
                 return;
             case COMPOUND_END:
                 String alarmMsgInfoId2 = redisTemplate.opsForValue().get(lockKey);
