@@ -160,7 +160,7 @@ public class DeviceExpansionServiceImpl extends ServiceImpl<DeviceExpansionMappe
         if(res.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
             //调用失败
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"控制服务","feign--编码器删除失败",id, res);
-            return res;
+            throw new BusinessException(res.getMsg());
         }
         baseDeviceAndChannelService.removeDeviceSoft(id);
 

@@ -175,6 +175,6 @@ public interface StreamManageApi {
      * @return
      */
     @PostMapping(value = "/stream/north/webrtc/audio",produces = MediaType.APPLICATION_JSON_VALUE)
-    CommonResponse<String> webrtcAudio(@RequestBody WebRtcAudioReq webRtcAudioReq);
+    CommonResponse<StreamInfo> webrtcAudio(@RequestBody WebRtcAudioReq webRtcAudioReq);
 
 }

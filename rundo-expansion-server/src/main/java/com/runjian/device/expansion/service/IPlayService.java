@@ -38,5 +38,5 @@ public interface IPlayService {
      * @param playReq
      * @return
      */
-    CommonResponse<String> webrtcAudio(PlayReq playReq);
+    CommonResponse<StreamInfo> webrtcAudio(PlayReq playReq);
 }
