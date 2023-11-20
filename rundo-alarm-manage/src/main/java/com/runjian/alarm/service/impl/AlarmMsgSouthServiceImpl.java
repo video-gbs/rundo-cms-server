@@ -137,21 +137,20 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         if (Objects.equals(alarmSchemeEventDto.getVideoLength(), 0)){
 
                             alarmMsgInfo.setVideoState(AlarmFileState.INIT.getCode());
+                            alarmMsgInfoMapper.save(alarmMsgInfo);
                             // 设置30s超时时间
                             redisTemplate.opsForValue().set(lockKey, String.valueOf(alarmMsgInfo.getId()), 30, TimeUnit.SECONDS);
+                            return;
                         } else {
-
                             alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventDto.getVideoLength()));
                             alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
                             redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval() + alarmSchemeEventDto.getVideoLength(), TimeUnit.SECONDS);
                         }
                     }else {
-
                         redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval(), TimeUnit.SECONDS);
                     }
 
                     alarmMsgInfoMapper.save(alarmMsgInfo);
-                    log.warn("保存告警信息：{}", alarmMsgInfo);
                 }else {
                     log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "告警消息聚合", String.format("通道Id:%s, 事件编码:%s, 事件类型:%s, 事件描述:%s, 事件时间:%s", channelId, eventCode, eventMsgType, eventDesc, eventTime));
                 }

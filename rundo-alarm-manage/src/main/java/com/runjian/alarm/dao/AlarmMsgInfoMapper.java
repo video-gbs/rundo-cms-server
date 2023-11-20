@@ -36,6 +36,7 @@ public interface AlarmMsgInfoMapper {
             " (#{channelId}, #{alarmCode}, #{alarmLevel}, #{alarmStartTime}, #{alarmEndTime}, #{alarmDesc}, #{alarmInterval}," +
             " #{videoUrl}, #{videoLength}, #{videoState}, #{videoAudioState}, #{videoStreamId}, " +
             " #{imageState}, #{imageUrl}, #{updateTime}, #{createTime}) ")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void save(AlarmMsgInfo alarmMsgInfo);
 
     @Select(" SELECT * FROM " + ALARM_MSG_TABLE_NAME +
