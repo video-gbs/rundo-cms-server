@@ -170,9 +170,13 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo1.getVideoState())) {
                     LocalDateTime nowTime = LocalDateTime.now();
                     alarmMsgInfo1.setUpdateTime(nowTime);
-                    alarmMsgInfo1.setAlarmEndTime(eventTime);
+                    LocalDateTime minEndTime = alarmMsgInfo1.getAlarmStartTime().plusSeconds(15);
+                    if(minEndTime.isAfter(eventTime)){
+                        alarmMsgInfo1.setAlarmEndTime(minEndTime);
+                    }else {
+                        alarmMsgInfo1.setAlarmEndTime(eventTime);
+                    }
                     alarmMsgInfoMapper.update(alarmMsgInfo1);
-                    log.warn("告警信息：{} eventTime:{}", alarmMsgInfoId1, eventTime);
                     redisTemplate.expire(lockKey, 30, TimeUnit.SECONDS);
                 }
                 return;
@@ -193,12 +197,9 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 alarmMsgInfo2.setVideoState(AlarmFileState.WAITING.getCode());
                 alarmMsgInfo2.setUpdateTime(LocalDateTime.now());
                 LocalDateTime minEndTime = alarmMsgInfo2.getAlarmStartTime().plusSeconds(15);
-                log.warn("告警信息：{} minEndTime:{} eventTime:{}", alarmMsgInfoId2, minEndTime, eventTime);
                 if(minEndTime.isAfter(eventTime)){
-                    log.warn("告警信息：{} 修改结束时间为：{}", alarmMsgInfoId2, minEndTime);
                     alarmMsgInfo2.setAlarmEndTime(minEndTime);
                 }else {
-                    log.warn("告警信息：{} 修改结束时间为：{}", alarmMsgInfoId2, eventTime);
                     alarmMsgInfo2.setAlarmEndTime(eventTime);
                 }
                 alarmMsgInfoMapper.update(alarmMsgInfo2);
