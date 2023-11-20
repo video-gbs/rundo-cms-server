@@ -140,6 +140,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                             // 设置30s超时时间
                             redisTemplate.opsForValue().set(lockKey, String.valueOf(alarmMsgInfo.getId()), 30, TimeUnit.SECONDS);
                         } else {
+
                             alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventDto.getVideoLength()));
                             alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
                             redisTemplate.expire(lockKey, alarmMsgInfo.getAlarmInterval() + alarmSchemeEventDto.getVideoLength(), TimeUnit.SECONDS);
@@ -150,6 +151,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                     }
 
                     alarmMsgInfoMapper.save(alarmMsgInfo);
+                    log.warn("保存告警信息：{}", alarmMsgInfo);
                 }else {
                     log.info(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "告警消息聚合", String.format("通道Id:%s, 事件编码:%s, 事件类型:%s, 事件描述:%s, 事件时间:%s", channelId, eventCode, eventMsgType, eventDesc, eventTime));
                 }
@@ -170,6 +172,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                     alarmMsgInfo1.setUpdateTime(nowTime);
                     alarmMsgInfo1.setAlarmEndTime(eventTime);
                     alarmMsgInfoMapper.update(alarmMsgInfo1);
+                    log.warn("告警信息：{} eventTime:{}", alarmMsgInfoId1, eventTime);
                     redisTemplate.expire(lockKey, 30, TimeUnit.SECONDS);
                 }
                 return;
@@ -190,9 +193,12 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 alarmMsgInfo2.setVideoState(AlarmFileState.WAITING.getCode());
                 alarmMsgInfo2.setUpdateTime(LocalDateTime.now());
                 LocalDateTime minEndTime = alarmMsgInfo2.getAlarmStartTime().plusSeconds(15);
+                log.warn("告警信息：{} minEndTime:{} eventTime:{}", alarmMsgInfoId2, minEndTime, eventTime);
                 if(minEndTime.isAfter(eventTime)){
+                    log.warn("告警信息：{} 修改结束时间为：{}", alarmMsgInfoId2, minEndTime);
                     alarmMsgInfo2.setAlarmEndTime(minEndTime);
                 }else {
+                    log.warn("告警信息：{} 修改结束时间为：{}", alarmMsgInfoId2, eventTime);
                     alarmMsgInfo2.setAlarmEndTime(eventTime);
                 }
                 alarmMsgInfoMapper.update(alarmMsgInfo2);
