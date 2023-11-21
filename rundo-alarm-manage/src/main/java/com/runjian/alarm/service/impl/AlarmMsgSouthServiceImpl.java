@@ -139,7 +139,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                             alarmMsgInfo.setVideoState(AlarmFileState.INIT.getCode());
                             alarmMsgInfoMapper.save(alarmMsgInfo);
                             // 设置30s超时时间
-                            redisTemplate.opsForValue().set(lockKey, String.valueOf(alarmMsgInfo.getId()), 30, TimeUnit.SECONDS);
+                            redisTemplate.opsForValue().set(lockKey, String.valueOf(alarmMsgInfo.getId()), 15, TimeUnit.SECONDS);
                             return;
                         } else {
                             alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventDto.getVideoLength()));
