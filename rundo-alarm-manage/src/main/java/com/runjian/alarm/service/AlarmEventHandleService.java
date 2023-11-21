@@ -28,11 +28,6 @@ public interface AlarmEventHandleService {
     void alarmEventCheck();
 
     /**
-     * 等待超时
-     */
-    void alarmEventWaitOutTime();
-
-    /**
      * 恢复任务
      * @param alarmMsgId 告警消息id
      * @param alarmFileType 告警文件类型

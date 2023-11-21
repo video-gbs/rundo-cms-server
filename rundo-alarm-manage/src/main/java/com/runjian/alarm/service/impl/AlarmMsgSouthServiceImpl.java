@@ -64,7 +64,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
 
     private final AlarmProperties alarmProperties;
 
-    private final static int DEFAULT_SINGLE_MSG_END = 15;
+
 
     @Override
     public void receiveAlarmMsg(Long channelId, String eventCode, Integer eventMsgTypeCode, String eventDesc, LocalDateTime eventTime) {
@@ -139,7 +139,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                             alarmMsgInfo.setVideoState(AlarmFileState.INIT.getCode());
                             alarmMsgInfoMapper.save(alarmMsgInfo);
                             // 设置30s超时时间
-                            redisTemplate.opsForValue().set(lockKey, String.valueOf(alarmMsgInfo.getId()), 15, TimeUnit.SECONDS);
+                            redisTemplate.opsForValue().set(lockKey, String.valueOf(alarmMsgInfo.getId()), DEFAULT_SINGLE_MSG_END, TimeUnit.SECONDS);
                             return;
                         } else {
                             alarmMsgInfo.setAlarmEndTime(eventTime.plusSeconds(alarmSchemeEventDto.getVideoLength()));
@@ -169,14 +169,14 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo1.getVideoState())) {
                     LocalDateTime nowTime = LocalDateTime.now();
                     alarmMsgInfo1.setUpdateTime(nowTime);
-                    LocalDateTime minEndTime = alarmMsgInfo1.getAlarmStartTime().plusSeconds(15);
+                    LocalDateTime minEndTime = alarmMsgInfo1.getAlarmStartTime().plusSeconds(DEFAULT_SINGLE_MSG_END);
                     if(minEndTime.isAfter(eventTime)){
                         alarmMsgInfo1.setAlarmEndTime(minEndTime);
                     }else {
                         alarmMsgInfo1.setAlarmEndTime(eventTime);
                     }
                     alarmMsgInfoMapper.update(alarmMsgInfo1);
-                    redisTemplate.expire(lockKey, 15, TimeUnit.SECONDS);
+                    redisTemplate.expire(lockKey, DEFAULT_SINGLE_MSG_END, TimeUnit.SECONDS);
                 }
                 return;
             case COMPOUND_END:
@@ -195,7 +195,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 }
                 alarmMsgInfo2.setVideoState(AlarmFileState.WAITING.getCode());
                 alarmMsgInfo2.setUpdateTime(LocalDateTime.now());
-                LocalDateTime minEndTime = alarmMsgInfo2.getAlarmStartTime().plusSeconds(15);
+                LocalDateTime minEndTime = alarmMsgInfo2.getAlarmStartTime().plusSeconds(DEFAULT_SINGLE_MSG_END);
                 if(minEndTime.isAfter(eventTime)){
                     alarmMsgInfo2.setAlarmEndTime(minEndTime);
                 }else {

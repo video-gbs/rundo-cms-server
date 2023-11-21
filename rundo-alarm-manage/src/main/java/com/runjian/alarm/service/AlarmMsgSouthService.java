@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
  */
 public interface AlarmMsgSouthService {
 
+    int DEFAULT_SINGLE_MSG_END = 15;
+
     /**
      * 接收告警信息
      * @param channelId 通道id

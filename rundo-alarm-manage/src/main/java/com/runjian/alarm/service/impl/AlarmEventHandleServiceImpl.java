@@ -10,6 +10,7 @@ import com.runjian.alarm.entity.AlarmMsgInfo;
 import com.runjian.alarm.entity.relation.AlarmMsgErrorRel;
 import com.runjian.alarm.feign.StreamManageApi;
 import com.runjian.alarm.service.AlarmEventHandleService;
+import com.runjian.alarm.service.AlarmMsgSouthService;
 import com.runjian.alarm.utils.RedisLockUtil;
 import com.runjian.alarm.vo.request.PostImageDownloadReq;
 import com.runjian.alarm.vo.request.PostRecordDownloadReq;
@@ -64,6 +65,8 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
 
     private final static long DEFAULT_OUT_TIME_SECOND = 60;
 
+    private final static int DEFAULT_FORWARD_TIME = -5;
+
     /**
      * 定时任务
      * 检测正在事件中的告警
@@ -88,7 +91,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                     alarmMsgInfo.setUpdateTime(nowTime);
                     if (Objects.equals(AlarmFileState.INIT.getCode(), alarmMsgInfo.getVideoState())) {
                         if(Objects.isNull(alarmMsgInfo.getAlarmEndTime())){
-                            alarmMsgInfo.setAlarmEndTime(alarmMsgInfo.getAlarmStartTime().plusSeconds(15));
+                            alarmMsgInfo.setAlarmEndTime(alarmMsgInfo.getAlarmStartTime().plusSeconds(AlarmMsgSouthService.DEFAULT_SINGLE_MSG_END));
                         }
                         alarmMsgInfo.setVideoState(AlarmFileState.WAITING.getCode());
                     }
@@ -187,7 +190,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
             if (redisLockUtil.lock(MarkConstant.REDIS_ALARM_MSG_EVENT_CHECK_LOCK + alarmMsgInfo.getChannelId(), value, 3, TimeUnit.SECONDS, 1)) {
                 try{
                     String lockValue = redisTemplate.opsForValue().get(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId());
-                    if (Objects.isNull(lockValue)){
+                    if (Objects.isNull(lockValue) || !Objects.equals(lockValue, String.format("%s-%s", AlarmFileType.VIDEO.getMsg(), alarmMsgInfo.getId())) || !Objects.equals(lockValue, String.format("%s-%s", AlarmFileType.IMAGE.getMsg(), alarmMsgInfo.getId()))){
                         if (Objects.equals(alarmMsgInfo.getVideoState(), AlarmFileState.GENERATING.getCode())){
                             alarmMsgInfo.setVideoState(AlarmFileState.ERROR.getCode());
                             alarmMsgErrorRelMapper.save(getAlarmMsgErrorRel(alarmMsgInfo.getId(), AlarmFileType.VIDEO, "告警视频下载超时未完成任务", nowTime));
@@ -198,22 +201,13 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                             redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId(), String.format("%s-%s", AlarmFileType.IMAGE.getMsg(), alarmMsgInfo.getId()));
                         }
                         alarmMsgInfo.setUpdateTime(nowTime);
+                        alarmMsgInfoMapper.update(alarmMsgInfo);
                     }
                 }finally {
                     redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_CHECK_LOCK + alarmMsgInfo.getChannelId(), value);
                 }
             }
         }
-    }
-
-    @Override
-    public void alarmEventWaitOutTime() {
-//        LocalDateTime nowTime = LocalDateTime.now();
-//        List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByVideoStateOrImageStateAndCreateTime(AlarmFileState.WAITING.getCode(), nowTime.plusHours(1));
-//        if (alarmMsgInfoList.isEmpty()) {
-//            return;
-//        }
-
     }
 
     @Override
@@ -254,7 +248,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
         }
         postRecordDownloadReq.setStreamType(2);
         postRecordDownloadReq.setPlayType(PlayType.ALARM.getCode());
-        postRecordDownloadReq.setStartTime(alarmMsgInfo.getAlarmStartTime().plusSeconds(-5));
+        postRecordDownloadReq.setStartTime(alarmMsgInfo.getAlarmStartTime().plusSeconds(DEFAULT_FORWARD_TIME));
         postRecordDownloadReq.setEndTime(alarmMsgInfo.getAlarmEndTime());
         postRecordDownloadReq.setUploadId(String.valueOf(alarmMsgInfo.getId()));
         postRecordDownloadReq.setUploadUrl(alarmProperties.getUploadUrl());
