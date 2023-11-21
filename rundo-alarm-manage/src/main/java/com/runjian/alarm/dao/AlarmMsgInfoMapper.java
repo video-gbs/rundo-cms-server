@@ -47,11 +47,11 @@ public interface AlarmMsgInfoMapper {
             " UPDATE " + ALARM_MSG_TABLE_NAME +
             " SET update_time = #{updateTime}  " +
             " , alarm_end_time = #{alarmEndTime} " +
-            " , video_url = #{videoUrl} " +
+            " <if test=\"videoUrl != null\" > , video_url = #{videoUrl} </if>" +
             " , video_state = #{videoState} " +
-            " , video_stream_id = #{videoStreamId}" +
+            " <if test=\"videoStreamId != null\" > , video_stream_id = #{videoStreamId} </if> " +
             " , image_state = #{imageState} " +
-            " , image_url = #{imageUrl} " +
+            " <if test=\"imageUrl != null\" > , image_url = #{imageUrl} </if>" +
             " WHERE id = #{id} " +
             " </script> ")
     void update(AlarmMsgInfo alarmMsgInfo);
@@ -61,11 +61,11 @@ public interface AlarmMsgInfoMapper {
             " UPDATE " + ALARM_MSG_TABLE_NAME +
             " SET update_time = #{item.updateTime}  " +
             " , alarm_end_time = #{item.alarmEndTime} " +
-            " , video_url = #{item.videoUrl} " +
+            " <if test=\"item.videoUrl != null\" > , video_url = #{item.videoUrl} </if> " +
             " , video_state = #{item.videoState} " +
-            " , video_stream_id = #{item.videoStreamId}" +
+            " <if test=\"item.videoStreamId != null\" > , video_stream_id = #{item.videoStreamId} </if> " +
             " , image_state = #{item.imageState} " +
-            " , image_url = #{item.imageUrl} " +
+            " <if test=\"item.imageUrl != null\" > , image_url = #{item.imageUrl} </if>" +
             " WHERE id = #{item.id} "+
             " </foreach> " +
             " </script> ")
