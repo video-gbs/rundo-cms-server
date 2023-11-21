@@ -176,7 +176,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         alarmMsgInfo1.setAlarmEndTime(eventTime);
                     }
                     alarmMsgInfoMapper.update(alarmMsgInfo1);
-                    redisTemplate.expire(lockKey, 30, TimeUnit.SECONDS);
+                    redisTemplate.expire(lockKey, 15, TimeUnit.SECONDS);
                 }
                 return;
             case COMPOUND_END:
