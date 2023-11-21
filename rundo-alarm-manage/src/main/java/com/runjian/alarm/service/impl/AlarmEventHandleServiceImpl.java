@@ -63,7 +63,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
 
     private final static long DELAY_VIDEO_TIME_SECOND = -60;
 
-    private final static long DEFAULT_OUT_TIME_SECOND = 60;
+    private final static long DEFAULT_OUT_TIME_SECOND = 180;
 
     private final static int DEFAULT_FORWARD_TIME = -5;
 
