@@ -83,6 +83,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                         return;
                     }
                     AlarmSchemeInfo alarmSchemeInfo = alarmSchemeInfoOp.get();
+
                     if (CommonEnum.getBoolean(alarmSchemeInfo.getDisabled())){
                         log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "告警信息南向服务", "无效的告警信息，告警预案已禁用", String.format("通道id:%s 告警预案id:%s", channelId, alarmSchemeInfo.getId()));
                         redisLockUtil.unLock(lockKey, lockValue);
