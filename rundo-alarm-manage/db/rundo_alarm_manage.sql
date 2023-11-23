@@ -9,31 +9,29 @@ create table rundo_alarm_event
     create_time datetime     null,
     update_time datetime     null,
     constraint uni_event_code
-        unique (event_code),
-    constraint uni_event_name
-        unique (event_name)
+        unique (event_code)
 );
 
 create table rundo_alarm_msg
 (
-    id               bigint auto_increment
+    id                bigint auto_increment
         primary key,
-    channel_id       bigint       not null,
-    alarm_code       varchar(100) not null,
-    alarm_level      tinyint      not null,
-    alarm_start_time datetime     not null,
-    alarm_end_time   datetime     null,
-    alarm_state      tinyint      not null,
-    alarm_interval   int          not null,
-    alarm_desc       varchar(250) null,
-    video_url        varchar(500) null,
-    video_state      tinyint      null,
-    video_length     int          null,
-    video_stream_id  varchar(100) null,
-    image_url        varchar(500) null,
-    image_state      tinyint      null,
-    create_time      datetime     null,
-    update_time      datetime     null
+    channel_id        bigint            not null,
+    alarm_code        varchar(100)      not null,
+    alarm_level       tinyint           not null,
+    alarm_start_time  datetime          not null,
+    alarm_end_time    datetime          null,
+    alarm_interval    int               not null,
+    alarm_desc        varchar(250)      null,
+    video_url         varchar(500)      null,
+    video_state       tinyint           null,
+    video_length      int               null,
+    video_stream_id   varchar(100)      null,
+    image_url         varchar(500)      null,
+    image_state       tinyint           null,
+    create_time       datetime          null,
+    update_time       datetime          null,
+    video_audio_state tinyint default 0 not null
 );
 
 create table rundo_alarm_msg_error
@@ -86,7 +84,7 @@ create table rundo_alarm_scheme_event
     video_has_audio tinyint      null,
     update_time     datetime     null,
     create_time     datetime     null,
-    constraint uni_scheme_event_id
-        unique (scheme_id)
+    constraint uni_scheme_event
+        unique (scheme_id, event_code)
 );
 
