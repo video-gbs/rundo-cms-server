@@ -190,7 +190,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
             if (redisLockUtil.lock(MarkConstant.REDIS_ALARM_MSG_EVENT_CHECK_LOCK + alarmMsgInfo.getChannelId(), value, 3, TimeUnit.SECONDS, 1)) {
                 try{
                     String lockValue = redisTemplate.opsForValue().get(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId());
-                    if (Objects.isNull(lockValue) || !Objects.equals(lockValue, String.format("%s-%s", AlarmFileType.VIDEO.getMsg(), alarmMsgInfo.getId())) || !Objects.equals(lockValue, String.format("%s-%s", AlarmFileType.IMAGE.getMsg(), alarmMsgInfo.getId()))){
+                    if (Objects.isNull(lockValue) || (!Objects.equals(lockValue, String.format("%s-%s", AlarmFileType.VIDEO.getMsg(), alarmMsgInfo.getId())) && !Objects.equals(lockValue, String.format("%s-%s", AlarmFileType.IMAGE.getMsg(), alarmMsgInfo.getId())))){
                         if (Objects.equals(alarmMsgInfo.getVideoState(), AlarmFileState.GENERATING.getCode())){
                             alarmMsgInfo.setVideoState(AlarmFileState.ERROR.getCode());
                             alarmMsgErrorRelMapper.save(getAlarmMsgErrorRel(alarmMsgInfo.getId(), AlarmFileType.VIDEO, "告警视频下载超时未完成任务", nowTime));
