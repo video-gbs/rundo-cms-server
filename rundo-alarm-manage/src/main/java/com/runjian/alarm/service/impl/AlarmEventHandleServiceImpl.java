@@ -63,7 +63,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
 
     private final static long DELAY_VIDEO_TIME_SECOND = -60;
 
-    private final static long DEFAULT_OUT_TIME_SECOND = 200;
+    private final static long DEFAULT_OUT_TIME_SECOND = 180;
 
     private final static int DEFAULT_FORWARD_TIME = -5;
 
@@ -105,7 +105,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
     }
 
     @Override
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 3000)
     public void alarmVideoEventStart() {
         // 视频报警处理
         LocalDateTime nowTime = LocalDateTime.now();
@@ -143,7 +143,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
     }
 
     @Override
-    @Scheduled(fixedDelay = 3000)
+    @Scheduled(fixedDelay = 1500)
     public void alarmImageEventStart() {
         LocalDateTime nowTime = LocalDateTime.now();
         List<AlarmMsgInfo> alarmMsgInfoList = alarmMsgInfoMapper.selectByImageStateAndAlarmEndTime(AlarmFileState.WAITING.getCode(), nowTime.plusSeconds(DELAY_VIDEO_TIME_SECOND));

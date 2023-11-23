@@ -44,6 +44,12 @@ public class GetAlarmMsgRsp {
     private LocalDateTime alarmStartTime;
 
     /**
+     * 告警结束时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime alarmEndTime;
+
+    /**
      * 告警描述
      */
     private String alarmDesc;
