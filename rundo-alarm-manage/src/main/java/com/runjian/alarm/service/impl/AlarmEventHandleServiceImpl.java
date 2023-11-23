@@ -123,6 +123,7 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
                     alarmMsgErrorRelMapper.save(getAlarmMsgErrorRel(alarmMsgInfo.getId(), AlarmFileType.VIDEO, "告警视频时长大于3分钟，无法进行下载", nowTime));
                     alarmMsgInfo.setVideoState(AlarmFileState.ERROR.getCode());
                     alarmMsgInfoMapper.update(alarmMsgInfo);
+                    redisLockUtil.unLock(lockKey);
                     continue;
                 }
                 PostRecordDownloadReq postRecordDownloadReq = getPostRecordDownloadReq(alarmMsgInfo);
