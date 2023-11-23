@@ -235,7 +235,7 @@ public class AlarmMsgSouthServiceImpl implements AlarmMsgSouthService {
                 alarmMsgInfo.setImageState(AlarmFileState.SUCCESS.getCode());
                 break;
             case VIDEO:
-                if (Objects.equals(AlarmFileState.GENERATING.getCode(), alarmMsgInfo.getImageState()) && Objects.equals(alarmMsgInfo.getVideoLength(), 0)){
+                if (Objects.equals(AlarmFileState.GENERATING.getCode(), alarmMsgInfo.getImageState())){
                     redisLockUtil.unLock(MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId(), String.format("%s-%s", fileType.getMsg(), alarmMsgInfo.getId()));
                 }
                 String videoFileName = DateUtils.DATE_TIME_FILE_FORMATTER.format(alarmMsgInfo.getAlarmStartTime()) + "." + (Objects.isNull(file.getOriginalFilename()) ? "mp4" : file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1));
