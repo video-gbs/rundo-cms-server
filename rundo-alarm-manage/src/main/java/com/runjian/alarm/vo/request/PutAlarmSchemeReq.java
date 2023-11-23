@@ -1,6 +1,7 @@
 package com.runjian.alarm.vo.request;
 
 import com.runjian.alarm.entity.relation.AlarmSchemeEventRel;
+import com.runjian.common.validator.constraints.annotation.NotSpecialChar;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +32,7 @@ public class PutAlarmSchemeReq {
      * 预案名称
      */
     @NotBlank(message =  "预案名称不能为空")
+    @NotSpecialChar(except = {"-"},message = "预案名称不能包含特殊字符")
     private String schemeName;
 
     /**
