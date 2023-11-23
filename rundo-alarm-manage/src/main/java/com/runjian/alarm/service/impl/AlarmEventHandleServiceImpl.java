@@ -116,8 +116,15 @@ public class AlarmEventHandleServiceImpl implements AlarmEventHandleService {
         for (AlarmMsgInfo alarmMsgInfo : alarmMsgInfoList) {
             String lockKey = MarkConstant.REDIS_ALARM_MSG_EVENT_LOCK + alarmMsgInfo.getChannelId();
             Duration duration = Duration.between(alarmMsgInfo.getAlarmStartTime(), alarmMsgInfo.getAlarmEndTime());
+
             if (redisLockUtil.lock(lockKey, String.format("%s-%s", AlarmFileType.VIDEO.getMsg(), alarmMsgInfo.getId()), duration.getSeconds() + DEFAULT_OUT_TIME_SECOND, TimeUnit.SECONDS, 1)){
                 alarmMsgInfo.setUpdateTime(nowTime);
+                if (duration.getSeconds() > DEFAULT_OUT_TIME_SECOND){
+                    alarmMsgErrorRelMapper.save(getAlarmMsgErrorRel(alarmMsgInfo.getId(), AlarmFileType.VIDEO, "告警视频时长大于3分钟，无法进行下载", nowTime));
+                    alarmMsgInfo.setVideoState(AlarmFileState.ERROR.getCode());
+                    alarmMsgInfoMapper.update(alarmMsgInfo);
+                    continue;
+                }
                 PostRecordDownloadReq postRecordDownloadReq = getPostRecordDownloadReq(alarmMsgInfo);
                 try{
                     CommonResponse<String> response = streamManageApi.applyStreamId(postRecordDownloadReq);
