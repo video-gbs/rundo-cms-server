@@ -63,10 +63,4 @@ public interface StreamTaskService {
      */
     void taskFinish(Long taskId, Object data, TaskState taskState, BusinessErrorEnums errorEnums);
 
-    /**
-     * 任务异常
-     * @param taskId 任务id
-     * @param detail 说明
-     */
-    void taskError(Long taskId, BusinessErrorEnums errorEnums, String detail);
 }
