@@ -106,7 +106,6 @@ public class IAlarmServiceImpl implements IAlarmService {
         if (userChannelIds.isEmpty()){
             return new PageListResp<>();
         }
-        log.warn("用户拥有的数据：{}", userChannelIds);
         CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> response = alarmManageApi.getAlarmMsgPage(page, num, channelId, alarmDesc, startTime, endTime, userChannelIds.stream().map(Long::parseLong).collect(Collectors.toList()));
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         if (Objects.isNull(response.getData())){
