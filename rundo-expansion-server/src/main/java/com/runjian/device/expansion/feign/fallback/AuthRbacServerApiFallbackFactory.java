@@ -97,6 +97,12 @@ public class AuthRbacServerApiFallbackFactory implements FallbackFactory<AuthRba
             }
 
             @Override
+            public CommonResponse<List<String>> getAllResource(String resourceKey) {
+                log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--getAllResource操作失败", resourceKey, throwable);
+                return (CommonResponse<List<String>>) finalFailure;
+            }
+
+            @Override
             public CommonResponse<?> deleteByResourceValue(String resourceKey, String resourceValue) {
                 log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE,"资源服务","feign--deleteByResourceValue操作失败",resourceValue, throwable);
                 return finalFailure;
