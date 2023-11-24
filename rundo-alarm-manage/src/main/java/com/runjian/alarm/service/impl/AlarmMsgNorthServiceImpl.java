@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Miracle
@@ -34,6 +35,9 @@ public class AlarmMsgNorthServiceImpl implements AlarmMsgNorthService {
     @Override
     public PageInfo<GetAlarmMsgRsp> getAlarmMsgByPage(int page, int num, Long channelId, String alarmDesc, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime, List<Long> channelIds) {
         PageHelper.startPage(page, num);
+        if (Objects.isNull(channelIds) || channelIds.isEmpty()){
+            channelIds = null;
+        }
         return new PageInfo<>(alarmMsgInfoMapper.selectByAlarmDescAndAlarmTime(channelId, alarmDesc, alarmStartTime, alarmEndTime, channelIds));
     }
 

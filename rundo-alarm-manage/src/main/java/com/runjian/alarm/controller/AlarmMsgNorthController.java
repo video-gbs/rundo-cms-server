@@ -46,7 +46,7 @@ public class AlarmMsgNorthController {
                                                                     String alarmDesc,
                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmStartTime,
                                                                     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmEndTime,
-                                                                    List<Long> channelIds){
+                                                                    @RequestParam(required = false) List<Long> channelIds){
         return CommonResponse.success(alarmMsgNorthService.getAlarmMsgByPage(page, num, channelId, alarmDesc, alarmStartTime, alarmEndTime, channelIds));
     }
 
