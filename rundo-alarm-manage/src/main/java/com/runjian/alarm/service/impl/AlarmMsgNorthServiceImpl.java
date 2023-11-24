@@ -32,10 +32,9 @@ public class AlarmMsgNorthServiceImpl implements AlarmMsgNorthService {
     private final StreamManageApi streamManageApi;
 
     @Override
-    @BlankStringValid
-    public PageInfo<GetAlarmMsgRsp> getAlarmMsgByPage(int page, int num, Long channelId, String alarmDesc, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime) {
+    public PageInfo<GetAlarmMsgRsp> getAlarmMsgByPage(int page, int num, Long channelId, String alarmDesc, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime, List<Long> channelIds) {
         PageHelper.startPage(page, num);
-        return new PageInfo<>(alarmMsgInfoMapper.selectByAlarmDescAndAlarmTime(channelId, alarmDesc, alarmStartTime, alarmEndTime));
+        return new PageInfo<>(alarmMsgInfoMapper.selectByAlarmDescAndAlarmTime(channelId, alarmDesc, alarmStartTime, alarmEndTime, channelIds));
     }
 
     @Override

@@ -70,4 +70,15 @@ public interface GatewayTaskMapper {
             " </foreach> " +
             " </script> ")
     void updateAll(List<GatewayTaskInfo> gatewayTaskInfoList);
+
+    @Update(" <script> " +
+            " <foreach collection='idList' item='item' separator=';'> " +
+            " UPDATE "  + GATEWAY_TASK_TABLE_NAME +
+            " SET update_time = #{updateTime} " +
+            " , state = #{state} " +
+            " <if test='detail != null'>, detail = #{detail} </if> " +
+            " WHERE id = #{item} " +
+            " </foreach> " +
+            " </script> ")
+    void batchUpdateState(List<Long> idList, Integer state, String detail, LocalDateTime updateTime);
 }

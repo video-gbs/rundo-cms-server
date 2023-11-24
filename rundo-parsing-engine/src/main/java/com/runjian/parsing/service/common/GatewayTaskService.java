@@ -49,13 +49,6 @@ public interface GatewayTaskService {
     Long createTask(Long gatewayId, Long deviceId, Long channelId, String mqId, String msgType, TaskState taskState);
 
     /**
-     * 获取任务
-     * @param taskId 任务id
-     * @return 任务信息
-     */
-    GatewayTaskInfo getTask(Long taskId);
-
-    /**
      * 获取任务(带校验)
      * @param taskId 任务id
      * @return 任务信息
@@ -63,25 +56,12 @@ public interface GatewayTaskService {
     GatewayTaskInfo getTaskValid(Long taskId, TaskState taskState);
 
     /**
-     * 获取并移除异步返回体
-     * @param taskId 任务id
-     * @return 异步返回体
-     */
-    DeferredResult<CommonResponse<?>> removeDeferredResult(Long taskId, TaskState taskState, String detail);
-
-
-    /**
      * 任务完成
-     * @param taskId 任务id
+     * @param taskId 任务消息体
+     * @param data 数据
+     * @param taskState 任务状态
+     * @param errorEnums 错误枚举
      */
-    void taskSuccess(Long taskId, Object data);
-
-    /**
-     * 任务异常
-     * @param taskId 任务id
-     * @param detail 说明
-     */
-    void taskError(Long taskId, BusinessErrorEnums errorEnums, String detail);
-
+    void taskFinish(Long taskId, Object data, TaskState taskState, BusinessErrorEnums errorEnums);
 
 }

@@ -157,16 +157,14 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         if (Objects.isNull(taskId)){
             return;
         }
-        gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
-        gatewayTaskService.taskSuccess(taskId, dataMap);
+        gatewayTaskService.taskFinish(taskId, dataMap,  TaskState.RUNNING, null);
     }
 
     @Override
     public void errorEvent(Long taskId, CommonMqDto<?> response) {
         log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关南向信息处理服务", "网关异常消息记录", response.getMsgType(), response);
         if (Objects.nonNull(taskId)){
-            gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
-            gatewayTaskService.removeDeferredResult(taskId, TaskState.ERROR, response.getMsg()).setResult(response);
+            gatewayTaskService.taskFinish(taskId, response,  TaskState.RUNNING, BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         }
         deviceControlApi.errorEvent(response);
     }
@@ -235,7 +233,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      */
     public void deviceSync(Long taskId, Object data) {
         if (Objects.isNull(data)) {
-            gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "设备id为空");
+            gatewayTaskService.taskFinish(taskId, "设备id为空", TaskState.ERROR, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
             return;
         }
         GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
@@ -254,7 +252,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      */
     public void deviceAdd(Long taskId, Object data) {
         if (Objects.isNull(data)) {
-            gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "设备id为空");
+            gatewayTaskService.taskFinish(taskId, "设备id为空", TaskState.ERROR, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
             return;
         }
         GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
@@ -271,7 +269,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      */
     public void deviceDeleteHard(Long taskId, Object data) {
         if (Objects.isNull(data)) {
-            gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "设备id为空");
+            gatewayTaskService.taskFinish(taskId, "设备id为空", TaskState.ERROR, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
             return;
         }
         GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
@@ -298,7 +296,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      */
     public void channelSync(Long taskId, Object data) {
         if (Objects.isNull(data)) {
-            gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "返回数据为空");
+            gatewayTaskService.taskFinish(taskId, "设备id为空", TaskState.ERROR, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
             return;
         }
         JSONObject jsonData = JSONObject.parseObject(JSONObject.toJSONString(data));
@@ -358,7 +356,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      */
     private void channelDeleteSoft(Long taskId, Object data) {
         if (Objects.isNull(data)) {
-            gatewayTaskService.taskError(taskId, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "通道id为空");
+            gatewayTaskService.taskFinish(taskId, "设备id为空", TaskState.ERROR, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
             return;
         }
         GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);

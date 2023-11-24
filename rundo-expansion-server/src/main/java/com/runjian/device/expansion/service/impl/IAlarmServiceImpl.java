@@ -100,7 +100,13 @@ public class IAlarmServiceImpl implements IAlarmService {
 
     @Override
     public PageListResp<GetAlarmMsgChannelRsp> getAlarmMsgChannel(int page, int num, Long channelId, String alarmDesc, LocalDateTime startTime, LocalDateTime endTime) {
-        CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> response = alarmManageApi.getAlarmMsgPage(page, num, channelId, alarmDesc, startTime, endTime);
+        CommonResponse<List<String>> authResponse = authRbacServerApi.getAllResource("safety_channel");
+        authResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+        List<String> userChannelIds = authResponse.getData();
+        if (userChannelIds.isEmpty()){
+            return new PageListResp<>();
+        }
+        CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> response = alarmManageApi.getAlarmMsgPage(page, num, channelId, alarmDesc, startTime, endTime, userChannelIds.stream().map(Long::parseLong).collect(Collectors.toList()));
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         if (Objects.isNull(response.getData())){
             return new PageListResp<>();

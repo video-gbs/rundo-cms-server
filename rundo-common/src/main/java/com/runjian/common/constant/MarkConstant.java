@@ -62,4 +62,8 @@ public class MarkConstant {
     public static final String REDIS_ALARM_MSG_EVENT_LOCK = "ALARM_MSG_EVENT_LOCK:";
     public static final String REDIS_ALARM_MSG_EVENT_CHECK_LOCK = "ALARM_MSG_EVENT_CHECK_LOCK:";
     public static final String REDIS_ALARM_MSG_LOCK = "ALARM_MSG_LOCK:";
+    public static final String REDIS_MQ_REQUEST_MERGE_LIST = "MQ_REQUEST_MERGE_LIST:";
+    public static final String REDIS_GATEWAY_REQUEST_MERGE_LOCK = "MQ_REQUEST_MERGE_LOCK:";
+    public static final String REDIS_MQ_STREAM_MERGE_LIST = "MQ_STREAM_MERGE_LIST:";
+    public static final String REDIS_STREAM_REQUEST_MERGE_LOCK = "MQ_STREAM_MERGE_LOCK:";
 }

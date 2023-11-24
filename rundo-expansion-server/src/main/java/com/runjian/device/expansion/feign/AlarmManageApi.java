@@ -36,7 +36,8 @@ public interface AlarmManageApi {
                                                                         @RequestParam(required = false) Long channelId,
                                                                         @RequestParam(required = false) String alarmDesc,
                                                                         @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmStartTime,
-                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmEndTime);
+                                                                        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime alarmEndTime,
+                                                                        @RequestParam(required = false) List<Long> channelIds);
 
     /**
      * 获取预案下的设备布撤防状态

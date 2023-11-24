@@ -28,7 +28,7 @@ public interface AlarmMsgNorthService {
      * @param alarmEndTime 告警结束时间
      * @return
      */
-    PageInfo<GetAlarmMsgRsp> getAlarmMsgByPage(int page, int num, Long channelId, String alarmType, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime);
+    PageInfo<GetAlarmMsgRsp> getAlarmMsgByPage(int page, int num, Long channelId, String alarmType, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime, List<Long> channelIds);
 
     /**
      * 点播接口

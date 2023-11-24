@@ -26,9 +26,12 @@ public interface AlarmMsgInfoMapper {
             " <if test=\"alarmDesc != null\" > AND alarm_desc = #{alarmDesc} </if>" +
             " <if test=\"alarmStartTime != null\" > AND alarm_start_time &gt;= #{alarmStartTime} </if>" +
             " <if test=\"alarmEndTime != null\" > AND alarm_start_time &lt;= #{alarmEndTime} </if>" +
+            " <if test=\"channelIds != null\" > AND channelIds IN " +
+            " <foreach collection='channelIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            "</if>" +
             " ORDER BY alarm_start_time DESC" +
             " </script> ")
-    List<GetAlarmMsgRsp> selectByAlarmDescAndAlarmTime(Long channelId, String alarmDesc, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime);
+    List<GetAlarmMsgRsp> selectByAlarmDescAndAlarmTime(Long channelId, String alarmDesc, LocalDateTime alarmStartTime, LocalDateTime alarmEndTime, List<Long> channelIds);
 
     @Insert(" INSERT INTO " + ALARM_MSG_TABLE_NAME + " (channel_id, alarm_code, alarm_level, alarm_start_time, alarm_end_time, alarm_desc, alarm_interval, " +
             " video_url, video_length, video_state, video_audio_state, video_stream_id, " +

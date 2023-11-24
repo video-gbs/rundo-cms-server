@@ -55,4 +55,15 @@ public interface StreamTaskMapper {
             " </foreach> " +
             " </script> ")
     void updateAll(List<StreamTaskInfo> streamTaskInfoList);
+
+    @Update(" <script> " +
+            " <foreach collection='idList' item='item' separator=';'> " +
+            " UPDATE " + STREAM_TASK_TABLE_NAME +
+            " SET update_time = #{nowTime}  " +
+            " , state = #{taskState} " +
+            " , detail = #{detail}" +
+            " WHERE id = #{item} "+
+            " </foreach> " +
+            " </script> ")
+    void batchUpdateState(List<Long> idList, Integer taskState, String detail, LocalDateTime nowTime);
 }

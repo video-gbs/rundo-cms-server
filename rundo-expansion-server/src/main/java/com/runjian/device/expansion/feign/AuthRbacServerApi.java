@@ -19,6 +19,8 @@ import java.util.List;
 @FeignClient(value = "auth-rbac",fallbackFactory= AuthRbacServerApiFallbackFactory.class)
 public interface AuthRbacServerApi {
 
+
+
     /**
      * 批量添加资源
      * @param req 批量添加资源请求体
@@ -102,5 +104,13 @@ public interface AuthRbacServerApi {
      */
     @GetMapping("/auth/user/resource/pid")
     public CommonResponse<List<GetCatalogueResourceRsp>> getCatalogueResourceRsp(@RequestParam Long pid, @RequestParam Boolean isIncludeChild);
+
+    /**
+     * 获取用户全部资源
+     * @param resourceKey
+     * @return
+     */
+    @GetMapping("/auth/user/resource/all")
+    CommonResponse<List<String>> getAllResource(@RequestParam String resourceKey);
 
 }

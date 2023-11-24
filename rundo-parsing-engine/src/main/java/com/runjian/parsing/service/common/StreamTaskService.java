@@ -48,13 +48,6 @@ public interface StreamTaskService {
     Long createTask(Long dispatchId, String streamId, String mqId, String msgType, TaskState taskState);
 
     /**
-     * 获取任务
-     * @param taskId 任务id
-     * @return 任务信息
-     */
-    StreamTaskInfo getTask(Long taskId);
-
-    /**
      * 获取任务(带校验)
      * @param taskId 任务id
      * @return 任务信息
@@ -62,18 +55,13 @@ public interface StreamTaskService {
     StreamTaskInfo getTaskValid(Long taskId, TaskState taskState);
 
     /**
-     * 获取并移除异步返回体
-     * @param taskId 任务id
-     * @return 异步返回体
-     */
-    DeferredResult<CommonResponse<?>> removeDeferredResult(Long taskId, TaskState taskState, String detail);
-
-
-    /**
      * 任务完成
      * @param taskId 任务id
+     * @param data 数据
+     * @param taskState 任务状态
+     * @param errorEnums 错误枚举
      */
-    void taskSuccess(Long taskId, Object data);
+    void taskFinish(Long taskId, Object data, TaskState taskState, BusinessErrorEnums errorEnums);
 
     /**
      * 任务异常

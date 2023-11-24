@@ -47,19 +47,16 @@ public class StreamSouthServiceImpl implements StreamSouthService {
 
     @Override
     public void customEvent(Long taskId, Object dataMap) {
-        if (Objects.isNull(taskId)){
-            return;
+        if (Objects.nonNull(taskId)){
+            streamTaskService.taskFinish(taskId, dataMap,  TaskState.RUNNING, null);
         }
-        streamTaskService.getTaskValid(taskId, TaskState.RUNNING);
-        streamTaskService.taskSuccess(taskId, dataMap);
     }
 
     @Override
     public void errorEvent(Long taskId, CommonMqDto<?> response) {
         log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流南向信息处理服务", "流媒体异常消息记录", response.getMsgType(), response);
         if (Objects.nonNull(taskId)){
-            streamTaskService.getTaskValid(taskId, TaskState.RUNNING);
-            streamTaskService.removeDeferredResult(taskId, TaskState.ERROR, response.getMsg()).setResult(response);
+            streamTaskService.taskFinish(taskId, response,  TaskState.ERROR, null);
         }else {
             streamManageApi.commonError(response);
         }
