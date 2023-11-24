@@ -18,6 +18,7 @@ import com.runjian.device.expansion.vo.feign.response.PageListResp;
 import com.runjian.device.expansion.vo.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.PropertySource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -106,7 +107,7 @@ public class IAlarmServiceImpl implements IAlarmService {
         if (userChannelIds.isEmpty()){
             return new PageListResp<>();
         }
-        CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> response = alarmManageApi.getAlarmMsgPage(page, num, channelId, alarmDesc, startTime, endTime, userChannelIds.stream().map(Long::parseLong).collect(Collectors.toList()));
+        CommonResponse<PageListResp<GetAlarmMsgChannelRsp>> response = alarmManageApi.getAlarmMsgPage(page, num, channelId, alarmDesc, startTime, endTime, userChannelIds.stream().filter(StringUtils::isNumeric).map(Long::parseLong).collect(Collectors.toList()));
         response.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         if (Objects.isNull(response.getData())){
             return new PageListResp<>();
