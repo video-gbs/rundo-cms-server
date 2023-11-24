@@ -26,7 +26,7 @@ public interface AlarmMsgInfoMapper {
             " <if test=\"alarmDesc != null\" > AND alarm_desc = #{alarmDesc} </if>" +
             " <if test=\"alarmStartTime != null\" > AND alarm_start_time &gt;= #{alarmStartTime} </if>" +
             " <if test=\"alarmEndTime != null\" > AND alarm_start_time &lt;= #{alarmEndTime} </if>" +
-            " <if test=\"channelIds != null\" > AND channelIds IN " +
+            " <if test=\"channelIds != null\" > AND channel_id IN " +
             " <foreach collection='channelIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
             "</if>" +
             " ORDER BY alarm_start_time DESC" +
