@@ -95,7 +95,14 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         }
         if (msgTypeEnum.getIsMerge()){
             Long mainId = CommonTaskService.getMainId(gatewayId, deviceId, channelId);
-            redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + mainId).offer(taskId);
+            RLock rLock = redissonClient.getLock(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST_LOCK + mainId);
+            try{
+                rLock.lock(15, TimeUnit.SECONDS);
+                redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + mainId).offer(taskId);
+            }finally {
+                rLock.unlock();
+            }
+
             if (redisLockUtil.lock(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + mainId, taskId.toString(), 15, TimeUnit.SECONDS, 0)){
                 sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
             }
@@ -159,21 +166,27 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         MsgType msgType = MsgType.getByStr(gatewayTaskInfo.getMsgType());
         if (msgType.getIsMerge()){
             Long mainId = CommonTaskService.getMainId(gatewayTaskInfo.getGatewayId(), gatewayTaskInfo.getDeviceId(), gatewayTaskInfo.getChannelId());
-            List<Long> taskIdList = CommonTaskService.getAllTask(redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + mainId)) ;
-            if (!taskIdList.isEmpty()){
-                List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
-                for (Long taskIdOb : taskIdList){
-                    DeferredResult deferredResult = asynReqMap.remove(gatewayTaskInfo.getId());
-                    finishTaskIdList.add(taskIdOb);
-                    if (Objects.isNull(deferredResult)){
-                        data = String.format("返回请求丢失，消息内容：%s，消息详情：%s", data, data);
-                    }else {
-                        CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
+            RLock rLock = redissonClient.getLock(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST_LOCK + mainId);
+            try{
+                rLock.lock(15, TimeUnit.SECONDS);
+                List<Long> taskIdList = CommonTaskService.getAllTask(redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + mainId)) ;
+                if (!taskIdList.isEmpty()){
+                    List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
+                    for (Long taskIdOb : taskIdList){
+                        DeferredResult deferredResult = asynReqMap.remove(gatewayTaskInfo.getId());
+                        finishTaskIdList.add(taskIdOb);
+                        if (Objects.isNull(deferredResult)){
+                            data = String.format("返回请求丢失，消息内容：%s，消息详情：%s", data, data);
+                        }else {
+                            CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
+                        }
                     }
+                    gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), data.toString(), LocalDateTime.now());
                 }
-                gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), data.toString(), LocalDateTime.now());
+            }finally {
+                redisLockUtil.unLock(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + mainId, taskId.toString());
+                rLock.unlock();
             }
-            redisLockUtil.unLock(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + mainId, taskId.toString());
         }else {
             DeferredResult deferredResult = asynReqMap.remove(gatewayTaskInfo.getId());
             if (Objects.isNull(deferredResult)){
