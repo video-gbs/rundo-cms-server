@@ -159,7 +159,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         MsgType msgType = MsgType.getByStr(gatewayTaskInfo.getMsgType());
         if (msgType.getIsMerge()){
             Long mainId = CommonTaskService.getMainId(gatewayTaskInfo.getGatewayId(), gatewayTaskInfo.getDeviceId(), gatewayTaskInfo.getChannelId());
-            List<Long> taskIdList = CommonTaskService.getAllTask(redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + mainId)) ;
+            List<Long> taskIdList = CommonTaskService.getAllTask(redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + mainId)) ;
             if (!taskIdList.isEmpty()){
                 List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
                 for (Long taskIdOb : taskIdList){
