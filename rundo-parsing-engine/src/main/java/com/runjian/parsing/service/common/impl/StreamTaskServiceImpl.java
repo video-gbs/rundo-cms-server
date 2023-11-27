@@ -168,7 +168,7 @@ public class StreamTaskServiceImpl implements StreamTaskService {
                             CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
                         }
                     }
-                    streamTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), data.toString(), LocalDateTime.now());
+                    streamTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(),Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
                 }
             }finally {
                 redisLockUtil.unLock(MarkConstant.REDIS_STREAM_REQUEST_MERGE_LOCK + streamTaskInfo.getStreamId(), taskId.toString());
@@ -182,7 +182,7 @@ public class StreamTaskServiceImpl implements StreamTaskService {
                 streamTaskMapper.updateState(streamTaskInfo.getId(), TaskState.ERROR.getCode(), String.format("返回请求丢失，消息内容：%s", data), LocalDateTime.now());
             }else {
                 CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
-                streamTaskMapper.updateState(streamTaskInfo.getId(), taskState.getCode(), data.toString(), LocalDateTime.now());
+                streamTaskMapper.updateState(streamTaskInfo.getId(), taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
             }
         }
     }

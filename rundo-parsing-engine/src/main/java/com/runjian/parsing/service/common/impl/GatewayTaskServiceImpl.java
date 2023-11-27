@@ -176,12 +176,12 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                         DeferredResult deferredResult = asynReqMap.remove(gatewayTaskInfo.getId());
                         finishTaskIdList.add(taskIdOb);
                         if (Objects.isNull(deferredResult)){
-                            data = String.format("返回请求丢失，消息内容：%s，消息详情：%s", data, data);
+                            data = String.format("返回请求丢失，消息内容：%s", data);
                         }else {
                             CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
                         }
                     }
-                    gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), data.toString(), LocalDateTime.now());
+                    gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
                 }
             }finally {
                 redisLockUtil.unLock(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + mainId, taskId.toString());
@@ -193,7 +193,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                 gatewayTaskMapper.updateState(gatewayTaskInfo.getId(), TaskState.ERROR.getCode(), String.format("返回请求丢失，消息内容：%s", data), LocalDateTime.now());
             } else {
                 CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
-                gatewayTaskMapper.updateState(gatewayTaskInfo.getId(), taskState.getCode(), data.toString(), LocalDateTime.now());
+                gatewayTaskMapper.updateState(gatewayTaskInfo.getId(), taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
             }
         }
     }
