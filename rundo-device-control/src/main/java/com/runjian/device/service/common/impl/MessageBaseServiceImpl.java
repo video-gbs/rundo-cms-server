@@ -56,7 +56,7 @@ public class MessageBaseServiceImpl implements MessageBaseService {
     public boolean checkMsgConsumeFinish(SubMsgType subMsgType, Set<Object> ids) {
         List<MessageInfo> messageInfoList = messageMapper.selectAllByMsgType(subMsgType.getCode());
         for (MessageInfo messageInfo : messageInfoList){
-            if (redissonClient.getMap(messageInfo.getMsgHandle()).getAll(ids).size() > 0){
+            if (!redissonClient.getMap(messageInfo.getMsgHandle()).getAll(ids).isEmpty()){
                 return false;
             }
         }

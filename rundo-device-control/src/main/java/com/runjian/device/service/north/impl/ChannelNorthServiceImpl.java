@@ -286,8 +286,11 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                 channelInfo.setSignState(SignState.DELETED.getCode());
                 channelInfo.setUpdateTime(nowTime);
             });
+            log.warn("channel delete 修改通道表:{}", channelInfoList);
             channelMapper.batchUpdateSignState(channelInfoList);
+            log.warn("channel delete 发布通道删除信息:{}", SubMsgType.CHANNEL_ADD_OR_DELETE_STATE);
             messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_OR_DELETE_STATE, channelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, JSONObject::toJSONString)));
+            log.warn("channel delete 发布通道删除信息成功");
         }
 
 
