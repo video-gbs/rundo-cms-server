@@ -207,8 +207,9 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         }
         deviceInfo.setSignState(SignState.DELETED.getCode());
         deviceInfo.setUpdateTime(LocalDateTime.now());
-        log.warn("device delete:{}", deviceInfo);
+        log.warn("device delete 修改设备表:{}", deviceInfo);
         deviceMapper.update(deviceInfo);
+        log.warn("device delete 修改通道表:{}", deviceId);
         channelNorthService.channelDeleteByDeviceId(deviceInfo.getId(), false);
         // 触发删除流程，返回boolean
         log.warn("device delete 发送请求:{}", deviceId);
