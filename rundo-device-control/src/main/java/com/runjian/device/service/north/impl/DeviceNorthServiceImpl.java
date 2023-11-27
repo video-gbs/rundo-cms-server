@@ -207,14 +207,10 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         }
         deviceInfo.setSignState(SignState.DELETED.getCode());
         deviceInfo.setUpdateTime(LocalDateTime.now());
-        log.warn("device delete 修改设备表:{}", deviceInfo);
         deviceMapper.update(deviceInfo);
-        log.warn("device delete 修改通道表:{}", deviceId);
         channelNorthService.channelDeleteByDeviceId(deviceInfo.getId(), false);
         // 触发删除流程，返回boolean
-        log.warn("device delete 发送请求:{}", deviceId);
         CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE_SOFT, 12000L));
-        log.warn("device delete 发送请求成功:{}", response);
         if (response.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备软删除失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
