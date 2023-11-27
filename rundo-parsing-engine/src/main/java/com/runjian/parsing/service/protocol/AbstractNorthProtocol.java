@@ -97,6 +97,7 @@ public abstract class AbstractNorthProtocol implements NorthProtocol {
 
     public void deviceDelete(Long deviceId, DeferredResult<CommonResponse<?>> response, MsgType msgType) {
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(deviceId);
+        log.warn("device delete:{}", deviceId);
         if (deviceInfoOp.isEmpty()){
             response.setResult(CommonResponse.success(true));
         } else {

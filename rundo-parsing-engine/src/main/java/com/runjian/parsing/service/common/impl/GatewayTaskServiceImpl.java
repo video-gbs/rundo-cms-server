@@ -107,6 +107,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                 sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
             }
         } else {
+            log.warn("发送请求：{}", msgType);
             sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
         }
     }
