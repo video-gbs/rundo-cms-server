@@ -74,10 +74,14 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
             init();
             return;
         }
+        RMap<Object, Object> rmap = redissonClient.getMap(channelAddOrDelete.getMsgHandle());
+        if (Objects.isNull(rmap)){
+            return;
+        }
         RLock rLock = redissonClient.getLock(channelAddOrDelete.getMsgLock());
         if (rLock.tryLock()){
             try{
-                RMap<Object, Object> rmap = redissonClient.getMap(channelAddOrDelete.getMsgHandle());
+
                 Set<Map.Entry<Object, Object>> entries = rmap.entrySet();
                 if (entries.isEmpty()){
                     return;
