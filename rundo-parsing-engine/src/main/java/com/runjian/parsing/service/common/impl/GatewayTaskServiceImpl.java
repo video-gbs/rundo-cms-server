@@ -99,8 +99,8 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
             if (bucket.trySet(taskId)){
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
-                bucket.expire(5,  TimeUnit.SECONDS);
-                rqueue.expire(8, TimeUnit.SECONDS);
+                bucket.expire(10,  TimeUnit.SECONDS);
+                rqueue.expire(15, TimeUnit.SECONDS);
                 sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
             } else {
                 redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + oldTaskId).offer(taskId);
@@ -186,7 +186,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                     gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
                 }else {
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, "网关消息聚合线程恢复异常：" + e.getMessage());
                     }
