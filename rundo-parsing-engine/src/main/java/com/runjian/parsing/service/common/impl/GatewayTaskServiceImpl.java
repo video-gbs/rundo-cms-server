@@ -100,11 +100,10 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
             Long mainId = CommonTaskService.getMainId(gatewayId, deviceId, channelId);
             String key = MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId;
             String oldTaskId = redisTemplate.opsForValue().get(key);
-            if (Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, String.valueOf(taskId), 0 , TimeUnit.SECONDS))){
+            if (Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, String.valueOf(taskId), 10 , TimeUnit.SECONDS))){
                 log.warn("任务 {} 创建任务队列", taskId);
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
-                redisTemplate.expire(key, 10,  TimeUnit.SECONDS);
                 rqueue.expire(15, TimeUnit.SECONDS);
                 sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
             } else {
