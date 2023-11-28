@@ -62,6 +62,6 @@ public interface GatewayTaskService {
      * @param taskState 任务状态
      * @param errorEnums 错误枚举
      */
-    void taskFinish(Long taskId, Object data, TaskState taskState, BusinessErrorEnums errorEnums);
+    void taskFinish(Long taskId, Object data, TaskState taskState, BusinessErrorEnums errorEnums) throws InterruptedException;
 
 }

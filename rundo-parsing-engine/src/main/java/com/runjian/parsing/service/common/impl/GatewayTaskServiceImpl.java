@@ -20,6 +20,7 @@ import com.runjian.parsing.utils.RedisLockUtil;
 import com.runjian.parsing.vo.CommonMqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
@@ -95,16 +96,26 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         }
         if (msgTypeEnum.getIsMerge()){
             Long mainId = CommonTaskService.getMainId(gatewayId, deviceId, channelId);
-            RLock rLock = redissonClient.getLock(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON  + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
-            try{
-                rLock.lock(3, TimeUnit.SECONDS);
-                redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId).offer(taskId);
-            }finally {
-                rLock.unlock();
-            }
-
-            if (redisLockUtil.lock(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId, taskId.toString(), 15, TimeUnit.SECONDS, 0)){
+//            RLock rLock = redissonClient.getLock(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON  + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
+//            try{
+//                rLock.lock(3, TimeUnit.SECONDS);
+//                redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId).offer(taskId);
+//            }finally {
+//                rLock.unlock();
+//            }
+//
+//            if (redisLockUtil.lock(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId, taskId.toString(), 15, TimeUnit.SECONDS, 0)){
+//                sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
+//            }
+            RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
+            if (bucket.trySet(taskId)){
+                RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + taskId);
+                rqueue.offer(taskId);
+                bucket.expire(5,  TimeUnit.SECONDS);
+                rqueue.expire(8, TimeUnit.SECONDS);
                 sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
+            } else {
+                redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + bucket.get()).offer(taskId);
             }
         } else {
             sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
@@ -161,14 +172,35 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
     }
 
     @Override
-    public void taskFinish(Long taskId, Object data, TaskState taskState, BusinessErrorEnums errorEnums) {
+    public void taskFinish(Long taskId, Object data, TaskState taskState, BusinessErrorEnums errorEnums)  {
         GatewayTaskInfo gatewayTaskInfo = getTaskValid(taskId, taskState);
         MsgType msgType = MsgType.getByStr(gatewayTaskInfo.getMsgType());
         if (msgType.getIsMerge()){
             Long mainId = CommonTaskService.getMainId(gatewayTaskInfo.getGatewayId(), gatewayTaskInfo.getDeviceId(), gatewayTaskInfo.getChannelId());
-            RLock rLock = redissonClient.getLock(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.getMsg().toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON  + mainId);
-            try{
-                rLock.lock(15, TimeUnit.SECONDS);
+//            RLock rLock = redissonClient.getLock(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.getMsg().toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON  + mainId);
+//
+//            try{
+//                rLock.lock(15, TimeUnit.SECONDS);
+//                List<Long> taskIdList = CommonTaskService.getAllTask(redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.getMsg().toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId)) ;
+//                if (!taskIdList.isEmpty()){
+//                    List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
+//                    for (Long taskIdOb : taskIdList){
+//                        DeferredResult deferredResult = asynReqMap.remove(gatewayTaskInfo.getId());
+//                        finishTaskIdList.add(taskIdOb);
+//                        if (Objects.isNull(deferredResult)){
+//                            data = String.format("返回请求丢失，消息内容：%s", data);
+//                        }else {
+//                            CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
+//                        }
+//                    }
+//                    gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
+//                }
+//            }finally {
+//                redisLockUtil.unLock(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.getMsg().toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON  + mainId, taskId.toString());
+//                rLock.unlock();
+//            }
+            RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + taskId);
+            while (rqueue.isExists()){
                 List<Long> taskIdList = CommonTaskService.getAllTask(redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.getMsg().toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId)) ;
                 if (!taskIdList.isEmpty()){
                     List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
@@ -182,11 +214,16 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                         }
                     }
                     gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
+                }else {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }finally {
-                redisLockUtil.unLock(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.getMsg().toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON  + mainId, taskId.toString());
-                rLock.unlock();
             }
+
+
         }else {
             DeferredResult deferredResult = asynReqMap.remove(gatewayTaskInfo.getId());
             if (Objects.isNull(deferredResult)){
