@@ -193,7 +193,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                     }
                 }
             }
-
+            log.warn("当前任务Id:{} 任务结束", taskId);
 
         }else {
             DeferredResult deferredResult = asynReqMap.remove(gatewayTaskInfo.getId());
