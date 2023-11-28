@@ -164,8 +164,12 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         MsgType msgType = MsgType.getByStr(gatewayTaskInfo.getMsgType());
         if (msgType.getIsMerge()){
             RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + taskId);
+            boolean isFirstRun = true;
             while (rqueue.isExists()){
                 List<Long> taskIdList = CommonTaskService.getAllTaskExceptTask(rqueue, taskId) ;
+                if (isFirstRun){
+                    taskIdList.add(taskId);
+                }
                 if (!taskIdList.isEmpty()){
                     List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
                     for (Long taskIdOb : taskIdList){
@@ -185,6 +189,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                         throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, "网关消息聚合线程恢复异常：" + e.getMessage());
                     }
                 }
+                isFirstRun = false;
             }
 
 
