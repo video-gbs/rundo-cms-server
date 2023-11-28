@@ -218,7 +218,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
-                        throw new BusinessException(e);
+                        throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, "网关消息聚合线程恢复异常：" + e.getMessage());
                     }
                 }
             }
