@@ -3,14 +3,12 @@ package com.runjian.parsing.service.common.impl;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.common.constant.LogTemplate;
 import com.runjian.common.constant.MarkConstant;
 import com.runjian.common.constant.MsgType;
 import com.runjian.parsing.constant.MqConstant;
 import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.dao.StreamTaskMapper;
 import com.runjian.parsing.entity.DispatchInfo;
-import com.runjian.parsing.entity.GatewayTaskInfo;
 import com.runjian.parsing.entity.StreamTaskInfo;
 import com.runjian.parsing.mq.config.RabbitMqSender;
 import com.runjian.parsing.mq.listener.MqDefaultProperties;
@@ -22,7 +20,6 @@ import com.runjian.parsing.vo.CommonMqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
-import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -156,7 +153,7 @@ public class StreamTaskServiceImpl implements StreamTaskService {
             RLock rLock = redissonClient.getLock(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST_LOCK + streamTaskInfo.getStreamId());
             try{
                 rLock.lock(15, TimeUnit.SECONDS);
-                List<Long> taskIdList = CommonTaskService.getAllTask(redissonClient.getQueue(MarkConstant.REDIS_MQ_STREAM_MERGE_LIST + streamTaskInfo.getStreamId())) ;
+                List<Long> taskIdList = CommonTaskService.getAllTaskExceptTask(redissonClient.getQueue(MarkConstant.REDIS_MQ_STREAM_MERGE_LIST + streamTaskInfo.getStreamId()), taskId) ;
                 if (!taskIdList.isEmpty()){
                     List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
                     for (Long taskIdOb : taskIdList){
