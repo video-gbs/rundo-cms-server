@@ -19,6 +19,7 @@ import com.runjian.parsing.utils.RedisLockUtil;
 import com.runjian.parsing.vo.CommonMqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
@@ -94,9 +95,9 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         }
         if (msgTypeEnum.getIsMerge()){
             Long mainId = CommonTaskService.getMainId(gatewayId, deviceId, channelId);
-            RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
+            RAtomicLong bucket = redissonClient.getAtomicLong(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
             Long oldTaskId = bucket.get();
-            if (bucket.trySet(taskId, 0 ,TimeUnit.SECONDS)){
+            if (bucket.compareAndSet(0, taskId)){
                 log.warn("任务 {} 创建任务队列", taskId);
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
