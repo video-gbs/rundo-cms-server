@@ -170,6 +170,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                 List<Long> taskIdList = CommonTaskService.getAllTaskExceptTask(rqueue, taskId) ;
                 if (isFirstRun){
                     taskIdList.add(taskId);
+                    isFirstRun = false;
                 }
                 if (!taskIdList.isEmpty()){
                     List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
@@ -190,7 +191,6 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                         throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, "网关消息聚合线程恢复异常：" + e.getMessage());
                     }
                 }
-                isFirstRun = false;
             }
 
 
