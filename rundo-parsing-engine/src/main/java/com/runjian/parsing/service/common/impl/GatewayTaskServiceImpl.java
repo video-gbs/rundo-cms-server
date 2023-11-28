@@ -201,7 +201,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
 //            }
             RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + taskId);
             while (rqueue.isExists()){
-                List<Long> taskIdList = CommonTaskService.getAllTask(redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.getMsg().toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId)) ;
+                List<Long> taskIdList = CommonTaskService.getAllTask(rqueue) ;
                 if (!taskIdList.isEmpty()){
                     List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
                     for (Long taskIdOb : taskIdList){
