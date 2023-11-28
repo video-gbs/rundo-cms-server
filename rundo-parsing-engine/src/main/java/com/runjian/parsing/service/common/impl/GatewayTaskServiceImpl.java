@@ -174,7 +174,6 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                     taskIdList.add(taskId);
                     isFirstRun = false;
                 }
-                log.warn("当前任务Id:{} 即将处理的任务id:{}", taskId, taskIdList);
                 if (!taskIdList.isEmpty()){
                     List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
                     for (Long taskIdOb : taskIdList){
@@ -195,8 +194,6 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                     }
                 }
             }
-            log.warn("当前任务Id:{} 任务结束", taskId);
-
         }else {
             DeferredResult deferredResult = asynReqMap.remove(gatewayTaskInfo.getId());
             if (Objects.isNull(deferredResult)){

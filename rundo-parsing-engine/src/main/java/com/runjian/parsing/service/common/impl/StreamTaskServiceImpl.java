@@ -95,7 +95,7 @@ public class StreamTaskServiceImpl implements StreamTaskService {
 //            }
             RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_STREAM_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + streamId);
             Long oldTaskId = bucket.get();
-            if (bucket.trySet(taskId)){
+            if (bucket.trySet(taskId, 0 ,TimeUnit.SECONDS)){
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_STREAM_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
                 bucket.expire(10,  TimeUnit.SECONDS);
