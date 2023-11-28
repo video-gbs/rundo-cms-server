@@ -23,6 +23,7 @@ import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
 import org.redisson.api.RQueue;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -52,6 +53,8 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
     private final RedissonClient redissonClient;
 
     private final RedisLockUtil redisLockUtil;
+
+    private final StringRedisTemplate redisTemplate;
 
 
     private static final String OUT_TIME = "OUT_TIME";
@@ -95,13 +98,13 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         }
         if (msgTypeEnum.getIsMerge()){
             Long mainId = CommonTaskService.getMainId(gatewayId, deviceId, channelId);
-            RAtomicLong bucket = redissonClient.getAtomicLong(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
-            Long oldTaskId = bucket.get();
-            if (bucket.compareAndSet(0, taskId)){
+            String key = MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId;
+            String oldTaskId = redisTemplate.opsForValue().get(key);
+            if (Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(key, String.valueOf(taskId)))){
                 log.warn("任务 {} 创建任务队列", taskId);
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
-                bucket.expire(10,  TimeUnit.SECONDS);
+                redisTemplate.expire(key, 10,  TimeUnit.SECONDS);
                 rqueue.expire(15, TimeUnit.SECONDS);
                 sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
             } else {
