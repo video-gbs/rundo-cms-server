@@ -81,7 +81,6 @@ public class AlarmSchemeChannelServiceImpl implements AlarmSchemeChannelService 
         RLock rLock = redissonClient.getLock(channelAddOrDelete.getMsgLock());
         if (rLock.tryLock()){
             try{
-
                 Set<Map.Entry<Object, Object>> entries = rmap.entrySet();
                 if (entries.isEmpty()){
                     return;
