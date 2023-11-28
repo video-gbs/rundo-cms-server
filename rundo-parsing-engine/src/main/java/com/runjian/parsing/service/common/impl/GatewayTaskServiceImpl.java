@@ -97,6 +97,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
             RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
             Long oldTaskId = bucket.get();
             if (bucket.trySet(taskId)){
+                log.warn("目前bucket的值为{}，设置后的值为：{}", oldTaskId, taskId);
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
                 bucket.expire(10,  TimeUnit.SECONDS);
