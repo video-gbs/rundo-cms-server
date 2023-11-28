@@ -24,17 +24,14 @@ public class CommonTaskService {
     public static List<Long> getAllTaskExceptTask(RQueue<Long> rQueue, Long isExceptTask){
         // 原子性读取并删除全部List
         List<Long> taskIdList = new ArrayList<>();
-        while (true) {
+        while (rQueue.size() > 1) {
             Long taskId = rQueue.poll();
-            if (Objects.isNull(taskId)){
-                break;
-            }
             if (isExceptTask.equals(taskId)){
+                rQueue.offer(isExceptTask);
                 continue;
             }
             taskIdList.add(taskId);
         }
-        rQueue.offer(isExceptTask);
         return taskIdList;
     }
 
