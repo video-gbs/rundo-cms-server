@@ -95,6 +95,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         if (msgTypeEnum.getIsMerge()){
             Long mainId = CommonTaskService.getMainId(gatewayId, deviceId, channelId);
             RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
+            Long oldTaskId = bucket.get();
             if (bucket.trySet(taskId)){
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
@@ -102,7 +103,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                 rqueue.expire(8, TimeUnit.SECONDS);
                 sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
             } else {
-                redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + bucket.get()).offer(taskId);
+                redissonClient.getQueue(MarkConstant.REDIS_MQ_REQUEST_MERGE_LIST + oldTaskId).offer(taskId);
             }
         } else {
             sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
