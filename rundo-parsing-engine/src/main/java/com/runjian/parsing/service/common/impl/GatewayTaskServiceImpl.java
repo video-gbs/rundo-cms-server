@@ -98,7 +98,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
             if (bucket.trySet(taskId, 5, TimeUnit.SECONDS)){
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
-                rqueue.expire(8, TimeUnit.SECONDS);
+                rqueue.expire(18, TimeUnit.SECONDS);
                 sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
             } else {
                 redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + oldTaskId).offer(taskId);
@@ -159,6 +159,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
     public void taskFinish(Long taskId, Object data, TaskState taskState, BusinessErrorEnums errorEnums)  {
         GatewayTaskInfo gatewayTaskInfo = getTaskValid(taskId, taskState);
         MsgType msgType = MsgType.getByStr(gatewayTaskInfo.getMsgType());
+        Long mainId = CommonTaskService.getMainId(gatewayTaskInfo.getGatewayId(), gatewayTaskInfo.getDeviceId(), gatewayTaskInfo.getChannelId());
         if (msgType.getIsMerge()){
             RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
             if (!rqueue.isExists()){
@@ -168,6 +169,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                 return;
             }
             boolean isFirstRun = true;
+            boolean isSetOutTime = false;
             while (rqueue.isExists()){
                 List<Long> taskIdList = CommonTaskService.getAllTaskExceptTask(rqueue, taskId) ;
                 if (isFirstRun){
@@ -185,6 +187,13 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                     }
                     gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
                 }else {
+                    if (!isSetOutTime){
+                        RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.getMsg().toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
+                        if (!Objects.equals(bucket.get(), taskId)){
+                            rqueue.expire(3, TimeUnit.SECONDS);
+                            isSetOutTime = true;
+                        }
+                    }
                     Thread.yield();
                 }
             }

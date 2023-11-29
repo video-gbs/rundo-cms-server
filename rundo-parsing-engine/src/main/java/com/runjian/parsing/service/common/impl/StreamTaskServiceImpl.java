@@ -87,7 +87,7 @@ public class StreamTaskServiceImpl implements StreamTaskService {
             if (bucket.trySet(taskId, 5 ,TimeUnit.SECONDS)){
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_STREAM_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
-                rqueue.expire(8, TimeUnit.SECONDS);
+                rqueue.expire(18, TimeUnit.SECONDS);
                 sendMsg(dispatchId, msgType, data, dispatchInfo, taskId, mqId);
             } else {
                 redissonClient.getQueue(MarkConstant.REDIS_STREAM_REQUEST_MERGE_LIST + oldTaskId).offer(taskId);
@@ -157,6 +157,7 @@ public class StreamTaskServiceImpl implements StreamTaskService {
                 return;
             }
             boolean isFirstRun = true;
+            boolean isSetOutTime = false;
             while (rqueue.isExists()){
                 List<Long> taskIdList = CommonTaskService.getAllTaskExceptTask(rqueue, taskId) ;
                 if (isFirstRun){
@@ -174,11 +175,14 @@ public class StreamTaskServiceImpl implements StreamTaskService {
                     }
                     streamTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
                 }else {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, "流媒体消息聚合线程恢复异常：" + e.getMessage());
+                    if (!isSetOutTime){
+                        RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_STREAM_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.getMsg().toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + streamTaskInfo.getStreamId());
+                        if (!Objects.equals(bucket.get(), taskId)){
+                            rqueue.expire(3, TimeUnit.SECONDS);
+                            isSetOutTime = true;
+                        }
                     }
+                    Thread.yield();
                 }
             }
 
