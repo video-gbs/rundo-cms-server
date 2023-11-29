@@ -50,8 +50,6 @@ public class StreamTaskServiceImpl implements StreamTaskService {
 
     private final RedissonClient redissonClient;
 
-    private final RedisLockUtil redisLockUtil;
-
     private static final String OUT_TIME = "OUT_TIME";
 
     @Override

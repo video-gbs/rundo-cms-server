@@ -158,8 +158,10 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
     @Override
     public void taskFinish(Long taskId, Object data, TaskState taskState, BusinessErrorEnums errorEnums)  {
         GatewayTaskInfo gatewayTaskInfo = getTaskValid(taskId, taskState);
+        if (taskState.equals(TaskState.RUNNING)){
+            taskState = TaskState.SUCCESS;
+        }
         MsgType msgType = MsgType.getByStr(gatewayTaskInfo.getMsgType());
-        Long mainId = CommonTaskService.getMainId(gatewayTaskInfo.getGatewayId(), gatewayTaskInfo.getDeviceId(), gatewayTaskInfo.getChannelId());
         if (msgType.getIsMerge()){
             RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
             if (!rqueue.isExists()){
@@ -188,6 +190,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                     gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
                 }else {
                     if (!isSetOutTime){
+                        Long mainId = CommonTaskService.getMainId(gatewayTaskInfo.getGatewayId(), gatewayTaskInfo.getDeviceId(), gatewayTaskInfo.getChannelId());
                         RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.getMsg().toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
                         if (!Objects.equals(bucket.get(), taskId)){
                             rqueue.expire(3, TimeUnit.SECONDS);
