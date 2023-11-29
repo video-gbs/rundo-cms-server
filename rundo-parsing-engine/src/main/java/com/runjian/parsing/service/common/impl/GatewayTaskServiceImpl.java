@@ -168,6 +168,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
     public void taskFinish(Long taskId, Object data, TaskState taskState, BusinessErrorEnums errorEnums)  {
         GatewayTaskInfo gatewayTaskInfo = getTaskValid(taskId, taskState);
         MsgType msgType = MsgType.getByStr(gatewayTaskInfo.getMsgType());
+        log.warn("task finish, taskId: {}, msgType: {}, data: {}", taskId, msgType, data);
         if (msgType.getIsMerge()){
             RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
             boolean isFirstRun = true;
