@@ -152,6 +152,10 @@ public class StreamTaskServiceImpl implements StreamTaskService {
         MsgType msgType = MsgType.getByStr(streamTaskInfo.getMsgType());
         if (msgType.getIsMerge()){
             RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_STREAM_REQUEST_MERGE_LIST + taskId);
+            if (!rqueue.isExists()){
+                streamTaskMapper.updateState(taskId, taskState.getCode(), data.toString(), LocalDateTime.now());
+                return;
+            }
             boolean isFirstRun = true;
             while (rqueue.isExists()){
                 List<Long> taskIdList = CommonTaskService.getAllTaskExceptTask(rqueue, taskId) ;

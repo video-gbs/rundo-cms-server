@@ -52,11 +52,6 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
 
     private final RedissonClient redissonClient;
 
-    private final RedisLockUtil redisLockUtil;
-
-    private final StringRedisTemplate redisTemplate;
-
-
     private static final String OUT_TIME = "OUT_TIME";
 
 
@@ -168,6 +163,10 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         MsgType msgType = MsgType.getByStr(gatewayTaskInfo.getMsgType());
         if (msgType.getIsMerge()){
             RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
+            if (!rqueue.isExists()){
+                gatewayTaskMapper.updateState(taskId, taskState.getCode(), data.toString(), LocalDateTime.now());
+                return;
+            }
             boolean isFirstRun = true;
             while (rqueue.isExists()){
                 List<Long> taskIdList = CommonTaskService.getAllTaskExceptTask(rqueue, taskId) ;
