@@ -181,21 +181,19 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                 if (!taskIdList.isEmpty()){
                     List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
                     for (Long taskIdOb : taskIdList){
-                        DeferredResult deferredResult = asynReqMap.remove(gatewayTaskInfo.getId());
+                        DeferredResult deferredResult = asynReqMap.remove(taskIdOb);
                         finishTaskIdList.add(taskIdOb);
                         if (Objects.isNull(deferredResult)){
                             data = String.format("返回请求丢失，消息内容：%s", data);
+                            taskState = TaskState.ERROR;
                         }else {
+                            log.warn("task finish 返回信息, taskId: {}, msgType: {}, data: {}", taskIdOb, msgType, data);
                             CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
                         }
                     }
                     gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
                 }else {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        throw new BusinessException(BusinessErrorEnums.UNKNOWN_ERROR, "网关消息聚合线程恢复异常：" + e.getMessage());
-                    }
+                    Thread.yield();
                 }
             }
         }else {
