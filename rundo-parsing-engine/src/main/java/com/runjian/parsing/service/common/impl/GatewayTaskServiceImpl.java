@@ -98,13 +98,15 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         }
         if (msgTypeEnum.getIsMerge()){
             Long mainId = CommonTaskService.getMainId(gatewayId, deviceId, channelId);
-            String key = MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId;
-            String oldTaskId = redisTemplate.opsForValue().get(key);
-            if (redisTemplate.opsForValue().setIfAbsent(key, String.valueOf(taskId), 10 , TimeUnit.SECONDS)){
+//            String key = MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId;
+//            String oldTaskId = redisTemplate.opsForValue().get(key);
+            RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_STREAM_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
+            Long oldTaskId = bucket.get();
+            if (bucket.trySet(taskId, 15, TimeUnit.SECONDS)){
                 log.warn("任务 {} 创建任务队列", taskId);
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
-                rqueue.expire(15, TimeUnit.SECONDS);
+                //rqueue.expire(15, TimeUnit.SECONDS);
                 sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
             } else {
                 log.warn("任务 {} 进入任务队列 {} ", taskId, oldTaskId);
@@ -168,7 +170,6 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
     public void taskFinish(Long taskId, Object data, TaskState taskState, BusinessErrorEnums errorEnums)  {
         GatewayTaskInfo gatewayTaskInfo = getTaskValid(taskId, taskState);
         MsgType msgType = MsgType.getByStr(gatewayTaskInfo.getMsgType());
-        log.warn("task finish, taskId: {}, msgType: {}, data: {}", taskId, msgType, data);
         if (msgType.getIsMerge()){
             RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
             boolean isFirstRun = true;
@@ -187,7 +188,6 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                             data = String.format("返回请求丢失，消息内容：%s", data);
                             taskState = TaskState.ERROR;
                         }else {
-                            log.warn("task finish 返回信息, taskId: {}, msgType: {}, data: {}", taskIdOb, msgType, data);
                             CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
                         }
                     }
