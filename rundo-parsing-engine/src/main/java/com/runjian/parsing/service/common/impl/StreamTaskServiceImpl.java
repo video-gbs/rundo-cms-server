@@ -110,8 +110,6 @@ public class StreamTaskServiceImpl implements StreamTaskService {
         Long taskId = createTask(dispatchId, streamId, mqId, msgType, TaskState.RUNNING);
         asynReqMap.put(taskId, deferredResult);
         deferredResult.onTimeout(() -> {
-            deferredResult.setResult(CommonResponse.failure(BusinessErrorEnums.FEIGN_REQUEST_TIME_OUT));
-            asynReqMap.remove(taskId);
             taskFinish(taskId, OUT_TIME, TaskState.ERROR, BusinessErrorEnums.VALID_REQUEST_TIME_OUT);
         });
         return taskId;
@@ -153,6 +151,8 @@ public class StreamTaskServiceImpl implements StreamTaskService {
         if (msgType.getIsMerge()){
             RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_STREAM_REQUEST_MERGE_LIST + taskId);
             if (!rqueue.isExists()){
+                DeferredResult deferredResult = asynReqMap.remove(taskId);
+                CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
                 streamTaskMapper.updateState(taskId, taskState.getCode(), data.toString(), LocalDateTime.now());
                 return;
             }
@@ -167,14 +167,12 @@ public class StreamTaskServiceImpl implements StreamTaskService {
                     List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
                     for (Long taskIdOb : taskIdList){
                         DeferredResult deferredResult = asynReqMap.remove(taskIdOb);
-                        finishTaskIdList.add(taskIdOb);
-                        if (Objects.isNull(deferredResult)){
-                            data = String.format("返回请求丢失，消息内容：%s", data);
-                        }else {
+                        if (Objects.nonNull(deferredResult)){
+                            finishTaskIdList.add(taskIdOb);
                             CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
                         }
                     }
-                    streamTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(),Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
+                    streamTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
                 }else {
                     try {
                         Thread.sleep(100);

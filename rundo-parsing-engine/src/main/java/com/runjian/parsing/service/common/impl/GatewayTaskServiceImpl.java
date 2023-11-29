@@ -121,8 +121,6 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         Long taskId = createTask(gatewayId, deviceId, channelId, mqId, msgType, TaskState.RUNNING);
         asynReqMap.put(taskId, deferredResult);
         deferredResult.onTimeout(() -> {
-            deferredResult.setResult(CommonResponse.failure(BusinessErrorEnums.FEIGN_REQUEST_TIME_OUT));
-            asynReqMap.remove(taskId);
             taskFinish(taskId, OUT_TIME, TaskState.ERROR, BusinessErrorEnums.VALID_REQUEST_TIME_OUT);
         });
         return taskId;
@@ -164,6 +162,8 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
         if (msgType.getIsMerge()){
             RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
             if (!rqueue.isExists()){
+                DeferredResult deferredResult = asynReqMap.remove(taskId);
+                CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
                 gatewayTaskMapper.updateState(taskId, taskState.getCode(), data.toString(), LocalDateTime.now());
                 return;
             }
@@ -178,11 +178,8 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                     List<Long> finishTaskIdList = new ArrayList<>(taskIdList.size());
                     for (Long taskIdOb : taskIdList){
                         DeferredResult deferredResult = asynReqMap.remove(taskIdOb);
-                        finishTaskIdList.add(taskIdOb);
-                        if (Objects.isNull(deferredResult)){
-                            data = String.format("返回请求丢失，消息内容：%s", data);
-                            taskState = TaskState.ERROR;
-                        }else {
+                        if (Objects.nonNull(deferredResult)){
+                            finishTaskIdList.add(taskIdOb);
                             CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
                         }
                     }
