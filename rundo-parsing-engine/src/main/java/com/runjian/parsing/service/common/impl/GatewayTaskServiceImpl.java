@@ -101,13 +101,11 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
             RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
             Long oldTaskId = bucket.get();
             if (bucket.trySet(taskId, 5, TimeUnit.SECONDS)){
-                log.warn("任务 {} 创建任务队列", taskId);
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
                 rqueue.expire(8, TimeUnit.SECONDS);
                 sendMsg(gatewayId, msgType, data, gatewayInfo, taskId, mqId);
             } else {
-                log.warn("任务 {} 进入任务队列 {} ", taskId, oldTaskId);
                 redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + oldTaskId).offer(taskId);
             }
         } else {
