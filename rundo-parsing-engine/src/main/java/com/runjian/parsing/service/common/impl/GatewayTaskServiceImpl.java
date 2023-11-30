@@ -180,7 +180,11 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
                             CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
                         }
                     }
-                    gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
+                    if (taskState.equals(TaskState.SUCCESS)){
+                        gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), null, LocalDateTime.now());
+                    } else {
+                        gatewayTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
+                    }
                 }else {
                     if (!isSetOutTime){
                         Long mainId = CommonTaskService.getMainId(gatewayTaskInfo.getGatewayId(), gatewayTaskInfo.getDeviceId(), gatewayTaskInfo.getChannelId());

@@ -167,7 +167,12 @@ public class StreamTaskServiceImpl implements StreamTaskService {
                             CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
                         }
                     }
-                    streamTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
+                    if (taskState.equals(TaskState.SUCCESS)){
+                        streamTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), null, LocalDateTime.now());
+                    }else {
+                        streamTaskMapper.batchUpdateState(finishTaskIdList, taskState.getCode(), Objects.isNull(data) ? null : data.toString(), LocalDateTime.now());
+                    }
+
                 }else {
                     if (!isSetOutTime){
                         RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_STREAM_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.getMsg().toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + streamTaskInfo.getStreamId());
