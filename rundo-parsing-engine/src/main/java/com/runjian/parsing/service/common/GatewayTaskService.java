@@ -19,7 +19,7 @@ public interface GatewayTaskService {
     /**
      * 异步返回体Map
      */
-    Map<Long, DeferredResult<?>> asynReqMap = new ConcurrentHashMap<>();
+    Map<Long, DeferredResult<?>> asynReqMap = new ConcurrentHashMap<>(2000);
 
     /**
      * 定时清理超时任务

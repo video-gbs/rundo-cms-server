@@ -19,7 +19,7 @@ public interface StreamTaskService {
     /**
      * 异步返回体Map
      */
-    Map<Long, DeferredResult<?>> asynReqMap = new ConcurrentHashMap<>();
+    Map<Long, DeferredResult<?>> asynReqMap = new ConcurrentHashMap<>(2000);
 
     /**
      * 清楚超时任务
