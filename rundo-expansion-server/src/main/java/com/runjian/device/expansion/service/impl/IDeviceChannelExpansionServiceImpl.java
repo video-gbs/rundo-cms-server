@@ -1,6 +1,8 @@
 package com.runjian.device.expansion.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,6 +28,7 @@ import com.runjian.device.expansion.vo.response.ChannelExpansionFindlistRsp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionPlayResp;
 import com.runjian.device.expansion.vo.response.DeviceChannelExpansionResp;
 import com.runjian.device.expansion.vo.response.PageResp;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -158,11 +161,11 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
             }
             dataSourceTransactionManager.commit(transactionStatus);
+            baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
         }catch (Exception e){
             dataSourceTransactionManager.rollback(transactionStatus);
         }
 
-        baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
         return CommonResponse.success();
     }
 
@@ -182,16 +185,16 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
                     throw  new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, booleanCommonResponse.getMsg());
                 }
                 dataSourceTransactionManager.commit(transactionStatus);
+                baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
             }catch (Exception e){
                 dataSourceTransactionManager.rollback(transactionStatus);
             }
 
-            baseDeviceAndChannelService.commonDeleteByResourceValue(resourceKey,String.valueOf(id));
 
 
         }
 
-        return null;
+        return CommonResponse.success();
     }
 
     @Override
@@ -389,6 +392,13 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Override
     public CommonResponse<Object> videoAreaList(String resourceKey) {
+        CommonResponse<Object> resourcePage = authRbacServerApi.getResourcePage(resourceKey, false);
+        if(resourcePage.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, resourcePage.getMsg());
+        }
+        Object data = resourcePage.getData();
+        GetResourceTreeRsp getResourceTreeRsp = JSON.parseObject(JSONObject.toJSONString(data), GetResourceTreeRsp.class);
+
 
 
         return authRbacServerApi.getResourcePage(resourceKey, false);
