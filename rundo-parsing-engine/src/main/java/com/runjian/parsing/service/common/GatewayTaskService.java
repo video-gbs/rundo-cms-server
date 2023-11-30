@@ -53,7 +53,7 @@ public interface GatewayTaskService {
      * @param taskId 任务id
      * @return 任务信息
      */
-    GatewayTaskInfo getTaskValid(Long taskId, TaskState taskState);
+    GatewayTaskInfo getTaskValid(Long taskId);
 
     /**
      * 任务完成

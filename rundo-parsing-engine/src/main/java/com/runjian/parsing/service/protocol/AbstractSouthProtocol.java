@@ -157,14 +157,14 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         if (Objects.isNull(taskId)){
             return;
         }
-        gatewayTaskService.taskFinish(taskId, dataMap,  TaskState.RUNNING, null);
+        gatewayTaskService.taskFinish(taskId, dataMap,  TaskState.SUCCESS, null);
     }
 
     @Override
     public void errorEvent(Long taskId, CommonMqDto<?> response) {
         log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "网关南向信息处理服务", "网关异常消息记录", response.getMsgType(), response);
         if (Objects.nonNull(taskId)){
-            gatewayTaskService.taskFinish(taskId, response,  TaskState.RUNNING, BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+            gatewayTaskService.taskFinish(taskId, response,  TaskState.ERROR, BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
         }
         deviceControlApi.errorEvent(response);
     }
@@ -236,7 +236,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             gatewayTaskService.taskFinish(taskId, "设备id为空", TaskState.ERROR, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
             return;
         }
-        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
+        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId);
         JSONObject jsonObject = deviceSyncConvert(JSON.parseObject(data.toString()));
         jsonObject.put(StandardName.DEVICE_ID, gatewayTaskInfo.getDeviceId());
         customEvent(taskId, data);
@@ -255,7 +255,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             gatewayTaskService.taskFinish(taskId, "设备id为空", TaskState.ERROR, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
             return;
         }
-        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
+        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId);
         DeviceInfo deviceInfo = saveDeviceInfo(data.toString(), gatewayTaskInfo.getGatewayId());
         customEvent(taskId, deviceInfo.getId());
     }
@@ -272,7 +272,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             gatewayTaskService.taskFinish(taskId, "设备id为空", TaskState.ERROR, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
             return;
         }
-        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
+        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId);
         Boolean isSuccess = (Boolean) data;
         if (isSuccess) {
             TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
@@ -301,7 +301,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
         }
         JSONObject jsonData = JSONObject.parseObject(JSONObject.toJSONString(data));
         JSONArray objects = jsonData.getJSONArray(StandardName.CHANNEL_SYNC_LIST);
-        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
+        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId);
         jsonData.put(StandardName.DEVICE_ID, gatewayTaskInfo.getDeviceId());
         RLock lock = redissonClient.getLock(MarkConstant.REDIS_CHANNEL_SYNC_LOCK + gatewayTaskInfo.getDeviceId());
         try{
@@ -359,7 +359,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             gatewayTaskService.taskFinish(taskId, "设备id为空", TaskState.ERROR, BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR);
             return;
         }
-        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId, TaskState.RUNNING);
+        GatewayTaskInfo gatewayTaskInfo = gatewayTaskService.getTaskValid(taskId);
         Boolean isSuccess = (Boolean) data;
         if (isSuccess) {
             TransactionStatus transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);

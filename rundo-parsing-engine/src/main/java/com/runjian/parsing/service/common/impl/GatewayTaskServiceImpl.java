@@ -95,7 +95,7 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
             Long mainId = CommonTaskService.getMainId(gatewayId, deviceId, channelId);
             RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + mainId);
             Long oldTaskId = bucket.get();
-            if (bucket.trySet(taskId, 5, TimeUnit.SECONDS)){
+            if (bucket.trySet(taskId, 6, TimeUnit.SECONDS)){
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
                 rqueue.expire(18, TimeUnit.SECONDS);
@@ -143,24 +143,17 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
     }
 
     @Override
-    public GatewayTaskInfo getTaskValid(Long taskId, TaskState taskState) {
+    public GatewayTaskInfo getTaskValid(Long taskId) {
         Optional<GatewayTaskInfo> taskInfoOp = gatewayTaskMapper.selectById(taskId);
         if (taskInfoOp.isEmpty()){
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("任务%s不存在", taskId));
         }
-        GatewayTaskInfo gatewayTaskInfo = taskInfoOp.get();
-        if (!gatewayTaskInfo.getState().equals(taskState.getCode())){
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, String.format("任务状态异常，当前任务状态：%s", TaskState.getMsg(gatewayTaskInfo.getState())));
-        }
-        return gatewayTaskInfo;
+        return taskInfoOp.get();
     }
 
     @Override
     public void taskFinish(Long taskId, Object data, TaskState taskState, BusinessErrorEnums errorEnums)  {
-        GatewayTaskInfo gatewayTaskInfo = getTaskValid(taskId, taskState);
-        if (taskState.equals(TaskState.RUNNING)){
-            taskState = TaskState.SUCCESS;
-        }
+        GatewayTaskInfo gatewayTaskInfo = getTaskValid(taskId);
         MsgType msgType = MsgType.getByStr(gatewayTaskInfo.getMsgType());
         if (msgType.getIsMerge()){
             RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);

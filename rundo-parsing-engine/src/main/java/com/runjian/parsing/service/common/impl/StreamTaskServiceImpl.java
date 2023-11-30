@@ -82,7 +82,7 @@ public class StreamTaskServiceImpl implements StreamTaskService {
         if (msgTypeEnum.getIsMerge()){
             RBucket<Long> bucket = redissonClient.getBucket(MarkConstant.REDIS_STREAM_REQUEST_MERGE_LOCK + MarkConstant.MARK_SPLIT_SEMICOLON + msgType.toUpperCase() + MarkConstant.MARK_SPLIT_SEMICOLON + streamId);
             Long oldTaskId = bucket.get();
-            if (bucket.trySet(taskId, 5 ,TimeUnit.SECONDS)){
+            if (bucket.trySet(taskId, 6 ,TimeUnit.SECONDS)){
                 RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_STREAM_REQUEST_MERGE_LIST + taskId);
                 rqueue.offer(taskId);
                 rqueue.expire(18, TimeUnit.SECONDS);
@@ -135,11 +135,7 @@ public class StreamTaskServiceImpl implements StreamTaskService {
         if (taskInfoOp.isEmpty()){
             throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("任务%s不存在", taskId));
         }
-        StreamTaskInfo streamTaskInfo = taskInfoOp.get();
-        if (!streamTaskInfo.getState().equals(taskState.getCode())){
-            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, String.format("任务状态异常，当前任务状态：%s", TaskState.getMsg(streamTaskInfo.getState())));
-        }
-        return streamTaskInfo;
+        return taskInfoOp.get();
     }
 
     @Override
