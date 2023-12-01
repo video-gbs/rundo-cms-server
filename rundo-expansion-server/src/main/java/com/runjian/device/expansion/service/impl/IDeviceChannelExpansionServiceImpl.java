@@ -392,14 +392,6 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
 
     @Override
     public CommonResponse<Object> videoAreaList(String resourceKey) {
-        CommonResponse<Object> resourcePage = authRbacServerApi.getResourcePage(resourceKey, false);
-        if(resourcePage.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
-            throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR, resourcePage.getMsg());
-        }
-        Object data = resourcePage.getData();
-        GetResourceTreeRsp getResourceTreeRsp = JSON.parseObject(JSONObject.toJSONString(data), GetResourceTreeRsp.class);
-
-
 
         return authRbacServerApi.getResourcePage(resourceKey, false);
 
