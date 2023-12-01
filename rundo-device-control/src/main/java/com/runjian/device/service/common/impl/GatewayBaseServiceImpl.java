@@ -1,5 +1,6 @@
 package com.runjian.device.service.common.impl;
 
+import cn.hutool.log.Log;
 import com.runjian.common.config.response.CommonResponse;
 import com.runjian.common.constant.CommonEnum;
 import com.runjian.common.constant.LogTemplate;
@@ -72,6 +73,7 @@ public class GatewayBaseServiceImpl implements GatewayBaseService {
     public void gatewayOffline(Set<Long> gatewayIds) {
         LocalDateTime nowTime = LocalDateTime.now();
         gatewayMapper.batchUpdateOnlineState(gatewayIds, CommonEnum.DISABLE.getCode(), nowTime);
+        log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关基础服务", "触发网关离线", gatewayIds);
         // 根据网关查询所有在线的设备
         List<DeviceInfo> deviceInfoList = deviceMapper.selectByGatewayIdsAndOnlineState(gatewayIds, CommonEnum.ENABLE.getCode());
         if (deviceInfoList.isEmpty()) {

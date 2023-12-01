@@ -48,7 +48,7 @@ public class StreamSouthServiceImpl implements StreamSouthService {
     @Override
     public void customEvent(Long taskId, Object dataMap) {
         if (Objects.nonNull(taskId)){
-            streamTaskService.taskFinish(taskId, dataMap,  TaskState.RUNNING, null);
+            streamTaskService.taskFinish(taskId, dataMap,  TaskState.SUCCESS, null);
         }
     }
 

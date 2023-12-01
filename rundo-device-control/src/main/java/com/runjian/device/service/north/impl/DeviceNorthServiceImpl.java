@@ -210,7 +210,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
         deviceMapper.update(deviceInfo);
         channelNorthService.channelDeleteByDeviceId(deviceInfo.getId(), false);
         // 触发删除流程，返回boolean
-        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE_SOFT, 15000L));
+        CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_DELETE_SOFT, 12000L));
         if (response.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备软删除失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());

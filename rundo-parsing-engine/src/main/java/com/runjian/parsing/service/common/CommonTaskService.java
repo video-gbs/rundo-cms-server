@@ -21,13 +21,14 @@ public class CommonTaskService {
      * @param key
      * @return
      */
-    public static List<Long> getAllTask(RQueue<Long> rQueue){
+    public static List<Long> getAllTaskExceptTask(RQueue<Long> rQueue, Long isExceptTask){
         // 原子性读取并删除全部List
         List<Long> taskIdList = new ArrayList<>();
-        while (true) {
+        while (rQueue.size() > 1) {
             Long taskId = rQueue.poll();
-            if (Objects.isNull(taskId)){
-                break;
+            if (isExceptTask.equals(taskId)){
+                rQueue.offer(isExceptTask);
+                continue;
             }
             taskIdList.add(taskId);
         }
