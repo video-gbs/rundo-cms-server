@@ -85,7 +85,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         }
         CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.CHANNEL_SYNC, 15000L));
         if (response.isError()) {
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getData(), response.getMsg());
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getMsg(), response.getData());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
         ChannelSyncRsp channelSyncRsp = JSONObject.parseObject(JSONObject.toJSONString(response.getData()), ChannelSyncRsp.class);

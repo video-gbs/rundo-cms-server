@@ -325,6 +325,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
                     channelInfoList.add(channelInfo);
                     addObjectIndex.add(i);
                 }else {
+
                     jsonObject.put(StandardName.CHANNEL_ID, channelInfo.getId());
                 }
                 jsonObject.put(StandardName.DEVICE_ID, channelInfo.getDeviceId());
