@@ -38,7 +38,7 @@ public class StreamManageReq {
     /**
      * 请求超时时间
      */
-    private Long outTime = 10L;
+    private Long outTime = 10000L;
 
     /**
      * 数据体

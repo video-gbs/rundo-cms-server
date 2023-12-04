@@ -24,9 +24,9 @@ import java.util.Objects;
 @Service
 public class DhDeviceNetSdkSouthProtocol extends AbstractSouthProtocol {
 
-    private final static String DEVICE_ID = "id";
+    private final static String DEVICE_ID = "deviceId";
 
-    private final static String CHANNEL_ID = "id";
+    private final static String CHANNEL_ID = "channelId";
 
     private final static String DEVICE_ONLINE_STATE = "online";
 
