@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: cascade-manage
+  profiles:
+    active: ${PROFILES_ACTIVE:local}
