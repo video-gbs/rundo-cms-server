@@ -83,6 +83,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         if (!deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, String.format("设备%s是未注册成功的设备，不允许操作", deviceId));
         }
+        log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "通道北向服务", "下发通道同步指令", deviceId);
         CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.CHANNEL_SYNC, 15000L));
         if (response.isError()) {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getMsg(), response.getData());
