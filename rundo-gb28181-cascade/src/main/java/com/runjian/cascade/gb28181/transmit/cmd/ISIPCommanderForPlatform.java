@@ -59,7 +59,7 @@ public interface ISIPCommanderForPlatform {
      * @param fromTag FROM头的tag信息
      * @return
      */
-    void deviceInfoResponse(ParentPlatform parentPlatform, Device device, String sn, String fromTag) throws SipException, InvalidArgumentException, ParseException;
+    void deviceInfoResponse(ParentPlatform parentPlatform, String sn, String fromTag) throws SipException, InvalidArgumentException, ParseException;
 
     /**
      * 向上级回复DeviceStatus查询信息
@@ -74,12 +74,11 @@ public interface ISIPCommanderForPlatform {
 
     /**
      * 回复recordInfo
-     * @param deviceChannel 通道信息
      * @param parentPlatform 平台信息
      * @param fromTag fromTag
      * @param recordInfo 录像信息
      */
-    void recordInfo(DeviceChannel deviceChannel, ParentPlatform parentPlatform, String fromTag, RecordInfo recordInfo) throws SipException, InvalidArgumentException, ParseException;
+    void recordInfo(ParentPlatform parentPlatform, String fromTag, RecordInfo recordInfo) throws SipException, InvalidArgumentException, ParseException;
 
     /**
      * 录像播放推送完成时发送MediaStatus消息

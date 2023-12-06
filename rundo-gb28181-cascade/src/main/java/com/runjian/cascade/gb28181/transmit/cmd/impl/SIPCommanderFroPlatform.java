@@ -1,6 +1,5 @@
 package com.runjian.cascade.gb28181.transmit.cmd.impl;
 
-import com.alibaba.fastjson2.JSON;
 import com.runjian.cascade.gb28181.SipLayer;
 import com.runjian.cascade.gb28181.bean.*;
 import com.runjian.cascade.gb28181.event.SipSubscribe;
@@ -10,13 +9,8 @@ import com.runjian.cascade.gb28181.transmit.cmd.SIPRequestHeaderPlarformProvider
 import com.runjian.cascade.gb28181.utils.DateUtil;
 import com.runjian.cascade.gb28181.utils.SipUtils;
 import com.runjian.cascade.service.IRedisCatchStorageService;
-import com.runjian.common.constant.LogTemplate;
-import gov.nist.javax.sip.message.MessageFactoryImpl;
 import gov.nist.javax.sip.message.SIPRequest;
 import gov.nist.javax.sip.message.SIPResponse;
-import io.netty.util.HashedWheelTimer;
-import io.netty.util.Timeout;
-import io.netty.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -320,15 +314,15 @@ public class SIPCommanderFroPlatform implements ISIPCommanderForPlatform {
 
 
     @Override
-    public void deviceInfoResponse(ParentPlatform parentPlatform, Device device, String sn, String fromTag) throws SipException, InvalidArgumentException, ParseException {
+    public void deviceInfoResponse(ParentPlatform parentPlatform,  String sn, String fromTag) throws SipException, InvalidArgumentException, ParseException {
         if (parentPlatform == null) {
             return;
         }
-        String deviceId = device == null ? parentPlatform.getServerGbId() : device.getDeviceId();
-        String deviceName = device == null ? parentPlatform.getName() : device.getName();
-        String manufacturer = device == null ? "WVP-28181-PRO" : device.getManufacturer();
-        String model = device == null ? "platform" : device.getModel();
-        String firmware = device == null ? "1.1.0" : device.getFirmware();
+        String deviceId = parentPlatform.getServerGbId() ;
+        String deviceName =  parentPlatform.getName() ;
+        String manufacturer = "rundo-edge";
+        String model = "platform";
+        String firmware =  "1.1.0";
         String characterSet = parentPlatform.getCharacterSet();
         StringBuffer deviceInfoXml = new StringBuffer(600);
         deviceInfoXml.append("<?xml version=\"1.0\" encoding=\"" + characterSet + "\"?>\r\n");
@@ -374,7 +368,7 @@ public class SIPCommanderFroPlatform implements ISIPCommanderForPlatform {
     }
 
     @Override
-    public void recordInfo(DeviceChannel deviceChannel, ParentPlatform parentPlatform, String fromTag, RecordInfo recordInfo) throws SipException, InvalidArgumentException, ParseException {
+    public void recordInfo(ParentPlatform parentPlatform, String fromTag, RecordInfo recordInfo) throws SipException, InvalidArgumentException, ParseException {
         if ( parentPlatform ==null) {
             return ;
         }
@@ -384,6 +378,7 @@ public class SIPCommanderFroPlatform implements ISIPCommanderForPlatform {
                 .append("<Response>\r\n")
                 .append("<CmdType>RecordInfo</CmdType>\r\n")
                 .append("<SN>" +recordInfo.getSn() + "</SN>\r\n")
+                .append("<Name>" +recordInfo.getName() + "</Name>\r\n")
                 .append("<DeviceID>" + recordInfo.getChannelId() + "</DeviceID>\r\n")
                 .append("<SumNum>" + recordInfo.getSumNum() + "</SumNum>\r\n");
         if (recordInfo.getRecordList() == null ) {
@@ -393,19 +388,17 @@ public class SIPCommanderFroPlatform implements ISIPCommanderForPlatform {
             if (recordInfo.getRecordList().size() > 0) {
                 for (RecordItem recordItem : recordInfo.getRecordList()) {
                     recordXml.append("<Item>\r\n");
-                    if (deviceChannel != null) {
-                        recordXml.append("<DeviceID>" + recordItem.getDeviceId() + "</DeviceID>\r\n")
-                                .append("<Name>" + recordItem.getName() + "</Name>\r\n")
-                                .append("<StartTime>" + DateUtil.yyyy_MM_dd_HH_mm_ssToISO8601(recordItem.getStartTime()) + "</StartTime>\r\n")
-                                .append("<EndTime>" + DateUtil.yyyy_MM_dd_HH_mm_ssToISO8601(recordItem.getEndTime()) + "</EndTime>\r\n")
-                                .append("<Secrecy>" + recordItem.getSecrecy() + "</Secrecy>\r\n")
-                                .append("<Type>" + recordItem.getType() + "</Type>\r\n");
-                        if (!ObjectUtils.isEmpty(recordItem.getFileSize())) {
-                            recordXml.append("<FileSize>" + recordItem.getFileSize() + "</FileSize>\r\n");
-                        }
-                        if (!ObjectUtils.isEmpty(recordItem.getFilePath())) {
-                            recordXml.append("<FilePath>" + recordItem.getFilePath() + "</FilePath>\r\n");
-                        }
+                    recordXml.append("<DeviceID>" + recordItem.getDeviceId() + "</DeviceID>\r\n")
+                            .append("<Name>" + recordItem.getName() + "</Name>\r\n")
+                            .append("<StartTime>" + DateUtil.yyyy_MM_dd_HH_mm_ssToISO8601(recordItem.getStartTime()) + "</StartTime>\r\n")
+                            .append("<EndTime>" + DateUtil.yyyy_MM_dd_HH_mm_ssToISO8601(recordItem.getEndTime()) + "</EndTime>\r\n")
+                            .append("<Secrecy>" + recordItem.getSecrecy() + "</Secrecy>\r\n")
+                            .append("<Type>" + recordItem.getType() + "</Type>\r\n");
+                    if (!ObjectUtils.isEmpty(recordItem.getFileSize())) {
+                        recordXml.append("<FileSize>" + recordItem.getFileSize() + "</FileSize>\r\n");
+                    }
+                    if (!ObjectUtils.isEmpty(recordItem.getFilePath())) {
+                        recordXml.append("<FilePath>" + recordItem.getFilePath() + "</FilePath>\r\n");
                     }
                     recordXml.append("</Item>\r\n");
                 }
