@@ -56,6 +56,20 @@ public interface StreamNorthService {
      */
     PostVideoPlayRsp streamRecordPlay(Long channelId, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer playType, Integer recordState, Integer autoCloseState, LocalDateTime startTime, LocalDateTime endTime, Integer bitStreamId);
 
+
+    /**
+     * 流推送播放
+     * @param channelId 通道id
+     * @param ssrc ssrc
+     * @param dstUrl 目标url
+     * @param dstPort 目标端口
+     * @param srcPort 本地端口
+     * @param transferMode 传输模式
+     * @param startTime 录像开始时间
+     * @param endTime 录像结束时间
+     */
+    String streamPushPlay(Long channelId, String ssrc, String dstUrl, Integer dstPort, Integer srcPort, Integer transferMode, LocalDateTime startTime, LocalDateTime endTime);
+
     /**
      * 下载录像视频
      * @param channelId 通道id
@@ -93,9 +107,16 @@ public interface StreamNorthService {
 
     /**
      * 停止播放
-     * @param streamId 通道id
+     * @param streamId 流id
      */
     void stopPlay(String streamId);
+
+    /**
+     * 停止推送
+     * @param streamId 流id
+     * @param ssrc ssrc
+     */
+    boolean stopPush(String streamId, String ssrc);
 
     /**
      * 开启录像

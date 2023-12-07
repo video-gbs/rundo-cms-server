@@ -67,4 +67,5 @@ public class MarkConstant {
     public static final String REDIS_STREAM_REQUEST_MERGE_LIST = "MQ_STREAM_REQUEST_MERGE_LIST:";
     public static final String REDIS_STREAM_REQUEST_MERGE_LOCK = "MQ_STREAM_REQUEST_MERGE_LOCK:";
 
+    public static final String REDIS_STREAM_PUSH_STATE_CHECK_LOCK = "STREAM_PUSH_STATE_CHECK_LOCK:";
 }

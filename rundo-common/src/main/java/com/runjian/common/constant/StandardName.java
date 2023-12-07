@@ -284,5 +284,28 @@ public class StandardName {
      */
     public static final String DOWNLOAD_UPLOAD_URL = "uploadUrl";
 
+    /**
+     * 推送目标url
+     */
+    public static final String STREAM_PUSH_DST_URL = "dstUrl";
 
+    /**
+     * 推送目标端口
+     */
+    public static final String STREAM_PUSH_DST_PORT = "dstPort";
+
+    /**
+     * 源端口
+     */
+    public static final String STREAM_PUSH_SRC_PORT = "srcPort";
+
+    /**
+     * 传输模式
+     */
+    public static final String STREAM_PUSH_TRANSFER_MODE = "transferMode";
+
+    /**
+     * ssrc
+     */
+    public static final String STREAM_PUSH_SSRC = "ssrc";
 }
