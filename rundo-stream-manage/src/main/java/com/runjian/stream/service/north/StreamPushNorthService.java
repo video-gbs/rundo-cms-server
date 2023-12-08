@@ -11,6 +11,11 @@ import java.time.LocalDateTime;
 public interface StreamPushNorthService {
 
     /**
+     * 初始化端口
+     */
+    void initSrcPort();
+
+    /**
      * 流推送初始化
      * @param channelId
      * @param dstUrl
@@ -26,7 +31,7 @@ public interface StreamPushNorthService {
      * 进行流推送
      * @param streamPushId
      */
-    void streamPush(Long streamPushId);
+    void streamPushRun(Long streamPushId);
 
     /**
      * 关闭推流

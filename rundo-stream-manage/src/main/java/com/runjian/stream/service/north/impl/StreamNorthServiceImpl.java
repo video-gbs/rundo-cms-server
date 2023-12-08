@@ -316,7 +316,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             return true;
         }
         StreamInfo streamInfo = streamInfoOP.get();
-        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_PLAY_STOP, 15000L);
+        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_PUSH_STOP, 15000L);
         streamManageDto.put(StandardName.STREAM_PUSH_SSRC, ssrc);
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
         if (commonResponse.isError()){

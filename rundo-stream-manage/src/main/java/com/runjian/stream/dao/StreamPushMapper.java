@@ -27,4 +27,6 @@ public interface StreamPushMapper {
     void update(StreamPushInfo streamPushInfo);
 
     List<StreamPushInfo> selectAll();
+
+    void save(StreamPushInfo streamPushInfo);
 }
