@@ -160,11 +160,8 @@ public class GatewayTaskServiceImpl implements GatewayTaskService {
             RQueue<Long> rqueue = redissonClient.getQueue(MarkConstant.REDIS_GATEWAY_REQUEST_MERGE_LIST + taskId);
             if (!rqueue.isExists()){
                 DeferredResult deferredResult = asynReqMap.remove(taskId);
-                if (Objects.nonNull(deferredResult)){
-                    CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
-                }else {
-                    log.error(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关任务服务", "任务完成处理失败，请求丢失", String.format("taskId:%s data:%s taskState:%s error:%s", taskId, data, taskState, errorEnums));
-                }
+                log.error(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "网关任务服务", "任务完成处理失败，请求超时丢失", String.format("taskId:%s data:%s taskState:%s error:%s", taskId, data, taskState, errorEnums));
+                CommonTaskService.taskSetResult(data, taskState, errorEnums, deferredResult);
                 gatewayTaskMapper.updateState(taskId, taskState.getCode(), data.toString(), LocalDateTime.now());
                 return;
             }
