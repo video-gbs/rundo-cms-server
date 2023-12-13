@@ -39,9 +39,14 @@ public class DeviceInfo {
     private Integer onlineState;
 
     /**
-     * 删除状态
+     * 流类型 {@link com.runjian.device.constant.StreamType}
      */
-    private Integer deleted;
+    private Integer streamType;
+
+    /**
+     * 是否订阅下级
+     */
+    private Integer isSubscribe;
 
     private LocalDateTime updateTime;
 

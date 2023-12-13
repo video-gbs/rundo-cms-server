@@ -127,8 +127,14 @@ feign:
   client:
     config:
       default:
-        connect-timeout: 18000
-        read-timeout: 18000
+        connect-timeout: 30000
+        read-timeout: 30000
         logger-level: basic
 
-
+cascade:
+  local:
+    name: 润健视频平台
+    ip: 127.0.0.1
+    port: 8095
+    gb-domain: 11233344
+    gb-code: 11233344

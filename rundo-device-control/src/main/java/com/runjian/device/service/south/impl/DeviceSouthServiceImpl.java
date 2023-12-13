@@ -6,6 +6,7 @@ import com.runjian.common.constant.LogTemplate;
 import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
 import com.runjian.common.constant.SignState;
+import com.runjian.device.constant.StreamType;
 import com.runjian.device.constant.SubMsgType;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DeviceMapper;
@@ -73,6 +74,8 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             deviceInfo.setOnlineState(onlineState);
             deviceInfo.setCreateTime(nowTime);
             deviceInfo.setUpdateTime(nowTime);
+            deviceInfo.setIsSubscribe(CommonEnum.DISABLE.getCode());
+            deviceInfo.setStreamType(StreamType.UDP.getCode());
             deviceInfo.setSignState(SignState.TO_BE_ADD.getCode());
             deviceMapper.save(deviceInfo);
             if (deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){

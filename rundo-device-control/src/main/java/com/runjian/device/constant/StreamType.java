@@ -16,7 +16,8 @@ import java.util.Objects;
 public enum StreamType {
 
     UDP(1,"UDP"),
-    TCP(2,"TCP")
+    TCP_PASSIVE(2,"TCP_PASSIVE"),
+    TCP_INITIATIVE(3, "TCP_INITIATIVE")
 
     ;
 
@@ -24,11 +25,4 @@ public enum StreamType {
     private final String msg;
 
 
-    public static String getMsgByCode(Integer code) {
-        if (Objects.isNull(code) || code.equals(UDP.code)){
-            return UDP.msg;
-        }else {
-            return TCP.msg;
-        }
-    }
 }
