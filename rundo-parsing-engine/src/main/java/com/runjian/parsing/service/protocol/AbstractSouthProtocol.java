@@ -6,10 +6,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.config.exception.BusinessException;
 import com.runjian.common.config.response.CommonResponse;
-import com.runjian.common.constant.LogTemplate;
-import com.runjian.common.constant.MarkConstant;
-import com.runjian.common.constant.StandardName;
-import com.runjian.common.constant.MsgType;
+import com.runjian.common.constant.*;
 import com.runjian.parsing.constant.TaskState;
 import com.runjian.parsing.dao.ChannelMapper;
 import com.runjian.parsing.dao.DeviceMapper;
@@ -56,6 +53,7 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
 
     protected final TransactionDefinition transactionDefinition;
 
+
     /**
      * 消息统一处理分发
      * @param msgType
@@ -89,6 +87,15 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
             case CHANNEL_DELETE_HARD:
                 channelDeleteSoft(taskId, data);
                 return;
+            case DEVICE_CHANNEL_SUBSCRIBE:
+                deviceChannelSubscribe(gatewayId, data);
+                return;
+            case DEVICE_NODE_SUBSCRIBE:
+                deviceNodeSubscribe(gatewayId, data);
+                return;
+            case DEVICE_NODE_SYNC:
+                deviceNodeSync(gatewayId, data);
+                return;
             case CHANNEL_DEFENSES_DEPLOY:
             case CHANNEL_DEFENSES_WITHDRAW:
                 channelDefensesDeploy(gatewayId, taskId, data);
@@ -97,6 +104,76 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
                 customEvent(taskId, data);
         }
     }
+
+    private void deviceNodeSync(Long gatewayId, Object data) {
+        if (Objects.isNull(data)){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "设备节点同步失败，data为空");
+        }
+        JSONObject jsonObject = deviceNodeSyncConvert(JSONObject.parseObject(data.toString()));
+        String deviceOriginId = jsonObject.getString(StandardName.ORIGIN_ID);
+        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
+        if (deviceInfoOp.isEmpty()){
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("设备节点同步失败，未知的设备，gatewayId：%s, originId：%s", gatewayId, deviceOriginId));
+        }
+        jsonObject.put(StandardName.DEVICE_ID, deviceInfoOp.get().getId());
+        jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
+        CommonResponse<?> commonResponse = deviceControlApi.nodeSync(jsonObject);
+        commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+    }
+
+    private void deviceNodeSubscribe(Long gatewayId, Object data) {
+        if (Objects.isNull(data)){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "设备节点订阅数据更新失败，data为空");
+        }
+        JSONObject jsonObject = deviceNodeSubscribeConvert(JSONObject.parseObject(data.toString()));
+        String deviceOriginId = jsonObject.getString(StandardName.ORIGIN_ID);
+        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
+        if (deviceInfoOp.isEmpty()){
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("设备节点订阅数据更新失败，未知的设备，gatewayId：%s, originId：%s", gatewayId, deviceOriginId));
+        }
+        jsonObject.put(StandardName.DEVICE_ID, deviceInfoOp.get().getId());
+        jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
+        CommonResponse<?> commonResponse = deviceControlApi.channelSubscribe(jsonObject);
+        commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+    }
+
+    private void deviceChannelSubscribe(Long gatewayId, Object data) {
+        if (Objects.isNull(data)){
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, "data为空");
+        }
+        JSONObject jsonObject = deviceChannelSubscribeConvert(JSONObject.parseObject(data.toString()));
+        String deviceOriginId = jsonObject.getString(StandardName.ORIGIN_ID);
+        Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectByGatewayIdAndOriginId(gatewayId, deviceOriginId);
+        if (deviceInfoOp.isEmpty()){
+            throw new BusinessException(BusinessErrorEnums.VALID_NO_OBJECT_FOUND, String.format("设备通道订阅数据更新失败，未知的设备，gatewayId：%s, originId：%s", gatewayId, deviceOriginId));
+        }
+        Long deviceId = deviceInfoOp.get().getId();
+        JSONArray objects = jsonObject.getJSONArray(StandardName.CHANNEL_SUBSCRIBE_LIST);
+        Integer subscribeType = jsonObject.getInteger(StandardName.SUBSCRIBE_TYPE);
+        LocalDateTime nowTime = LocalDateTime.now();
+        List<ChannelInfo> notExistingChannelInfoList = new ArrayList<>();
+        for (int i = 0; i < objects.size(); i++) {
+            JSONObject job = objects.getJSONObject(i);
+            String channelOriginId = job.getString(StandardName.CHANNEL_ID);
+            Optional<ChannelInfo> channelInfoOp = channelMapper.selectByDeviceIdAndOriginId(deviceId, channelOriginId);
+            ChannelInfo channelInfo = channelInfoOp.orElse(new ChannelInfo());
+            if (channelInfoOp.isEmpty()){
+                channelInfo.setOriginId(channelOriginId);
+                channelInfo.setDeviceId(deviceId);
+                channelInfo.setCreateTime(nowTime);
+                channelInfo.setUpdateTime(nowTime);
+                notExistingChannelInfoList.add(channelInfo);
+            }
+            // todo
+        }
+        jsonObject.put(StandardName.DEVICE_ID, deviceId);
+        jsonObject.put(StandardName.GATEWAY_ID, gatewayId);
+
+        CommonResponse<?> commonResponse = deviceControlApi.channelSubscribe(jsonObject);
+        commonResponse.ifErrorThrowException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR);
+    }
+
+
 
     private void channelDefensesDeploy(Long gatewayId, Long taskId, Object data) {
         if (Objects.isNull(data)){
@@ -429,5 +506,26 @@ public abstract class AbstractSouthProtocol implements SouthProtocol {
      * @return
      */
     protected abstract JSONObject channelSyncConvert(JSONObject jsonObject);
+
+    /**
+     * 设备注册数据转换，必须转换原始id
+     * @param jsonObject
+     * @return
+     */
+    protected abstract JSONObject deviceNodeSyncConvert(JSONObject jsonObject);
+
+    /**
+     * 节点数据订阅转换
+     * @param jsonObject
+     * @return
+     */
+    protected abstract JSONObject deviceNodeSubscribeConvert(JSONObject jsonObject);
+
+    /**
+     * 通道订阅数据转换
+     * @param jsonObject
+     * @return
+     */
+    protected abstract JSONObject deviceChannelSubscribeConvert(JSONObject jsonObject);
 
 }

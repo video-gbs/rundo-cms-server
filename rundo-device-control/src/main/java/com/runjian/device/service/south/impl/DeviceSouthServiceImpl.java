@@ -1,11 +1,8 @@
 package com.runjian.device.service.south.impl;
 
 
-import com.runjian.common.constant.CommonEnum;
-import com.runjian.common.constant.LogTemplate;
-import com.runjian.common.constant.MarkConstant;
+import com.runjian.common.constant.*;
 import com.runjian.device.constant.*;
-import com.runjian.common.constant.SignState;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
@@ -21,7 +18,6 @@ import com.runjian.device.service.south.DeviceSouthService;
 import com.runjian.device.vo.request.PostChannelDetailReq;
 import com.runjian.device.vo.request.PostDeviceSignInReq;
 import com.runjian.device.vo.request.PostNodeReq;
-import com.runjian.device.vo.response.ChannelDetailRsp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
