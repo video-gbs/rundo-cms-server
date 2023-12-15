@@ -55,6 +55,16 @@ public interface ChannelMapper {
     void batchUpdateSignState(List<ChannelInfo> channelInfoList);
 
     @Update(" <script> " +
+            " <foreach collection='channelIds' item='item' separator=';'> " +
+            " UPDATE " + CHANNEL_TABLE_NAME +
+            " SET update_time = #{updateTime}  " +
+            " , sign_state = #{signState} " +
+            " WHERE id = #{item} "+
+            " </foreach> " +
+            " </script> ")
+    void batchUpdateSignStateByIds(List<Long> channelIds, Integer signState, LocalDateTime updateTime);
+
+    @Update(" <script> " +
             " <foreach collection='channelInfoList' item='item' separator=';'> " +
             " UPDATE " + CHANNEL_TABLE_NAME +
             " SET update_time = #{item.updateTime}  " +
@@ -63,6 +73,16 @@ public interface ChannelMapper {
             " </foreach> " +
             " </script> ")
     void batchUpdateOnlineState(List<ChannelInfo> channelInfoList);
+
+    @Update(" <script> " +
+            " <foreach collection='channelIds' item='item' separator=';'> " +
+            " UPDATE " + CHANNEL_TABLE_NAME +
+            " SET update_time = #{updateTime}  " +
+            " , online_state = #{onlineState} " +
+            " WHERE id = #{item} "+
+            " </foreach> " +
+            " </script> ")
+    void batchUpdateOnlineStateByIds(List<Long> channelIds, Integer onlineState, LocalDateTime updateTime);
 
     @Select(" <script> " +
             " SELECT ch.id AS channelId, ch.device_id, dt.name AS channelName, ch.sign_state, ch.online_state, ch.create_time, " +
@@ -122,4 +142,15 @@ public interface ChannelMapper {
             " WHERE id = #{id} "+
             " </script> ")
     void updateSignState(ChannelInfo channelInfo);
+
+    @Update(" <script> " +
+            " <foreach collection='channelInfoList' item='item' separator=';'> " +
+            " UPDATE " + CHANNEL_TABLE_NAME +
+            " SET update_time = #{item.updateTime}  " +
+            " , online_state = #{item.onlineState} " +
+            " , channel_type = #{item.channelType} " +
+            " WHERE id = #{item.id} "+
+            " </foreach> " +
+            " </script> ")
+    void batchUpdate(List<ChannelInfo> updateChannelInfoList);
 }

@@ -8,11 +8,15 @@ import com.runjian.common.validator.ValidatorService;
 import com.runjian.device.service.north.DeviceNorthService;
 import com.runjian.device.vo.request.PostDeviceAddReq;
 import com.runjian.device.vo.request.PutDeviceSignSuccessReq;
+import com.runjian.device.vo.request.PutPlatformSubscribeReq;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
+import com.runjian.device.vo.response.GetNodeRsp;
 import com.runjian.device.vo.response.PostDeviceAddRsp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Miracle
@@ -41,6 +45,31 @@ public class DeviceNorthController {
     @IllegalStringValid
     public CommonResponse<PageInfo<GetDevicePageRsp>> getDeviceByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, Integer signState, String deviceName, String ip){
         return CommonResponse.success(deviceNorthService.getDeviceByPage(page, num, signState, deviceName, ip));
+    }
+
+    /**
+     * 获取下级平台分页数据
+     * @param page 页码
+     * @param num 每页数据量
+     * @param deviceName 设备名称
+     * @param ip ip地址
+     * @return
+     */
+    @GetMapping("/platform/page")
+    @BlankStringValid
+    @IllegalStringValid
+    public CommonResponse<PageInfo<GetDevicePageRsp>> getPlatformByPage(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int num, String deviceName, String ip){
+        return CommonResponse.success(deviceNorthService.getPlatformByPage(page, num, deviceName, ip));
+    }
+
+    /**
+     * 获取节点数据
+     * @param deviceId 设备id
+     * @return
+     */
+    @GetMapping("/node/data")
+    public CommonResponse<List<GetNodeRsp>> getNodeRsp(@RequestParam Long deviceId){
+        return CommonResponse.success(deviceNorthService.getNodeRsp(deviceId));
     }
 
     /**
@@ -99,6 +128,16 @@ public class DeviceNorthController {
         return CommonResponse.success();
     }
 
-
+    /**
+     * 下级平台订阅
+     * @param request
+     * @return
+     */
+    @PutMapping("/platform/subscribe")
+    public CommonResponse<?> platformSubscribe(@RequestBody PutPlatformSubscribeReq request){
+        validatorService.validateRequest(request);
+        deviceNorthService.deviceSubscribe(request.getDeviceId(), request.getIsSubscribe());
+        return CommonResponse.success();
+    }
 
 }
