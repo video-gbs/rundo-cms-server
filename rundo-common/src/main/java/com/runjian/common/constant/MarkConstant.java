@@ -37,7 +37,7 @@ public class MarkConstant {
 
     public static final String REDIS_DEVICE_BATCH_SIGN_IN_LOCK = "DEVICE_BATCH_SIGN_IN_LOCK:";
 
-    public static final String REDIS_CHANNEL_SYNC_LOCK = "CHANNEL_SYNC_LOCK:";
+    public static final String REDIS_CHANNEL_ADD_LOCK = "CHANNEL_SYNC_LOCK:";
 
 
 
