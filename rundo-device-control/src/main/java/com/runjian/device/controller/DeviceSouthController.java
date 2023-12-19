@@ -76,7 +76,7 @@ public class DeviceSouthController {
     public CommonResponse<?> subscribeChannel(@RequestBody PostChannelSubscribeReq req){
         validatorService.validateRequest(req);
         validatorService.validateRequest(req.getChannelDetailReqList());
-        deviceSouthService.channelSubscribe(req.getDeviceId(), req.getSubscribeType(), req.getChannelDetailReqList());
+        deviceSouthService.channelSubscribe(req.getDeviceId(), req.getChannelDetailReqList());
         return CommonResponse.success();
     }
 

@@ -42,6 +42,7 @@ public interface NodeMapper {
             " INSERT INTO " + NODE_TABLE_NAME + "(device_id, parent_id, origin_id, node_name, update_time, create_time) VALUES " +
             " <foreach collection='saveList' item='item' separator=','>(#{item.device_id}, #{item.parentId}, #{item.originId}, #{item.nodeName}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void batchSave(List<NodeInfo> saveList);
 
     @Select(" <script> " +

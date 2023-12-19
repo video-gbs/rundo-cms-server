@@ -20,6 +20,15 @@ public interface ChannelNorthService {
     PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String nameOrOriginId);
 
     /**
+     *
+     * @param page
+     * @param num
+     * @param name
+     * @return
+     */
+    PageInfo<GetChannelByPageRsp> getPlatformChannelByPage(int page, int num, Long nodeId, Integer isIncludeChild, String originId, String ip, Integer onlineState, Integer signState);
+
+    /**
      * 通道同步
      * @param deviceId
      * @return

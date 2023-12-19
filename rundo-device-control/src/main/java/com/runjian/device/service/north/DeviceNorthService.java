@@ -34,6 +34,13 @@ public interface DeviceNorthService {
     List<GetNodeRsp> getNodeRsp(Long deviceId);
 
     /**
+     * 获取设备详情
+     * @param deviceId 设备id
+     * @return
+     */
+    GetDevicePageRsp getDeviceByDeviceId(Long deviceId);
+
+    /**
      * 设备添加注册
      */
     PostDeviceAddRsp deviceAdd(String deviceId, Long gatewayId, Integer deviceType,

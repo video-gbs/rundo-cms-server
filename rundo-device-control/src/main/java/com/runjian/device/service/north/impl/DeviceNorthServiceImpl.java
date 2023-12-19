@@ -106,6 +106,16 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
     }
 
     /**
+     * 根据设备id获取设备信息
+     * @param deviceId 设备id
+     * @return
+     */
+    @Override
+    public GetDevicePageRsp getDeviceByDeviceId(Long deviceId) {
+        return deviceMapper.selectDetailById(deviceId);
+    }
+
+    /**
      * 设备主动添加
      * @param originId 设备原始ID
      * @param gatewayId 网关ID
@@ -137,7 +147,6 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
         // 获取id
-        log.warn("新增数据id:" + response.getData());
         Long id = Long.valueOf(response.getData().toString());
         //判断数据是否存在，存在直接修改注册状态为已添加
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);

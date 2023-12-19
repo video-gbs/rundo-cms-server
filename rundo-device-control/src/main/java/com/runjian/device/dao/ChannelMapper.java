@@ -21,8 +21,8 @@ public interface ChannelMapper {
     String CHANNEL_TABLE_NAME = "rundo_channel";
 
     @Insert({" <script> " +
-            " INSERT INTO " + CHANNEL_TABLE_NAME + "(id, device_id, sign_state, online_state, channel_type, update_time, create_time) values " +
-            " <foreach collection='saveList' item='item' separator=','>(#{item.id}, #{item.deviceId}, #{item.signState}, #{item.onlineState}, #{item.channelType}, #{item.updateTime}, #{item.createTime})</foreach> " +
+            " INSERT INTO " + CHANNEL_TABLE_NAME + "(id, device_id, node_origin_id, sign_state, online_state, channel_type, update_time, create_time) values " +
+            " <foreach collection='saveList' item='item' separator=','>(#{item.id}, #{item.deviceId}, #{item.node_origin_id}, #{item.signState}, #{item.onlineState}, #{item.channelType}, #{item.updateTime}, #{item.createTime})</foreach> " +
             " </script>"})
     void batchSave(List<ChannelInfo> saveList);
 
@@ -53,16 +53,6 @@ public interface ChannelMapper {
             " </foreach> " +
             " </script> ")
     void batchUpdateSignState(List<ChannelInfo> channelInfoList);
-
-    @Update(" <script> " +
-            " <foreach collection='channelIds' item='item' separator=';'> " +
-            " UPDATE " + CHANNEL_TABLE_NAME +
-            " SET update_time = #{updateTime}  " +
-            " , sign_state = #{signState} " +
-            " WHERE id = #{item} "+
-            " </foreach> " +
-            " </script> ")
-    void batchUpdateSignStateByIds(List<Long> channelIds, Integer signState, LocalDateTime updateTime);
 
     @Update(" <script> " +
             " <foreach collection='channelInfoList' item='item' separator=';'> " +
@@ -149,6 +139,7 @@ public interface ChannelMapper {
             " SET update_time = #{item.updateTime}  " +
             " , online_state = #{item.onlineState} " +
             " , channel_type = #{item.channelType} " +
+            " , node_origin_id = #{item.nodeOriginId}" +
             " WHERE id = #{item.id} "+
             " </foreach> " +
             " </script> ")

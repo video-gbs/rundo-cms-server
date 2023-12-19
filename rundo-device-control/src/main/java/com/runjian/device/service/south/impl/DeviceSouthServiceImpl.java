@@ -15,6 +15,7 @@ import com.runjian.device.service.common.DetailBaseService;
 import com.runjian.device.service.common.MessageBaseService;
 import com.runjian.device.service.north.ChannelNorthService;
 import com.runjian.device.service.south.DeviceSouthService;
+import com.runjian.device.vo.dto.NodeMsgDto;
 import com.runjian.device.vo.request.PostChannelDetailReq;
 import com.runjian.device.vo.request.PostDeviceSignInReq;
 import com.runjian.device.vo.request.PostNodeReq;
@@ -249,88 +250,97 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             if (!nodeInfoMap.isEmpty()){
                deleteNodeInfoList.addAll(nodeInfoMap.values());
             }
-            if (!newNodeInfoList.isEmpty()){
-                nodeMapper.batchSave(newNodeInfoList);
-            }
+
             if (!updateNodeInfoList.isEmpty()){
                 nodeMapper.batchUpdate(updateNodeInfoList);
+                messageBaseService.msgDistribute(SubMsgType.NODE_ADD_OR_DELETE_OR_UPDATE_STATE, updateNodeInfoList.stream().map(nodeInfo -> NodeMsgDto.nodeInfoConvert(nodeInfo, NodeMsgStateType.UPDATE.getCode())).collect(Collectors.toMap(NodeMsgDto::getId, nodeMsgDto -> nodeMsgDto)));
             }
             if (!deleteNodeInfoList.isEmpty()){
                 nodeMapper.batchDelete(deleteNodeInfoList.stream().map(NodeInfo::getId).collect(Collectors.toList()));
+                messageBaseService.msgDistribute(SubMsgType.NODE_ADD_OR_DELETE_OR_UPDATE_STATE, deleteNodeInfoList.stream().map(nodeInfo -> NodeMsgDto.nodeInfoConvert(nodeInfo, NodeMsgStateType.DELETE.getCode())).collect(Collectors.toMap(NodeMsgDto::getId, nodeMsgDto -> nodeMsgDto)));
+            }
+            if (!newNodeInfoList.isEmpty()){
+                nodeMapper.batchSave(newNodeInfoList);
+                messageBaseService.msgDistribute(SubMsgType.NODE_ADD_OR_DELETE_OR_UPDATE_STATE, newNodeInfoList.stream().map(nodeInfo -> NodeMsgDto.nodeInfoConvert(nodeInfo, NodeMsgStateType.ADD.getCode())).collect(Collectors.toMap(NodeMsgDto::getId, nodeMsgDto -> nodeMsgDto)));
             }
         }
     }
 
     @Override
-    public void channelSubscribe(Long deviceId, Integer subscribeType, List<PostChannelDetailReq> channelDetailRspList) {
+    @Transactional(rollbackFor = Exception.class)
+    public void channelSubscribe(Long deviceId, List<PostChannelDetailReq> channelDetailRspList) {
         if (channelDetailRspList.isEmpty()){
             return;
         }
+        Map<Integer, PostChannelDetailReq> channelDetailMap = channelDetailRspList.stream().collect(Collectors.toMap(PostChannelDetailReq::getSubscribeType, postChannelDetailReq -> postChannelDetailReq));
         LocalDateTime nowTime = LocalDateTime.now();
-        switch (SubscribeType.getType(subscribeType)){
-            case UNKNOWN:
-                return;
-            case ONLINE:
-                channelMapper.batchUpdateOnlineStateByIds(channelDetailRspList.stream().map(PostChannelDetailReq::getChannelId).collect(Collectors.toList()), CommonEnum.ENABLE.getCode(), nowTime);
-                messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelDetailRspList.stream().collect(Collectors.toMap(PostChannelDetailReq::getChannelId, channelDetailRsp -> CommonEnum.ENABLE.getCode())));
-                return;
-            case OFFLINE:
-                channelMapper.batchUpdateOnlineStateByIds(channelDetailRspList.stream().map(PostChannelDetailReq::getChannelId).collect(Collectors.toList()), CommonEnum.DISABLE.getCode(), nowTime);
-                messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelDetailRspList.stream().collect(Collectors.toMap(PostChannelDetailReq::getChannelId, channelDetailRsp -> CommonEnum.ENABLE.getCode())));
-                return;
-            case ADD:
-                List<ChannelInfo> saveChannelInfoList = new ArrayList<>(channelDetailRspList.size());
-                List<DetailInfo> detailSaveList = new ArrayList<>(channelDetailRspList.size());
-                List<DetailInfo> detailUpdateList = new ArrayList<>(channelDetailRspList.size());
-                for (PostChannelDetailReq channelDetailRsp : channelDetailRspList){
-                    Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(channelDetailRsp.getChannelId());
-                    if (channelInfoOp.isPresent()){
-                        continue;
+        for (Map.Entry<Integer, PostChannelDetailReq> entry : channelDetailMap.entrySet()){
+            switch (SubscribeType.getType(entry.getKey())){
+                case UNKNOWN:
+                    continue;
+                case ONLINE:
+                    channelMapper.batchUpdateOnlineStateByIds(channelDetailRspList.stream().map(PostChannelDetailReq::getChannelId).collect(Collectors.toList()), CommonEnum.ENABLE.getCode(), nowTime);
+                    messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelDetailRspList.stream().collect(Collectors.toMap(PostChannelDetailReq::getChannelId, channelDetailRsp -> CommonEnum.ENABLE.getCode())));
+                    continue;
+                case OFFLINE:
+                    channelMapper.batchUpdateOnlineStateByIds(channelDetailRspList.stream().map(PostChannelDetailReq::getChannelId).collect(Collectors.toList()), CommonEnum.DISABLE.getCode(), nowTime);
+                    messageBaseService.msgDistribute(SubMsgType.CHANNEL_ONLINE_STATE, channelDetailRspList.stream().collect(Collectors.toMap(PostChannelDetailReq::getChannelId, channelDetailRsp -> CommonEnum.ENABLE.getCode())));
+                    continue;
+                case ADD:
+                    List<ChannelInfo> saveChannelInfoList = new ArrayList<>(channelDetailRspList.size());
+                    List<DetailInfo> detailSaveList = new ArrayList<>(channelDetailRspList.size());
+                    List<DetailInfo> detailUpdateList = new ArrayList<>(channelDetailRspList.size());
+                    for (PostChannelDetailReq channelDetailRsp : channelDetailRspList){
+                        Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(channelDetailRsp.getChannelId());
+                        if (channelInfoOp.isPresent()){
+                            continue;
+                        }
+                        ChannelInfo channelInfo = new ChannelInfo();
+                        channelInfo.setDeviceId(deviceId);
+                        channelInfo.setChannelType(channelDetailRsp.getChannelType());
+                        channelInfo.setOnlineState(channelDetailRsp.getOnlineState());
+                        channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
+                        channelInfo.setCreateTime(nowTime);
+                        channelInfo.setUpdateTime(nowTime);
+                        saveChannelInfoList.add(channelInfo);
+                        saveOrUpdateDetail(channelDetailRsp, nowTime, detailSaveList, detailUpdateList);
                     }
-                    ChannelInfo channelInfo = new ChannelInfo();
-                    channelInfo.setDeviceId(deviceId);
-                    channelInfo.setChannelType(channelDetailRsp.getChannelType());
-                    channelInfo.setOnlineState(channelDetailRsp.getOnlineState());
-                    channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
-                    channelInfo.setCreateTime(nowTime);
-                    channelInfo.setUpdateTime(nowTime);
-                    saveChannelInfoList.add(channelInfo);
-                    saveOrUpdateDetail(channelDetailRsp, nowTime, detailSaveList, detailUpdateList);
-                }
-                channelMapper.batchSave(saveChannelInfoList);
-                if (!detailSaveList.isEmpty())
-                    detailMapper.batchSave(detailSaveList);
-                if (!detailUpdateList.isEmpty())
-                    detailMapper.batchUpdate(detailUpdateList);
-                messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_OR_DELETE_STATE, saveChannelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, channelInfo -> channelInfo)));
-                break;
-            case DELETE:
-                for (PostChannelDetailReq channelDetailRsp : channelDetailRspList){
-                    channelNorthService.channelDeleteSoft(channelDetailRsp.getChannelId());
-                }
-                break;
-            case UPDATE:
-                List<ChannelInfo> updateChannelInfoList = new ArrayList<>(channelDetailRspList.size());
-                List<DetailInfo> detailSaveList1 = new ArrayList<>(channelDetailRspList.size());
-                List<DetailInfo> detailUpdateList1 = new ArrayList<>(channelDetailRspList.size());
-                for (PostChannelDetailReq channelDetailRsp : channelDetailRspList){
-                    Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(channelDetailRsp.getChannelId());
-                    if (channelInfoOp.isEmpty()){
-                        continue;
+                    channelMapper.batchSave(saveChannelInfoList);
+                    if (!detailSaveList.isEmpty())
+                        detailMapper.batchSave(detailSaveList);
+                    if (!detailUpdateList.isEmpty())
+                        detailMapper.batchUpdate(detailUpdateList);
+                    messageBaseService.msgDistribute(SubMsgType.CHANNEL_ADD_OR_DELETE_STATE, saveChannelInfoList.stream().collect(Collectors.toMap(ChannelInfo::getId, channelInfo -> channelInfo)));
+                    continue;
+                case DELETE:
+                    for (PostChannelDetailReq channelDetailRsp : channelDetailRspList){
+                        channelNorthService.channelDeleteSoft(channelDetailRsp.getChannelId());
                     }
-                    ChannelInfo channelInfo = channelInfoOp.get();
-                    channelInfo.setChannelType(channelDetailRsp.getChannelType());
-                    channelInfo.setOnlineState(channelDetailRsp.getOnlineState());
-                    channelInfo.setUpdateTime(nowTime);
-                    updateChannelInfoList.add(channelInfo);
-                    saveOrUpdateDetail(channelDetailRsp, nowTime, detailSaveList1, detailUpdateList1);
-                }
-                channelMapper.batchUpdate(updateChannelInfoList);
-                if (!detailSaveList1.isEmpty())
-                    detailMapper.batchSave(detailSaveList1);
-                if (!detailUpdateList1.isEmpty())
-                    detailMapper.batchUpdate(detailUpdateList1);
-                break;
+                    continue;
+                case UPDATE:
+                    List<ChannelInfo> updateChannelInfoList = new ArrayList<>(channelDetailRspList.size());
+                    List<DetailInfo> detailSaveList1 = new ArrayList<>(channelDetailRspList.size());
+                    List<DetailInfo> detailUpdateList1 = new ArrayList<>(channelDetailRspList.size());
+                    for (PostChannelDetailReq channelDetailRsp : channelDetailRspList){
+                        Optional<ChannelInfo> channelInfoOp = channelMapper.selectById(channelDetailRsp.getChannelId());
+                        if (channelInfoOp.isEmpty()){
+                            continue;
+                        }
+                        ChannelInfo channelInfo = channelInfoOp.get();
+                        channelInfo.setChannelType(channelDetailRsp.getChannelType());
+                        channelInfo.setOnlineState(channelDetailRsp.getOnlineState());
+                        channelInfo.setNodeOriginId(channelDetailRsp.getNodeOriginId());
+                        channelInfo.setUpdateTime(nowTime);
+                        updateChannelInfoList.add(channelInfo);
+                        saveOrUpdateDetail(channelDetailRsp, nowTime, detailSaveList1, detailUpdateList1);
+                    }
+                    channelMapper.batchUpdate(updateChannelInfoList);
+                    if (!detailSaveList1.isEmpty())
+                        detailMapper.batchSave(detailSaveList1);
+                    if (!detailUpdateList1.isEmpty())
+                        detailMapper.batchUpdate(detailUpdateList1);
+                    continue;
+            }
         }
     }
 
@@ -363,13 +373,9 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
             return;
         }
         LocalDateTime nowTime = LocalDateTime.now();
+        List<NodeInfo> nodeInfoList = nodeMapper.selectByDeviceIdAndOriginIds(deviceId, nodeSyncReqList.stream().map(PostNodeReq::getNodeId).collect(Collectors.toList()));
         switch (SubscribeType.getType(subscribeType)){
-            case UNKNOWN:
-            case OFFLINE:
-            case ONLINE:
-                return;
             case ADD:
-                List<NodeInfo> nodeInfoList = nodeMapper.selectByDeviceIdAndOriginIds(deviceId, nodeSyncReqList.stream().map(PostNodeReq::getNodeId).collect(Collectors.toList()));
                 List<NodeInfo> newNodeInfoList = new ArrayList<>(nodeSyncReqList.size());
                 if (nodeInfoList.isEmpty()){
                     for (PostNodeReq nodeSyncReq : nodeSyncReqList){
@@ -386,15 +392,15 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 }
                 if (!newNodeInfoList.isEmpty()){
                     nodeMapper.batchSave(newNodeInfoList);
+                    messageBaseService.msgDistribute(SubMsgType.NODE_ADD_OR_DELETE_OR_UPDATE_STATE, newNodeInfoList.stream().map(nodeInfo -> NodeMsgDto.nodeInfoConvert(nodeInfo, NodeMsgStateType.ADD.getCode())).collect(Collectors.toMap(NodeMsgDto::getId, nodeMsgDto -> nodeMsgDto)));
                 }
                 break;
             case UPDATE:
-                List<NodeInfo> nodeInfoList1 = nodeMapper.selectByDeviceIdAndOriginIds(deviceId, nodeSyncReqList.stream().map(PostNodeReq::getNodeId).collect(Collectors.toList()));
                 List<NodeInfo> updateNodeInfoList = new ArrayList<>(nodeSyncReqList.size());
-                if (nodeInfoList1.isEmpty()){
+                if (nodeInfoList.isEmpty()){
                     return;
                 }
-                Map<String, NodeInfo> nodeInfoMap = nodeInfoList1.stream().collect(Collectors.toMap(nodeInfo1 -> nodeInfo1.getDeviceId() + MarkConstant.MARK_SPLIT_SEMICOLON + nodeInfo1.getOriginId(), nodeInfo1 -> nodeInfo1));
+                Map<String, NodeInfo> nodeInfoMap = nodeInfoList.stream().collect(Collectors.toMap(nodeInfo1 -> nodeInfo1.getDeviceId() + MarkConstant.MARK_SPLIT_SEMICOLON + nodeInfo1.getOriginId(), nodeInfo1 -> nodeInfo1));
                 for (PostNodeReq nodeSyncReq : nodeSyncReqList){
                     NodeInfo oldNodeInfo = nodeInfoMap.remove(deviceId + MarkConstant.MARK_SPLIT_SEMICOLON + nodeSyncReq.getNodeId());
                     if (Objects.nonNull(oldNodeInfo)){
@@ -406,11 +412,15 @@ public class DeviceSouthServiceImpl implements DeviceSouthService {
                 }
                 if (!updateNodeInfoList.isEmpty()){
                     nodeMapper.batchUpdate(updateNodeInfoList);
+                    messageBaseService.msgDistribute(SubMsgType.NODE_ADD_OR_DELETE_OR_UPDATE_STATE, updateNodeInfoList.stream().map(nodeInfo -> NodeMsgDto.nodeInfoConvert(nodeInfo, NodeMsgStateType.UPDATE.getCode())).collect(Collectors.toMap(NodeMsgDto::getId, nodeMsgDto -> nodeMsgDto)));
                 }
                 break;
             case DELETE:
-                nodeMapper.batchDeleteByDeviceIdAndOriginIds(deviceId, nodeSyncReqList.stream().map(PostNodeReq::getNodeId).collect(Collectors.toList()));
+                nodeMapper.batchDelete(nodeInfoList.stream().map(NodeInfo::getId).collect(Collectors.toList()));
+                messageBaseService.msgDistribute(SubMsgType.NODE_ADD_OR_DELETE_OR_UPDATE_STATE, nodeInfoList.stream().map(nodeInfo -> NodeMsgDto.nodeInfoConvert(nodeInfo, NodeMsgStateType.DELETE.getCode())).collect(Collectors.toMap(NodeMsgDto::getId, nodeMsgDto -> nodeMsgDto)));
                 break;
+            default:
+                return;
         }
     }
 

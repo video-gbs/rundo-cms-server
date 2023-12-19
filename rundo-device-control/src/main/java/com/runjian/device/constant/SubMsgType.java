@@ -18,7 +18,9 @@ public enum SubMsgType {
     // 设备添加
     DEVICE_ADD_OR_DELETE_STATE(5, "deviceAddOrDelete"),
     // 通道添加
-    CHANNEL_ADD_OR_DELETE_STATE(6, "channelAddOrDelete")
+    CHANNEL_ADD_OR_DELETE_STATE(6, "channelAddOrDelete"),
+    // 节点添加和删除
+    NODE_ADD_OR_DELETE_OR_UPDATE_STATE(7, "nodeAddOrDeleteOrUpdate"),
     ;
 
 

@@ -44,10 +44,9 @@ public interface DeviceSouthService {
     /**
      * 通道订阅
      * @param deviceId
-     * @param subscribeType
      * @param channelDetailReqList
      */
-    void channelSubscribe(Long deviceId, Integer subscribeType, List<PostChannelDetailReq> channelDetailReqList);
+    void channelSubscribe(Long deviceId, List<PostChannelDetailReq> channelDetailReqList);
 
     /**
      * 节点订阅

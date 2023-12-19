@@ -21,12 +21,6 @@ public class PostChannelSubscribeReq {
     @NotNull(message = "设备id不能为空")
     private Long deviceId;
 
-    /**
-     * 订阅类型
-     */
-    @NotNull(message = "订阅类型不能为空")
-    @Range(min = 0, max = 5, message = "订阅类型不正确")
-    private Integer subscribeType;
 
     /**
      * 通道数据

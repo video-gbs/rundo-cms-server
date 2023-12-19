@@ -105,7 +105,7 @@ public interface DeviceMapper {
     void updateSubscribe(DeviceInfo deviceInfo);
 
     @Select(" <script> " +
-            " SELECT de.id AS deviceId, dt.name AS deviceName, de.sign_state, de.online_state, de.create_time, de.device_type," +
+            " SELECT de.id AS deviceId, dt.name AS deviceName, de.sign_state, de.online_state, de.create_time, de.device_type, de.is_subscribe, de.stream_type" +
             " dt.origin_id, dt.ip, dt.port, dt.manufacturer, dt.model, dt.firmware, dt.ptz_type, dt.username, dt.password  FROM " + DEVICE_TABLE_NAME + " de " +
             " LEFT JOIN " + DetailMapper.DETAIL_TABLE_NAME + " dt ON de.id = dt.dc_id AND type = 1 " +
             " WHERE de.sign_state != 0 AND de.device_type = 6 "  +
@@ -114,4 +114,12 @@ public interface DeviceMapper {
             " ORDER BY de.online_state desc, de.create_time desc " +
             " </script> ")
     List<GetDevicePageRsp> selectPlatformByPage(String deviceName, String ip);
+
+    @Select(" <script> " +
+            " SELECT de.id AS deviceId, dt.name AS deviceName, de.sign_state, de.online_state, de.create_time, de.device_type, de.is_subscribe, de.stream_type" +
+            " dt.origin_id, dt.ip, dt.port, dt.manufacturer, dt.model, dt.firmware, dt.ptz_type, dt.username, dt.password  FROM " + DEVICE_TABLE_NAME + " de " +
+            " LEFT JOIN " + DetailMapper.DETAIL_TABLE_NAME + " dt ON de.id = dt.dc_id AND type = 1 " +
+            " WHERE de.id = #{deviceId} "  +
+            " </script> ")
+    GetDevicePageRsp selectDetailById(Long deviceId);
 }

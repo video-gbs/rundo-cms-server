@@ -73,6 +73,16 @@ public class DeviceNorthController {
     }
 
     /**
+     * 获取设备详情
+     * @param deviceId 设备id
+     * @return
+     */
+    @GetMapping("/detail")
+    public CommonResponse<GetDevicePageRsp> getDeviceDetail(@RequestParam Long deviceId){
+        return CommonResponse.success(deviceNorthService.getDeviceByDeviceId(deviceId));
+    }
+
+    /**
      * 设备添加
      * @param req 设备添加请求体
      * @return
