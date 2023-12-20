@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Miracle
@@ -62,4 +63,8 @@ public interface NodeMapper {
     @Select(" SELECT * FROM " + NODE_TABLE_NAME +
             " WHERE device_id = #{deviceId} ")
     List<GetNodeRsp> selectAllByDeviceId(Long deviceId);
+
+    @Select(" SELECT * FROM " + NODE_TABLE_NAME +
+            " WHERE id = #{id} ")
+    Optional<NodeInfo> selectById(Long id);
 }

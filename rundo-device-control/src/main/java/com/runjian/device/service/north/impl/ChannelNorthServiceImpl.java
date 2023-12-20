@@ -70,7 +70,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     @Override
     public PageInfo<GetChannelByPageRsp> getPlatformChannelByPage(int page, int num, Long nodeId, Integer isIncludeChild, String originId, String ip, Integer onlineState, Integer signState) {
-        Optional<NodeInfo> nodeInfoOp = nodeMapper.selectByNodeId(nodeId);
+        Optional<NodeInfo> nodeInfoOp = nodeMapper.selectById(nodeId);
         if (nodeInfoOp.isEmpty()){
             return new PageInfo<>();
         }
@@ -80,11 +80,26 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             return new PageInfo<>(channelMapper.selectPlatformChannelByPage(nodeInfo.getOriginId(), originId, ip, onlineState, signState));
         }
         List<NodeInfo> nodeInfoList = nodeMapper.selectByDeviceId(nodeInfo.getDeviceId());
-
-
-        return null;
+        Set<String> childNodeOriginIds = getChildNodeOriginId(nodeInfoList, Set.of(nodeInfo.getOriginId()));
+        PageHelper.startPage(page, num);
+        return new PageInfo<>(channelMapper.selectByNodeOriginIdsAndPage(childNodeOriginIds, originId, ip, onlineState, signState));
     }
 
+    private Set<String> getChildNodeOriginId(List<NodeInfo> nodeInfoList, Set<String> parentOriginIds){
+        Set<String> childOriginIds = new HashSet<>();
+        List<NodeInfo> newNodeInfoList = nodeInfoList.stream().filter(nodeInfo -> {
+            if (parentOriginIds.contains(nodeInfo.getParentId())) {
+                childOriginIds.add(nodeInfo.getOriginId());
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+        if (childOriginIds.isEmpty()){
+            return new HashSet<>();
+        }
+        childOriginIds.addAll(getChildNodeOriginId(newNodeInfoList, childOriginIds));
+        return childOriginIds;
+    }
 
 
     /**

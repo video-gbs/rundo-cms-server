@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * 通道数据库操作类
@@ -144,4 +145,8 @@ public interface ChannelMapper {
             " </foreach> " +
             " </script> ")
     void batchUpdate(List<ChannelInfo> updateChannelInfoList);
+
+    List<GetChannelByPageRsp> selectByNodeOriginIdsAndPage(Set<String> childNodeOriginIds, String originId, String ip, Integer onlineState, Integer signState);
+
+    List<? extends GetChannelByPageRsp> selectPlatformChannelByPage(String originId, String originId1, String ip, Integer onlineState, Integer signState);
 }
