@@ -475,4 +475,9 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         return failureChannelSet;
     }
 
+    @Override
+    public List<GetChannelByPageRsp> getDeviceAllChannel(Long deviceId) {
+        return channelMapper.selectDetailByDeviceId(deviceId);
+    }
+
 }

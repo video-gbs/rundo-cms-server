@@ -103,4 +103,11 @@ public interface ChannelNorthService {
      * @return 失败的通道
      */
     Set<Long> channelDeployAndWithdrawDefenses(List<Long> channelIdList,  Boolean isDeploy);
+
+    /**
+     * 获取设备全部通道
+     * @param deviceId 设备id
+     * @return
+     */
+    List<GetChannelByPageRsp> getDeviceAllChannel(Long deviceId);
 }

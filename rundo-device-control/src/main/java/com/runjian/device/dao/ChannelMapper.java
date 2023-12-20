@@ -146,7 +146,37 @@ public interface ChannelMapper {
             " </script> ")
     void batchUpdate(List<ChannelInfo> updateChannelInfoList);
 
+    @Select(" <script> " +
+            " SELECT ch.id AS channelId, ch.device_id, dt.name AS channelName, ch.node_origin_id, ch.sign_state, ch.online_state, ch.create_time, " +
+            " dt.origin_id, dt.ip, dt.port, dt.manufacturer, dt.model, dt.firmware, dt.ptz_type, dt.username, dt.password  FROM " + CHANNEL_TABLE_NAME + " ch " +
+            " LEFT JOIN " + DetailMapper.DETAIL_TABLE_NAME + " dt ON ch.id = dt.dc_id AND type = 2 " +
+            " WHERE ch.node_origin_id IN " +
+            " <foreach collection='childNodeOriginIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " <if test=\"originId != null\" > AND dt.origin_id = #{originId} </if>" +
+            " <if test=\"ip != null\" > AND dt.ip = #{ip} </if>" +
+            " <if test=\"onlineState != null\" > AND dt.online_state = #{onlineState} </if>" +
+            " <if test=\"signState != null\" > AND dt.sign_state = #{signState} </if>" +
+            " </script> ")
     List<GetChannelByPageRsp> selectByNodeOriginIdsAndPage(Set<String> childNodeOriginIds, String originId, String ip, Integer onlineState, Integer signState);
 
-    List<? extends GetChannelByPageRsp> selectPlatformChannelByPage(String originId, String originId1, String ip, Integer onlineState, Integer signState);
+    @Select(" <script> " +
+            " SELECT ch.id AS channelId, ch.device_id, dt.name AS channelName, ch.node_origin_id, ch.sign_state, ch.online_state, ch.create_time, " +
+            " dt.origin_id, dt.ip, dt.port, dt.manufacturer, dt.model, dt.firmware, dt.ptz_type, dt.username, dt.password  FROM " + CHANNEL_TABLE_NAME + " ch " +
+            " LEFT JOIN " + DetailMapper.DETAIL_TABLE_NAME + " dt ON ch.id = dt.dc_id AND type = 2 " +
+            " WHERE ch.node_origin_id = #{nodeOriginId} " +
+            " <if test=\"originId != null\" > AND dt.origin_id = #{originId} </if>" +
+            " <if test=\"ip != null\" > AND dt.ip = #{ip} </if>" +
+            " <if test=\"onlineState != null\" > AND dt.online_state = #{onlineState} </if>" +
+            " <if test=\"signState != null\" > AND dt.sign_state = #{signState} </if>" +
+            " </script> ")
+    List<GetChannelByPageRsp> selectPlatformChannelByPage(String nodeOriginId, String originId, String ip, Integer onlineState, Integer signState);
+
+    @Select(" <script> " +
+            " SELECT ch.id AS channelId, ch.device_id, dt.name AS channelName, ch.node_origin_id, ch.sign_state, ch.online_state, ch.create_time, " +
+            " dt.origin_id, dt.ip, dt.port, dt.manufacturer, dt.model, dt.firmware, dt.ptz_type, dt.username, dt.password  FROM " + CHANNEL_TABLE_NAME + " ch " +
+            " LEFT JOIN " + DetailMapper.DETAIL_TABLE_NAME + " dt ON ch.id = dt.dc_id AND type = 2 " +
+            " WHERE ch.sign_state != 0 " +
+            " AND ch.device_id = #{deviceId} " +
+            " </script> ")
+    List<GetChannelByPageRsp> selectDetailByDeviceId(Long deviceId);
 }

@@ -59,6 +59,18 @@ public class ChannelNorthController {
     }
 
     /**
+     * 获取设备全部通道信息
+     * @param deviceId 设备id
+     * @return
+     */
+    @GetMapping("/data")
+    @BlankStringValid
+    @IllegalStringValid
+    public CommonResponse<List<GetChannelByPageRsp>> getDeviceAllChannel(@RequestParam Long deviceId){
+        return CommonResponse.success(channelNorthService.getDeviceAllChannel(deviceId));
+    }
+
+    /**
      * 通道同步
      * @param deviceId 设备ID
      * @return ChannelSyncRsp
