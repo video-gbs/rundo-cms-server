@@ -480,4 +480,9 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         return channelMapper.selectDetailByDeviceId(deviceId);
     }
 
+    @Override
+    public List<GetChannelByPageRsp> getChannelByIds(Set<Long> channelIds) {
+        return channelMapper.selectByChannelIds(channelIds);
+    }
+
 }

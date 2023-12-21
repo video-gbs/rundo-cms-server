@@ -64,11 +64,20 @@ public class ChannelNorthController {
      * @return
      */
     @GetMapping("/data")
-    @BlankStringValid
-    @IllegalStringValid
     public CommonResponse<List<GetChannelByPageRsp>> getDeviceAllChannel(@RequestParam Long deviceId){
         return CommonResponse.success(channelNorthService.getDeviceAllChannel(deviceId));
     }
+
+    /**
+     * 获取设备全部通道信息
+     * @param deviceId 设备id
+     * @return
+     */
+    @GetMapping("/data/list")
+    public CommonResponse<List<GetChannelByPageRsp>> getChannelByIds(@RequestParam Set<Long> channelIds){
+        return CommonResponse.success(channelNorthService.getChannelByIds(channelIds));
+    }
+
 
     /**
      * 通道同步

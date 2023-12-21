@@ -22,7 +22,7 @@ public class GetNodeRsp {
     /**
      * 母节点id
      */
-    private String parentId;
+    private String nodeOriginId;
 
     /**
      * 原始id

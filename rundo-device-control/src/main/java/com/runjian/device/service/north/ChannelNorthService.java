@@ -110,4 +110,11 @@ public interface ChannelNorthService {
      * @return
      */
     List<GetChannelByPageRsp> getDeviceAllChannel(Long deviceId);
+
+    /**
+     * 根据通道id获取通道信息
+     * @param channelIds 通道id
+     * @return
+     */
+    List<GetChannelByPageRsp> getChannelByIds(Set<Long> channelIds);
 }

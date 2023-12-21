@@ -179,4 +179,14 @@ public interface ChannelMapper {
             " AND ch.device_id = #{deviceId} " +
             " </script> ")
     List<GetChannelByPageRsp> selectDetailByDeviceId(Long deviceId);
+
+    @Select(" <script> " +
+            " SELECT ch.id AS channelId, ch.device_id, dt.name AS channelName, ch.node_origin_id, ch.sign_state, ch.online_state, ch.create_time, " +
+            " dt.origin_id, dt.ip, dt.port, dt.manufacturer, dt.model, dt.firmware, dt.ptz_type, dt.username, dt.password  FROM " + CHANNEL_TABLE_NAME + " ch " +
+            " LEFT JOIN " + DetailMapper.DETAIL_TABLE_NAME + " dt ON ch.id = dt.dc_id AND type = 2 " +
+            " WHERE ch.sign_state != 0 " +
+            " AND ch.id IN " +
+            " <foreach collection='channelIds' item='item' open='(' separator=',' close=')'> #{item} </foreach> " +
+            " </script> ")
+    List<GetChannelByPageRsp> selectByChannelIds(Set<Long> channelIds);
 }

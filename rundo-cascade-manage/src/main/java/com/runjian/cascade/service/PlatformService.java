@@ -5,7 +5,7 @@ package com.runjian.cascade.service;
  * @author Miracle
  * @date 2023/12/11 17:57
  */
-public interface PlatformSupService {
+public interface PlatformService {
 
     
 

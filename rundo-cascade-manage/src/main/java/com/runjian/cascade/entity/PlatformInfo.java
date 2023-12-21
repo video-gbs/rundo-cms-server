@@ -6,40 +6,50 @@ import java.time.LocalDateTime;
 
 /**
  * @author Miracle
- * @date 2023/12/11 14:37
+ * @date 2023/12/11 16:57
  */
 @Data
-public class CascadeGatewayInfo {
+public class PlatformInfo {
 
     /**
-     * 网关id
+     * 平台id
      */
     private Long id;
 
     /**
-     * 网关名称
+     * 平台名称
      */
     private String name;
 
     /**
-     * 网关ip
+     * 平台ip
      */
     private String ip;
 
     /**
-     * 网关端口
+     * 平台端口
      */
     private Integer port;
-
-    /**
-     * 国标域
-     */
-    private String gbDomain;
 
     /**
      * 国标编码
      */
     private String gbCode;
+
+    /**
+     * 上下线状态
+     */
+    private Integer onlineState;
+
+    /**
+     * 注册状态
+     */
+    private Integer signState;
+
+    /**
+     * 流传输模式
+     */
+    private Integer streamType;
 
     /**
      * 用户名

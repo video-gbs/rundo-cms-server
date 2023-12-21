@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  * @date 2023/12/11 15:21
  */
 @Data
-public class GetCascadeGatewayRsp {
+public class GetGatewayRsp {
 
     /**
      * 主键id
