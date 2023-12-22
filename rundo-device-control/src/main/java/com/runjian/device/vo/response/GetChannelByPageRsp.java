@@ -29,6 +29,11 @@ public class GetChannelByPageRsp {
     private String originId;
 
     /**
+     * 节点原始id
+     */
+    private String nodeOriginId;
+
+    /**
      * 注册状态
      */
     private Integer signState;

@@ -1,15 +1,13 @@
-package com.runjian.cascade.entity;
+package com.runjian.cascade.vo.response;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 /**
  * @author Miracle
- * @date 2023/12/11 16:57
+ * @date 2023/12/22 15:18
  */
 @Data
-public class PlatformInfo {
+public class GetPlatformPageRsp {
 
     /**
      * 平台id
@@ -45,18 +43,4 @@ public class PlatformInfo {
      * 注册状态
      */
     private Integer signState;
-
-    /**
-     * 用户名
-     */
-    private String username;
-
-    /**
-     * 密码
-     */
-    private String password;
-
-    private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
 }
