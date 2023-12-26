@@ -1,7 +1,7 @@
-package com.runjian.cascade.gb28181.transmit.event.request.impl.message.control;
+package com.runjian.cascade.gb28181Module.gb28181.transmit.event.request.impl.message.control;
 
-import com.runjian.cascade.gb28181.transmit.event.request.impl.message.MessageHandlerAbstract;
-import com.runjian.cascade.gb28181.transmit.event.request.impl.message.MessageRequestProcessor;
+import com.runjian.cascade.gb28181Module.gb28181.transmit.event.request.impl.message.MessageHandlerAbstract;
+import com.runjian.cascade.gb28181Module.gb28181.transmit.event.request.impl.message.MessageRequestProcessor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

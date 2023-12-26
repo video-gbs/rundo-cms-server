@@ -1,6 +1,6 @@
-package com.runjian.cascade.gb28181.event.record;
+package com.runjian.cascade.gb28181Module.gb28181.event.record;
 
-import com.runjian.cascade.gb28181.bean.RecordInfo;
+import com.runjian.cascade.gb28181Module.gb28181.bean.RecordInfo;
 import com.runjian.common.constant.LogTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

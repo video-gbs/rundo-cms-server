@@ -1,7 +1,7 @@
-package com.runjian.cascade.gb28181.bean;
+package com.runjian.cascade.gb28181Module.gb28181.bean;
 
 
-import com.runjian.cascade.gb28181.utils.DateUtil;
+import com.runjian.cascade.gb28181Module.gb28181.utils.DateUtil;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
