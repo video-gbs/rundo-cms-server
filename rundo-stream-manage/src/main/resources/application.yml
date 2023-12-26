@@ -2,4 +2,4 @@ spring:
   application:
     name: stream-manage
   profiles:
-    active: ${PROFILES_ACTIVE:local}
+    active: ${PROFILES_ACTIVE:dev}

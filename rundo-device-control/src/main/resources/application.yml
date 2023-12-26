@@ -2,4 +2,4 @@ spring:
   application:
     name: device-control
   profiles:
-    active: ${PROFILES_ACTIVE:local}
+    active: ${PROFILES_ACTIVE:dev}

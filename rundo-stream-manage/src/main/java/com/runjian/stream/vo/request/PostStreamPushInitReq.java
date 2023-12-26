@@ -45,7 +45,7 @@ public class PostStreamPushInitReq {
     private Integer dstPort;
 
     /**
-     * 传输模式
+     * 传输模式 0:udp 1:tcp
      */
     @NotNull(message = "传输模式不能为空")
     @Range(min= 0, max = 2, message = "非法传输模式")

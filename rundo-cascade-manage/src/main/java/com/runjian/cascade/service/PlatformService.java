@@ -1,6 +1,5 @@
 package com.runjian.cascade.service;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.runjian.cascade.vo.response.GetPlatformPageRsp;
 
