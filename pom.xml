@@ -25,6 +25,7 @@
         <module>rundo-timer-utils</module>
         <module>rundo-alarm-manage</module>
         <module>rundo-gb28181-cascade</module>
+        <module>rundo-cascade-manage</module>
     </modules>
     <properties>
         <!--项目基础信息-->

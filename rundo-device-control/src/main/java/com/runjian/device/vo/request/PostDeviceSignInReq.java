@@ -45,8 +45,18 @@ public class PostDeviceSignInReq {
     /**
      * 设备类型 1-设备 2-NVR 3-DVR 4-CVR 5-未知
      */
-    @Range(min = 1, max = 5, message = "非法设备类型")
+    @Range(min = 1, max = 6, message = "非法设备类型")
     private Integer deviceType;
+
+    /**
+     * 流类型 {@link com.runjian.device.constant.StreamType}
+     */
+    private Integer streamType;
+
+    /**
+     * 是否订阅下级
+     */
+    private Integer isSubscribe;
 
     /**
      * ip地址

@@ -24,9 +24,9 @@ import java.util.Objects;
 @Service
 public class DhDeviceNetSdkSouthProtocol extends AbstractSouthProtocol {
 
-    private final static String DEVICE_ID = "id";
+    private final static String DEVICE_ID = "deviceId";
 
-    private final static String CHANNEL_ID = "id";
+    private final static String CHANNEL_ID = "channelId";
 
     private final static String DEVICE_ONLINE_STATE = "online";
 
@@ -63,6 +63,21 @@ public class DhDeviceNetSdkSouthProtocol extends AbstractSouthProtocol {
     @Override
     protected JSONObject channelSyncConvert(JSONObject jsonObject) {
         return convertChannelName(convertChannelOnline(convertChannelId(jsonObject)));
+    }
+
+    @Override
+    protected JSONObject deviceNodeSyncConvert(JSONObject jsonObject) {
+        return jsonObject;
+    }
+
+    @Override
+    protected JSONObject deviceNodeSubscribeConvert(JSONObject jsonObject) {
+        return jsonObject;
+    }
+
+    @Override
+    protected JSONObject deviceChannelSubscribeConvert(JSONObject jsonObject) {
+        return jsonObject;
     }
 
     private JSONObject convertChannelOnline(JSONObject jsonObject){

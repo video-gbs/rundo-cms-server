@@ -11,9 +11,11 @@ import com.runjian.common.constant.*;
 import com.runjian.device.constant.Constant;
 import com.runjian.device.constant.DetailType;
 import com.runjian.common.constant.SignState;
+import com.runjian.device.constant.DeviceType;
 import com.runjian.device.constant.SubMsgType;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
+import com.runjian.device.dao.NodeMapper;
 import com.runjian.device.entity.DeviceInfo;
 import com.runjian.device.entity.GatewayInfo;
 import com.runjian.device.feign.ParsingEngineApi;
@@ -25,6 +27,7 @@ import com.runjian.device.service.north.DeviceNorthService;
 import com.runjian.device.vo.feign.DeviceControlReq;
 import com.runjian.device.vo.response.DeviceSyncRsp;
 import com.runjian.device.vo.response.GetDevicePageRsp;
+import com.runjian.device.vo.response.GetNodeRsp;
 import com.runjian.device.vo.response.PostDeviceAddRsp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,14 +61,58 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
 
     private final MessageBaseService messageBaseService;
 
+    private final NodeMapper nodeMapper;
+
+    /**
+     * 分页获取设备
+     * @param page
+     * @param num
+     * @param signState
+     * @param deviceName
+     * @param ip
+     * @return
+     */
     @Override
     public PageInfo<GetDevicePageRsp> getDeviceByPage(int page, int num, Integer signState, String deviceName, String ip) {
         if (Objects.nonNull(signState) && signState.equals(SignState.SUCCESS.getCode())){
             throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, "注册状态不能为已成功");
         }
         PageHelper.startPage(page, num);
-        List<GetDevicePageRsp> devicePageRsps = deviceMapper.selectByPage(signState, deviceName, ip);
-        return new PageInfo<>(devicePageRsps);
+        return new PageInfo<>(deviceMapper.selectByPage(signState, deviceName, ip));
+    }
+
+    /**
+     * 分页获取下级平台
+     * @param page
+     * @param num
+     * @param deviceName
+     * @param ip
+     * @return
+     */
+    @Override
+    public PageInfo<GetDevicePageRsp> getPlatformByPage(int page, int num, String deviceName, String ip) {
+        PageHelper.startPage(page, num);
+        return new PageInfo<>(deviceMapper.selectPlatformByPage(deviceName, ip));
+    }
+
+    /**
+     * 获取设备全部节点数据
+     * @param deviceId 设备id
+     * @return
+     */
+    @Override
+    public List<GetNodeRsp> getNodeRsp(Long deviceId) {
+        return nodeMapper.selectAllByDeviceId(deviceId);
+    }
+
+    /**
+     * 根据设备id获取设备信息
+     * @param deviceId 设备id
+     * @return
+     */
+    @Override
+    public GetDevicePageRsp getDeviceByDeviceId(Long deviceId) {
+        return deviceMapper.selectDetailById(deviceId);
     }
 
     /**
@@ -100,7 +147,6 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
         // 获取id
-        log.warn("新增数据id:" + response.getData());
         Long id = Long.valueOf(response.getData().toString());
         //判断数据是否存在，存在直接修改注册状态为已添加
         Optional<DeviceInfo> deviceInfoOp = deviceMapper.selectById(id);
@@ -247,5 +293,32 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "设备硬删除失败", response.getData(), response.getMsg());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
+    }
+
+    @Override
+    public void deviceSubscribe(Long deviceId, Integer isSubscribe) {
+        DeviceInfo deviceInfo = dataBaseService.getDeviceInfo(deviceId);
+        // 判断设备是否处于删除状态
+        if (!deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("当前设备处于%s,无法进行订阅", SignState.getSignState(deviceInfo.getSignState()).getMsg()));
+        }
+        // 检测是否为下级平台
+        if (!Objects.equals(deviceInfo.getDeviceType(),DeviceType.PLATFORM.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_BIND_EXCEPTION_ERROR, String.format("当前设备类型非平台设备，无法进行订阅"));
+        }
+        GatewayInfo gatewayInfo = dataBaseService.getGatewayInfo(deviceInfo.getGatewayId());
+        if (gatewayInfo.getOnlineState().equals(CommonEnum.DISABLE.getCode())){
+            throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
+        }
+        DeviceControlReq deviceControlReq = new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.DEVICE_PLATFORM_SUBSCRIBE, 15000L);
+        deviceControlReq.putData(StandardName.DEVICE_PLATFORM_IS_SUBSCRIBE, isSubscribe);
+        CommonResponse<?> response = parsingEngineApi.customEvent(deviceControlReq);
+        if (response.isError()){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "设备北向服务", "下级平台目录订阅失败", response.getData(), response.getMsg());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, String.format("%s:%s", response.getMsg(), response.getData()));
+        }
+        deviceInfo.setIsSubscribe(isSubscribe);
+        deviceInfo.setUpdateTime(LocalDateTime.now());
+        deviceMapper.updateSubscribe(deviceInfo);
     }
 }

@@ -27,4 +27,14 @@ public enum SignState {
     private final Integer code;
 
     private final String msg;
+
+
+    public static SignState getSignState(Integer code) {
+        for (SignState state : SignState.values()) {
+            if (state.code.equals(code)) {
+                return state;
+            }
+        }
+        return null;
+    }
 }

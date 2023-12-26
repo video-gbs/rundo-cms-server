@@ -35,6 +35,21 @@ public class DefaultSouthProtocol extends AbstractSouthProtocol {
     }
 
     @Override
+    protected JSONObject deviceNodeSyncConvert(JSONObject jsonObject) {
+        return jsonObject;
+    }
+
+    @Override
+    protected JSONObject deviceNodeSubscribeConvert(JSONObject jsonObject) {
+        return jsonObject;
+    }
+
+    @Override
+    protected JSONObject deviceChannelSubscribeConvert(JSONObject jsonObject) {
+        return jsonObject;
+    }
+
+    @Override
     protected JSONObject deviceSignInConvert(JSONObject jsonObject) {
         return jsonObject;
     }

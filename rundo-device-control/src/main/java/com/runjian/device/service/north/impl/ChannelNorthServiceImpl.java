@@ -15,10 +15,8 @@ import com.runjian.device.constant.SubMsgType;
 import com.runjian.device.dao.ChannelMapper;
 import com.runjian.device.dao.DetailMapper;
 import com.runjian.device.dao.DeviceMapper;
-import com.runjian.device.entity.ChannelInfo;
-import com.runjian.device.entity.DetailInfo;
-import com.runjian.device.entity.DeviceInfo;
-import com.runjian.device.entity.GatewayInfo;
+import com.runjian.device.dao.NodeMapper;
+import com.runjian.device.entity.*;
 import com.runjian.device.feign.ParsingEngineApi;
 import com.runjian.device.service.common.DataBaseService;
 import com.runjian.device.service.common.MessageBaseService;
@@ -57,6 +55,8 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
 
     private final MessageBaseService messageBaseService;
 
+    private final NodeMapper nodeMapper;
+
 
     @Override
     public PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String name) {
@@ -67,6 +67,40 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         PageHelper.startPage(page, num);
         return new PageInfo<>(channelMapper.selectByPage(deviceIds, name));
     }
+
+    @Override
+    public PageInfo<GetChannelByPageRsp> getPlatformChannelByPage(int page, int num, Long nodeId, Integer isIncludeChild, String originId, String ip, Integer onlineState, Integer signState) {
+        Optional<NodeInfo> nodeInfoOp = nodeMapper.selectById(nodeId);
+        if (nodeInfoOp.isEmpty()){
+            return new PageInfo<>();
+        }
+        NodeInfo nodeInfo = nodeInfoOp.get();
+        if (Objects.equals(CommonEnum.DISABLE.getCode(), isIncludeChild)){
+            PageHelper.startPage(page, num);
+            return new PageInfo<>(channelMapper.selectPlatformChannelByPage(nodeInfo.getOriginId(), originId, ip, onlineState, signState));
+        }
+        List<NodeInfo> nodeInfoList = nodeMapper.selectByDeviceId(nodeInfo.getDeviceId());
+        Set<String> childNodeOriginIds = getChildNodeOriginId(nodeInfoList, Set.of(nodeInfo.getOriginId()));
+        PageHelper.startPage(page, num);
+        return new PageInfo<>(channelMapper.selectByNodeOriginIdsAndPage(childNodeOriginIds, originId, ip, onlineState, signState));
+    }
+
+    private Set<String> getChildNodeOriginId(List<NodeInfo> nodeInfoList, Set<String> parentOriginIds){
+        Set<String> childOriginIds = new HashSet<>();
+        List<NodeInfo> newNodeInfoList = nodeInfoList.stream().filter(nodeInfo -> {
+            if (parentOriginIds.contains(nodeInfo.getParentId())) {
+                childOriginIds.add(nodeInfo.getOriginId());
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+        if (childOriginIds.isEmpty()){
+            return new HashSet<>();
+        }
+        childOriginIds.addAll(getChildNodeOriginId(newNodeInfoList, childOriginIds));
+        return childOriginIds;
+    }
+
 
     /**
      * 通道同步
@@ -83,9 +117,10 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
         if (!deviceInfo.getSignState().equals(SignState.SUCCESS.getCode())) {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, String.format("设备%s是未注册成功的设备，不允许操作", deviceId));
         }
+        log.warn(LogTemplate.PROCESS_LOG_MSG_TEMPLATE, "通道北向服务", "下发通道同步指令", deviceId);
         CommonResponse<?> response = parsingEngineApi.customEvent(new DeviceControlReq(deviceId, IdType.DEVICE, MsgType.CHANNEL_SYNC, 15000L));
         if (response.isError()) {
-            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getData(), response.getMsg());
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "通道北向服务", "通道同步失败", response.getMsg(), response.getData());
             throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, response.getMsg());
         }
         ChannelSyncRsp channelSyncRsp = JSONObject.parseObject(JSONObject.toJSONString(response.getData()), ChannelSyncRsp.class);
@@ -116,6 +151,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
                     channelInfo.setChannelType(rsp.getChannelType());
                     channelInfo.setSignState(SignState.TO_BE_ADD.getCode());
                     channelInfo.setDeviceId(deviceId);
+                    channelInfo.setNodeOriginId(rsp.getNodeOriginId());
                     channelInfo.setCreateTime(nowTime);
                     channelInfo.setUpdateTime(nowTime);
                     channelInfo.setOnlineState(CommonEnum.DISABLE.getCode());
@@ -158,7 +194,7 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             if (!channelSaveList.isEmpty())
                 channelMapper.batchSave(channelSaveList);
             if (!channelUpdateList.isEmpty())
-                channelMapper.batchUpdateOnlineState(channelUpdateList);
+                channelMapper.batchUpdate(channelUpdateList);
             if (!detailSaveList.isEmpty())
                 detailMapper.batchSave(detailSaveList);
             if (!detailUpdateList.isEmpty())
@@ -437,6 +473,16 @@ public class ChannelNorthServiceImpl implements ChannelNorthService {
             }
         }
         return failureChannelSet;
+    }
+
+    @Override
+    public List<GetChannelByPageRsp> getDeviceAllChannel(Long deviceId) {
+        return channelMapper.selectDetailByDeviceId(deviceId);
+    }
+
+    @Override
+    public List<GetChannelByPageRsp> getChannelByIds(Set<Long> channelIds) {
+        return channelMapper.selectByChannelIds(channelIds);
     }
 
 }

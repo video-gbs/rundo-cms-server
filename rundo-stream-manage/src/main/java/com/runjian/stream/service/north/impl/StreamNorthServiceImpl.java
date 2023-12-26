@@ -11,6 +11,7 @@ import com.runjian.stream.dao.StreamMapper;
 import com.runjian.stream.entity.DispatchInfo;
 import com.runjian.stream.entity.GatewayDispatchInfo;
 import com.runjian.stream.entity.StreamInfo;
+import com.runjian.stream.entity.StreamPushInfo;
 import com.runjian.stream.feign.DeviceControlApi;
 import com.runjian.stream.feign.ParsingEngineApi;
 import com.runjian.stream.service.common.DataBaseService;
@@ -104,7 +105,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
                     startRecord(streamId);
                 }
             }
-        }finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -112,6 +113,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
     /**
      * 获取网关与流媒体关系信息
      * @param channelId
+     *
      * @return
      */
     private StreamManageDto getStreamManageDto(Long channelId, MsgType msgType, String streamId, Integer playType, Integer streamMode, Boolean enableAudio, Boolean ssrcCheck, Integer recordState, Integer autoCloseState, Integer bitStreamId){
@@ -172,6 +174,35 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         }
         streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
         return JSONObject.parseObject(JSONObject.toJSONString(commonResponse.getData()), PostVideoPlayRsp.class);
+    }
+
+
+
+    @Override
+    public String streamPushPlay(Long channelId, String ssrc, String dstUrl, Integer dstPort, Integer srcPort, Integer transferMode, LocalDateTime startTime, LocalDateTime endTime) {
+        String streamId = PlayType.LIVE.getMsg() + MarkConstant.MARK_SPLIT_SYMBOL + channelId;
+        StreamManageDto streamManageDto;
+        if (Objects.isNull(startTime)){
+            streamManageDto = getStreamManageDto(channelId, MsgType.STREAM_LIVE_PUSH, streamId, PlayType.LIVE.getCode(), transferMode, Boolean.TRUE, Boolean.TRUE, CommonEnum.DISABLE.getCode(), CommonEnum.ENABLE.getCode(), null);
+        } else {
+            streamManageDto = getStreamManageDto(channelId, MsgType.STREAM_RECORD_PUSH, streamId, PlayType.RECORD.getCode(), transferMode, Boolean.TRUE, Boolean.TRUE, CommonEnum.DISABLE.getCode(), CommonEnum.ENABLE.getCode(), null);
+            streamManageDto.put(StandardName.COM_START_TIME, DateUtils.DATE_TIME_FORMATTER.format(startTime));
+            streamManageDto.put(StandardName.COM_END_TIME, DateUtils.DATE_TIME_FORMATTER.format(endTime));
+        }
+        streamManageDto.put(StandardName.STREAM_PUSH_SSRC, ssrc);
+        streamManageDto.put(StandardName.STREAM_PUSH_DST_URL, dstUrl);
+        streamManageDto.put(StandardName.STREAM_PUSH_DST_PORT, dstPort);
+        streamManageDto.put(StandardName.STREAM_PUSH_SRC_PORT, srcPort);
+        streamManageDto.put(StandardName.STREAM_PUSH_TRANSFER_MODE, transferMode);
+        CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
+        if (commonResponse.isError()){
+            streamMapper.deleteByStreamId(streamId);
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向接口服务", "流推送失败", commonResponse.getMsg(), commonResponse.getData());
+            throw new BusinessException(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR, commonResponse.getMsg());
+        }
+        streamMapper.updateStreamStateByStreamId(streamId, CommonEnum.ENABLE.getCode(), LocalDateTime.now());
+        return streamId;
+
     }
 
     @Override
@@ -261,10 +292,7 @@ public class StreamNorthServiceImpl implements StreamNorthService {
             return;
         }
         StreamInfo streamInfo = streamInfoOP.get();
-        streamInfo.setAutoCloseState(CommonEnum.ENABLE.getCode());
-        streamInfo.setRecordState(CommonEnum.DISABLE.getCode());
-        streamInfo.setUpdateTime(LocalDateTime.now());
-        streamMapper.updateRecordAndAutoCloseState(streamInfo);
+
         CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_PLAY_STOP, 15000L));
         if (commonResponse.isError()){
             log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向服务", "流媒体交互失败", streamId, commonResponse.getMsg());
@@ -273,8 +301,31 @@ public class StreamNorthServiceImpl implements StreamNorthService {
         }
         if ((Boolean) commonResponse.getData()){
             streamMapper.deleteByStreamId(streamId);
+        } else {
+            streamInfo.setAutoCloseState(CommonEnum.ENABLE.getCode());
+            streamInfo.setRecordState(CommonEnum.DISABLE.getCode());
+            streamInfo.setUpdateTime(LocalDateTime.now());
+            streamMapper.updateRecordAndAutoCloseState(streamInfo);
         }
     }
+
+    @Override
+    public boolean stopPush(String streamId, String ssrc) {
+        Optional<StreamInfo> streamInfoOP = streamMapper.selectByStreamId(streamId);
+        if (streamInfoOP.isEmpty()){
+            return true;
+        }
+        StreamInfo streamInfo = streamInfoOP.get();
+        StreamManageDto streamManageDto = new StreamManageDto(streamInfo.getDispatchId(), streamId, MsgType.STREAM_PUSH_STOP, 15000L);
+        streamManageDto.put(StandardName.STREAM_PUSH_SSRC, ssrc);
+        CommonResponse<?> commonResponse = parsingEngineApi.streamCustomEvent(streamManageDto);
+        if (commonResponse.isError()){
+            log.error(LogTemplate.ERROR_LOG_MSG_TEMPLATE, "流北向服务", "流媒体推送关闭失败", streamId, commonResponse.getMsg());
+            return false;
+        }
+        return true;
+    }
+
 
     @Override
     public Boolean startRecord(String streamId) {

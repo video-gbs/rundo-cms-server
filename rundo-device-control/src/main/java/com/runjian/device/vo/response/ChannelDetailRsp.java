@@ -21,6 +21,11 @@ public class ChannelDetailRsp {
     private String originId;
 
     /**
+     * 节点原始id
+     */
+    private String nodeOriginId;
+
+    /**
      * 通道类型
      */
     private Integer channelType;

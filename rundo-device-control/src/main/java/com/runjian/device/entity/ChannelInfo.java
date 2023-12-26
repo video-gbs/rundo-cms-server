@@ -22,6 +22,11 @@ public class ChannelInfo {
     private Long deviceId;
 
     /**
+     * 节点原始id
+     */
+    private String nodeOriginId;
+
+    /**
      * 注册状态 0-已注册 1-待注册 2-待添加 {@link SignState}
      */
     private Integer signState;

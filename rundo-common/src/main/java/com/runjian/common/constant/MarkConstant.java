@@ -37,7 +37,7 @@ public class MarkConstant {
 
     public static final String REDIS_DEVICE_BATCH_SIGN_IN_LOCK = "DEVICE_BATCH_SIGN_IN_LOCK:";
 
-    public static final String REDIS_CHANNEL_SYNC_LOCK = "CHANNEL_SYNC_LOCK:";
+    public static final String REDIS_CHANNEL_ADD_LOCK = "CHANNEL_SYNC_LOCK:";
 
 
 
@@ -67,4 +67,8 @@ public class MarkConstant {
     public static final String REDIS_STREAM_REQUEST_MERGE_LIST = "MQ_STREAM_REQUEST_MERGE_LIST:";
     public static final String REDIS_STREAM_REQUEST_MERGE_LOCK = "MQ_STREAM_REQUEST_MERGE_LOCK:";
 
+    public static final String REDIS_STREAM_PUSH_STATE_CHECK_LOCK = "STREAM_PUSH_STATE_CHECK_LOCK:";
+    public static final String REDIS_STREAM_PUSH_SRC_PORT_QUEUE = "STREAM_PUSH_SRC_PORT_QUEUE";
+    public static final String REDIS_STREAM_PUSH_SRC_PORT_LOCK = "STREAM_PUSH_SRC_PORT_LOCK:";
+    public static final String REDIS_STREAM_PUSH_SRC_PORT_SET = "STREAM_PUSH_SRC_PORT_SET";
 }

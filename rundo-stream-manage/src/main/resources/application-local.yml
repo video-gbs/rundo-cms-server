@@ -150,3 +150,7 @@ resilience4j:
         waitDurationInOpenState: 1s #从OPEN到HALF_OPEN状态需要等待的时间
         recordExceptions: #异常名单
           - java.lang.Exception
+
+stream:
+  push:
+    src-port-range: 22000-22200
