@@ -71,7 +71,7 @@ public class PlatformCommandServiceImpl implements IPlatformCommandService {
 
 
     @Override
-    public void unRegister(OtherPlatform otherPlatform) {
+    public Boolean unRegister(OtherPlatform otherPlatform) {
         ParentPlatform parentPlatform = convertPlatformSip(otherPlatform);
 
         try {

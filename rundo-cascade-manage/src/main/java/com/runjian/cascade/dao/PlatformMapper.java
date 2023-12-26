@@ -4,7 +4,9 @@ import com.runjian.cascade.entity.PlatformInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author Miracle
@@ -24,4 +26,8 @@ public interface PlatformMapper {
     Optional<PlatformInfo> selectById(Long platformId);
 
     void update(PlatformInfo platformInfo);
+
+    List<PlatformInfo> selectAllByIds(Set<Long> platformIds);
+
+    void batchDelete(List<Long> ids);
 }

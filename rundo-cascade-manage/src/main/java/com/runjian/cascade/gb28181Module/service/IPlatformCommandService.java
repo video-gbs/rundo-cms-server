@@ -21,5 +21,5 @@ public interface  IPlatformCommandService{
      * 注册
      * @param otherPlatform
      */
-    void  unRegister(OtherPlatform otherPlatform);
+    Boolean  unRegister(OtherPlatform otherPlatform);
 }

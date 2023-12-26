@@ -37,6 +37,12 @@ public class PlatformInfo {
     private String gbCode;
 
     /**
+     * 传输协议
+     * 0:UDP 1:TCP
+     */
+    private Integer sipTransport;
+
+    /**
      * 上下线状态
      */
     private Integer onlineState;
@@ -59,4 +65,5 @@ public class PlatformInfo {
     private LocalDateTime createTime;
 
     private LocalDateTime updateTime;
+
 }

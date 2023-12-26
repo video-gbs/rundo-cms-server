@@ -12,7 +12,7 @@ import lombok.Getter;
 public enum PlatformSignState {
 
     DELETE(-1),
-    LOGOUT(0),
+    SIGN_OUT(0),
     SIGN_IN(1);
 
     private final int code;
