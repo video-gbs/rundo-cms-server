@@ -117,6 +117,16 @@ public class ChannelPresetServiceImpl extends ServiceImpl<ChannelPresetMapper, C
 
         }else {
             //进行预置位对应位置编辑
+            //
+            FeignPtzControlReq feignPtzControlReq = new FeignPtzControlReq();
+            feignPtzControlReq.setChannelId(channelPresetEditReq.getChannelExpansionId());
+            feignPtzControlReq.setCmdCode(PtzType.PRESET_SET.getCode());
+            feignPtzControlReq.setCmdValue(channelPresetEditReq.getPresetId());
+            //调用feign 进行预置位设置
+            CommonResponse<?> commonResponse = deviceControlApi.ptzControl(feignPtzControlReq);
+            if(commonResponse.getCode() != BusinessErrorEnums.SUCCESS.getErrCode()){
+                throw new BusinessException(BusinessErrorEnums.INTERFACE_INNER_INVOKE_ERROR,commonResponse.getMsg());
+            }
 
             //数据存在进行修改数据库，修改对应通道的中文
             LambdaQueryWrapper<ChannelPresetLists> editQueryWrapper = new LambdaQueryWrapper<>();
