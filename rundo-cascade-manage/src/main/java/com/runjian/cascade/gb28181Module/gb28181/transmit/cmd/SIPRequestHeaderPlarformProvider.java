@@ -51,7 +51,7 @@ public class SIPRequestHeaderPlarformProvider {
 		//via
 		ArrayList<ViaHeader> viaHeaders = new ArrayList<ViaHeader>();
 		ViaHeader viaHeader = SipFactory.getInstance().createHeaderFactory().createViaHeader(platform.getDeviceIp(),
-				Integer.parseInt(platform.getDevicePort()), platform.getTransport(), SipUtils.getNewViaTag());
+				platform.getDevicePort(), platform.getTransport(), SipUtils.getNewViaTag());
 		viaHeader.setRPort();
 		viaHeaders.add(viaHeader);
 		//from
@@ -177,7 +177,7 @@ public class SIPRequestHeaderPlarformProvider {
 		SipURI requestURI = sipFactory.createAddressFactory().createSipURI(parentPlatform.getServerGbId(), serverAddress);
 		// via
 		ArrayList<ViaHeader> viaHeaders = new ArrayList<ViaHeader>();
-		ViaHeader viaHeader = sipFactory.createHeaderFactory().createViaHeader(parentPlatform.getDeviceIp(), Integer.parseInt(parentPlatform.getDevicePort()),
+		ViaHeader viaHeader = sipFactory.createHeaderFactory().createViaHeader(parentPlatform.getDeviceIp(), parentPlatform.getDevicePort(),
 				parentPlatform.getTransport(), viaTag);
 		viaHeader.setRPort();
 		viaHeaders.add(viaHeader);
@@ -214,7 +214,7 @@ public class SIPRequestHeaderPlarformProvider {
 		SipURI requestURI = sipFactory.createAddressFactory().createSipURI(parentPlatform.getServerGbId(), parentPlatform.getServerIp()+ ":" + parentPlatform.getServerPort());
 		// via
 		ArrayList<ViaHeader> viaHeaders = new ArrayList<>();
-		ViaHeader viaHeader = sipFactory.createHeaderFactory().createViaHeader(parentPlatform.getDeviceIp(), Integer.parseInt(parentPlatform.getDevicePort()),
+		ViaHeader viaHeader = sipFactory.createHeaderFactory().createViaHeader(parentPlatform.getDeviceIp(), parentPlatform.getDevicePort(),
 				parentPlatform.getTransport(), SipUtils.getNewViaTag());
 		viaHeader.setRPort();
 		viaHeaders.add(viaHeader);
@@ -274,7 +274,7 @@ public class SIPRequestHeaderPlarformProvider {
 		SipURI requestURI = sipFactory.createAddressFactory().createSipURI(platform.getServerGbId(), platform.getServerIp()+ ":" + platform.getServerPort());
 		// via
 		ArrayList<ViaHeader> viaHeaders = new ArrayList<>();
-		ViaHeader viaHeader = sipFactory.createHeaderFactory().createViaHeader(platform.getDeviceIp(), Integer.parseInt(platform.getDevicePort()),
+		ViaHeader viaHeader = sipFactory.createHeaderFactory().createViaHeader(platform.getDeviceIp(), platform.getDevicePort(),
 				platform.getTransport(), SipUtils.getNewViaTag());
 		viaHeader.setRPort();
 		viaHeaders.add(viaHeader);

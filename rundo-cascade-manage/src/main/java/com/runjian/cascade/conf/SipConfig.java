@@ -1,6 +1,7 @@
 package com.runjian.cascade.conf;
 
 
+import com.runjian.cascade.gb28181Module.gb28181.bean.ParentPlatform;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -42,4 +43,14 @@ public class SipConfig {
 	private String characterSet;
 
 	Integer expires = 300;
+
+	public void completePlatfrom(ParentPlatform parentPlatform){
+		parentPlatform.setCharacterSet(characterSet);
+		parentPlatform.setExpires(expires);
+		parentPlatform.setDeviceGbId(id);
+		parentPlatform.setDeviceIp(ip);
+		parentPlatform.setDevicePort(port);
+
+	}
+
 }

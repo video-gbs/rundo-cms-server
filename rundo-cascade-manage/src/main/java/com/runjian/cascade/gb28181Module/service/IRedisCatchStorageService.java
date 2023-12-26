@@ -2,6 +2,7 @@ package com.runjian.cascade.gb28181Module.service;
 
 
 import com.runjian.cascade.gb28181Module.gb28181.bean.PlatformRegisterInfo;
+import com.runjian.cascade.gb28181Module.gb28181.bean.SipTransactionInfo;
 
 /**
  * @author chenjialing
@@ -34,5 +35,11 @@ public interface IRedisCatchStorageService {
      * @param callId
      */
     void delPlatformRegisterInfo(String callId);
+
+    void updatePlatformRegisterSip(String platformGbId, SipTransactionInfo sipTransactionInfo);
+
+    SipTransactionInfo queryPlatformRegisterSip(String platformGbId);
+
+    void delPlatformRegisterSip(String platformGbId);
 
 }

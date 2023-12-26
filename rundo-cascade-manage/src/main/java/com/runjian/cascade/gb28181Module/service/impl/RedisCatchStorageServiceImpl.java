@@ -3,6 +3,7 @@ package com.runjian.cascade.gb28181Module.service.impl;
 
 import com.runjian.cascade.gb28181Module.common.constant.SipBusinessConstants;
 import com.runjian.cascade.gb28181Module.gb28181.bean.PlatformRegisterInfo;
+import com.runjian.cascade.gb28181Module.gb28181.bean.SipTransactionInfo;
 import com.runjian.cascade.gb28181Module.service.IRedisCatchStorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +52,21 @@ public class RedisCatchStorageServiceImpl implements IRedisCatchStorageService {
     @Override
     public void delPlatformRegisterInfo(String callId) {
         redisTemplate.delete(SipBusinessConstants.PLATFORM_REGISTER_INFO_PREFIX  + ":" + callId);
+    }
+
+    @Override
+    public void updatePlatformRegisterSip(String platformGbId, SipTransactionInfo sipTransactionInfo) {
+        String key = SipBusinessConstants.PLATFORM_REGISTER_SIP_PREFIX   + "_" +  platformGbId;
+        redisTemplate.opsForValue().set(key, sipTransactionInfo);
+    }
+
+    @Override
+    public SipTransactionInfo queryPlatformRegisterSip(String platformGbId) {
+        return (SipTransactionInfo)redisTemplate.opsForValue().get(SipBusinessConstants.PLATFORM_REGISTER_SIP_PREFIX  + "_" + platformGbId);
+    }
+
+    @Override
+    public void delPlatformRegisterSip(String platformGbId) {
+        redisTemplate.delete(SipBusinessConstants.PLATFORM_REGISTER_SIP_PREFIX  + "_" + platformGbId);
     }
 }

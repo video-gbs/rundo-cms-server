@@ -15,11 +15,11 @@ public interface  IPlatformCommandService{
      * 注册
      * @param otherPlatform
      */
-    Boolean  register(OtherPlatform otherPlatform) throws InterruptedException;
+    Boolean  register(OtherPlatform otherPlatform);
 
     /**
      * 注册
      * @param otherPlatform
      */
-    void  unRegister(OtherPlatform otherPlatform);
+    Boolean  unRegister(OtherPlatform otherPlatform);
 }

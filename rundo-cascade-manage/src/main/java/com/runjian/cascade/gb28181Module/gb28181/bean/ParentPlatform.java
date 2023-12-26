@@ -10,16 +10,6 @@ import lombok.Data;
 public class ParentPlatform {
 
     /**
-     * id
-     */
-    private Integer id;
-
-    /**
-     * 是否启用
-     */
-    private boolean enable;
-
-    /**
      * 名称
      */
     private String name;
@@ -57,7 +47,7 @@ public class ParentPlatform {
     /**
      * 设备端口
      */
-    private String devicePort;
+    private Integer devicePort;
 
     /**
      * SIP认证用户名(默认使用设备国标编号)
@@ -79,7 +69,7 @@ public class ParentPlatform {
      * 传输协议
      * UDP/TCP
      */
-    private String transport;
+    private String transport = "UDP";
 
     /**
      * 字符集

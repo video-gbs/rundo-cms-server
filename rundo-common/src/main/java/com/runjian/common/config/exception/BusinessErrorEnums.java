@@ -115,7 +115,7 @@ public enum BusinessErrorEnums {
 
 
     CASCADE_REGISTER_ERROR(400, 30013, "级联服务，注册异常"),
-    CASCADE_UNREGISTER_ERROR(400, 30014, "级联服务，注册异常"),
+    CASCADE_UNREGISTER_ERROR(400, 30014, "级联服务，注销异常"),
 
 
 
