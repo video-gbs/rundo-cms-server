@@ -52,15 +52,5 @@ public interface PlatformService {
      */
     void batchDeletePlatform(Set<Long> platformIds);
 
-    /**
-     * 注册平台
-     * @param platformId 平台id
-     */
-    void signInPlatform(Long platformId);
 
-    /**
-     * 登出平台
-     * @param platformId 平台id
-     */
-    void logoutPlatform(Long platformId);
 }
