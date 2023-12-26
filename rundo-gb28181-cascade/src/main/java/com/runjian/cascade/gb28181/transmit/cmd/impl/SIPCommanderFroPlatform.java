@@ -54,6 +54,8 @@ public class SIPCommanderFroPlatform implements ISIPCommanderForPlatform {
     @Autowired
     private SIPSender sipSender;
 
+    @Autowired
+    private SipSubscribe sipSubscribe;
     @Override
     public void register(ParentPlatform parentPlatform, SipSubscribe.Event errorEvent, SipSubscribe.Event okEvent) throws InvalidArgumentException, ParseException, SipException {
         register(parentPlatform, null, null, errorEvent, okEvent, true);
@@ -87,7 +89,23 @@ public class SIPCommanderFroPlatform implements ISIPCommanderForPlatform {
                     redisCatchStorage.getCSEQ(), fromTag,
                     toTag, callIdHeader, isRegister? parentPlatform.getExpires() : 0);
             // 将 callid 写入缓存， 等注册成功可以更新状态
+            // 将 callid 写入缓存， 等注册成功可以更新状态
             String callIdFromHeader = callIdHeader.getCallId();
+            redisCatchStorage.updatePlatformRegisterInfo(callIdFromHeader, PlatformRegisterInfo.getInstance(parentPlatform.getServerGbId(), isRegister));
+
+            sipSubscribe.addErrorSubscribe(callIdHeader.getCallId(), (event)->{
+                if (event != null) {
+                    logger.info("向上级平台 [ {} ] 注册发生错误： {} ",
+                            parentPlatform.getServerGbId(),
+                            event.msg);
+                }
+                redisCatchStorage.delPlatformRegisterInfo(callIdFromHeader);
+                if (errorEvent != null ) {
+                    errorEvent.response(event);
+                }
+            });
+
+
         }else {
             request = headerProviderPlatformProvider.createRegisterRequest(parentPlatform, fromTag, toTag, www, callIdHeader, isRegister? parentPlatform.getExpires() : 0);
         }

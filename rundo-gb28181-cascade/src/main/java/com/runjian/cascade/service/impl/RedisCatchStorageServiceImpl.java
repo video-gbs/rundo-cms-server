@@ -1,6 +1,8 @@
 package com.runjian.cascade.service.impl;
 
 
+import com.runjian.cascade.common.constant.SipBusinessConstants;
+import com.runjian.cascade.gb28181.bean.PlatformRegisterInfo;
 import com.runjian.cascade.service.IRedisCatchStorageService;
 import com.runjian.common.config.exception.BusinessErrorEnums;
 import com.runjian.common.constant.LogTemplate;
@@ -12,6 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
@@ -39,4 +42,20 @@ public class RedisCatchStorageServiceImpl implements IRedisCatchStorageService {
         return result;
     }
 
+    @Override
+    public void updatePlatformRegisterInfo(String callId, PlatformRegisterInfo platformRegisterInfo) {
+        String key = SipBusinessConstants.PLATFORM_REGISTER_INFO_PREFIX+":"+callId;
+        Duration duration = Duration.ofSeconds(30L);
+        redisTemplate.opsForValue().set(key, platformRegisterInfo, duration);
+    }
+
+    @Override
+    public PlatformRegisterInfo queryPlatformRegisterInfo(String callId) {
+        return (PlatformRegisterInfo)redisTemplate.opsForValue().get(SipBusinessConstants.PLATFORM_REGISTER_INFO_PREFIX  + ":" + callId);
+    }
+
+    @Override
+    public void delPlatformRegisterInfo(String callId) {
+        redisTemplate.delete(SipBusinessConstants.PLATFORM_REGISTER_INFO_PREFIX  + ":" + callId);
+    }
 }

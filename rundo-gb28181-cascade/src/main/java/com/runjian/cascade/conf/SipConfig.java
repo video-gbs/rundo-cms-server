@@ -36,7 +36,10 @@ public class SipConfig {
 	 */
 	private int subscribeCatalogCycle = 600;
 
+	/**
+	 *字符编码
+	 */
+	private String characterSet;
 
-
-
+	Integer expires = 300;
 }

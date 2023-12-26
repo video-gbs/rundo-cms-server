@@ -40,6 +40,11 @@ sip:
     register-time-interval: 60
     # [可选] 云台控制速度
     ptz-speed: 100
+    # 字符编码
+    characterSet: GB23132
+    # 注册过期时间 s
+    expires: 300
+
 
 # [可选] 日志配置, 一般不需要改
 logging:
