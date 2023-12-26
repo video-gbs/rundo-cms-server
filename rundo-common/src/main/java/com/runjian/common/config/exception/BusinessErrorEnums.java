@@ -114,6 +114,10 @@ public enum BusinessErrorEnums {
     PRESETID_NOT_FOUND(400, 30012, "通道预置位信息不存在，请先查询"),
 
 
+    CASCADE_REGISTER_ERROR(400, 30013, "级联服务，注册异常"),
+    CASCADE_UNREGISTER_ERROR(400, 30014, "级联服务，注册异常"),
+
+
 
     /****************************  数据错误：50001-599999 Start ****************************/
 
