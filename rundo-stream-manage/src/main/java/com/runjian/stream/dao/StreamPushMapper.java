@@ -16,7 +16,7 @@ import java.util.Optional;
 @Repository
 public interface StreamPushMapper {
 
-    String STREAM_PUSH_TABLE_NAME = "rundo_stream_mapper";
+    String STREAM_PUSH_TABLE_NAME = "rundo_stream_push";
 
     @Select(" SELECT * FROM " + STREAM_PUSH_TABLE_NAME +
             " WHERE state = #{state} ")
