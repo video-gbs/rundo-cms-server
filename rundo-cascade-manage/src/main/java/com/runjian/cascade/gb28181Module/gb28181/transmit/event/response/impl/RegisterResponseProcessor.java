@@ -106,27 +106,26 @@ public class RegisterResponseProcessor extends SIPResponseProcessorAbstract {
 
 			// 注册/注销成功移除缓存的信息
 			redisCatchStorage.delPlatformRegisterInfo(callId);
+			boolean register = platformRegisterInfo.isRegister();
+			String key = "";
+			if(register){
+				//注册
+				key = platformId+ SipBusinessConstants.PLATFORM_REGISTER_LOCK_PREFIX;
+				onLine(parentPlatform,response);
+
+
+			}else {
+				//注销
+				key = platformId+SipBusinessConstants.PLATFORM_UNREGISTER_LOCK_PREFIX;
+				offLine(parentPlatform);
+
+			}
+			CountDownLatch latch = locks.remove(key);
+			if (latch != null) {
+				latch.countDown();
+			}
 		}
-		boolean register = platformRegisterInfo.isRegister();
-		String key = "";
 
-
-		if(register){
-			//注册
-			key = platformId+ SipBusinessConstants.PLATFORM_REGISTER_LOCK_PREFIX;
-			onLine(parentPlatform,response);
-
-
-		}else {
-            //注销
-			key = platformId+SipBusinessConstants.PLATFORM_UNREGISTER_LOCK_PREFIX;
-			offLine(parentPlatform);
-
-		}
-		CountDownLatch latch = locks.remove(key);
-		if (latch != null) {
-			latch.countDown();
-		}
 
 
 	}
