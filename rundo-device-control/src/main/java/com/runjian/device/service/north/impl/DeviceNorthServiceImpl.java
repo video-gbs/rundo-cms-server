@@ -252,6 +252,7 @@ public class DeviceNorthServiceImpl implements DeviceNorthService {
             throw new BusinessException(BusinessErrorEnums.VALID_ILLEGAL_OPERATION, "网关离线，无法操作");
         }
         deviceInfo.setSignState(SignState.DELETED.getCode());
+        deviceInfo.setOnlineState(CommonEnum.DISABLE.getCode());
         deviceInfo.setUpdateTime(LocalDateTime.now());
         deviceMapper.update(deviceInfo);
         channelNorthService.channelDeleteByDeviceId(deviceInfo.getId(), false);

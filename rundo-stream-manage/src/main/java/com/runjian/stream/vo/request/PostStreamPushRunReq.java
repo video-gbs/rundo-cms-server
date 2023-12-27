@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 public class PostStreamPushRunReq {
 
     /**
-     * 推流信息
+     * 推流信息Id
      */
     @NotNull(message = "推流信息id不能为空")
     @Min(value = 1, message = "推流信息id不能小于1")

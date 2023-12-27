@@ -28,12 +28,4 @@ public interface PlatformCascadeService {
      */
     void platformDataUpdate();
 
-    /**
-     * 通道操作指令
-     * @param platformId
-     */
-
-    /**
-     * 点播录播调用
-     */
 }
