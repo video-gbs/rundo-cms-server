@@ -110,23 +110,17 @@ public class RegisterResponseProcessor extends SIPResponseProcessorAbstract {
 		boolean register = platformRegisterInfo.isRegister();
 		String key = "";
 
-		SipTransactionInfo sipTransactionInfo;
+
 		if(register){
 			//注册
 			key = platformId+ SipBusinessConstants.PLATFORM_REGISTER_LOCK_PREFIX;
-			sipTransactionInfo = new SipTransactionInfo(response);
-			//成功  启动定时注册周期  以及进行定时心跳发送
-			registerTask(parentPlatform,sipTransactionInfo);
-			keepaliveTask(parentPlatform);
-			redisCatchStorage.updatePlatformRegisterSip(parentPlatform.getServerGbId(),sipTransactionInfo);
+			onLine(parentPlatform,response);
 
 
 		}else {
             //注销
 			key = platformId+SipBusinessConstants.PLATFORM_UNREGISTER_LOCK_PREFIX;
-			keepaliveTaskCancle(parentPlatform);
-			registerTaskCancle(parentPlatform);
-			redisCatchStorage.delPlatformRegisterSip(parentPlatform.getServerGbId());
+			offLine(parentPlatform);
 
 		}
 		CountDownLatch latch = locks.remove(key);
@@ -183,7 +177,7 @@ public class RegisterResponseProcessor extends SIPResponseProcessorAbstract {
 								Integer errorCount = keepAliveCountMap.get(keepaliveTaskKey);
 								if(errorCount == 2){
 									// 设置平台离线，并重新注册
-									platformMapper.updateStatusByGbCode(parentPlatform.getServerGbId(),0);
+									offLine(parentPlatform);
 								}else {
 									keepAliveCountMap.put(keepaliveTaskKey,errorCount+1);
 								}
@@ -214,5 +208,19 @@ public class RegisterResponseProcessor extends SIPResponseProcessorAbstract {
 		dynamicTask.stop(keepaliveTaskKey);
 	}
 
+	private void offLine(ParentPlatform parentPlatform){
+		registerTaskCancle(parentPlatform);
+		keepaliveTaskCancle(parentPlatform);
+		platformMapper.updateStatusByGbCode(parentPlatform.getServerGbId(),0);
+	}
+
+	private void onLine(ParentPlatform parentPlatform,SIPResponse response){
+		SipTransactionInfo sipTransactionInfo = new SipTransactionInfo(response);
+		//成功  启动定时注册周期  以及进行定时心跳发送
+		registerTask(parentPlatform,sipTransactionInfo);
+		keepaliveTask(parentPlatform);
+		platformMapper.updateStatusByGbCode(parentPlatform.getServerGbId(),1);
+		redisCatchStorage.updatePlatformRegisterSip(parentPlatform.getServerGbId(),sipTransactionInfo);
+	}
 
 }
