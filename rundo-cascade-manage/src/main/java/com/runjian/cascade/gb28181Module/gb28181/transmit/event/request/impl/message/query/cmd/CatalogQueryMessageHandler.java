@@ -56,8 +56,11 @@ public class CatalogQueryMessageHandler extends SIPRequestProcessorParent implem
         }
         Element snElement = rootElement.element("SN");
         String sn = snElement.getText();
+
+        //查询全部的
+
         try {
-            //查找本级的目录信息
+            //查找本级的目录  以及通道
 
 
             cmderFroPlatform.catalogQuery(null, parentPlatform, sn, fromHeader.getTag(), 0);

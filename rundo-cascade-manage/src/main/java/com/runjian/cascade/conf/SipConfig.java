@@ -1,6 +1,10 @@
 package com.runjian.cascade.conf;
 
 
+import cn.hutool.core.bean.BeanUtil;
+import com.runjian.cascade.constant.SipTransportType;
+import com.runjian.cascade.entity.PlatformInfo;
+import com.runjian.cascade.gb28181Module.gb28181.bean.OtherPlatform;
 import com.runjian.cascade.gb28181Module.gb28181.bean.ParentPlatform;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -50,6 +54,16 @@ public class SipConfig {
 		parentPlatform.setDeviceGbId(id);
 		parentPlatform.setDeviceIp(ip);
 		parentPlatform.setDevicePort(port);
+
+	}
+
+	public ParentPlatform convertPlatformDbSip(PlatformInfo platformInfo){
+		ParentPlatform parentPlatform = new ParentPlatform();
+		parentPlatform.setName(platformInfo.getName());
+		parentPlatform.setServerGbId(platformInfo.getGbCode());
+		parentPlatform.setTransport(SipTransportType.getSipTransportMsg(platformInfo.getSipTransport()));
+		completePlatfrom(parentPlatform);
+		return parentPlatform;
 
 	}
 

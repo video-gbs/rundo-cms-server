@@ -22,4 +22,7 @@ public interface  IPlatformCommandService{
      * @param otherPlatform
      */
     Boolean  unRegister(OtherPlatform otherPlatform);
+
+
+
 }

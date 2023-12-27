@@ -1,6 +1,7 @@
 package com.runjian.cascade.gb28181Module.gb28181.transmit.event.response.impl;
 
 import com.runjian.cascade.conf.SipConfig;
+import com.runjian.cascade.constant.SipTransportType;
 import com.runjian.cascade.dao.PlatformMapper;
 import com.runjian.cascade.entity.PlatformInfo;
 import com.runjian.cascade.gb28181Module.common.constant.SipBusinessConstants;
@@ -89,10 +90,7 @@ public class RegisterResponseProcessor extends SIPResponseProcessorAbstract {
 			return;
 		}
 		ConcurrentHashMap<String, CountDownLatch> locks = IPlatformCommandService.locks;
-		ParentPlatform parentPlatform = new ParentPlatform();
-		parentPlatform.setName(platformInfo.getName());
-		parentPlatform.setServerGbId(platformInfo.getGbCode());
-		sipConfig.completePlatfrom(parentPlatform);
+		ParentPlatform parentPlatform = sipConfig.convertPlatformDbSip(platformInfo);
 
 		if (response.getStatusCode() == Response.UNAUTHORIZED) {
 			WWWAuthenticateHeader www = (WWWAuthenticateHeader)response.getHeader(WWWAuthenticateHeader.NAME);

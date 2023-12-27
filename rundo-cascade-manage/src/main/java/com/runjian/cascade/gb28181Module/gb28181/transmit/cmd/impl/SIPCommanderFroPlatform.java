@@ -190,134 +190,45 @@ public class SIPCommanderFroPlatform implements ISIPCommanderForPlatform {
                         catalogXml.append("</Item>\r\n");
                         continue;
                     }
-                    switch (Integer.parseInt(channel.getChannelId().substring(10, 13))){
-                        case 200:
-//                            catalogXml.append("<Manufacturer>三永华通</Manufacturer>\r\n");
-//                            GitUtil gitUtil = SpringBeanFactory.getBean("gitUtil");
-//                            String model = (gitUtil == null || gitUtil.getBuildVersion() == null)?"1.0": gitUtil.getBuildVersion();
-//                            catalogXml.append("<Model>" + model + "</Manufacturer>\r\n");
-//                            catalogXml.append("<Owner>三永华通</Owner>\r\n");
-                            if (channel.getCivilCode() != null) {
-                                catalogXml.append("<CivilCode>"+channel.getCivilCode()+"</CivilCode>\r\n");
-                            }else {
-                                catalogXml.append("<CivilCode></CivilCode>\r\n");
-                            }
-
-                            catalogXml.append("<RegisterWay>1</RegisterWay>\r\n");
-                            catalogXml.append("<Secrecy>0</Secrecy>\r\n");
-                            break;
-                        case 215:
-                            if (!ObjectUtils.isEmpty(channel.getParentId())) {
-                                catalogXml.append("<ParentID>" + channel.getParentId() + "</ParentID>\r\n");
-                            }
-
-                            break;
-                        case 216:
-                            if (!ObjectUtils.isEmpty(channel.getParentId())) {
-                                catalogXml.append("<ParentID>" + channel.getParentId() + "</ParentID>\r\n");
-                            }else {
-                                catalogXml.append("<ParentID></ParentID>\r\n");
-                            }
-                            if (!ObjectUtils.isEmpty(channel.getBusinessGroupId())) {
-                                catalogXml.append("<BusinessGroupID>" + channel.getBusinessGroupId() + "</BusinessGroupID>\r\n");
-                            }else {
-                                catalogXml.append("<BusinessGroupID></BusinessGroupID>\r\n");
-                            }
-                            break;
-                        default:
-                            // 通道项
-                            if (channel.getManufacturer() != null) {
-                                catalogXml.append("<Manufacturer>" + channel.getManufacturer() + "</Manufacturer>\r\n");
-                            }else {
-                                catalogXml.append("<Manufacturer></Manufacturer>\r\n");
-                            }
-                            if (channel.getSecrecy() != null) {
-                                catalogXml.append("<Secrecy>" + channel.getSecrecy() + "</Secrecy>\r\n");
-                            }else {
-                                catalogXml.append("<Secrecy></Secrecy>\r\n");
-                            }
-                            catalogXml.append("<RegisterWay>" + channel.getRegisterWay() + "</RegisterWay>\r\n");
-                            if (channel.getModel() != null) {
-                                catalogXml.append("<Model>" + channel.getModel() + "</Model>\r\n");
-                            }else {
-                                catalogXml.append("<Model></Model>\r\n");
-                            }
-                            if (channel.getOwner() != null) {
-                                catalogXml.append("<Owner>" + channel.getOwner()+ "</Owner>\r\n");
-                            }else {
-                                catalogXml.append("<Owner></Owner>\r\n");
-                            }
-                            if (channel.getCivilCode() != null) {
-                                catalogXml.append("<CivilCode>" + channel.getCivilCode() + "</CivilCode>\r\n");
-                            }else {
-                                catalogXml.append("<CivilCode></CivilCode>\r\n");
-                            }
-                            if (channel.getAddress() == null) {
-                                catalogXml.append("<Address></Address>\r\n");
-                            }else {
-                                catalogXml.append("<Address>" + channel.getAddress() + "</Address>\r\n");
-                            }
-                            if (!ObjectUtils.isEmpty(channel.getParentId())) {
-                                catalogXml.append("<ParentID>" + channel.getParentId() + "</ParentID>\r\n");
-                            }else {
-                                catalogXml.append("<ParentID></ParentID>\r\n");
-                            }
-                            if (!ObjectUtils.isEmpty(channel.getBlock())) {
-                                catalogXml.append("<Block>" + channel.getBlock() + "</Block>\r\n");
-                            }else {
-                                catalogXml.append("<Block></Block>\r\n");
-                            }
-                            if (!ObjectUtils.isEmpty(channel.getSafetyWay())) {
-                                catalogXml.append("<SafetyWay>" + channel.getSafetyWay() + "</SafetyWay>\r\n");
-                            }else {
-                                catalogXml.append("<SafetyWay></SafetyWay>\r\n");
-                            }
-                            if (!ObjectUtils.isEmpty(channel.getCertNum())) {
-                                catalogXml.append("<CertNum>" + channel.getCertNum() + "</CertNum>\r\n");
-                            }else {
-                                catalogXml.append("<CertNum></CertNum>\r\n");
-                            }
-                            if (!ObjectUtils.isEmpty(channel.getCertifiable())) {
-                                catalogXml.append("<Certifiable>" + channel.getCertifiable() + "</Certifiable>\r\n");
-                            }else {
-                                catalogXml.append("<Certifiable></Certifiable>\r\n");
-                            }
-                            if (!ObjectUtils.isEmpty(channel.getErrCode())) {
-                                catalogXml.append("<ErrCode>" + channel.getErrCode() + "</ErrCode>\r\n");
-                            }else {
-                                catalogXml.append("<ErrCode></ErrCode>\r\n");
-                            }
-                            if (!ObjectUtils.isEmpty(channel.getEndTime())) {
-                                catalogXml.append("<EndTime>" + channel.getEndTime() + "</EndTime>\r\n");
-                            }else {
-                                catalogXml.append("<EndTime></EndTime>\r\n");
-                            }
-                            if (!ObjectUtils.isEmpty(channel.getSecrecy())) {
-                                catalogXml.append("<Secrecy>" + channel.getSecrecy() + "</Secrecy>\r\n");
-                            }else {
-                                catalogXml.append("<Secrecy></Secrecy>\r\n");
-                            }
-                            if (!ObjectUtils.isEmpty(channel.getIpAddress())) {
-                                catalogXml.append("<IPAddress>" + channel.getIpAddress() + "</IPAddress>\r\n");
-                            }else {
-                                catalogXml.append("<IPAddress></IPAddress>\r\n");
-                            }
-                            catalogXml.append("<Port>" + channel.getPort() + "</Port>\r\n");
-                            if (!ObjectUtils.isEmpty(channel.getPassword())) {
-                                catalogXml.append("<Password>" + channel.getPassword() + "</Password>\r\n");
-                            }else {
-                                catalogXml.append("<Password></Password>\r\n");
-                            }
-                            if (!ObjectUtils.isEmpty(channel.getPtzType())) {
-                                catalogXml.append("<PTZType>" + channel.getPtzType() + "</PTZType>\r\n");
-                            }else {
-                                catalogXml.append("<PTZType></PTZType>\r\n");
-                            }
-                            catalogXml.append("<Status>" + (channel.getStatus() == 1 ?"ON":"OFF") + "</Status>\r\n");
-
-                            break;
-
+                    // 通道项
+                    if (channel.getManufacturer() != null) {
+                        catalogXml.append("<Manufacturer>" + channel.getManufacturer() + "</Manufacturer>\r\n");
+                    }else {
+                        catalogXml.append("<Manufacturer></Manufacturer>\r\n");
                     }
+
+                    catalogXml.append("<Secrecy></Secrecy>\r\n");
+                    catalogXml.append("<RegisterWay></RegisterWay>\r\n");
+
+                    catalogXml.append("<Model></Model>\r\n");
+                    catalogXml.append("<Owner></Owner>\r\n");
+                    catalogXml.append("<Address></Address>\r\n");
+                    catalogXml.append("<ParentID>" + channel.getParentId() + "</ParentID>\r\n");
+
+
+                    catalogXml.append("<Block></Block>\r\n");
+                    catalogXml.append("<SafetyWay></SafetyWay>\r\n");
+
+                    catalogXml.append("<CertNum></CertNum>\r\n");
+
+                    catalogXml.append("<Certifiable></Certifiable>\r\n");
+
+                    catalogXml.append("<ErrCode></ErrCode>\r\n");
+
+                    catalogXml.append("<EndTime></EndTime>\r\n");
+
+                    catalogXml.append("<Secrecy></Secrecy>\r\n");
+
+                    catalogXml.append("<IPAddress></IPAddress>\r\n");
+                    catalogXml.append("<Port></Port>\r\n");
+
+                    catalogXml.append("<Password></Password>\r\n");
+                    if (!ObjectUtils.isEmpty(channel.getPtzType())) {
+                        catalogXml.append("<PTZType>" + channel.getPtzType() + "</PTZType>\r\n");
+                    }else {
+                        catalogXml.append("<PTZType></PTZType>\r\n");
+                    }
+                    catalogXml.append("<Status>" + (channel.getStatus() == 1 ?"ON":"OFF") + "</Status>\r\n");
                     catalogXml.append("</Item>\r\n");
                 }
             }
