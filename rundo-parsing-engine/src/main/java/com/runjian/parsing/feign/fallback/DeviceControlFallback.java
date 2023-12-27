@@ -43,6 +43,21 @@ public class DeviceControlFallback implements FallbackFactory<DeviceControlApi> 
             public CommonResponse<?> deviceBatchSignIn(Object jsonArray) {
                 return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
             }
+
+            @Override
+            public CommonResponse<?> nodeSync(JSONObject req) {
+                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
+            }
+
+            @Override
+            public CommonResponse<?> channelSubscribe(JSONObject req) {
+                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
+            }
+
+            @Override
+            public CommonResponse<?> nodeSubscribe(JSONObject req) {
+                return CommonResponse.create(BusinessErrorEnums.FEIGN_REQUEST_BUSINESS_ERROR.getErrCode(), cause.getMessage(), null);
+            }
         };
     }
 }

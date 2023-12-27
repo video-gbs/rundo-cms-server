@@ -396,4 +396,12 @@ public class IDeviceChannelExpansionServiceImpl extends ServiceImpl<DeviceChanne
         return authRbacServerApi.getResourcePage(resourceKey, false);
 
     }
+
+    @Override
+    public List<DeviceChannelExpansion> batchChannelList(List<Long> channelIds) {
+        LambdaQueryWrapper<DeviceChannelExpansion> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(DeviceChannelExpansion::getId,channelIds);
+        queryWrapper.eq(DeviceChannelExpansion::getDeleted,0);
+        return deviceChannelExpansionMapper.selectList(queryWrapper);
+    }
 }

@@ -1,7 +1,7 @@
 spring:
   cloud:
     nacos:
-      server-addr: ${NACOS_SERVER:124.71.21.11:8848}
+      server-addr: ${NACOS_SERVER:172.20.0.231:8848}
       username: ${NACOS_USERNAME:nacos}
       password: ${NACOS_PASSWORD:rundo@nacos*2023}
       discovery:
@@ -14,4 +14,4 @@ spring:
     import:
       - optional:nacos:${spring.application.name}-${spring.profiles.active}.yml
 server:
-  port: ${SERVER_PORT:8060}
+  port: ${SERVER_PORT:8090}

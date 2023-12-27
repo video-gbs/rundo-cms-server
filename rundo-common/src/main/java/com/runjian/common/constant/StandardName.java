@@ -308,4 +308,7 @@ public class StandardName {
      * ssrc
      */
     public static final String STREAM_PUSH_SSRC = "ssrc";
+    public static final String DEVICE_PLATFORM_IS_SUBSCRIBE = "isSubscribe";
+    public static final String CHANNEL_SUBSCRIBE_LIST = "channelDetailReqList";
+    public static final String SUBSCRIBE_TYPE = "subscribeType";
 }

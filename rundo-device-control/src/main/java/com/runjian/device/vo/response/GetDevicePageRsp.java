@@ -48,6 +48,16 @@ public class GetDevicePageRsp {
     private Integer onlineState;
 
     /**
+     * 流类型 {@link com.runjian.device.constant.StreamType}
+     */
+    private Integer streamType;
+
+    /**
+     * 是否订阅下级
+     */
+    private Integer isSubscribe;
+
+    /**
      * ip地址
      */
     private String ip;

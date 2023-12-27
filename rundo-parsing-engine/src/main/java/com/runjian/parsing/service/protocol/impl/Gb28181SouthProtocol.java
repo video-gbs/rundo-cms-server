@@ -69,6 +69,21 @@ public class Gb28181SouthProtocol extends AbstractSouthProtocol {
         return jsonObject;
     }
 
+    @Override
+    protected JSONObject deviceNodeSyncConvert(JSONObject jsonObject) {
+        return jsonObject;
+    }
+
+    @Override
+    protected JSONObject deviceNodeSubscribeConvert(JSONObject jsonObject) {
+        return jsonObject;
+    }
+
+    @Override
+    protected JSONObject deviceChannelSubscribeConvert(JSONObject jsonObject) {
+        return jsonObject;
+    }
+
     /**
      * 转换在线状态
      * @param jsonObject

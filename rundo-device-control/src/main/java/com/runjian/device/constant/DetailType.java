@@ -13,7 +13,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum DetailType {
     DEVICE(1, "DEVICE"),
-    CHANNEL(2, "CHANNEL");
+    CHANNEL(2, "CHANNEL"),
+    PLATFORM(3, "PLATFORM");
 
     private final Integer code;
 

@@ -45,6 +45,41 @@ public class ChannelNorthController {
     }
 
     /**
+     * 分页获取下级平台待添加的通道信息
+     * @param page 页码
+     * @param num 每页数量
+     * @param nameOrOriginId 名字或数据id查询
+     * @return
+     */
+    @GetMapping("/platform/page")
+    @BlankStringValid
+    @IllegalStringValid
+    public CommonResponse<PageInfo<GetChannelByPageRsp>> getPlatformChannelByPage(@RequestParam(defaultValue = "1")int page, @RequestParam(defaultValue = "10") int num, @RequestParam Long nodeId, @RequestParam Integer isIncludeChild, String originId, String ip, Integer onlineState, Integer signState){
+        return CommonResponse.success(channelNorthService.getPlatformChannelByPage(page, num, nodeId,isIncludeChild, originId, ip, onlineState, signState));
+    }
+
+    /**
+     * 获取设备全部通道信息
+     * @param deviceId 设备id
+     * @return
+     */
+    @GetMapping("/data")
+    public CommonResponse<List<GetChannelByPageRsp>> getDeviceAllChannel(@RequestParam Long deviceId){
+        return CommonResponse.success(channelNorthService.getDeviceAllChannel(deviceId));
+    }
+
+    /**
+     * 获取设备全部通道信息
+     * @param deviceId 设备id
+     * @return
+     */
+    @GetMapping("/data/list")
+    public CommonResponse<List<GetChannelByPageRsp>> getChannelByIds(@RequestParam Set<Long> channelIds){
+        return CommonResponse.success(channelNorthService.getChannelByIds(channelIds));
+    }
+
+
+    /**
      * 通道同步
      * @param deviceId 设备ID
      * @return ChannelSyncRsp

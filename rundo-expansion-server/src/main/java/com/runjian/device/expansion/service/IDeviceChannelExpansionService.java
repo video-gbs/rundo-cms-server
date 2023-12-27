@@ -109,4 +109,12 @@ public interface IDeviceChannelExpansionService extends IService<DeviceChannelEx
      * @return
      */
     CommonResponse<Object> videoAreaList(String resourceKey);
+
+
+    /**
+     * 获取通道的list
+     * @param channelIds
+     * @return
+     */
+    List<DeviceChannelExpansion> batchChannelList(List<Long> channelIds);
 }

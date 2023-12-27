@@ -14,9 +14,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -80,5 +86,32 @@ public class TestJson {
 
 
         System.out.println(streamInfo.toString());
+    }
+
+    @Test
+    public void testFulture(){
+        AtomicInteger i = new AtomicInteger();
+        // 创建一个异步任务
+        CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(() -> {
+            // 异步执行的代码
+            while (true){
+                if(i.getAndIncrement()>10){
+
+                    return true;
+                }
+                i.getAndIncrement();
+            }
+        });
+
+        try {
+            // 设置超时时间为10秒，并获取结果
+            Boolean result = future.get(10, TimeUnit.SECONDS);
+            System.out.println("Result: " + result);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            // 如果在超时时间内没有完成，或者发生异常，则取消任务
+            future.cancel(true);
+
+        }
+
     }
 }

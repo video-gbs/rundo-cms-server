@@ -20,6 +20,15 @@ public interface ChannelNorthService {
     PageInfo<GetChannelByPageRsp> getChannelByPage(int page, int num, String nameOrOriginId);
 
     /**
+     *
+     * @param page
+     * @param num
+     * @param name
+     * @return
+     */
+    PageInfo<GetChannelByPageRsp> getPlatformChannelByPage(int page, int num, Long nodeId, Integer isIncludeChild, String originId, String ip, Integer onlineState, Integer signState);
+
+    /**
      * 通道同步
      * @param deviceId
      * @return
@@ -94,4 +103,18 @@ public interface ChannelNorthService {
      * @return 失败的通道
      */
     Set<Long> channelDeployAndWithdrawDefenses(List<Long> channelIdList,  Boolean isDeploy);
+
+    /**
+     * 获取设备全部通道
+     * @param deviceId 设备id
+     * @return
+     */
+    List<GetChannelByPageRsp> getDeviceAllChannel(Long deviceId);
+
+    /**
+     * 根据通道id获取通道信息
+     * @param channelIds 通道id
+     * @return
+     */
+    List<GetChannelByPageRsp> getChannelByIds(Set<Long> channelIds);
 }

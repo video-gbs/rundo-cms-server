@@ -28,4 +28,13 @@ public interface DeviceControlApi {
 
     @PostMapping("/device/south/sign-in-batch")
     CommonResponse<?> deviceBatchSignIn(@RequestBody Object jsonArray);
+
+    @PostMapping("/node/sync")
+    CommonResponse<?> nodeSync(@RequestBody JSONObject req);
+
+    @PostMapping("/channel/subscribe")
+    CommonResponse<?> channelSubscribe(@RequestBody JSONObject req);
+
+    @PostMapping("/node/subscribe")
+    CommonResponse<?> nodeSubscribe(@RequestBody JSONObject req);
 }
