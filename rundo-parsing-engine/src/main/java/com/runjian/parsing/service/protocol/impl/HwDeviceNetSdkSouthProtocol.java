@@ -65,6 +65,21 @@ public class HwDeviceNetSdkSouthProtocol extends AbstractSouthProtocol {
         return convertChannelName(convertChannelOnline(convertChannelId(jsonObject)));
     }
 
+    @Override
+    protected JSONObject deviceNodeSyncConvert(JSONObject jsonObject) {
+        return jsonObject;
+    }
+
+    @Override
+    protected JSONObject deviceNodeSubscribeConvert(JSONObject jsonObject) {
+        return jsonObject;
+    }
+
+    @Override
+    protected JSONObject deviceChannelSubscribeConvert(JSONObject jsonObject) {
+        return jsonObject;
+    }
+
 
     private JSONObject convertChannelOnline(JSONObject jsonObject){
         int onlineState = Integer.parseInt(jsonObject.remove(CHANNEL_ONLINE_STATE).toString());
